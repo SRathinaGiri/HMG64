@@ -188,7 +188,7 @@ HB_FUNC ( CHOOSEFONT )
 
    ZeroMemory ( &lf, sizeof (lf) );
 
-   lstrcpy ( lf.lfFaceName , HMG_parc(2) );
+   HMG_STRCPY_BUF ( lf.lfFaceName , HMG_parc(2) );   // AUDIT.md C2: was unbounded
    
    lf.lfHeight = - MulDiv ( hb_parnl(3), GetDeviceCaps (hDC, LOGPIXELSY), 72 );
 
@@ -260,20 +260,44 @@ HB_FUNC ( CHOOSEFONT )
 
 
 
+// Builds an OPENFILENAME filter (pairs of NUL-terminated strings, double-NUL at the end)
+// from the Harbour-side filter string. Shared by C_GETFILE and C_PUTFILE.
+// Fixes: NULL dereference when no filter is passed (AUDIT.md C3) and the duplicated
+// conversion per segment. Overflow-safe: stops at the last segment that fits.
+static void hmg_BuildFileFilter ( const CHAR *p, TCHAR *Filter, INT nFilterSize )
+{
+   INT j = 0;
+   memset ((void*) Filter, 0, nFilterSize * sizeof(TCHAR));
+   if ( p == NULL )
+      return;
+   while ( *p != '\0' )
+   {  TCHAR *cSegment = HMG_CHAR_TO_WCHAR (p);
+      INT    nSegment = cSegment ? lstrlen (cSegment) : 0;
+      if ( j + nSegment + 2 > nFilterSize )   // +1 own NUL, +1 final double-NUL
+         break;
+      if ( cSegment )
+         lstrcpy ( &Filter[j], cSegment );    // bounded by the check above
+      j = j + nSegment + 1;
+      p = p + strlen (p) + 1;
+   }
+}
+
+
 HB_FUNC ( C_GETFILE )
 {
+   // AUDIT.md H3: the result buffer was ~520 KB on the stack plus a ~520 KB
+   // cFullName[1024][MAX_PATH] array; it now lives on the heap, and each full
+   // name is sized to fit (the old fixed MAX_PATH copies overflowed on long paths).
    #define _MAXMULTISELECTFILE   1024
+   #define _MAX_FILTER           (5*1024)
    OPENFILENAME ofn;
-   TCHAR buffer    [ _MAXMULTISELECTFILE  *  MAX_PATH ];
-   TCHAR cFullName [ _MAXMULTISELECTFILE ] [ MAX_PATH ];
-   TCHAR cCurDir   [ MAX_PATH ];
-   TCHAR cFileName [ MAX_PATH ];
-   int iPosition    = 0;
-   int iNumSelected = 0;
+   const DWORD nBufferLen = _MAXMULTISELECTFILE * MAX_PATH;
+   TCHAR *buffer = (TCHAR *) hb_xgrab ( nBufferLen * sizeof(TCHAR) );
+   TCHAR Filter [ _MAX_FILTER ];
 
    int flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
-   memset ((void*)&buffer, 0, sizeof(buffer));
+   memset ((void*) buffer, 0, nBufferLen * sizeof(TCHAR));
 
    if ( hb_parl(4) )
       flags = flags | OFN_ALLOWMULTISELECT ;
@@ -281,40 +305,17 @@ HB_FUNC ( C_GETFILE )
    if ( hb_parl(5) )
       flags = flags | OFN_NOCHANGEDIR ;
 
-
-
-//******************************************************************************************************//   
-// ofn.lpstrFilter = A buffer containing pairs of null-terminated filter strings. 
-//                   The last string in the buffer must be terminated by two NULL characters.
-// The following code converts a ANSI (CHAR) filter string into a UNICODE (UNSIGNED INT) filter string
-   
-   #define _MAX_FILTER 5*1024
-   INT i, j=0, cont=0;
-   CHAR *p = (CHAR*) hb_parc(1);
-   TCHAR Filter [ _MAX_FILTER ];
-   memset((void*) &Filter, 0, sizeof(Filter));
-   
-   for (i=0; *p != '\0'; i++)
-   {  cont = cont + strlen (p) + 1;
-      if (cont < _MAX_FILTER)
-      {   lstrcpy ( &Filter[j], HMG_CHAR_TO_WCHAR(p) );
-          j = j + lstrlen ( HMG_CHAR_TO_WCHAR (p) ) + 1;
-          p = p + strlen (p) + 1;
-      }
-      else
-         break;
-   }
-//**********************************************************************//   
+   hmg_BuildFileFilter ( hb_parc(1), Filter, _MAX_FILTER );
 
    memset( (void*) &ofn, 0, sizeof( OPENFILENAME ) );
 
    ofn.lStructSize      = sizeof(OPENFILENAME);
    ofn.hwndOwner        = GetActiveWindow();
-   ofn.lpstrFilter      = (LPCTSTR) &Filter;
+   ofn.lpstrFilter      = (LPCTSTR) Filter;
    ofn.nFilterIndex     = ((hb_parni(6) > 0) ? (DWORD) hb_parni(6) : 1);
-   ofn.lpstrFile        = (LPTSTR) &buffer;
-   ofn.nMaxFile         = sizeof(buffer) / sizeof(TCHAR);
-   ofn.lpstrInitialDir  = (LPCTSTR) HMG_parc(3); 
+   ofn.lpstrFile        = buffer;
+   ofn.nMaxFile         = nBufferLen;
+   ofn.lpstrInitialDir  = (LPCTSTR) HMG_parc(3);
    ofn.lpstrTitle       = (LPCTSTR) HMG_parc(2);
    ofn.Flags            = flags;
 
@@ -324,22 +325,33 @@ HB_FUNC ( C_GETFILE )
          HMG_retc (ofn.lpstrFile);
       else
       {
-         wsprintf ( cCurDir, _TEXT("%s"), &buffer [iPosition] );
-         iPosition = iPosition + lstrlen (cCurDir) + 1;
-         do
-         {
-            iNumSelected ++;
-            wsprintf ( cFileName, _TEXT("%s"), &buffer [iPosition] );
-            iPosition = iPosition + lstrlen (cFileName) + 1;
-            wsprintf ( cFullName [iNumSelected], _TEXT("%s\\%s"), cCurDir, cFileName);
-         }
-         while (( lstrlen(cFileName) !=0 ) && ( iNumSelected < _MAXMULTISELECTFILE ));
+         // Multi-select result: "dir\0file1\0file2\0...\0\0"
+         TCHAR *cCurDir   = buffer;
+         INT    nCurDir   = lstrlen (cCurDir);
+         TCHAR *cFile     = cCurDir + nCurDir + 1;
+         INT    nSelected = 0, i;
 
-         if (iNumSelected > 1)
+         while ( *cFile != 0 && nSelected < _MAXMULTISELECTFILE )
+         {  nSelected ++;
+            cFile = cFile + lstrlen (cFile) + 1;
+         }
+
+         if ( nSelected > 0 )
          {
-            hb_reta (iNumSelected - 1);
-            for (i = 1; i < iNumSelected; i++)
-               HMG_storvc (cFullName[i], -1, i );
+            BOOL lSlash = ( nCurDir > 0 && cCurDir [nCurDir - 1] != _TEXT('\\') );
+            hb_reta (nSelected);
+            cFile = cCurDir + nCurDir + 1;
+            for (i = 1; i <= nSelected; i++)
+            {  INT    nFile     = lstrlen (cFile);
+               TCHAR *cFullName = (TCHAR *) hb_xgrab ( (nCurDir + nFile + 2) * sizeof(TCHAR) );
+               lstrcpy ( cFullName, cCurDir );
+               if ( lSlash )
+                  lstrcat ( cFullName, _TEXT("\\") );
+               lstrcat ( cFullName, cFile );      // sized above: dir + '\' + file + NUL
+               HMG_storvc (cFullName, -1, i );
+               hb_xfree (cFullName);
+               cFile = cFile + nFile + 1;
+            }
          }
          else
             HMG_retc( &buffer[0] );
@@ -347,6 +359,8 @@ HB_FUNC ( C_GETFILE )
    }
    else
       HMG_retc( _TEXT("") );
+
+   hb_xfree (buffer);
 }
 
 
@@ -364,31 +378,11 @@ HB_FUNC ( C_PUTFILE )
   flags = flags | OFN_NOCHANGEDIR ;
  }
  
-//******************************************************************************************************//   
-// ofn.lpstrFilter = A buffer containing pairs of null-terminated filter strings. 
-//                   The last string in the buffer must be terminated by two NULL characters.
-// The following code converts a ANSI (CHAR) filter string into a UNICODE (UNSIGNED INT) filter string
-   
-   #define _MAX_FILTER 5*1024
-   INT i, j=0, cont=0;
-   CHAR *p = (CHAR*) hb_parc(1);
    TCHAR Filter [_MAX_FILTER];
-   memset((void*) &Filter, 0, sizeof(Filter));
-   
-   for (i=0; *p != '\0'; i++)
-   {  cont = cont + strlen (p) + 1;
-      if (cont < _MAX_FILTER)
-      {   lstrcpy ( &Filter[j], HMG_CHAR_TO_WCHAR (p) );
-          j = j + lstrlen ( HMG_CHAR_TO_WCHAR (p) ) + 1;
-          p = p + strlen (p) + 1;
-      }
-      else
-         break;
-   }
-//**********************************************************************//   
+   hmg_BuildFileFilter ( hb_parc(1), Filter, _MAX_FILTER );
 
- lstrcpy (buffer, HMG_parc(5));
- 
+ HMG_STRCPY_BUF (buffer, HMG_parc(5));   // AUDIT.md C2: default file name was unbounded
+
  memset( (void*) &ofn, 0, sizeof( OPENFILENAME ) );
  ofn.lStructSize = sizeof(OPENFILENAME);
  ofn.hwndOwner = GetActiveWindow() ;
@@ -620,8 +614,8 @@ _THREAD_LOCK();
    {
       ZeroMemory( &FindReplace,  sizeof(FindReplace) );
 
-      lstrcpy ( cFindWhat,    HMG_parc (8) );
-      lstrcpy ( cReplaceWith, HMG_parc (9) );
+      HMG_STRCPY_BUF ( cFindWhat,    HMG_parc (8) );   // AUDIT.md C2: was unbounded
+      HMG_STRCPY_BUF ( cReplaceWith, HMG_parc (9) );
 
       BOOL lReplace = (BOOL) hb_parl (10);
 

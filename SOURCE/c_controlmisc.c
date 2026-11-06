@@ -796,7 +796,7 @@ HB_FUNC ( _HMG_PRINTER_C_PRINT )
 
 		if ( hb_parl(15) )
 		{
-			lstrcpy ( FontName , HMG_parc(4) ) ;
+			HMG_STRCPY_BUF ( FontName , HMG_parc(4) ) ;   // AUDIT.md C2: FontName[32] was unbounded
 		}
 		else
 		{
@@ -978,7 +978,7 @@ HB_FUNC ( _HMG_PRINTER_C_MULTILINE_PRINT )
 
 		if ( hb_parl(15) )
 		{
-			lstrcpy ( FontName , HMG_parc(4) ) ;
+			HMG_STRCPY_BUF ( FontName , HMG_parc(4) ) ;   // AUDIT.md C2: FontName[32] was unbounded
 		}
 		else
 		{
@@ -1936,7 +1936,7 @@ HB_FUNC (GETDEFAULTPRINTER)
 		EnumPrinters(PRINTER_ENUM_DEFAULT,NULL,5,NULL,0,&Needed,&Returned);
 		PrinterInfo = (LPPRINTER_INFO_5) LocalAlloc(LPTR,Needed);
 		EnumPrinters(PRINTER_ENUM_DEFAULT,NULL,5,(LPBYTE) PrinterInfo,Needed,&Needed,&Returned);
-		lstrcpy(DefaultPrinter,PrinterInfo->pPrinterName);
+		HMG_STRCPY_BUF(DefaultPrinter,PrinterInfo->pPrinterName);   // AUDIT.md C2
 		LocalFree(PrinterInfo);
 
 	}
@@ -2327,7 +2327,7 @@ HB_FUNC( INITACTIVEX )
 	LPAtlAxWinInit    AtlAxWinInit;
 	LPAtlAxGetControl AtlAxGetControl;
 
-	hlibrary = LoadLibrary( _TEXT("Atl.Dll") );
+	hlibrary = HMG_LoadSystemLibrary (_TEXT("Atl.Dll") );
 	AtlAxWinInit    = ( LPAtlAxWinInit )    GetProcAddress( hlibrary, "AtlAxWinInit" );
 	AtlAxGetControl = ( LPAtlAxGetControl ) GetProcAddress( hlibrary, "AtlAxGetControl" );
 	AtlAxWinInit();

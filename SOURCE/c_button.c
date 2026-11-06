@@ -128,9 +128,15 @@ HIMAGELIST HMG_SetButtonImageList (HWND hButton, TCHAR *FileName, int Transparen
 
    GetObject (hBitmap, sizeof(BITMAP), &Bmp);
    
+   // AUDIT.md H5: was a fixed TEMP\_HMG_tmp.BMP shared by every HMG process and thread.
+   // GetTempFileName creates a unique file; the image is saved over it and deleted below.
+   TCHAR TempPath [MAX_PATH];
    TCHAR TempPathFileName [MAX_PATH];
-   GetTempPath (MAX_PATH, TempPathFileName);
-   lstrcat (TempPathFileName, _TEXT("_HMG_tmp.BMP"));
+   GetTempPath (MAX_PATH, TempPath);
+   if ( GetTempFileName (TempPath, _TEXT("HMG"), 0, TempPathFileName) == 0 )
+   {   DeleteObject (hBitmap);
+       return NULL;
+   }
    bt_bmp_SaveFile (hBitmap, HMG_ToUnicode (TempPathFileName), 0);
    DeleteObject (hBitmap);
 

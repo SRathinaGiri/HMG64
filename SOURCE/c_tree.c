@@ -268,7 +268,7 @@ HB_FUNC (ADDTREEITEM)
 	TV_ITEM tvi;
 	TV_INSERTSTRUCT is ;
 
-   lstrcpy ( ItemText , HMG_parc(3) ) ;
+   HMG_STRCPY_BUF ( ItemText , HMG_parc(3) ) ;   // AUDIT.md C2: was unbounded
 
    LONG nID        = (LONG) hb_parnl(6);
    BOOL IsNodeFlag = (BOOL) hb_parl (7);
@@ -437,7 +437,7 @@ HB_FUNC (TREEVIEW_SETITEM)
    TCHAR       ItemText [ MAX_ITEM_TEXT ];
 
    memset(&TreeItem, 0, sizeof(TV_ITEM)) ;
-   lstrcpy ( ItemText , HMG_parc(3) ) ;
+   HMG_STRCPY_BUF ( ItemText , HMG_parc(3) ) ;   // AUDIT.md C2: was unbounded
 
    TreeItem.mask       = TVIF_TEXT ;
    TreeItem.hItem      = ItemHandle ;

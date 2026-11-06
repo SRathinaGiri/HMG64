@@ -40,8 +40,26 @@
 *   HMG INTERNAL MACRO DEFINITION
 ******************************************************************************************/
 
-#define HMG_MBtoWC(c)   ((c != NULL) ? hb_mbtowc(c) : NULL)  // MultiByteToWideChar( CHAR  ) --> return WCHAR
-#define HMG_WCtoMB(c)   ((c != NULL) ? hb_wctomb(c) : NULL)  // WideCharToMultiByte( WCHAR ) --> return CHAR
+/*
+   String conversions are OWNED BY THE CURRENT HARBOUR CALL FRAME (fix for AUDIT.md C1).
+
+   hb_osStrU16Encode/Decode and hb_mbtowc/hb_wctomb return heap buffers that the caller
+   must free; HMG used them inline (HMG_parc(n), HMG_retc(c), ...) and never freed them,
+   leaking every converted string. The hmg_Frame* helpers (c_UNICODE.c) park each buffer
+   in a GC pointer item on the HVM stack, so it is released when the HB_FUNC that did the
+   conversion returns. Call sites stay unchanged.
+
+   Rule: a converted pointer is valid only until the current HB_FUNC returns. Never hand
+   it to Windows for deferred reading (e.g. NMTTDISPINFO.lpszText) - copy it instead.
+*/
+#include <wchar.h>
+extern wchar_t * hmg_FrameU16Encode ( const char * pStr );     // UTF-8/CP  -> UTF-16, frame-owned
+extern char *    hmg_FrameU16Decode ( const wchar_t * pStrW ); // UTF-16    -> UTF-8/CP, frame-owned
+extern wchar_t * hmg_FrameMBtoWC    ( const char * pStr );     // hb_mbtowc, frame-owned
+extern char *    hmg_FrameWCtoMB    ( const wchar_t * pStrW ); // hb_wctomb, frame-owned
+
+#define HMG_MBtoWC(c)   hmg_FrameMBtoWC (c)  // MultiByteToWideChar( CHAR  ) --> return WCHAR (NULL-safe)
+#define HMG_WCtoMB(c)   hmg_FrameWCtoMB (c)  // WideCharToMultiByte( WCHAR ) --> return CHAR  (NULL-safe)
 
 #define HMG_INTNIL  (INT)(0xEFFFFFFF)
 
@@ -69,24 +87,26 @@
    #include <wchar.h>
 // #include "hbapi.h"
 
-   #define HMG_CHAR_TO_WCHAR(c)     ((c != NULL) ? hb_osStrU16Encode(c) : NULL)  // return WCHAR
+   #define HMG_CHAR_TO_WCHAR(c)     hmg_FrameU16Encode(c)  // return WCHAR, frame-owned, NULL-safe
       #define HMG_parc(n)            HMG_CHAR_TO_WCHAR (hb_parc(n))
       #define HMG_parvc(n,i)         HMG_CHAR_TO_WCHAR (hb_parvc(n,i))
       #define HMG_arrayGetCPtr(a,n)  HMG_CHAR_TO_WCHAR (hb_arrayGetCPtr(a,n))
 
-   #define HMG_WCHAR_TO_CHAR(c)      hb_osStrU16Decode(c)                       // return CHAR
+   #define HMG_WCHAR_TO_CHAR(c)      hmg_FrameU16Decode(c)  // return CHAR, frame-owned, NULL-safe
       #define HMG_retc(c)            hb_retc    (HMG_WCHAR_TO_CHAR(c))
       #define HMG_storc(c,i)         hb_storc   (HMG_WCHAR_TO_CHAR(c),i)
-      #define HMG_storvc(c,l,n)      hb_storvc  (HMG_WCHAR_TO_CHAR(c),l,n) 
+      #define HMG_storvc(c,l,n)      hb_storvc  (HMG_WCHAR_TO_CHAR(c),l,n)
       #define HMG_retclen(c,l)       hb_retclen (HMG_WCHAR_TO_CHAR(c),l)
-      #define HMG_retc_buffer(c)     hb_retc_buffer (HMG_WCHAR_TO_CHAR(c))
+      // The *_buffer / *Ptr / *Const variants hand ownership (or a lifetime promise) to Harbour,
+      // which a frame-owned buffer cannot give - they map to the copying calls instead.
+      #define HMG_retc_buffer(c)     hb_retc    (HMG_WCHAR_TO_CHAR(c))
 
-      #define HMG_itemPutC(p, c)            hb_itemPutC      (p, HMG_WCHAR_TO_CHAR(c))
-      #define HMG_itemPutCL(p, c, l)        hb_itemPutCL     (p, HMG_WCHAR_TO_CHAR(c), l)
-      #define HMG_itemPutCConst(p, c)       hb_itemPutCConst (p, HMG_WCHAR_TO_CHAR(c))
-      #define HMG_itemPutCLConst(p, c, l)   hb_itemPutCLConst(p, HMG_WCHAR_TO_CHAR(c), l)
-      #define HMG_itemPutCPtr(p, c)         hb_itemPutCPtr   (p, HMG_WCHAR_TO_CHAR(c))
-      #define HMG_itemPutCLPtr(p, c, l)     hb_itemPutCLPtr  (p, HMG_WCHAR_TO_CHAR(c), l)
+      #define HMG_itemPutC(p, c)            hb_itemPutC  (p, HMG_WCHAR_TO_CHAR(c))
+      #define HMG_itemPutCL(p, c, l)        hb_itemPutCL (p, HMG_WCHAR_TO_CHAR(c), l)
+      #define HMG_itemPutCConst(p, c)       hb_itemPutC  (p, HMG_WCHAR_TO_CHAR(c))
+      #define HMG_itemPutCLConst(p, c, l)   hb_itemPutCL (p, HMG_WCHAR_TO_CHAR(c), l)
+      #define HMG_itemPutCPtr(p, c)         hb_itemPutC  (p, HMG_WCHAR_TO_CHAR(c))
+      #define HMG_itemPutCLPtr(p, c, l)     hb_itemPutCL (p, HMG_WCHAR_TO_CHAR(c), l)
 
    #define _HMG_SupportUnicode_      1  // Set TRUE
 
@@ -209,6 +229,30 @@
 
 
 /*****************************************************************************************
+*   BOUNDED STRING COPY  (fix for AUDIT.md C2)
+******************************************************************************************/
+
+// Copies src into the fixed-size TCHAR ARRAY dst, truncating to fit and always
+// NUL-terminating. A NULL src (non-string Harbour argument) copies "".
+// dst must be an array, not a pointer - sizeof(dst) gives its capacity.
+#define HMG_STRCPY_BUF(dst, src)   lstrcpyn ((dst), ((src) != NULL) ? (src) : _TEXT(""), (int) (sizeof(dst) / sizeof((dst)[0])))
+
+
+
+/*****************************************************************************************
+*   SAFE DLL LOADING  (fix for AUDIT.md H4)
+******************************************************************************************/
+
+// Plain LoadLibrary("x.dll") searches the current directory and PATH, so a planted DLL
+// with the same name gets loaded (DLL hijacking). Windows components are loaded from
+// System32 only; optional add-on DLLs (e.g. QHTM) from the application folder, then System32.
+// Requires Windows 8+, or Windows 7 with KB2533623.
+#define HMG_LoadSystemLibrary(name)   LoadLibraryEx ((name), NULL, LOAD_LIBRARY_SEARCH_SYSTEM32)
+#define HMG_LoadAppLibrary(name)      LoadLibraryEx ((name), NULL, LOAD_LIBRARY_SEARCH_APPLICATION_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32)
+
+
+
+/*****************************************************************************************
 *   MACRO DEFINITION FOR CALL DLL FUNCTION
 ******************************************************************************************/
 
@@ -230,7 +274,7 @@ _THREAD_LOCK();\
    static PFUNC pfunc = NULL;\
    if (pfunc == NULL)\
    {\
-      HMODULE hLib = LoadLibrary (_TEXT (_DLL_LIBNAME) );\
+      HMODULE hLib = HMG_LoadSystemLibrary (_TEXT(_DLL_LIBNAME) );\
       pfunc = (PFUNC) GetProcAddress (hLib, _DLL_FUNC_NAMESTRINGAW);\
    }\
 _THREAD_UNLOCK();\

@@ -491,7 +491,7 @@ BOOL bt_Release_GDIplus (void);
 BOOL bt_Load_GDIplus ()
 {
 _THREAD_LOCK();
-   GdiPlusHandle = LoadLibrary (_TEXT("GdiPlus.dll"));
+   GdiPlusHandle = HMG_LoadSystemLibrary (_TEXT("GdiPlus.dll"));
 _THREAD_UNLOCK();
    if (GdiPlusHandle == NULL)
        return FALSE;
@@ -745,7 +745,7 @@ BOOL bt_SaveGDIPlusPicture (HBITMAP hBitmap, TCHAR *FileName, INT TypePicture)
       if (CreateStreamOnHGlobal (hGlobalAlloc, FALSE, &iStream) == S_OK)
       {   
           #ifdef UNICODE
-              lstrcpy (wFileName, FileName);
+              HMG_STRCPY_BUF (wFileName, FileName);   // AUDIT.md C2: wFileName[MAX_PATH] was unbounded
           #else
               MultiByteToWideChar(CP_ACP, 0, FileName, -1, wFileName, MAX_PATH);
           #endif

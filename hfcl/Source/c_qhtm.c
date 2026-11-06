@@ -61,7 +61,7 @@ HB_FUNC( QHTM_INIT )
          #endif
       }
 
-      hQhtmDll = LoadLibrary( (LPCTSTR) cLibname );
+      hQhtmDll = HMG_LoadAppLibrary( (LPCTSTR) cLibname );   // AUDIT.md H4: app folder + System32 only
       if( hQhtmDll )
       {
          QHTM_INITIALIZE   pFunc = ( QHTM_INITIALIZE ) GetProcAddress( hQhtmDll, "QHTM_Initialize" );

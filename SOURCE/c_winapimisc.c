@@ -1023,7 +1023,7 @@ _THREAD_LOCK();
    static Func_EnumProcesses pEnumProcesses = NULL;
 
    if (pEnumProcesses == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        pEnumProcesses = (Func_EnumProcesses) GetProcAddress(hLib, "EnumProcesses");
    }
 _THREAD_UNLOCK();
@@ -1076,7 +1076,7 @@ _THREAD_LOCK();
    typedef BOOL (WINAPI *Func_EnumProcessModules) (HANDLE, HMODULE*, DWORD, LPDWORD);
    static Func_EnumProcessModules pEnumProcessModules = NULL;
    if (pEnumProcessModules == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        pEnumProcessModules = (Func_EnumProcessModules) GetProcAddress(hLib, "EnumProcessModules");
    }
 _THREAD_UNLOCK();
@@ -1088,7 +1088,7 @@ _THREAD_LOCK();
    typedef DWORD (WINAPI *Func_GetModuleBaseName) (HANDLE, HMODULE, LPTSTR, DWORD);
    static Func_GetModuleBaseName pGetModuleBaseName = NULL;
    if (pGetModuleBaseName == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        #ifdef UNICODE
           pGetModuleBaseName = (Func_GetModuleBaseName) GetProcAddress(hLib, "GetModuleBaseNameW");
        #else
@@ -1125,7 +1125,7 @@ _THREAD_LOCK();
    typedef BOOL (WINAPI *Func_EnumProcessModules) (HANDLE, HMODULE*, DWORD, LPDWORD);
    static Func_EnumProcessModules pEnumProcessModules = NULL;
    if (pEnumProcessModules == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        pEnumProcessModules = (Func_EnumProcessModules) GetProcAddress(hLib, "EnumProcessModules");
    }
 _THREAD_UNLOCK();
@@ -1137,7 +1137,7 @@ _THREAD_LOCK();
    typedef DWORD (WINAPI *Func_GetModuleFileNameEx) (HANDLE, HMODULE, LPTSTR, DWORD);
    static Func_GetModuleFileNameEx pGetModuleFileNameEx = NULL;
    if (pGetModuleFileNameEx == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        #ifdef UNICODE
           pGetModuleFileNameEx = (Func_GetModuleFileNameEx) GetProcAddress(hLib, "GetModuleFileNameExW");
        #else
@@ -1174,7 +1174,7 @@ _THREAD_LOCK();
    typedef DWORD (WINAPI *Func_GetProcessImageFileName) (HANDLE, LPTSTR, DWORD);
    static Func_GetProcessImageFileName pGetProcessImageFileName = NULL;
    if (pGetProcessImageFileName == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        #ifdef UNICODE
           pGetProcessImageFileName = (Func_GetProcessImageFileName) GetProcAddress(hLib, "GetProcessImageFileNameW");
        #else
@@ -1262,12 +1262,12 @@ _THREAD_LOCK();
    static Func_GetProcessMemoryInfo pGetProcessMemoryInfo = NULL;
 
    if (pGetProcessMemoryInfo == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Kernel32.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Kernel32.dll"));
        pGetProcessMemoryInfo = (Func_GetProcessMemoryInfo) GetProcAddress(hLib, "K32GetProcessMemoryInfo");
    }
    
    if (pGetProcessMemoryInfo == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        pGetProcessMemoryInfo = (Func_GetProcessMemoryInfo) GetProcAddress(hLib, "GetProcessMemoryInfo");
    }
 _THREAD_UNLOCK();
@@ -1313,12 +1313,12 @@ _THREAD_LOCK();
    static Func_EmptyWorkingSet pEmptyWorkingSet = NULL;
 
    if (pEmptyWorkingSet == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Kernel32.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Kernel32.dll"));
        pEmptyWorkingSet = (Func_EmptyWorkingSet) GetProcAddress(hLib, "K32EmptyWorkingSet");
    }
 
    if (pEmptyWorkingSet == NULL) 
-   {   HMODULE hLib = LoadLibrary (_TEXT("Psapi.dll"));
+   {   HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("Psapi.dll"));
        pEmptyWorkingSet = (Func_EmptyWorkingSet) GetProcAddress(hLib, "K32EmptyWorkingSet");
    }
 _THREAD_UNLOCK();

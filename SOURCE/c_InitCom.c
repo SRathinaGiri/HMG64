@@ -98,10 +98,10 @@ HB_FUNC (HMG_INITALLCOMMONCONTROLS)   // Loaded, registers and initializes all c
         HMG_InitCommonControl ( dwICC [i] );
 
    // It is necessary to call the LoadLibrary function to load Riched20.dll or Msftedit.dll before the RichEditBox control is created
-   HMODULE hLibRichEditBox = LoadLibrary (_TEXT("Msftedit.dll"));
+   HMODULE hLibRichEditBox = HMG_LoadSystemLibrary (_TEXT("Msftedit.dll"));
    BOOL lVer30 = FALSE;
    if ( hLibRichEditBox == NULL )
-   {    hLibRichEditBox = LoadLibrary (_TEXT("Riched20.dll"));
+   {    hLibRichEditBox = HMG_LoadSystemLibrary (_TEXT("Riched20.dll"));
            lVer30 = TRUE;
    }
    _THREAD_LOCK();

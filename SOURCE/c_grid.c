@@ -758,14 +758,13 @@ HB_FUNC ( SETGRIDQUERYDATA )
    
    // HMG_Trace( __FILE__, __LINE__, __FUNCTION__, _TEXT(" %p |- %s -| %d "), pDispInfo->item.pszText, (TCHAR*) HMG_parc (2), pDispInfo->item.cchTextMax, NULL );
 
-#ifdef COMPILE_HMG_UNICODE
-   if( hb_iswinvista() )   // Is Win Vista or newer   // ADD3, September 2015
-      lstrcpyn(pDispInfo->item.pszText, (TCHAR*) HMG_parc (2), pDispInfo->item.cchTextMax);   // ADD3, July 2015
-   else
-      pDispInfo->item.pszText = (TCHAR*) HMG_parc (2); // Is Win XP
-#else   // ANSI mode
-   lstrcpyn(pDispInfo->item.pszText, (TCHAR*) HMG_parc (2), pDispInfo->item.cchTextMax); // ADD, March 2017, contrib by huiyi_ch
-#endif
+   // Always copy into the listview's own buffer: the listview reads pszText after this
+   // function returns, when the frame-owned HMG_parc() buffer is already freed (AUDIT.md C1).
+   // The former XP-only branch pointed pszText at the converted string, which only worked
+   // because that string leaked.
+   TCHAR *cText = (TCHAR*) HMG_parc (2);
+   if ( pDispInfo->item.pszText != NULL && pDispInfo->item.cchTextMax > 0 )
+      lstrcpyn (pDispInfo->item.pszText, cText ? cText : _TEXT(""), pDispInfo->item.cchTextMax);
 }
 
 

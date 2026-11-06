@@ -342,9 +342,15 @@ HIMAGELIST HMG_ImageListLoadFirst (TCHAR *FileName, int cGrow, int Transparent, 
    if (nHeight != NULL)
       *nHeight = Bmp.bmHeight;
 
+   // AUDIT.md H5: was a fixed TEMP\_HMG_tmp.BMP shared by every HMG process and thread.
+   // GetTempFileName creates a unique file; the image is saved over it and deleted below.
+   TCHAR TempPath [MAX_PATH];
    TCHAR TempPathFileName [MAX_PATH];
-   GetTempPath (MAX_PATH, TempPathFileName);
-   lstrcat (TempPathFileName, _TEXT("_HMG_tmp.BMP"));
+   GetTempPath (MAX_PATH, TempPath);
+   if ( GetTempFileName (TempPath, _TEXT("HMG"), 0, TempPathFileName) == 0 )
+   {   DeleteObject (hBitmap);
+       return NULL;
+   }
    bt_bmp_SaveFile (hBitmap, HMG_ToUnicode (TempPathFileName), 0);
    DeleteObject (hBitmap);
 

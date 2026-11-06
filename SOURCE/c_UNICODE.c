@@ -22,6 +22,61 @@
 
 #include <windows.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbstack.h"
+
+
+/*****************************************************************************************
+*   FRAME-OWNED STRING CONVERSIONS  (see HMG_UNICODE.h; fix for AUDIT.md C1)
+*
+*   The converted buffer is wrapped in a GC pointer item pushed on the HVM stack. When the
+*   HB_FUNC that made the conversion returns, the VM pops its frame, the item's reference
+*   count drops to zero and hmg_FrameStr_release() frees the buffer.
+******************************************************************************************/
+
+static HB_GARBAGE_FUNC( hmg_FrameStr_release )
+{
+   void ** ppBuffer = ( void ** ) Cargo;
+   if( *ppBuffer )
+   {
+      hb_xfree( *ppBuffer );
+      *ppBuffer = NULL;
+   }
+}
+
+static const HB_GC_FUNCS s_gcFrameStrFuncs = { hmg_FrameStr_release, hb_gcDummyMark };
+
+static void * hmg_FrameOwn( void * pBuffer )
+{
+   if( pBuffer )
+   {
+      void ** ppBuffer = ( void ** ) hb_gcAllocate( sizeof( void * ), &s_gcFrameStrFuncs );
+      *ppBuffer = pBuffer;
+      hb_itemPutPtrGC( hb_stackAllocItem(), ppBuffer );
+   }
+   return pBuffer;
+}
+
+wchar_t * hmg_FrameU16Encode( const char * pStr )
+{
+   return pStr ? ( wchar_t * ) hmg_FrameOwn( hb_osStrU16Encode( pStr ) ) : NULL;
+}
+
+char * hmg_FrameU16Decode( const wchar_t * pStrW )
+{
+   return pStrW ? ( char * ) hmg_FrameOwn( hb_osStrU16Decode( pStrW ) ) : NULL;
+}
+
+wchar_t * hmg_FrameMBtoWC( const char * pStr )
+{
+   return pStr ? ( wchar_t * ) hmg_FrameOwn( hb_mbtowc( pStr ) ) : NULL;
+}
+
+char * hmg_FrameWCtoMB( const wchar_t * pStrW )
+{
+   return pStrW ? ( char * ) hmg_FrameOwn( hb_wctomb( pStrW ) ) : NULL;
+}
+
 
 
 HB_FUNC (HMG_MSGINFOUNICODE)
@@ -34,7 +89,7 @@ HB_FUNC (HMG_MSGINFOUNICODE)
 HB_FUNC (HMG_GETUNICODEVALUE)
 {  INT i, nLen;
    WCHAR *cText = (WCHAR*) HMG_parc (1);
-   nLen = wcslen (cText);
+   nLen = cText ? (INT) wcslen (cText) : 0;   // non-string argument -> empty array (was a NULL dereference)
    hb_reta (nLen);
    if (nLen > 0)
    {  for (i=0; i < nLen; i++)

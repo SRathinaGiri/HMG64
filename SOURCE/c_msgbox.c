@@ -130,7 +130,7 @@ _THREAD_LOCK();
    static PMessageBoxTimeout pMessageBoxTimeout = NULL;
    if (pMessageBoxTimeout == NULL) 
    {
-      HMODULE hLib = LoadLibrary (_TEXT("User32.dll"));
+      HMODULE hLib = HMG_LoadSystemLibrary (_TEXT("User32.dll"));
       #ifdef UNICODE
          pMessageBoxTimeout = (PMessageBoxTimeout)GetProcAddress(hLib, "MessageBoxTimeoutW");
       #else

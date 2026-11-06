@@ -738,7 +738,7 @@ void ShowNotifyIcon(HWND hWnd, BOOL bAdd, HICON hIcon, TCHAR *szText)
   nid.uFlags=NIF_ICON | NIF_MESSAGE | NIF_TIP;
   nid.uCallbackMessage=WM_TASKBAR;
   nid.hIcon=hIcon;
-  lstrcpy(nid.szTip,szText);
+  HMG_STRCPY_BUF(nid.szTip,szText);   // AUDIT.md C2: tray tip is 128 chars, caller text was unbounded
 
   if(bAdd)
     Shell_NotifyIcon(NIM_ADD,&nid);
@@ -802,7 +802,7 @@ void ChangeNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *szText)
   nid.uFlags=NIF_ICON | NIF_MESSAGE | NIF_TIP;
   nid.uCallbackMessage=WM_TASKBAR;
   nid.hIcon=hIcon;
-  lstrcpy(nid.szTip,szText);
+  HMG_STRCPY_BUF(nid.szTip,szText);   // AUDIT.md C2: tray tip is 128 chars, caller text was unbounded
 
   Shell_NotifyIcon(NIM_MODIFY,&nid);
 }

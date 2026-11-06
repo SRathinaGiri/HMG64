@@ -375,7 +375,7 @@ HB_FUNC ( RICHEDITBOX_SETFONT )
 
    if ( HB_ISCHAR (2) && lstrlen(HMG_parc (2)) )
    {   Mask = Mask | CFM_FACE;
-       lstrcpy ( CharFormat2.szFaceName, HMG_parc (2) );
+       HMG_STRCPY_BUF ( CharFormat2.szFaceName, HMG_parc (2) );   // AUDIT.md C2: was unbounded
    }
 
    if ( HB_ISNUM (3) && hb_parnl (3) )
