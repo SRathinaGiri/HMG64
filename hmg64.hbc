@@ -19,6 +19,7 @@ libs=hfcl-64
 
 libs=msvfw32
 libs=vfw32
+libs=bcrypt
 
 # harbour contrib libs
 

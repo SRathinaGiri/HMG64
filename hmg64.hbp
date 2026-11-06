@@ -24,6 +24,7 @@ source/h_HMG_HPDF.prg
 source/h_HMG_HPDF_UNICODE.prg
 source/h_HMG_Zebra.prg
 source/h_GraphBitmap.prg
+source/h_crypt_aes.prg
 
 source/ErrorSys.prg
 source/h_browse.prg
@@ -73,6 +74,7 @@ source/c_EventCB.c
 source/c_GridEx.c
 source/c_TimePicker.c
 source/c_Thread.c
+source/c_crypt_cng.c
 
 source/c_browse.c
 source/c_button.c
