@@ -1,3 +1,2 @@
 # Tests expected to fail on the current code. One name per line.
 # Remove a line when the fix lands - the runner reports XPASS so you notice.
-leak

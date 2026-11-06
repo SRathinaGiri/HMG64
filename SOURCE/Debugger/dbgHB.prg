@@ -218,7 +218,7 @@ METHOD GetNextValidStopLineEx( cFileName, nLine )
 
    METHOD SetPathForFiles( cPath )
    METHOD LoadSourceFile( cFileName )
-   METHOD GetCodeLineInfo( nProc )
+   METHOD GetCodeLineInfo( nProcLevel )
 
    METHOD DoCommand( cCommand )
    METHOD RestoreSettings( cFileName )
@@ -228,7 +228,7 @@ METHOD GetNextValidStopLineEx( cFileName, nLine )
    METHOD VarGetName( aVar )
    METHOD VarGetValType( aVar )
    METHOD VarGetValue( aVar )
-   METHOD VarSetValue( aVar, uValue )
+   METHOD VarSetValue( aVar, xValue )
 
    METHOD GetAreas()
    METHOD GetRec( cAlias )

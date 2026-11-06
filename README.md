@@ -20,15 +20,15 @@ hmgbuild app SAMPLES\Basics\Hello_World\hello.hbp
 `hmgbuild test` runs `tests\run.bat`:
 
 - **smoke-\***: every project under `SAMPLES\Basics` must compile and link.
-- **leakprobe-build**: the leak probe must compile.
-- **leak**: regression test for AUDIT.md C1 (string conversion leak). It is listed in `tests\known-fail.txt` until Phase 1 fixes it.
+- **leakprobe-build** / **leak**: regression test for AUDIT.md C1 (string conversion leak). It must show no memory growth.
+- **unit-\***: every `tests\unit\*.hbp` is built as a console app and must exit 0. `strings` checks conversion correctness (ASCII, accented, Tamil, 1 MB, 4 threads) and the C3 no-crash cases.
 
 ## Status
 
 | Phase | Scope | State |
 |---|---|---|
 | 0 | Baseline in git, single build entry point, smoke + regression tests | done |
-| 1 | Fix leaks, buffer overflows, NULL crashes, XOR "crypt" | next |
+| 1 | Fix leaks, buffer overflows, NULL crashes, DLL hijacking, temp-file race; deprecate XOR "crypt" | done (see AUDIT.md §6) |
 | 2 | Toolchain refresh (GCC/UCRT, current Harbour and contrib libs), drop ANSI build, Win10+ target | planned |
 | 3 | Replace `_HMG_SYSDATA` with an object model while keeping the command syntax | planned |
 

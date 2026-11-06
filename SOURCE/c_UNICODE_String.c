@@ -75,35 +75,35 @@
 
    HB_FUNC (HMG_ISALPHA)
    {
-      TCHAR *Text = (TCHAR*) HMG_parc(1);
+      TCHAR *Text = (TCHAR*) HMG_parc(1); if (Text == NULL) { hb_retl (FALSE); return; }   // non-string argument (was a NULL dereference, AUDIT.md C3)
       hb_retl ((BOOL) IsCharAlpha ((TCHAR)Text[0]));
    }
 
 
    HB_FUNC (HMG_ISDIGIT)
    {
-      TCHAR *Text = (TCHAR*) HMG_parc(1);
+      TCHAR *Text = (TCHAR*) HMG_parc(1); if (Text == NULL) { hb_retl (FALSE); return; }   // non-string argument (was a NULL dereference, AUDIT.md C3)
       hb_retl ((BOOL) ( IsCharAlphaNumeric((TCHAR)Text[0]) && !IsCharAlpha((TCHAR)Text[0]) ));
    }
 
 
    HB_FUNC (HMG_ISLOWER)
    {
-      TCHAR *Text = (TCHAR*) HMG_parc(1);
+      TCHAR *Text = (TCHAR*) HMG_parc(1); if (Text == NULL) { hb_retl (FALSE); return; }   // non-string argument (was a NULL dereference, AUDIT.md C3)
       hb_retl ((BOOL) IsCharLower ((TCHAR)Text[0]));
    }
 
 
    HB_FUNC (HMG_ISUPPER)
    {
-      TCHAR *Text = (TCHAR*) HMG_parc(1);
+      TCHAR *Text = (TCHAR*) HMG_parc(1); if (Text == NULL) { hb_retl (FALSE); return; }   // non-string argument (was a NULL dereference, AUDIT.md C3)
       hb_retl ((BOOL) IsCharUpper ((TCHAR)Text[0]));
    }
 
 
    HB_FUNC (HMG_ISALPHANUMERIC)
    {
-      TCHAR *Text = (TCHAR*) HMG_parc(1);
+      TCHAR *Text = (TCHAR*) HMG_parc(1); if (Text == NULL) { hb_retl (FALSE); return; }   // non-string argument (was a NULL dereference, AUDIT.md C3)
       hb_retl ((BOOL) IsCharAlphaNumeric((TCHAR)Text[0]));
    }
 

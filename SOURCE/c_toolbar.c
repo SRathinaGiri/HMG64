@@ -425,8 +425,14 @@ HB_FUNC ( SHOWTOOLBUTTONTIP )
 {
    LPTOOLTIPTEXT lpttt; 
    lpttt = (LPTOOLTIPTEXT) HMG_parnl (1);
+   // The tooltip reads lpszText after this function returns, so it must not point at the
+   // frame-owned HMG_parc() buffer (AUDIT.md C1). A per-thread buffer stays valid until the
+   // next TTN_GETDISPINFO, which is what the tooltip control requires.
+   static __TLS__ TCHAR cTipText [1024];
+   TCHAR *cText = (TCHAR*) HMG_parc(2);
+   lstrcpyn (cTipText, cText ? cText : _TEXT(""), sizeof(cTipText) / sizeof(TCHAR));
    lpttt->hinst = GetModuleHandle (NULL) ;
-   lpttt->lpszText =  (LPTSTR) HMG_parc(2) ;
+   lpttt->lpszText = cTipText ;
 }
 
 HB_FUNC ( GETTOOLBUTTONID )
