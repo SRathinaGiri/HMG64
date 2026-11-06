@@ -705,7 +705,7 @@ METHOD SetPathForFiles( cPath ) CLASS HMGDebugger
 
 METHOD LoadSourceFile( cFileName ) CLASS HMGDebugger
 LOCAL cPrgCode, aLineCode := {}
-LOCAL i, cFileFullName := ""
+LOCAL i, cFileFullName
    IF ! hb_FileExists( cFileName )
       FOR i := 1 TO Len( ::aPathForFiles )
          cFileFullName := ::aPathForFiles[ i ] + hb_ps() + cFileName
@@ -1010,7 +1010,7 @@ LOCAL arr := {}
    IF Empty( cAlias )
       cAlias := Alias()
    ENDIF
-   IF Empty( cAlias ) .OR. ( i := Select( cAlias ) ) == 0
+   IF Empty( cAlias ) .OR. Select( cAlias ) == 0
       Return arr
    ENDIF
    af := (cAlias)->(dbStruct())
