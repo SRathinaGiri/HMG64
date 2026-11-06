@@ -118,7 +118,7 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 
 **M5. Dual ANSI/Unicode code paths** [High]
 - Every string-handling C function has two compiled branches (`#ifdef COMPILE_HMG_UNICODE`), and the build switch is a header file overwrite.
-- ANSI mode has no real use on modern Windows. Dropping it removes a large share of the conditional code.
+- ~~ANSI mode has no real use on modern Windows. Dropping it removes a large share of the conditional code.~~ **Decision (06-11-2026): keep ANSI.** Some members still use it. Both modes are built and tested by `hmgbuild matrix`.
 
 **M6. Deprecated Harbour API** [High]
 - 66 uses of `ISCHAR/ISNUM/ISNIL/ISLOG/ISARRAY/hb_parinfa`. These still compile, but they are deprecated in favour of the `HB_IS*` macros.
@@ -152,7 +152,7 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 **Phase 2 — Toolchain refresh**
 1. Upgrade MinGW-w64 to a current GCC with the **UCRT** runtime (WinLibs/MSYS2). Rebuild Harbour 3.2 from current `harbour/core` with it.
 2. Rebuild the contribs against current SQLite, zlib, libpng and libcurl (or drop libcurl in favour of WinHTTP), and libHaru 2.4.x.
-3. Drop the ANSI build (M5). Raise `_WIN32_WINNT` to Windows 10 (`0x0A00`). Switch the manifest to PerMonitorV2 + longPathAware + UTF-8 code page.
+3. Keep the ANSI build (M5, decision 06-11-2026) and test both modes. Raise `_WIN32_WINNT` to Windows 10 (`0x0A00`). Switch the manifest to PerMonitorV2 + longPathAware + UTF-8 code page.
 
 **Phase 3 — Architecture (breaking internally, keep the PRG command syntax)**
 1. Replace `_HMG_SYSDATA` and the macro-named memvars with a window/control object model. Use hash lookups keyed by `HWND` and by `form.control` name.
@@ -187,4 +187,4 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 | H5 temp file | Fixed | `c_button.c` and `c_image.c` use `GetTempFileName` (unique per call) instead of the shared `_HMG_tmp.BMP`. |
 | -w3 build | Partly fixed | The 2 W0001 declaration mismatches are fixed. **286 W0032/W0033 "assigned but not used" warnings remain** in 20 PRG files, so the build stays at `-w2`. Removing them is mechanical but touches side-effecting assignments, so it is left as its own reviewed change. |
 
-**Not verified:** the GUI paths touched by C2/H3/H4/H5 (file dialogs, tray icon, tree, toolbar tips, virtual grid, image buttons). They compile and link in all 8 samples but were not exercised interactively. The ANSI build was not rebuilt.
+**Not verified:** the GUI paths touched by C2/H3/H4/H5 (file dialogs, tray icon, tree, toolbar tips, virtual grid, image buttons). They compile and link in all 8 samples but were not exercised interactively. (The ANSI build has since been built and tested in Phase 2a: `hmgbuild matrix`.)
