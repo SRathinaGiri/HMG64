@@ -206,7 +206,7 @@ RETURN NIL
 *-----------------------------------------------------------------------------------------*
 FUNCTION _GridEx_GetColumnDisplayPosition (cControlName, cParentForm, nColIndex)
 *-----------------------------------------------------------------------------------------*
-LOCAL nPos, nColumnCount, ArrayOrder := {}
+LOCAL nPos, nColumnCount, ArrayOrder
    nColumnCount := _GridEx_ColumnCount (cControlName, cParentForm)
    ArrayOrder := LISTVIEW_GETCOLUMNORDERARRAY (GetControlHandle (cControlName, cParentForm), nColumnCount) // Low-level function in C (source c_GridEx.c)
    nPos := ASCAN (ArrayOrder, nColIndex)    
@@ -216,7 +216,7 @@ RETURN nPos
 *------------------------------------------------------------------------------------------------*
 FUNCTION _GridEx_SetColumnDisplayPosition (cControlName, cParentForm, nColIndex, nPos_Display)
 *------------------------------------------------------------------------------------------------*
-LOCAL nOld_Pos, ArrayOrder := {}
+LOCAL nOld_Pos, ArrayOrder
 LOCAL nColumnCount := _GridEx_ColumnCount (cControlName, cParentForm)
 LOCAL lGridEnableUpdate, i
 
@@ -263,7 +263,7 @@ RETURN aBKIMAGEinfo
 *---------------------------------------------------------------------------------------------------*
 FUNCTION  _GridEx_GetCellValue (cControlName, cParentForm, nRowIndex, nColIndex)
 *---------------------------------------------------------------------------------------------------*
-LOCAL AEDITCONTROLS, XRES, AEC, CTYPE, CINPUTMASK, CFORMAT, AITEMS, ARANGE, DTYPE, ALABELS, X, Z
+LOCAL AEDITCONTROLS, XRES, AEC, CTYPE, CFORMAT, AITEMS, ALABELS, X, Z
 LOCAL xData := NIL
 
 LOCAL cItemCell := LISTVIEW_GETITEMTEXT (GetControlHandle (cControlName, cParentForm), nRowIndex-1, nColIndex-1)
@@ -274,11 +274,8 @@ LOCAL cItemCell := LISTVIEW_GETITEMTEXT (GetControlHandle (cControlName, cParent
 
    AEC         := XRES [1]
    CTYPE       := HMG_UPPER( XRES [2] )
-   CINPUTMASK  := XRES [3]
    CFORMAT     := XRES [4]
    AITEMS      := XRES [5]
-   ARANGE      := XRES [6]
-   DTYPE       := XRES [7]
    ALABELS     := XRES [8]
 
    IF AEC == 'TEXTBOX' 
@@ -332,7 +329,7 @@ RETURN xData
 *---------------------------------------------------------------------------------------------------*
 FUNCTION  _GridEx_SetCellValue (cControlName, cParentForm, nRowIndex, nColIndex, xData)
 *---------------------------------------------------------------------------------------------------*
-LOCAL AEDITCONTROLS, XRES, AEC, CTYPE, CINPUTMASK, CFORMAT, AITEMS, ARANGE, DTYPE, ALABELS, aux
+LOCAL AEDITCONTROLS, XRES, AEC, CTYPE, CINPUTMASK, CFORMAT, AITEMS, ALABELS, aux
 LOCAL cItemCell := ""
 
    AEDITCONTROLS := ARRAY (1)
@@ -344,8 +341,6 @@ LOCAL cItemCell := ""
    CINPUTMASK  := XRES [3]
    CFORMAT     := XRES [4]
    AITEMS      := XRES [5]
-   ARANGE      := XRES [6]
-   DTYPE       := XRES [7]
    ALABELS     := XRES [8]
 
 
@@ -676,7 +671,7 @@ LOCAL aDynamicBackColor := _HMG_SYSDATA [40] [i] [ _GRID_COLUMN_DYNAMICBACKCOLOR
 LOCAL aDynamicForeColor := _HMG_SYSDATA [40] [i] [ _GRID_COLUMN_DYNAMICFORECOLOR_ ]
 LOCAL nRGB_BackColor, nRGB_ForeColor, aRGB
 LOCAL CallThisData := .F.
-LOCAL hFont := 0
+LOCAL hFont
 
    IF ValType (BackColor) == "A"
       DefaultBackColor := RGB (BackColor[1], BackColor[2], BackColor[3])
@@ -813,12 +808,10 @@ Function _GridEx_DoHeaderCustomDraw ( i, lParam, nCol )
 #define COLOR_BTNFACE   15   // ok
 Local DefaultBackColor := GetSysColor ( COLOR_BTNFACE )
 Local DefaultForeColor := RGB (  0,   0,   0)   // BLACK
-Local BackColor  := _HMG_SYSDATA [40] [i] [28]
-Local FontColor  := _HMG_SYSDATA [40] [i] [29]
 LOCAL aHeaderBackColor := _HMG_SYSDATA [40] [i] [ _GRID_COLUMN_HEADERBACKCOLOR_ ]   // Not work
 LOCAL aHeaderForeColor := _HMG_SYSDATA [40] [i] [ _GRID_COLUMN_HEADERFORECOLOR_ ]
 LOCAL nRGB_BackColor, nRGB_ForeColor, aRGB
-LOCAL hFont := 0
+LOCAL hFont
 
    _HMG_SYSDATA [ 195 ] := 0      // This.CellRowIndex
    _HMG_SYSDATA [ 196 ] := nCol   // This.CellColIndex

@@ -234,13 +234,12 @@ _HMG_SYSDATA[ 150 ][ 1 ] := Nil
 Return Nil
 
 Function _HMG_HPDF_PRINT ( nRow, nCol, cFontName, nFontSize, nRColor, nGColor, nBColor, cText, lBold, lItalic, lUnderline, lStrikeout, lColor, lFont, lSize, cAlign )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
+Local nTextWidth
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local oFont := Nil
-Local cFont := ''
+Local cFont
 Local cTtfFnt
 default cFontName := ''
 default nFontSize := 12
@@ -328,15 +327,13 @@ Return Nil
 
 
 Function _HMG_HPDF_MULTILINE_PRINT ( nRow, nCol, nToRow, nToCol, cFontName, nFontSize, nRColor, nGColor, nBColor, cText, lBold, lItalic, lUnderline, lStrikeout, lColor, lFont, lSize, cAlign )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local nToxPos := nxPos + _HMG_HPDF_MM2Pixel( nToCol - nCol )
 Local nToyPos := nyPos - _HMG_HPDF_MM2Pixel( nToRow - nRow )
 Local oFont := Nil
-Local cFont := ''
+Local cFont
 Local cTtfFnt // Pablo June, 2014
 
 default cFontName := ''
@@ -427,9 +424,7 @@ Return Nil
 
 
 Function _HMG_HPDF_LINE ( nRow , nCol , nToRow, nToCol, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor ) 
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local nToxPos := nxPos + _HMG_HPDF_MM2Pixel( nToCol - nCol )
@@ -437,7 +432,6 @@ Local nToyPos := nyPos - _HMG_HPDF_MM2Pixel( nToRow - nRow )
 default nRColor := 0
 default nGColor := 0
 default nBColor := 0
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 
@@ -468,17 +462,12 @@ HPDF_Page_Stroke( _HMG_SYSDATA[ 150 ][ 7 ] )
 Return Nil
 
 Function _HMG_HPDF_RECTANGLE ( nRow, nCol, nToRow, nToCol, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor, lFilled ) 
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
-Local nToxPos := nxPos + _HMG_HPDF_MM2Pixel( nToCol - nCol )
-Local nToyPos := nyPos - _HMG_HPDF_MM2Pixel( nToRow - nRow )
 default nRColor := 0
 default nGColor := 0
 default nBColor := 0
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 default lFilled := .f.
@@ -516,9 +505,7 @@ endIf
 Return Nil
 
 Function _HMG_HPDF_ROUNDRECTANGLE ( nRow , nCol , nToRow , nToCol , nLineWidth, nRColor , nGColor , nBColor , lWidth , lColor, lFilled, nRoundness ) 
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local nToxPos := nxPos + _HMG_HPDF_MM2Pixel( nToCol - nCol )
@@ -528,7 +515,6 @@ Local nRectHeight := nToRow - nRow
 default nRColor := 0
 default nGColor := 0
 default nBColor := 0
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 default lFilled := .f.
@@ -587,11 +573,9 @@ endIf
 Return Nil
 
 Function _HMG_HPDF_CIRCLE( nRow, nCol, nR, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor, lFilled )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 default lFilled := .f.
@@ -628,11 +612,9 @@ endIf
 Return Nil   
 
 Function _HMG_HPDF_ELLIPSE( nRow, nCol, nHR, nVR, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor, lFilled )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 default lFilled := .f.
@@ -670,11 +652,9 @@ Return Nil
 
 
 Function _HMG_HPDF_ARC( nRow, nCol, nR, nFromAngle, nToAngle, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 If _HMG_SYSDATA[ 150 ][ 1 ] == Nil // PDF object not found!
@@ -703,9 +683,7 @@ HPDF_Page_Stroke( _HMG_SYSDATA[ 150 ][ 7 ] )
 Return Nil   
    
 Function _HMG_HPDF_CURVE ( nRow , nCol , nFromRow, nFromCol, nToRow, nToCol, nLineWidth, nRColor, nGColor, nBColor, lWidth, lColor ) 
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local nToxPos := nxPos + _HMG_HPDF_MM2Pixel( nToCol - nCol )
@@ -715,7 +693,6 @@ Local nFromyPos := nHeight - _HMG_HPDF_MM2Pixel( nFromRow )
 default nRColor := 0
 default nGColor := 0
 default nBColor := 0
-default nWidth := 1
 default lWidth := .f.
 default lColor := .f.
 
@@ -746,7 +723,6 @@ HPDF_Page_Stroke( _HMG_SYSDATA[ 150 ][ 7 ] )
 Return Nil
 
 Function _HMG_HPDF_IMAGE ( cImage, nRow, nCol, nImageheight, nImageWidth, lStretch , cImageType)
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
@@ -859,7 +835,7 @@ endcase
 Return Nil
 
 Function _HMG_HPDF_RootOutline( cTitle, cName, cParent )
-Local aOutlines := {}
+Local aOutlines
 Local oOutline := Nil
 Local i
 default cParent := ''
@@ -901,7 +877,7 @@ endif
 Return Nil
 
 Function _HMG_HPDF_PageOutline( cTitle, cParent, cName )
-Local aOutlines := {}
+Local aOutlines
 Local oOutline := Nil
 Local oDestination := Nil
 Local i
@@ -946,7 +922,6 @@ HPDF_Outline_SetDestination( oOutline, oDestination )
 Return Nil      
 
 Function _HMG_HPDF_SetTextAnnot( nRow, nCol, cToolTip, cIcon )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
 Local nToRow := nRow + 5
 Local nToCol := nCol + 5
@@ -988,18 +963,16 @@ endcase
 Return Nil
 
 Function _HMG_HPDF_SetPageLink( nRow, nCol, cText, nPage, cFontName, nFontSize, nRColor, nGColor, nBColor, cAlign, lColor, lFont, lSize, lBorder, lWidth, nBorderWidth )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
+Local nTextWidth
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local oFont := Nil
-Local cFont := ''
-Local aRect := { }
-Local aCurXY := {}
+Local cFont
+Local aRect
 Local oAnnot := Nil
 Local oDest := Nil
-Local aPages := {}
+Local aPages
 Local oLinkPage := Nil
 default cFontName := ''
 default nFontSize := 12
@@ -1103,15 +1076,13 @@ Return Nil
 
 
 Function _HMG_HPDF_SetURLLink( nRow, nCol, cText, cLink, cFontName, nFontSize, nRColor, nGColor, nBColor, cAlign, lColor, lFont, lSize, lBold, lItalic  )
-Local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
 Local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
-Local nTextWidth := 0
+Local nTextWidth
 Local nxPos := _HMG_HPDF_MM2Pixel( nCol )
 Local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
 Local oFont := Nil
-Local cFont := ''
-Local aRect := { }
-Local aCurXY := {}
+Local cFont
+Local aRect
 Local oAnnot := Nil
 default cFontName := ''
 default nFontSize := 12
@@ -1357,7 +1328,7 @@ Function _HMG_HPDF_Pixel2MM( nPixel )
 Return ( ( nPixel / 72 ) * 25.4 )
    
 Function _HMG_HPDF_INIT_PAPERSIZE( nPaperSize )
-Local nTemp := 0
+Local nTemp
 do case
    case nPaperSize == 1 .or. nPaperSize == -999 // HPDF_PAPER_LETTER or default
       _HMG_SYSDATA[ 150 ][ 4 ] := 612
@@ -1728,7 +1699,7 @@ Return Nil
 *------------------------------------------------------------------------------
 
 Function _HMG_HPDF_SetFont( cFntName, lBold, lItalic )
-Local cFntTmp := "", cFnt := "", cFntNoExt
+Local cFntTmp, cFnt, cFntNoExt
 
 Default lBold := .f., lItalic := .f.
 
@@ -1877,7 +1848,7 @@ Endif
 Return cFntTmp
 
 Function _HMG_HPDF_SeekInLocalOptions(FontName,lBold,lItalic)
-Local aDirFnts := {}, cRet:=""
+Local aDirFnts, cRet:=""
 Local cFldWindows, cFileTTF
 
 Default lBold := .f., lItalic := .f.

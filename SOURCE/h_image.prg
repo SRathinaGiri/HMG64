@@ -61,7 +61,7 @@ MEMVAR _HMG_SYSDATA
 *-----------------------------------------------------------------------------*
 Function _DefineImage ( ControlName, ParentForm, x, y, FileName, w, h, ProcedureName, HelpId, invisible, stretch, transparent, aBKColor, adjustimage, aTranspColor, cToolTip )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0, lActionTooltip
+Local cParentForm , mVar , k, lActionTooltip
 Local ControlHandle, BackgroundColor, TransparentColor
 
 	if _HMG_SYSDATA [ 264 ] = .T.

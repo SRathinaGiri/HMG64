@@ -458,8 +458,8 @@ Return cType
 *-----------------------------------------------------------------------------*
 Function GetWindowInfoByHandle (hWnd, aInfo, lShowType)
 *-----------------------------------------------------------------------------*
-LOCAL i, ControlParentHandle:=0, FormParentHandle:=0, cInfo := "", lFlagControl := .F.
-LOCAL nIndexForm := 0, nIndexControl := 0, nInfoLen := 0, Text := "", nControlSubIndex2 := 0
+LOCAL i, ControlParentHandle:=0, FormParentHandle, cInfo := "", lFlagControl := .F.
+LOCAL nIndexForm, nIndexControl, nInfoLen, Text, nControlSubIndex2 := 0
 
    IF ValType (lShowType) <> "L"
       lShowType := .T.
@@ -514,8 +514,8 @@ Return cInfo
 *-----------------------------------------------------------------------------*
 Function GetWindowInfoByHandleEx (hWnd, aInfo, lShowType)
 *-----------------------------------------------------------------------------*
-LOCAL i, ControlParentHandle:=0, FormParentHandle:=0, cInfo := "", lFlagControl := .F.
-LOCAL nIndexForm := 0, nIndexControl := 0, nInfoLen := 0, Text := ""
+LOCAL i, ControlParentHandle:=0, FormParentHandle, cInfo := "", lFlagControl := .F.
+LOCAL nIndexForm, nIndexControl, nInfoLen, Text
 LOCAL nControlSubIndex1 := 0, nControlSubIndex2 := 0
 
    IF ValType (lShowType) <> "L"
@@ -619,8 +619,8 @@ Return .F.
 *-----------------------------------------------------------------------------*
 Function GetFormInfoByHandle (hWnd, aInfo, lShowType)
 *-----------------------------------------------------------------------------*
-LOCAL i, FormParentHandle:=0, cInfo := ""
-LOCAL nIndexForm := 0, nInfoLen := 0, Text := ""
+LOCAL i, FormParentHandle, cInfo := ""
+LOCAL nIndexForm, nInfoLen, Text
 
    IF ValType (lShowType) <> "L"
       lShowType := .T.
@@ -651,8 +651,8 @@ Return cInfo
 *-----------------------------------------------------------------------------*
 Function GetControlInfoByHandle (hWnd, aInfo, lShowType)
 *-----------------------------------------------------------------------------*
-LOCAL i, ControlParentHandle:=0, FormParentHandle:=0, cInfo := "", lFlagControl := .F.
-LOCAL nIndexForm := 0, nIndexControl := 0, nInfoLen := 0, Text := "", nControlSubIndex2 := 0
+LOCAL i, ControlParentHandle:=0, FormParentHandle, cInfo := "", lFlagControl := .F.
+LOCAL nIndexForm, nIndexControl, nInfoLen, Text, nControlSubIndex2 := 0
 
    IF ValType (lShowType) <> "L"
       lShowType := .T.
@@ -851,7 +851,7 @@ RETURN
 Function HMG_GetAllSubMenu (hMenu)
 *-----------------------------------------------*
 LOCAL aMenuInfo:={}, hSubMenu 
-LOCAL nParent:=0, n1:=0, n2:=0, nItem:=0
+LOCAL nParent:=0, n1:=0, n2:=0, nItem
 // nParent := parent position in array
    IF IsMenu (hMenu)
       WHILE .T.

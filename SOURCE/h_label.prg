@@ -63,7 +63,7 @@ Function _DefineLabel ( ControlName, ParentForm, x, y, Caption, w, h, ;
                         underline, strikeout , autosize , rightalign , centeralign, ;
                         EndEllipses, NoPrefix )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local cParentForm , mVar , k
 Local ControlHandle
 Local FontHandle
 Local cParentTabName

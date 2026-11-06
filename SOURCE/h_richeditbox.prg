@@ -90,7 +90,7 @@ Function _DefineRichEditBox ( ControlName, ;
             noHscroll, noVscroll, selectionchange, OnLink, OnVScroll )
 
 *-----------------------------------------------------------------------------*
-Local i  , cParentForm , mVar , ContainerHandle := 0 , k := 0
+Local i  , cParentForm , mVar , ContainerHandle := 0 , k
 Local ControlHandle
 Local FontHandle
 Local WorkArea
@@ -326,7 +326,7 @@ Return Nil
 FUNCTION RichEditBox_ReplaceText ( hWndControl, cFind, cReplace, lMatchCase, lWholeWord, lSelectFindText )
 *---------------------------------------------------------------------------------------------------------*
 LOCAL lDown := .T.
-LOCAL aPos  := {0,0}
+LOCAL aPos
    aPos := RichEditBox_GetSelRange ( hWndControl )
    RichEditBox_SetSelRange ( hWndControl, { aPos[1] , aPos[1] } )
    aPos := RichEditBox_FindText ( hWndControl, cFind, lDown, lMatchCase, lWholeWord, lSelectFindText )

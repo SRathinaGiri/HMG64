@@ -584,14 +584,14 @@ RETURN i
 
 
 PROCEDURE ViewVars()
-LOCAL cVarName, cValType
+LOCAL cVarName
 LOCAL xVarValue, aVar, aColor
 LOCAL nPos := _HMG_FormDebugger.Grid_Vars.VALUE
    IF nPos >= 1 .AND. nPos <= _HMG_FormDebugger.Grid_Vars.ITEMCOUNT
       aColor := GetForeColorVars( nPos )
       aVar := aRawVars[ nPos ]
       cVarName  := HMG_Debugger():VarGetName( aVar )
-      cValType  := HMG_Debugger():VarGetValType( aVar )
+      HMG_Debugger():VarGetValType( aVar )
       xVarValue := HMG_Debugger():VarGetValue( aVar )
       DisplayVars ( cVarName, xVarValue, aColor )
    ENDIF
@@ -1358,9 +1358,7 @@ RETURN Len( aLineCode )
 PROCEDURE UpdateInfo()
 *-----------------------------------------------------------------------*
 __THREAD STATIC i := 1
-LOCAL nProcLevel := HMG_Debugger():aCurrentLineInfo[ 1 ]
 LOCAL cFileName  := HMG_Debugger():aCurrentLineInfo[ 2 ]
-LOCAL cFuncName  := HMG_Debugger():aCurrentLineInfo[ 3 ]
 LOCAL nLineCode  := HMG_Debugger():aCurrentLineInfo[ 4 ]
 LOCAL cInfo      := HMG_Debugger():aCurrentLineInfo[ 5 ]
 LOCAL lIni := .F.

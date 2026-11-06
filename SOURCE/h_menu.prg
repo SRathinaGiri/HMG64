@@ -87,7 +87,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function _DefineMenuPopup ( Caption , Name )
 *------------------------------------------------------------------------------*
-Local mVar , k := 0
+Local mVar , k
 
 	If _HMG_SYSDATA [ 218 ] == 'MAIN'
 
@@ -181,15 +181,15 @@ Return Nil
 *-----------------------------------------------------------------------------------------*
 Function _DefineMenuItem ( caption , action , name , Image , checked , NoTrans, ToolTip )
 *-----------------------------------------------------------------------------------------*
-Local Controlhandle , mVar := '' , k := 0, cTypeMenu :=""
+Local mVar , k, cTypeMenu :=""
 Local id
-LOCAL cParentName := "", MenuItemID := 0
+LOCAL cParentName := "", MenuItemID
 
 	If _HMG_SYSDATA [ 218 ] == 'MAIN'
 
 		Id := _GetId()
 
-		Controlhandle := AppendMenuString ( _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ] ] , id ,  caption )   // This Not return a Handle, return lBoolean value
+		AppendMenuString ( _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ] ] , id ,  caption )   // This Not return a Handle, return lBoolean value
 
 		if Valtype ( image ) != 'U'
 			MenuItem_SetBitMaps ( _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ]] , Id , image , "" , NoTrans )
@@ -256,7 +256,7 @@ LOCAL cParentName := "", MenuItemID := 0
 
 		id := _GetId()
 
-		Controlhandle := AppendMenuString ( _HMG_SYSDATA [ 175 ] , id ,  caption )   // This Not return a Handle, return lBoolean value
+		AppendMenuString ( _HMG_SYSDATA [ 175 ] , id ,  caption )   // This Not return a Handle, return lBoolean value
 
 		if Valtype ( image ) != 'U'
 			MenuItem_SetBitMaps ( _HMG_SYSDATA [ 175 ] , Id , image , "" , NoTrans )

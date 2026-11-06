@@ -61,7 +61,7 @@ Function _DefineEditbox ( ControlName, ParentForm, x, y, w, h, value, ;
                           change, lostfocus, readonly, break, HelpId, ;
                           invisible, notabstop , bold, italic, underline, strikeout , field , backcolor , fontcolor , novscroll , nohscroll , DISABLEDBACKCOLOR , DISABLEDFORECOLOR  )
 *-----------------------------------------------------------------------------*
-Local i  , cParentForm , mVar , ContainerHandle := 0 , k := 0
+Local i  , cParentForm , mVar , ContainerHandle := 0 , k
 Local ControlHandle
 Local FontHandle
 Local WorkArea

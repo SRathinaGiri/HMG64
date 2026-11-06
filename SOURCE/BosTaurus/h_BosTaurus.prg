@@ -372,7 +372,6 @@ Return Width
 
 
 Function BT_DesktopHeight ()
-  LOCAL Win := BT_GetDesktopHandle ()
   LOCAL Height := BT_SCR_GETINFO (0, BT_SCR_DESKTOP, BT_SCR_INFO_HEIGHT)
 Return Height
 

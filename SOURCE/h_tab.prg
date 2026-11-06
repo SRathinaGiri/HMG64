@@ -61,7 +61,7 @@ MEMVAR _HMG_TAB_IMAGE_NOTRANSPARET
 *-----------------------------------------------------------------------------*
 Function _DefineTab ( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, value, fontname, fontsize , tooltip , change , Buttons , Flat , HotTrack , Vertical , notabstop , aMnemonic , bold, italic, underline, strikeout , Images , multiline, NoTrans)
 *-----------------------------------------------------------------------------*
-Local r,c,z,i , cParentForm , mVar , Caption , imageFlag := .F. , k := 0
+Local r,c,z,i , cParentForm , mVar , Caption , imageFlag := .F. , k
 Local ControlHandle
 Local FontHandle
 

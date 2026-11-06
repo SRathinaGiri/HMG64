@@ -57,7 +57,7 @@ MEMVAR _HMG_SYSDATA
 *-----------------------------------------------------------------------------*
 Function _DefinePlayer(ControlName,ParentForm,file,col,row,w,h,noasw,noasm,noed,nom,noo,nop,sha,shm,shn,shp , HelpId )
 *-----------------------------------------------------------------------------*
-Local hh , mVar , k := 0
+Local hh , mVar , k
 
 	if _HMG_SYSDATA [ 264 ] = .T.
 		ParentForm := _HMG_SYSDATA [ 223 ]
@@ -345,7 +345,7 @@ Return( nMCIVolume )
 *-----------------------------------------------------------------------------*
 Function _DefineAnimateBox(ControlName,ParentForm,col,row,w,h,autoplay,center,transparent,file , HelpId )
 *-----------------------------------------------------------------------------*
-Local hh , mVar , k := 0
+Local hh , mVar , k
 
 	if _HMG_SYSDATA [ 264 ] = .T.
 		ParentForm := _HMG_SYSDATA [ 223 ]

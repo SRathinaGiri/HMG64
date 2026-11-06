@@ -448,7 +448,7 @@ function Events ( hWnd, nMsg, wParam, lParam )
 Local i,j,z,x,FormCount,lvc, aPos , maskstart , xs , xd , ts , nr 
 Local k
 Local ControlCount , RecordCount , SkipCount , BackRec , BackArea , BrowseArea , NextControlHandle , NewPos , NewHPos , NewVPos , _ThisQueryTemp , r  
-Local hwm := .F.
+Local hwm
 Local hws
 Local mVar
 Local DeltaSelect
@@ -480,7 +480,7 @@ Local anOriginalColumnWidths
 // ADD
 LOCAL _HMG_ControlHandle, _HMG_MouseRow, _HMG_MouseCol, _HMG_ControlContextMenu
 LOCAL aux_hWnd, nIndex, _HMG_ret
-LOCAL hFont := 0
+LOCAL hFont
 
 /*
    // Dr. Claudio Soto (June 2013)
@@ -860,7 +860,6 @@ LOCAL hFont := 0
 				if x > 0
 					If _HMG_SYSDATA [ 91 ] [x] > 0
 						hwnd := _HMG_SYSDATA [ 67  ] [x]
-						i := x
 					EndIf
 				EndIf
 			Else				
@@ -873,7 +872,6 @@ LOCAL hFont := 0
 							if z > 0
 								If _HMG_SYSDATA [ 91 ] [z] > 0
 									hwnd := _HMG_SYSDATA [ 67  ] [z]
-									i := z
 									Exit
 								EndIf
 							EndIf
@@ -4068,7 +4066,7 @@ Return ClassName
 *-----------------------------------------------------------------------------*
 Function _DefineWindow ( FormName, Caption, x, y, w, h ,nominimize ,nomaximize ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,initprocedure ,ReleaseProcedure , MouseDragProcedure ,SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , noshow , topmost , main , icon , child , fontname , fontsize , NotifyIconName , NotifyIconTooltip , NotifyIconLeftClick , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown , hscrollbox , vscrollbox , helpbutton , maximizeprocedure , minimizeprocedure , cursor , NoAutoRelease , InteractiveCloseProcedure , visible , autorelease , minbutton , maxbutton , sizable , sysmenu , titlebar , cPanelParent , panel )
 *-----------------------------------------------------------------------------*
-Local i , htooltip , mVar , vscroll , hscroll , BrushHandle , k := 0 , FormHandle, ParentHandle
+Local i , htooltip , mVar , vscroll , hscroll , BrushHandle , k , FormHandle, ParentHandle
 Local cType
 LOCAL hWnd_ToolTip
 
@@ -4082,7 +4080,6 @@ DEFAULT y := GetDesktopRealTop()
 DEFAULT w := GetDeskTopRealWidth()
 DEFAULT h := GetDeskTopRealHeight()
 
-Parenthandle := 0
 
 	If ValType( cPanelParent ) == 'C' .and. panel == .f.
 
@@ -4540,7 +4537,7 @@ Return (FormHandle)
 *-----------------------------------------------------------------------------*
 Function _DefineModalWindow ( FormName, Caption, x, y, w, h, Parent ,nosize ,nosysmenu, nocaption , StatusBar , StatusText ,InitProcedure, ReleaseProcedure , MouseDragProcedure , SizeProcedure , ClickProcedure , MouseMoveProcedure, aRGB , PaintProcedure , icon , FontName , FontSize , GotFocus , LostFocus , virtualheight , VirtualWidth , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , helpbutton , cursor , noshow  , NoAutoRelease  , InteractiveCloseProcedure , visible , autorelease , sizable , sysmenu , titlebar , lLittleTitle )
 *-----------------------------------------------------------------------------*
-Local i , htooltip , mVar , vscroll , hscroll , BrushHandle , k := 0
+Local i , htooltip , mVar , vscroll , hscroll , BrushHandle , k
 Local FormHandle
 LOCAL hWnd_ToolTip
 
@@ -4868,7 +4865,7 @@ Return (FormHandle)
 *-----------------------------------------------------------------------------*
 Function _DefineSplitChildWindow ( FormName , w , h , break , grippertext  , nocaption , title , fontname , fontsize , gotfocus , lostfocus , virtualheight , VirtualWidth , Focused , scrollleft , scrollright , scrollup , scrolldown  , hscrollbox , vscrollbox , cursor , titlebar , PaintProcedure )
 *-----------------------------------------------------------------------------*
-Local i , htooltip , mVar , ParentForm , hscroll , BrushHandle , k := 0
+Local i , htooltip , mVar , ParentForm , hscroll , BrushHandle , k
 Local FormHandle , vscroll
 LOCAL hWnd_ToolTip
 
@@ -5422,7 +5419,7 @@ Return ( RetVal )
 *-----------------------------------------------------------------------------*
 Function _SetWindowRgn(name,col,row,w,h,lx)
 *-----------------------------------------------------------------------------*
-local lhand:=0
+local lhand
 
       lhand := GetFormHandle ( name )
 
@@ -5432,7 +5429,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Function _SetPolyWindowRgn(name,apoints,lx)
 *-----------------------------------------------------------------------------*
-local lhand:=0,apx:={},apy:={}
+local lhand,apx:={},apy:={}
 
       lhand := GetFormHandle ( name )
 
@@ -5444,7 +5441,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Procedure _SetNextFocus()
 *-----------------------------------------------------------------------------*
-Local i , NextControlHandle := 0
+Local i , NextControlHandle
 
 	NextControlHandle := GetNextDlgTabITem ( GetActiveWindow() , GetFocus() , .F. )
 	i := ascan ( _HMG_SYSDATA [3] , NextControlHandle )
@@ -5484,7 +5481,7 @@ Local VisibleModalCount := 0
 Local VisibleModalName := ''
 Local TmpId
 Local FormCount := HMG_LEN(_HMG_SYSDATA [  66 ])
-Local nLastWindowIndex := 0
+Local nLastWindowIndex
 Local x
 
    DEFAULT lActivateMsgLoop            TO .T.
@@ -6250,7 +6247,7 @@ LOCAL W
 LOCAL H
 LOCAL HO
 LOCAL VO
-local bw , bh , r , tw , th , dc , wdif , hdif , dr
+local bw , bh , r , tw , th
 Local ntop , nleft , nbottom , nright
 
 	if	valtype ( nRow ) = 'U' ;
@@ -6354,22 +6351,6 @@ Local ntop , nleft , nbottom , nright
 
 	enddo
 
-	wdif := w - tw 
-
-	if wdif > 0
-		dc := wdif / 2
-	else
-		dc := 0
-	endif
-
-	hdif := h - th 
-
-	if hdif > 0
-		dr := hdif / 2
-	else
-		dr := 0
-	endif
-
 	
 	START PRINTDOC
 
@@ -6440,24 +6421,24 @@ return uResult
 *----------------------------------------------------------------*
 Procedure VirtualChildControlFocusProcess( nControlHandle , nWindowHandle )
 *----------------------------------------------------------------*
-Local x					:= 0
-Local nWindowVirtualWidth		:= 0
-Local nWindowVirtualHeight		:= 0
+Local x
+Local nWindowVirtualWidth
+Local nWindowVirtualHeight
 Local nWindowHeight			:= 0
 Local nWindowWidth			:= 0
 Local nControlHeight			:= 0
 Local nControlWidth			:= 0
 Local nControlRow			:= 0
 Local nControlCol			:= 0
-Local nHorizontalScrollBoxPos		:= 0
-Local nVerticalScrollBoxPos		:= 0
-Local nHorizontalScrollBarRangeMax	:= 0
-Local nVerticalScrollBarRangeMax	:= 0
-Local nVisibleAreaFromRow		:= 0
-Local nVisibleAreaFromCol		:= 0
-Local nVisibleAreaToRow			:= 0
-Local nVisibleAreaToCol			:= 0
-Local nNewScrollBarPos			:= 0
+Local nHorizontalScrollBoxPos
+Local nVerticalScrollBoxPos
+Local nHorizontalScrollBarRangeMax
+Local nVerticalScrollBarRangeMax
+Local nVisibleAreaFromRow
+Local nVisibleAreaFromCol
+Local nVisibleAreaToRow
+Local nVisibleAreaToCol
+Local nNewScrollBarPos
 
 	IF _HMG_SYSDATA [ 346 ] == .F.
 		Return

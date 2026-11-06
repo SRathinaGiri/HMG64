@@ -61,7 +61,7 @@ Function _DefineMonthCal ( ControlName, ParentForm, x, y, w, h, value, ;
                            weeknumbers, change, HelpId, invisible, notabstop, ;
                            bold, italic, underline, strikeout )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local cParentForm , mVar , k
 Local aControlHandle
 Local cParentTabName
 

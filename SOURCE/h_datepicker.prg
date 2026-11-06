@@ -61,7 +61,7 @@ Function _DefineDatePick ( ControlName, ParentForm, x, y, w, h, value, ;
                            gotfocus, shownone, updown, rightalign, HelpId, ;
                            invisible, notabstop , bold, italic, underline, strikeout , Field , Enter , cFormatDate )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local cParentForm , mVar , k
 Local ControlHandle
 Local FontHandle
 Local WorkArea

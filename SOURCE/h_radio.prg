@@ -66,7 +66,7 @@ Function _DefineRadioGroup ( ControlName, ParentForm, x, y, aOptions, Value, ;
                              fontname, fontsize, tooltip, change, width, ;
                              spacing, HelpId, invisible, notabstop , bold, italic, underline, strikeout , backcolor , fontcolor , transparent , aReadOnly , horizontal )
 *-----------------------------------------------------------------------------*
-Local i , cParentForm , mVar , BackRow , k := 0
+Local i , cParentForm , mVar , BackRow , k
 Local aHandles 	[ 0 ]
 Local ControlHandle
 Local FontHandle

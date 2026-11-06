@@ -192,7 +192,7 @@ Return Nil
 *------------------------------------------------------------------------------
 FUNCTION HTML_ERRORLOG
 *---------------------
-    Local HtmArch := 0
+    Local HtmArch
     If .Not. File("\"+CurDir()+"\ErrorLog.Htm")
         HtmArch := HtmL_Ini("\"+CurDir()+"\ErrorLog.Htm","HMG Errorlog File")
         Html_Line(HtmArch)

@@ -522,6 +522,7 @@ Return IF (EMPTY(aAllValues), NIL, aAllValues)
 Function TreeItemGetRootValue ( ControlName , ParentForm )
 LOCAL nControlHandle := GetControlHandle  ( ControlName , ParentForm )
 LOCAL ItemHandle     := TreeItemGetRootHandle ( ControlName , ParentForm )
+HB_SYMBOL_UNUSED( nControlHandle )   // keep the GetControlHandle() call: it errors on an undefined control
 Return TreeItemGetValueByItemHandle ( ControlName , ParentForm , ItemHandle )
 
 
@@ -542,6 +543,7 @@ Return NIL
 Function TreeItemGetParentValue ( ControlName , ParentForm , nItem )
 LOCAL nControlHandle := GetControlHandle  ( ControlName , ParentForm )
 LOCAL ItemHandle     := TreeItemGetParentHandle ( ControlName , ParentForm , nItem )
+HB_SYMBOL_UNUSED( nControlHandle )   // keep the GetControlHandle() call: it errors on an undefined control
 Return TreeItemGetValueByItemHandle ( ControlName , ParentForm , ItemHandle )
 
 
@@ -702,9 +704,9 @@ Return
 
 
 Procedure TreeItemSort (cTreeName, cFormName, nItem, lRecurse, lCaseSensitive, lAscendingOrder, nNodePosition)
-LOCAL nIndex, nControlHandle, nItemHandle
+LOCAL nControlHandle, nItemHandle
 
-      nIndex          := GetControlIndex   ( cTreeName, cFormName )
+      GetControlIndex   ( cTreeName, cFormName )
       nControlHandle  := GetControlHandle  ( cTreeName, cFormName )
       
       IF ValType (nItem) == "U"

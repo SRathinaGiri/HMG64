@@ -77,7 +77,6 @@ return nil
 
 
 function _HMG_HPDF_DRAWIMAGERAW ( cRawImage, nRow, nCol, nToRow, nToCol, nImageWidth, nImageHeight )
-   local nWidth := _HMG_SYSDATA[ 150 ][ 4 ]
    local nHeight := _HMG_SYSDATA[ 150 ][ 5 ]
    local nxPos := _HMG_HPDF_MM2Pixel( nCol )
    local nyPos := nHeight - _HMG_HPDF_MM2Pixel( nRow )
