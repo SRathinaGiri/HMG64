@@ -6,7 +6,7 @@
 
 -D__HBIDE__
 
--w2 -es2
+-w3 -es2
 
 source/debugger/dbgHB.prg
 source/debugger/dbgGUI.prg
