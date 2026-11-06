@@ -170,3 +170,21 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 - **Verified by running:** the library rebuilds with the bundled toolchain (`-Wall -Wextra`). The `-w3` failure. The resource-path failure. The C1 leak, measured with a probe program. The runtime DLL imports of a built executable (msvcrt, kernel32, user32, advapi32, winmm only; libgcc/pthread are static).
 - **Verified by reading code:** C2, C3, H1, H3, H4, H5, M1–M7.
 - **Not verified:** whether C2/C3 actually crash at runtime (not exercised, to avoid GUI fault dialogs). Exploitability of the library CVEs. Thread-safety races in M1. The behaviour of `IDE.exe`.
+
+---
+
+## 6. Phase 1 resolution log (branch `phase1-fixes`)
+
+| Finding | Status | What changed |
+|---|---|---|
+| C1 string leak | **Fixed, measured** | `HMG_UNICODE.h` + `c_UNICODE.c`: every conversion (`HMG_parc/parvc/retc/storc/storvc`, `HMG_CHAR_TO_WCHAR`, `HMG_WCHAR_TO_CHAR`, `HMG_MBtoWC/WCtoMB`) is **owned by the current Harbour call frame**. The buffer sits in a GC pointer item on the HVM stack and is freed when the `HB_FUNC` returns. The 254+ call sites are unchanged. Leak probe: 191–287 MB → **0.0 MB**. |
+| C1 side effect | Fixed | Two sites handed the converted pointer to Windows for *deferred* reading, and only worked because it leaked: virtual-grid `SETGRIDQUERYDATA` (XP branch) and toolbar `SHOWTOOLBUTTONTIP`. Both now copy (into the listview buffer, or a per-thread buffer). |
+| C2 overflows | Fixed | New `HMG_STRCPY_BUF` (bounded, NULL-safe). Applied to font names (`c_controlmisc.c` ×2, `c_dialogs.c`, `c_richeditbox.c`), PutFile default name, find/replace text, tree item text ×2, tray tip ×2, default printer, BosTaurus GDI+ file name. |
+| C3 NULL crashes | **Fixed, verified at runtime** | `HMG_ISALPHA/ISDIGIT/ISLOWER/ISUPPER/ISALPHANUMERIC` return `.F.` for non-strings; `HMG_GETUNICODEVALUE(NIL)` returns `{}`. The file-dialog filter builder handles a missing filter. The old library dies with ACCESS_VIOLATION on `HMG_ISALPHA()`; the new one passes `tests/unit/strings.prg`. |
+| H1 XOR crypt | Documented | Deprecation and "not encryption" warning in `SOURCE/Crypt/h_crypt.prg`. Behaviour unchanged, so existing data can still be decrypted. **AES-GCM replacement still open.** |
+| H3 file dialog | Fixed | Result buffer moved from the stack (~1 MB) to the heap. Full names are sized per file (the fixed `MAX_PATH` copies overflowed on long paths). No more double backslash for root folders. |
+| H4 DLL hijacking | Fixed (wider than reported) | All 16 `LoadLibrary("x.dll")` calls plus `HMG_DEFINE_DLL_FUNC` now go through `HMG_LoadSystemLibrary` (System32 only). QHTM goes through `HMG_LoadAppLibrary` (app folder, then System32). Needs Win 8+, or Win 7 with KB2533623. |
+| H5 temp file | Fixed | `c_button.c` and `c_image.c` use `GetTempFileName` (unique per call) instead of the shared `_HMG_tmp.BMP`. |
+| -w3 build | Partly fixed | The 2 W0001 declaration mismatches are fixed. **286 W0032/W0033 "assigned but not used" warnings remain** in 20 PRG files, so the build stays at `-w2`. Removing them is mechanical but touches side-effecting assignments, so it is left as its own reviewed change. |
+
+**Not verified:** the GUI paths touched by C2/H3/H4/H5 (file dialogs, tray icon, tree, toolbar tips, virtual grid, image buttons). They compile and link in all 8 samples but were not exercised interactively. The ANSI build was not rebuilt.
