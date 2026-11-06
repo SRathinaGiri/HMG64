@@ -44,7 +44,7 @@ if exist leakprobe.exe set "B=0"
 call :RESULT leakprobe-build !B!
 if exist leakprobe.exe (
    .\leakprobe.exe >"%OUT%\leak.log" 2>&1
-   if not errorlevel 1 set "R=0"
+   if !ERRORLEVEL! EQU 0 set "R=0"
    type "%OUT%\leak.log"
 ) else (
    if exist error.log copy /y error.log "%OUT%\leak-build.log" >nul
@@ -63,7 +63,7 @@ for %%P in ("%TESTS%unit\*.hbp") do (
    set "R=1"
    if exist "%%~nP.exe" (
       ".\%%~nP.exe" >"%OUT%\unit-%%~nP.log" 2>&1
-      if not errorlevel 1 set "R=0"
+      if !ERRORLEVEL! EQU 0 set "R=0"
       type "%OUT%\unit-%%~nP.log"
    ) else (
       if exist error.log copy /y error.log "%OUT%\unit-%%~nP-build.log" >nul

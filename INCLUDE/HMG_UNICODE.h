@@ -21,17 +21,17 @@
 ******************************************************************************************/
 
 #ifndef WINVER
-   #define  WINVER        0x0501   // Win XP
+   #define  WINVER        0x0A00   // Windows 10 (HMG5 minimum: UCRT is part of Windows 10+)
 #endif
 
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   WINVER  // ( XP = 0x0501 , Vista = 0x0600 ) 
+   #define _WIN32_WINNT   WINVER   // ( XP = 0x0501 , Vista = 0x0600 , Win10 = 0x0A00 )
 #endif
 
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE      0x0600   // Internet Explorer 6.0 (Win XP)
+   #define _WIN32_IE      0x0A00   // _WIN32_IE_WIN10 (common controls 6 as on Windows 10)
 #endif
 
 

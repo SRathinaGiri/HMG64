@@ -1780,6 +1780,9 @@ If (nPos := AScan(aHpdf_Font, {|cFnt| HMG_Upper(cFnt) == HMG_Upper(cFontName)}))
               cFntHaru := cFnt + '-Roman'
            Endif
       OtherWise
+           // Base name: "Courier-Bold" -> "Courier"; a plain "Helvetica" is already the base.
+           // (Before HMG5 cFnt stayed NIL for plain names, so FONT "Helvetica" BOLD crashed.)
+           cFnt := cFont
            If (nPos := HB_UAt('-',cFont)) > 0
               cFnt := HB_USubStr(cFont, 1, nPos-1)
            Endif

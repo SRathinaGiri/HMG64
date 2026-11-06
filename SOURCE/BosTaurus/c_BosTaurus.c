@@ -55,7 +55,7 @@
 
 
 #ifndef WINVER
-   #define WINVER 0x0501   // minimum requirements: Windows XP
+   #define WINVER 0x0A00   // minimum requirements: Windows 10 (HMG5)
 #endif
 
 
