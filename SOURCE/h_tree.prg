@@ -138,14 +138,14 @@ Local FontHandle , k
 
 		if i > 0 
 
-			ControlHandle := InitTree ( _HMG_SYSDATA [ 87 ] [i] , col , row , width , height , 0 , '' , 0, iif(noBot,.T.,.F.) ) 
+			ControlHandle := InitTree ( _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , col , row , width , height , 0 , '' , 0, iif(noBot,.T.,.F.) ) 
 			if valtype(fontname) != "U" .and. valtype(fontsize) != "U"
 				FontHandle := _SetFont (ControlHandle,FontName,FontSize,bold,italic,underline,strikeout)
 			Else
 				FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)		
 			endif
 
-			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ 87 ] [i] , Width , break , , , , _HMG_SYSDATA [ 258 ] )
+			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , Width , break , , , , _HMG_SYSDATA [ 258 ] )
 
 			_HMG_SYSDATA [ 216 ] := 'TREE'
 
@@ -220,46 +220,46 @@ Local FontHandle , k
 
 	_HMG_SYSDATA [ 179 ] := k
 
-	_HMG_SYSDATA [  1 ] [k] := "TREE" 
-	_HMG_SYSDATA [  2 ] [k] :=   ControlName 
-	_HMG_SYSDATA [  3 ] [k] :=   ControlHandle 
-	_HMG_SYSDATA [  4 ] [k] :=   ParentForm 
-	_HMG_SYSDATA [  5 ] [k] :=   0 
-	_HMG_SYSDATA [  6 ] [k] :=   "" 
-	_HMG_SYSDATA [  7 ] [k] :=  {}      // nTreeItemHandle
-	_HMG_SYSDATA [  8 ] [k] :=  Nil 
-	_HMG_SYSDATA [  9 ] [k] :=  itemids 
-	_HMG_SYSDATA [ 10 ] [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] :=  change 
-	_HMG_SYSDATA [ 13 ] [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ] [k] :=  Nil 
-	_HMG_SYSDATA [ 15 ] [k] :=  Nil 
-	_HMG_SYSDATA [ 16 ] [k] := dblclick 
-	_HMG_SYSDATA [ 17 ] [k] := {ON_EXPAND, ON_COLLAPSE} 
-	_HMG_SYSDATA [ 18 ] [k] := Row 
-	_HMG_SYSDATA [ 19 ] [k] := Col 
-	_HMG_SYSDATA [ 20 ] [k] := Width 
-	_HMG_SYSDATA [ 21 ] [k] := Height 
-	_HMG_SYSDATA [ 22 ] [k] := 0 
-	_HMG_SYSDATA [ 23 ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )  
-	_HMG_SYSDATA [ 24 ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ] [k] :=  {}     // nTreeItemID
-	_HMG_SYSDATA [ 26 ] [k] :=  { ImgDefNode, ImgDefItem }  // Numbers of bitmaps defined in NODEIMAGES and in ITEMIMAGES
-	_HMG_SYSDATA [ 27 ] [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ] [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ] [k] := {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ] [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ] [k] :=  0  
-	_HMG_SYSDATA [ 32 ] [k] :=  {} // cargo  
-	_HMG_SYSDATA [ 33 ] [k] :=  ''  
-	_HMG_SYSDATA [ 34 ] [k] :=   .t. 
-	_HMG_SYSDATA [ 35 ] [k] :=   HelpId 
-	_HMG_SYSDATA [ 36 ] [k] :=  FontHandle 
-	_HMG_SYSDATA [ 37 ] [k] :=   0 
-	_HMG_SYSDATA [ 38 ] [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ] [k] := NoTrans
-	_HMG_SYSDATA [ 40 ] [k] := { DynamicBackColor , DynamicForeColor , DynamicFont , aBackColor, aFontColor, 0 /*hFontDynamic*/ , NIL , NIL }
+	_HMG_SYSDATA [  HMG_CTL_TYPE ] [k] := "TREE" 
+	_HMG_SYSDATA [  HMG_CTL_NAME ] [k] :=   ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ] [k] :=   ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ] [k] :=   ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] :=   0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] :=   "" 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] :=  {}      // nTreeItemHandle
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] :=  Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] :=  itemids 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] :=  change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] := dblclick 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] := {ON_EXPAND, ON_COLLAPSE} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ] [k] := Row 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] := Col 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] := Width 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] := Height 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )  
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] :=  {}     // nTreeItemID
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] :=  { ImgDefNode, ImgDefItem }  // Numbers of bitmaps defined in NODEIMAGES and in ITEMIMAGES
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] := {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ] [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] :=  0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] :=  {} // cargo  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] :=  ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] :=   .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ] [k] :=   HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] :=  FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := NoTrans
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { DynamicBackColor , DynamicForeColor , DynamicFont , aBackColor, aFontColor, 0 /*hFontDynamic*/ , NIL , NIL }
 
    IF ValType (aFontColor) == "A"
       TreeView_SetTextColor (ControlHandle, aFontColor)
@@ -288,8 +288,8 @@ LOCAL k := GetControlIndexByHandle ( _HMG_SYSDATA [ 180 ] )
 		iSel   := 1
 		
 	else	
-		iUnSel := AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[1], _HMG_SYSDATA [ 39 ] [k] ) -1 
-		iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[2], _HMG_SYSDATA [ 39 ] [k] ) -1 )
+		iUnSel := AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[1], _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] ) -1 
+		iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[2], _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] ) -1 )
 		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 	endif
 	
@@ -297,7 +297,7 @@ LOCAL k := GetControlIndexByHandle ( _HMG_SYSDATA [ 180 ] )
 	_HMG_SYSDATA [ 337 ] [_HMG_SYSDATA [ 307 ]]:= AddTreeItem ( _HMG_SYSDATA [ 180 ] , _HMG_SYSDATA [ 337 ] [_HMG_SYSDATA [ 307 ]-1] , text, iUnsel, iSel , nID , _IS_TREE_NODE_ )
 	aAdd ( _HMG_SYSDATA [ 138 ] , _HMG_SYSDATA [ 337 ] [_HMG_SYSDATA [ 307 ]] )
 	aAdd ( _HMG_SYSDATA [ 139 ] , nID )
-   AADD ( _HMG_SYSDATA [ 32 ] [ _HMG_SYSDATA [ 179 ] ], NIL)   // cargo
+   AADD ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [ _HMG_SYSDATA [ 179 ] ], NIL)   // cargo
 Return Nil 
 *------------------------------------------------------------------------------*
 Function _EndTreeNode()
@@ -324,22 +324,22 @@ LOCAL k := GetControlIndexByHandle ( _HMG_SYSDATA [ 180 ] )
 		iSel   := 3
 		
 	else	
-		iUnSel := AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[1], _HMG_SYSDATA [ 39 ] [k] ) -1 
-		iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[2], _HMG_SYSDATA [ 39 ] [k] ) -1 )
+		iUnSel := AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[1], _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] ) -1 
+		iSel   := iif( ImgDef == 1, iUnSel, AddTreeViewBitmap( _HMG_SYSDATA [ 180 ], aImage[2], _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] ) -1 )
 		// If only one bitmap in array iSel = iUnsel, only one Bitmap loaded
 	endif
 
 	ItemHandle := AddTreeItem ( _HMG_SYSDATA [ 180 ] , _HMG_SYSDATA [ 337 ] [_HMG_SYSDATA [ 307 ]] , text, iUnSel, iSel , nID, _IS_TREE_ITEM_ )
 	aAdd ( _HMG_SYSDATA [ 138 ] , ItemHandle )
 	aAdd ( _HMG_SYSDATA [ 139 ] , nID )
-   AADD ( _HMG_SYSDATA [ 32 ] [ _HMG_SYSDATA [ 179 ] ], NIL)   // cargo
+   AADD ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [ _HMG_SYSDATA [ 179 ] ], NIL)   // cargo
 Return Nil
 *------------------------------------------------------------------------------*
 Function _EndTree()
 *------------------------------------------------------------------------------*
 
-	_HMG_SYSDATA [  7 ] [ _HMG_SYSDATA [ 179 ] ] := _HMG_SYSDATA [ 138 ]
-	_HMG_SYSDATA [ 25 ] [ _HMG_SYSDATA [ 179 ] ] := _HMG_SYSDATA [ 139 ]
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ _HMG_SYSDATA [ 179 ] ] := _HMG_SYSDATA [ 138 ]
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [ _HMG_SYSDATA [ 179 ] ] := _HMG_SYSDATA [ 139 ]
 
 	If _HMG_SYSDATA [ 178 ] > 0
 
@@ -363,7 +363,7 @@ Local i , ItemHandle
       ItemHandle := TreeItemGetHandle ( ControlName , ParentForm , nItem )   // Dr. Claudio Soto (November 2013)
       If ItemHandle <> 0
          DEFAULT lRecurse TO .F.
-         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [3] [i], ItemHandle, TVE_COLLAPSE, lRecurse )   // Dr. Claudio Soto (November 2013)
+         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], ItemHandle, TVE_COLLAPSE, lRecurse )   // Dr. Claudio Soto (November 2013)
       EndIf
    EndIf
 Return
@@ -378,7 +378,7 @@ Local i , ItemHandle
       ItemHandle := TreeItemGetHandle ( ControlName , ParentForm , nItem )   // Dr. Claudio Soto (November 2013)
       If ItemHandle <> 0
          DEFAULT lRecurse TO .F.
-         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [3] [i], ItemHandle, TVE_EXPAND, lRecurse )   // Dr. Claudio Soto (November 2013)
+         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], ItemHandle, TVE_EXPAND, lRecurse )   // Dr. Claudio Soto (November 2013)
       EndIf
    EndIf
 Return
@@ -396,7 +396,7 @@ Local ItemHandle
       ItemHandle := TreeItemGetHandle2 ( i , nItem )
       If ItemHandle <> 0
          DEFAULT lRecurse TO .F.
-         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [3] [i], ItemHandle, TVE_COLLAPSE, lRecurse )
+         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], ItemHandle, TVE_COLLAPSE, lRecurse )
       EndIf
    EndIf
 Return
@@ -408,7 +408,7 @@ Local ItemHandle
       ItemHandle := TreeItemGetHandle2 ( i , nItem )
       If ItemHandle <> 0
          DEFAULT lRecurse TO .F.
-         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [3] [i], ItemHandle, TVE_EXPAND, lRecurse )
+         TreeView_ExpandChildrenRecursive ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], ItemHandle, TVE_EXPAND, lRecurse )
       EndIf
    EndIf
 Return
@@ -417,13 +417,13 @@ Return
 Function TreeItemGetHandle2 ( i , nItem )
 LOCAL nPos, nID, ItemHandle := 0
    IF i > 0
-      If _HMG_SYSDATA [ 9 ] [i] == .F.
+      If _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [i] == .F.
          nPos := nItem 
-         ItemHandle := _HMG_SYSDATA [7] [i] [ nPos ]   // nPos
+         ItemHandle := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i] [ nPos ]   // nPos
       Else
          nID := nItem
-         nPos := ASCAN ( _HMG_SYSDATA [25] [i] , nID ) // nID 
-         ItemHandle := _HMG_SYSDATA [7] [i] [ nPos ]
+         nPos := ASCAN ( _HMG_SYSDATA [HMG_CTL_PICTURE] [i] , nID ) // nID 
+         ItemHandle := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i] [ nPos ]
       EndIf
    Endif
 Return ItemHandle
@@ -433,13 +433,13 @@ Function TreeItemGetHandle ( ControlName , ParentForm , nItem )
 LOCAL nPos, nID, ItemHandle := 0
 LOCAL i := GetControlIndex( ControlName , ParentForm )
    IF i > 0
-      If _HMG_SYSDATA [ 9 ] [i] == .F.
+      If _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [i] == .F.
          nPos := nItem 
-         ItemHandle := _HMG_SYSDATA [7] [i] [ nPos ]   // nPos
+         ItemHandle := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i] [ nPos ]   // nPos
       Else
          nID := nItem
-         nPos := ASCAN ( _HMG_SYSDATA [25] [i] , nID ) // nID 
-         ItemHandle := _HMG_SYSDATA [7] [i] [ nPos ]
+         nPos := ASCAN ( _HMG_SYSDATA [HMG_CTL_PICTURE] [i] , nID ) // nID 
+         ItemHandle := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i] [ nPos ]
       EndIf
    Endif
 Return ItemHandle
@@ -462,8 +462,8 @@ LOCAL nPos, nID
 LOCAL nControlHandle := GetControlHandle  ( ControlName , ParentForm )
 LOCAL i := GetControlIndex  ( ControlName , ParentForm )
    If i > 0 .AND. ItemHandle <> 0
-      If _HMG_SYSDATA [9] [i] == .F.
-         nPos := ASCAN ( _HMG_SYSDATA [7] [i], ItemHandle )
+      If _HMG_SYSDATA [HMG_CTL_INPUTMASK] [i] == .F.
+         nPos := ASCAN ( _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i], ItemHandle )
          Return nPos
       Else
          nID := TREEITEM_GETID ( nControlHandle, ItemHandle )
@@ -477,8 +477,8 @@ Function TreeItemGetValueByItemHandle2 ( i , ItemHandle )
 LOCAL nPos, nID
 LOCAL nControlHandle := GetControlHandleByIndex ( i )
    If i > 0 .AND. ItemHandle <> 0
-      If _HMG_SYSDATA [9] [i] == .F.
-         nPos := ASCAN ( _HMG_SYSDATA [7] [i], ItemHandle )
+      If _HMG_SYSDATA [HMG_CTL_INPUTMASK] [i] == .F.
+         nPos := ASCAN ( _HMG_SYSDATA [HMG_CTL_PAGEMAP] [i], ItemHandle )
          Return nPos
       Else
          nID := TREEITEM_GETID ( nControlHandle, ItemHandle )
@@ -498,7 +498,7 @@ Return TREEVIEW_GETIMAGECOUNT ( nControlHandle )
 Function TreeAddImage ( ControlName , ParentForm ,  cImageName )
 LOCAL nControlHandle := GetControlHandle  ( ControlName , ParentForm )
 LOCAL k := GetControlIndex ( ControlName , ParentForm )
-Return ADDTREEVIEWBITMAP ( nControlHandle , cImageName, _HMG_SYSDATA [ 39 ] [k] )
+Return ADDTREEVIEWBITMAP ( nControlHandle , cImageName, _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] )
 
 
 //----------------------------------------------------------------------------
@@ -508,12 +508,12 @@ Function TreeItemGetAllValue ( ControlName , ParentForm )
 LOCAL k, aAllValues := {}
 LOCAL i := GetControlIndex  ( ControlName , ParentForm )
    If i > 0 .AND. GetProperty ( ParentForm, ControlName, "ItemCount" ) > 0
-      If _HMG_SYSDATA [9] [i] == .F.
+      If _HMG_SYSDATA [HMG_CTL_INPUTMASK] [i] == .F.
          FOR k = 1 TO GetProperty ( ParentForm, ControlName, "ItemCount" )
              AADD (aAllValues, k)
          NEXT
       Else
-         aAllValues := _HMG_SYSDATA [25] [i]   // nTreeItemID
+         aAllValues := _HMG_SYSDATA [HMG_CTL_PICTURE] [i]   // nTreeItemID
       EndIf
    Endif
 Return IF (EMPTY(aAllValues), NIL, aAllValues)
@@ -530,10 +530,10 @@ Function TreeItemGetFirstItemValue ( ControlName , ParentForm )
 LOCAL nIndex     := GetControlIndex ( ControlName , ParentForm )
 LOCAL nID , nPos := 1
    IF GetProperty ( ParentForm, ControlName, "ItemCount" ) > 0 
-      IF _HMG_SYSDATA [9] [nIndex] == .F.
+      IF _HMG_SYSDATA [HMG_CTL_INPUTMASK] [nIndex] == .F.
          Return nPos
       ELSE
-         nID := _HMG_SYSDATA [25] [nIndex] [nPos]
+         nID := _HMG_SYSDATA [HMG_CTL_PICTURE] [nIndex] [nPos]
          Return nID
       ENDIF
    ENDIF
@@ -685,7 +685,7 @@ LOCAL k, ItemHandle, aSel
 LOCAL nControlHandle := GetControlHandle  ( ControlName , ParentForm )
 LOCAL nIndex := GetControlIndex ( ControlName , ParentForm )
    FOR k = 1 TO GetProperty ( ParentForm, ControlName, "ItemCount" )
-       ItemHandle := _HMG_SYSDATA [7] [nIndex] [k]
+       ItemHandle := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [nIndex] [k]
        If TREEITEM_ISTRUENODE ( nControlHandle, ItemHandle ) == .T. .AND. TREEITEM_GETNODEFLAG ( nControlHandle, ItemHandle ) == .F.
           aSel := TREEIMAGEINDEX_NODE
           TREEITEM_SETNODEFLAG   ( nControlHandle, ItemHandle, _IS_TREE_NODE_ )
@@ -776,10 +776,10 @@ Function _DoTreeCustomDraw ( i , lParam )
 *-----------------------------------------------------------------------------*
 Local DefaultBackColor := RGB (255, 255, 255)   // WHITE
 Local DefaultForeColor := RGB (  0,   0,   0)   // BLACK
-Local BackColor  :=  _HMG_SYSDATA [40] [i] [4]
-Local FontColor  :=  _HMG_SYSDATA [40] [i] [5]
-LOCAL DynamicBackColor := _HMG_SYSDATA [40] [i] [1]
-LOCAL DynamicForeColor := _HMG_SYSDATA [40] [i] [2]
+Local BackColor  :=  _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [4]
+Local FontColor  :=  _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [5]
+LOCAL DynamicBackColor := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [1]
+LOCAL DynamicForeColor := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [2]
 LOCAL nRGB_BackColor, nRGB_ForeColor, aRGB
 LOCAL hFont
 
@@ -819,8 +819,8 @@ Function _TreeCustomDrawFont ( i, lParam )
 *-----------------------------------------------------------------------------*
 LOCAL cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeOut
 LOCAL hFontDynamic
-LOCAl DefaultFontHandle := _HMG_SYSDATA [36] [i] 
-LOCAL DynamicFont       := _HMG_SYSDATA [40] [i] [3]
+LOCAl DefaultFontHandle := _HMG_SYSDATA [HMG_CTL_FONTHANDLE] [i] 
+LOCAL DynamicFont       := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [3]
 LOCAL DynamicData
 
    IF ValType (DynamicFont) == "B"
@@ -838,13 +838,13 @@ LOCAL DynamicData
             lUnderline := DynamicData [5]
             lStrikeOut := DynamicData [6]
 
-            hFontDynamic := _HMG_SYSDATA [40] [i] [6]
+            hFontDynamic := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [6]
             IF hFontDynamic <> 0
                DeleteObject (hFontDynamic)
             ENDIF
 
             hFontDynamic := HMG_CreateFont (TreeView_CustomDraw_GetHDC (lParam), cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeOut )
-            _HMG_SYSDATA [40] [i] [6] := hFontDynamic
+            _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [6] := hFontDynamic
             RETURN hFontDynamic   // <=== return new handle
          ENDIF
 

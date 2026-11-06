@@ -1,6 +1,6 @@
 # Phase 3 design note: HMG internals without breaking HMG programs
 
-Status: **proposal, for review** (06-11-2026). Nothing in this note is implemented yet.
+Status: **accepted; S1 done** (06-11-2026). Layout frozen, as decision 1 below; slot numbers stay valid for user code.
 
 ## 1. Recommendation in one paragraph
 
@@ -79,7 +79,7 @@ Two consequences decide the design:
 
 | Step | Change | Done when |
 |---|---|---|
-| S1 | `hmg_sysdata.ch` + mechanical rename in the library | generated C byte-identical; matrix green |
+| S1 | `hmg_sysdata.ch` + mechanical rename in the library | **Done**: 40 files, 5,334 references (`tools/sysdata-rename.pl`); generated C identical for all 75 `.prg` (`tools/pcode-snapshot.ps1`); matrix green. Not yet renamed: slots 41-64, 109-518, and the 4 files without an `hmg.ch` include |
 | S2 | Hash indexes for handle and name lookup | matrix green; lookup benchmark (1,000 controls) shows the gain; corpus programs unchanged |
 | S3 | `HMG_Control` object API + docs + unit tests | additive only; samples untouched |
 | S4 | Table-driven `Events()` for the hot messages | GUI smoke tests pass before and after |

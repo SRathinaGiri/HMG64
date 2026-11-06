@@ -179,50 +179,50 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := if( lNumeric, "NUMTEXT", "TEXT" ) 
-	_HMG_SYSDATA [2]  [k] :=  cControlName 
-	_HMG_SYSDATA [3]  [k] :=  nControlHandle 
-	_HMG_SYSDATA [4]  [k] :=  nParentForm 
-	_HMG_SYSDATA [  5 ]  [k] :=  0 
-	_HMG_SYSDATA [  6 ]  [k] :=  "" 
-	_HMG_SYSDATA [  7 ]  [k] :=  Field 
-	_HMG_SYSDATA [  8 ]  [k] :=  nil 
-	_HMG_SYSDATA [  9 ]  [k] :=  "" 
-	_HMG_SYSDATA [  10 ] [k] :=   uLostFocus 
-	_HMG_SYSDATA [ 11 ]  [k] := uGotFocus 
-	_HMG_SYSDATA [ 12 ]  [k] :=  uChange
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]  [k] :=  backcolor 
-	_HMG_SYSDATA [ 15 ] [k] :=   fontcolor 
-	_HMG_SYSDATA [ 16 ]  [k] :=  uEnter 
-	_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=  ny 
-	_HMG_SYSDATA [ 19 ]  [k] :=  nx 
-	_HMG_SYSDATA [ 20 ]   [k] := nwidth 
-	_HMG_SYSDATA [ 21 ]   [k] := nheight 
-	_HMG_SYSDATA [ 22 ]  [k] :=  0 
-	_HMG_SYSDATA [ 23 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 26 ]  [k] :=  0 
-	_HMG_SYSDATA [ 27 ]  [k] :=  cfontname 
-	_HMG_SYSDATA [ 28 ]  [k] :=  nfontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]  [k] :=   ctooltip  
-	_HMG_SYSDATA [ 31 ]  [k] :=   cParentTabName
-	_HMG_SYSDATA [ 32 ]  [k] :=   0  
-	_HMG_SYSDATA [ 33 ]  [k] :=   ''  
-	_HMG_SYSDATA [ 34 ]  [k] :=  .Not.  invisible 
-	_HMG_SYSDATA [ 35 ]  [k] :=   HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] :=   FontHandle 
-	_HMG_SYSDATA [ 37 ]  [k] :=   0 
-	_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := if( lNumeric, "NUMTEXT", "TEXT" ) 
+	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  cControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE]  [k] :=  nControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE]  [k] :=  nParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  "" 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  Field 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  "" 
+	_HMG_SYSDATA [  HMG_CTL_LOSTFOCUS ] [k] :=   uLostFocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] := uGotFocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  uChange
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  backcolor 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] :=   fontcolor 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=  uEnter 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  ny 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  nx 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]   [k] := nwidth 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]   [k] := nheight 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  cfontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  nfontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=   ctooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=   cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=   0  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=  .Not.  invisible 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
-	_HMG_SYSDATA [ 40 ] [k] [  9 ] := DISABLEDBACKCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 10 ] := DISABLEDFONTCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 11 ] := readonly
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [  9 ] := DISABLEDBACKCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 10 ] := DISABLEDFONTCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 11 ] := readonly
 
 
 	// With NUMERIC clause, transform numeric value into a string.
@@ -238,7 +238,7 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
 	endif
 
 	if valtype ( Field ) != 'U'
-		aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+		aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 	EndIf
 
 return nil
@@ -389,56 +389,56 @@ RightAlign := NIL
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "MASKEDTEXT" 
-	_HMG_SYSDATA [2]  [k] :=  ControlName 
-	_HMG_SYSDATA [3] [k] :=   ControlHandle 
-	_HMG_SYSDATA [4] [k] :=   ParentForm
-	_HMG_SYSDATA [  5 ]  [k] :=  0
-	_HMG_SYSDATA [  6 ]  [k] :=  "" 
-	_HMG_SYSDATA [  7 ] [k] :=   InputMask
-	_HMG_SYSDATA [  8 ]  [k] :=  Nil 
-	_HMG_SYSDATA [  9 ]  [k] :=  GetNumMask ( InputMask ) 
-	_HMG_SYSDATA [ 10 ]  [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ]  [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ]  [k] :=  Change 
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]  [k] :=  backcolor 
-	_HMG_SYSDATA [ 15 ]  [k] :=  fontcolor 
-	_HMG_SYSDATA [ 16 ]  [k] :=  enter 
-	_HMG_SYSDATA [ 17 ]  [k] :=  Field 
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ]  [k] :=  x 
-	_HMG_SYSDATA [ 20 ]  [k] :=  width 
-	_HMG_SYSDATA [ 21 ]  [k] :=  height 
-	_HMG_SYSDATA [ 22 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 23 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]   [k] := "" 
-	_HMG_SYSDATA [ 26 ]  [k] :=  0 
-	_HMG_SYSDATA [ 27 ]  [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ]  [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]   [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ]  [k] :=   cParentTabName
-	_HMG_SYSDATA [ 32 ]  [k] :=   0  
-	_HMG_SYSDATA [ 33 ]  [k] :=   ''  
-	_HMG_SYSDATA [ 34 ]  [k] :=  .Not.  invisible 
-	_HMG_SYSDATA [ 35 ]  [k] :=   HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] :=   FontHandle 
-	_HMG_SYSDATA [ 37 ]   [k] :=  0 
-	_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "MASKEDTEXT" 
+	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] :=   ControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] :=   ParentForm
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  "" 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] :=   InputMask
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  GetNumMask ( InputMask ) 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  Change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  backcolor 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=  fontcolor 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=  enter 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  Field 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  width 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=  height 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]   [k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]   [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=   cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=   0  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=  .Not.  invisible 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]   [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
-	_HMG_SYSDATA [ 40 ] [k] [  9 ] := DISABLEDBACKCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 10 ] := DISABLEDFONTCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 11 ] := readonly
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [  9 ] := DISABLEDBACKCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 10 ] := DISABLEDFONTCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 11 ] := readonly
 
 
 	SetWindowText ( ControlHandle , value )
 
 	if valtype ( Field ) != 'U'
-		aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+		aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 	EndIf
 
 Return Nil
@@ -462,7 +462,7 @@ Local x , c , s
 		s := '-' + s
 	EndIf
 
-	s := Transform ( Val(s) , _HMG_SYSDATA [  9 ] [i] )
+	s := Transform ( Val(s) , _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [i] )
 
 Return Val(s)
 
@@ -631,50 +631,50 @@ Local cParentTabName
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "CHARMASKTEXT" 
-	_HMG_SYSDATA [2] [k] := ControlName 
-	_HMG_SYSDATA [3] [k] := ControlHandle 
-	_HMG_SYSDATA [4] [k] := ParentForm 
-	_HMG_SYSDATA [  5 ] [k] := 0 
-	_HMG_SYSDATA [  6 ] [k] := "" 
-	_HMG_SYSDATA [  7 ] [k] := Field 
-	_HMG_SYSDATA [  8 ] [k] := Nil 
-	_HMG_SYSDATA [  9 ] [k] := InputMask 
-	_HMG_SYSDATA [ 10 ] [k] := lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] := gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] := Change 
-	_HMG_SYSDATA [ 13 ] [k] := .F. 
-	_HMG_SYSDATA [ 14 ] [k] := backcolor 
-	_HMG_SYSDATA [ 15 ] [k] := fontcolor 
-	_HMG_SYSDATA [ 16 ] [k] := enter 
-	_HMG_SYSDATA [ 17 ]  [k] :=date 
-	_HMG_SYSDATA [ 18 ] [k] := y 
-	_HMG_SYSDATA [ 19 ] [k] := x 
-	_HMG_SYSDATA [ 20 ] [k] := width 
-	_HMG_SYSDATA [ 21 ] [k] := height 
-	_HMG_SYSDATA [ 22 ] [k] := 0 
-	_HMG_SYSDATA [ 23 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )  
-	_HMG_SYSDATA [ 24 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ] [k] := "" 
-	_HMG_SYSDATA [ 26 ] [k] := 0 
-	_HMG_SYSDATA [ 27 ] [k] := fontname 
-	_HMG_SYSDATA [ 28 ] [k] := fontsize 
-	_HMG_SYSDATA [ 29 ] [k] := {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]  [k] := tooltip  
-	_HMG_SYSDATA [ 31 ] [k] :=  cParentTabName
-	_HMG_SYSDATA [ 32 ] [k] :=  0  
-	_HMG_SYSDATA [ 33 ] [k] :=  ''  
-	_HMG_SYSDATA [ 34 ] [k] := .Not.  invisible 
-	_HMG_SYSDATA [ 35 ]  [k] := HelpId 
-	_HMG_SYSDATA [ 36 ] [k] :=  FontHandle 
-	_HMG_SYSDATA [ 37 ]  [k] := 0 
-	_HMG_SYSDATA [ 38 ] [k] :=  .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHARMASKTEXT" 
+	_HMG_SYSDATA [HMG_CTL_NAME] [k] := ControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] := ControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] := ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] := 0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] := "" 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] := Field 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] := Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] := InputMask 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] := lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] := gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] := Change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] := .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] := backcolor 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] := fontcolor 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] := enter 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=date 
+	_HMG_SYSDATA [ HMG_CTL_ROW ] [k] := y 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] := x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] := width 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] := height 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )  
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] := fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] := fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] := {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] := tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] :=  cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] :=  0  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] :=  ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] := .Not.  invisible 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] := HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] :=  FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] :=  .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
-	_HMG_SYSDATA [ 40 ] [k] [  9 ] := DISABLEDBACKCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 10 ] := DISABLEDFONTCOLOR
-	_HMG_SYSDATA [ 40 ] [k] [ 11 ] := readonly
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [  9 ] := DISABLEDBACKCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 10 ] := DISABLEDFONTCOLOR
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 11 ] := readonly
 
 	if date == .F.
 		SetWindowText ( ControlHandle , Value  )
@@ -683,7 +683,7 @@ Local cParentTabName
 	endif
 
 	if valtype ( Field ) != 'U'
-		aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+		aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 	EndIf
 
 Return Nil
@@ -705,21 +705,21 @@ Local ol := 0
 d := Nil
 *
 
-	If ValType (_HMG_SYSDATA [ 22 ] [i] ) == 'L'
-		If _HMG_SYSDATA [ 22 ] [i] == .F.
+	If ValType (_HMG_SYSDATA [ HMG_CTL_SPACING ] [i] ) == 'L'
+		If _HMG_SYSDATA [ HMG_CTL_SPACING ] [i] == .F.
 			Return		
 		EndIf
 	EndIf
 
-	Mask := _HMG_SYSDATA [  9 ] [i]
+	Mask := _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [i]
 
 	// Store Initial CaretPos
 
-	icp := HiWord ( SendMessage( _HMG_SYSDATA [3] [i] , EM_GETSEL , 0 , 0 ) ) 
+	icp := HiWord ( SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_GETSEL , 0 , 0 ) ) 
 
 	// Get Current Content
 
-	InBuffer := GetWindowText ( _HMG_SYSDATA [3] [i] )
+	InBuffer := GetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 	// RL 104
 
@@ -869,14 +869,14 @@ d := Nil
 	// Replace Content
 
 	If ! ( BackInBuffer == OutBuffer )
-		SetWindowText ( _HMG_SYSDATA [3] [i] , OutBuffer ) 
+		SetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , OutBuffer ) 
 	EndIf
 
 	If pc > 1
 
 		If NegativeZero == .T.
 
-			Output := Transform ( GetNumFromText ( GetWindowText ( _HMG_SYSDATA [3] [i] ) , i ) , Mask )
+			Output := Transform ( GetNumFromText ( GetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) , i ) , Mask )
 
 			Output := HB_URIGHT (Output , ol - 1 )
 
@@ -884,21 +884,21 @@ d := Nil
 
 			// Replace Text
 
-			SetWindowText ( _HMG_SYSDATA [3] [i] , Output )
-		      	SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , HB_UAT('.',OutBuffer) + dc , HB_UAT('.',OutBuffer) + dc )				
+			SetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , Output )
+		      	SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , HB_UAT('.',OutBuffer) + dc , HB_UAT('.',OutBuffer) + dc )				
 
 		Else
 
-			SetWindowText ( _HMG_SYSDATA [3] [i] , Transform ( GetNumFromText ( GetWindowText ( _HMG_SYSDATA [3] [i] ) , i ) , Mask ) )
-		      	SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , HB_UAT('.',OutBuffer) + dc , HB_UAT('.',OutBuffer) + dc )				
+			SetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , Transform ( GetNumFromText ( GetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) , i ) , Mask ) )
+		      	SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , HB_UAT('.',OutBuffer) + dc , HB_UAT('.',OutBuffer) + dc )				
 
 		EndIf
 
 	Else
 
 		If pFlag == .T.
-			ncp := HB_UAT ( '.' , GetWindowText ( _HMG_SYSDATA [3] [i] ) )
-			SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , ncp , ncp )
+			ncp := HB_UAT ( '.' , GetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) )
+			SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , ncp , ncp )
 
 		Else
 
@@ -908,7 +908,7 @@ d := Nil
 	      			icp--
 			EndIf
 
-      			SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , icp , icp )
+      			SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , icp , icp )
 
 			// Skip Protected Characters
 
@@ -918,7 +918,7 @@ d := Nil
 				CM := HB_USUBSTR ( Mask , icp+x , 1 )
 
 				If ( .Not. HMG_ISDIGIT(CB) ) .And. ( .Not. HMG_ISALPHA(CB) ) .And. ( ( .Not. CB = ' ' ) .or. ( CB == ' ' .and. CM == ' ' ) ) 
-			      		SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , icp+x , icp+x )
+			      		SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , icp+x , icp+x )
 				Else
 					Exit
 				EndIf
@@ -992,10 +992,10 @@ Procedure _DataTextBoxRefresh (i)
 *------------------------------------------------------------------------------*
 Local Field
 
-	If _HMG_SYSDATA [1] [i] == "MASKEDTEXT"
-		Field		:= _HMG_SYSDATA [ 17 ] [i]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "MASKEDTEXT"
+		Field		:= _HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [i]
 	Else
-		Field		:= _HMG_SYSDATA [  7 ] [i]
+		Field		:= _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 	EndIf
 
 	If Type ( Field ) == 'C'
@@ -1012,10 +1012,10 @@ Local Field , i
 
 	i := GetControlIndex ( ControlName , ParentForm)	
 
-	If _HMG_SYSDATA [1] [i] == "MASKEDTEXT"
-		Field		:= _HMG_SYSDATA [ 17 ] [i]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "MASKEDTEXT"
+		Field		:= _HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [i]
 	Else
-		Field		:= _HMG_SYSDATA [  7 ] [i]
+		Field		:= _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 	EndIf
 
 	&(Field) := _GetValue ( Controlname , ParentForm ) 
@@ -1027,11 +1027,11 @@ PROCEDURE ProcessNumText ( i )
 Local InBuffer , OutBuffer := '' , icp , x , CB , BackInBuffer , BadEntry := .F. , fnb
 
 	// Store Initial CaretPos
-	icp := HiWord ( SendMessage( _HMG_SYSDATA [3] [i] , EM_GETSEL , 0 , 0 ) ) 
+	icp := HiWord ( SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_GETSEL , 0 , 0 ) ) 
 
 	// Get Current Content
 
-	InBuffer := GetWindowText ( _HMG_SYSDATA [3] [i] )
+	InBuffer := GetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 	BackInBuffer := InBuffer
 
@@ -1068,12 +1068,12 @@ Local InBuffer , OutBuffer := '' , icp , x , CB , BackInBuffer , BadEntry := .F.
 	// JK Replace Content
 
 	If ! ( BackInBuffer == OutBuffer )
-		SetWindowText ( _HMG_SYSDATA [3] [i] , OutBuffer ) 
+		SetWindowText ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , OutBuffer ) 
 	EndIf
 
 	// Restore Initial CaretPos
 
-      	SendMessage( _HMG_SYSDATA [3] [i] , EM_SETSEL , icp , icp )
+      	SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , EM_SETSEL , icp , icp )
 
 RETURN 
 
@@ -1108,6 +1108,6 @@ Local x , c , s
 		s := '-' + s
 	EndIf
 
-	s := Transform ( Val(s) , _HMG_SYSDATA [  9 ] [i] )
+	s := Transform ( Val(s) , _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [i] )
 
 Return Val(s)

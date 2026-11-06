@@ -214,7 +214,7 @@ Local nHeaderImageListHandle
 				FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)		
 			endif
 
-			AddSplitBoxItem ( Controlhandle, _HMG_SYSDATA [ 87 ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
+			AddSplitBoxItem ( Controlhandle, _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
 		EndIf
 
 	Else
@@ -261,57 +261,57 @@ Local nHeaderImageListHandle
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [  1 ] [k] := "BROWSE" 
-	_HMG_SYSDATA [  2 ] [k] := ControlName 
-	_HMG_SYSDATA [  3 ] [k] := ControlHandle 
-	_HMG_SYSDATA [  4 ] [k] := ParentForm 
-	_HMG_SYSDATA [  5 ] [k] := 0 
-	_HMG_SYSDATA [  6 ] [k] := aWidths 
-	_HMG_SYSDATA [  7 ] [k] := aHeaders
-	_HMG_SYSDATA [  8 ] [k] := Value 
-	_HMG_SYSDATA [  9 ] [k] := Lock 
-	_HMG_SYSDATA [ 10 ] [k] := lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] := gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] := change 
-	_HMG_SYSDATA [ 13 ] [k] := .F. 	
-	_HMG_SYSDATA [ 14 ] [k] := aImage // Browse+
-	_HMG_SYSDATA [ 15 ] [k] := inplace 
-	_HMG_SYSDATA [ 16 ] [k] := dblclick 
-	_HMG_SYSDATA [ 17 ] [k] := aHeadClick 
-	_HMG_SYSDATA [ 18 ] [k] := y 
-	_HMG_SYSDATA [ 19 ] [k] := x 
-	_HMG_SYSDATA [ 20 ] [k] := w 
-	_HMG_SYSDATA [ 21 ] [k] := h 
-	_HMG_SYSDATA [ 22 ] [k] := WorkArea 
-	_HMG_SYSDATA [ 23 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ] [k] := Delete 
-	_HMG_SYSDATA [ 26 ] [k] := 0 
-	_HMG_SYSDATA [ 27 ] [k] := fontname 
-	_HMG_SYSDATA [ 28 ] [k] := fontsize 
-	_HMG_SYSDATA [ 29 ] [k] := {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ] [k] := tooltip  
-	_HMG_SYSDATA [ 31 ] [k] := aFields  
-	_HMG_SYSDATA [ 32 ] [k] := {}  
-	_HMG_SYSDATA [ 33 ] [k] := aHeaders  
-	_HMG_SYSDATA [ 34 ] [k] := .t. 
-	_HMG_SYSDATA [ 35 ] [k] := HelpId 
-	_HMG_SYSDATA [ 36 ] [k] := FontHandle 
-	_HMG_SYSDATA [ 37 ] [k] := cParentTabName
-	_HMG_SYSDATA [ 38 ] [k] := .T. 
-	_HMG_SYSDATA [ 39 ] [k] := { 0 , appendable , readonly , valid , validmessages , edit , inputitems , displayitems , Nil , Nil , Nil }
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [  HMG_CTL_TYPE ] [k] := "BROWSE" 
+	_HMG_SYSDATA [  HMG_CTL_NAME ] [k] := ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ] [k] := ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ] [k] := ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] := 0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] := aWidths 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] := aHeaders
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] := Value 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] := Lock 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] := lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] := gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] := change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] := .F. 	
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] := aImage // Browse+
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] := inplace 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] := dblclick 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] := aHeadClick 
+	_HMG_SYSDATA [ HMG_CTL_ROW ] [k] := y 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] := x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] := w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] := h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := WorkArea 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] := Delete 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] := fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] := fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] := {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ] [k] := tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] := aFields  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] := {}  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] := aHeaders  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] := .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ] [k] := HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] := FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] := cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] := .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := { 0 , appendable , readonly , valid , validmessages , edit , inputitems , displayitems , Nil , Nil , Nil }
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	InitListViewColumns ( ControlHandle , aHeaders , aWidths, aJust ) // Browse+
 
 	// Add to browselist array to update on window activation
 
 	i := k
-	aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+	aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 
-	For z := 1 To HMG_LEN ( _HMG_SYSDATA [  6 ] [i] )
-		hsum := hsum + ListView_GetColumnWidth ( _HMG_SYSDATA [3] [i] , z - 1 )
-		_HMG_SYSDATA [  6 ] [i] [z] := ListView_GetColumnWidth ( _HMG_SYSDATA [3] [i] , z - 1 )
+	For z := 1 To HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [i] )
+		hsum := hsum + ListView_GetColumnWidth ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , z - 1 )
+		_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [i] [z] := ListView_GetColumnWidth ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , z - 1 )
 	Next z
 
 	// Add Vertical scrollbar 
@@ -340,21 +340,21 @@ Local nHeaderImageListHandle
 
 	EndIf
 
-	_HMG_SYSDATA [  5 ] [i] := ScrollBarHandle
-	_HMG_SYSDATA [ 39 ] [i] [1] := ScrollBarButtonHandle
+	_HMG_SYSDATA [  HMG_CTL_ID ] [i] := ScrollBarHandle
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [1] := ScrollBarButtonHandle
 
 	
-	_HMG_SYSDATA [ 40 ] [k] [1] := dynamicbackcolor
-	_HMG_SYSDATA [ 40 ] [k] [2] := dynamicforecolor
-	_HMG_SYSDATA [ 40 ] [k] [3] := aWhenFields
-	_HMG_SYSDATA [ 40 ] [k] [4] := inputmask
-	_HMG_SYSDATA [ 40 ] [k] [5] := format
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [1] := dynamicbackcolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [2] := dynamicforecolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [3] := aWhenFields
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [4] := inputmask
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [5] := format
 
 	If ValType(aHeaderImages) <> "U"
 		nHeaderImageListHandle := SetListViewHeaderImages ( ControlHandle , aHeaderImages , aJust, NoTransHeader )
-		_HMG_SYSDATA [ 39 ] [k] [9] := aHeaderImages
-		_HMG_SYSDATA [ 39 ] [k] [10] := nHeaderImageListHandle
-		_HMG_SYSDATA [ 39 ] [k] [11] := aJust
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] [9] := aHeaderImages
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] [10] := nHeaderImageListHandle
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] [11] := aJust
 	EndIf
 
 Return Nil
@@ -397,10 +397,10 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 
 	*
 
-	aDisplayItems := _HMG_SYSDATA [39] [I] [8]
+	aDisplayItems := _HMG_SYSDATA [HMG_CTL_MISCDATA1] [I] [8]
 
-	aProcessDisplayItems := array ( HMG_LEN (_HMG_SYSDATA [ 31 ] [i]) )
-	aDisplayItemsLengths := array ( HMG_LEN (_HMG_SYSDATA [ 31 ] [i]) )
+	aProcessDisplayItems := array ( HMG_LEN (_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]) )
+	aDisplayItemsLengths := array ( HMG_LEN (_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]) )
 
 	if valtype (aDisplayItems) = 'A' 
 
@@ -427,9 +427,9 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 
 	*
 
-	dim := 	_HMG_SYSDATA [40] [I] [4]
+	dim := 	_HMG_SYSDATA [HMG_CTL_MISCDATA2] [I] [4]
 
-	processdim := array ( HMG_LEN (_HMG_SYSDATA [ 31 ] [i]) )
+	processdim := array ( HMG_LEN (_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]) )
 
 	if valtype (dim) = 'A' 
 
@@ -453,9 +453,9 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 
 	endif
 
-	dft := 	_HMG_SYSDATA [40] [I] [5]
+	dft := 	_HMG_SYSDATA [HMG_CTL_MISCDATA2] [I] [5]
 
-	processdft := array ( HMG_LEN (_HMG_SYSDATA [ 31 ] [i]) )
+	processdft := array ( HMG_LEN (_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]) )
 
 	if valtype (dft) = 'A' 
 
@@ -479,22 +479,22 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 
 	endif
 
-	dbc := 	_HMG_SYSDATA [ 40 ] [i] [1]
+	dbc := 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [i] [1]
 
 	processdbc := if ( valtype (dbc) = 'A' , .t. , .f. )
 
-	dfc := 	_HMG_SYSDATA [ 40 ] [i] [2]
+	dfc := 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [i] [2]
 
 	processdFc := if ( valtype (dFc) = 'A' , .t. , .f. )
 
-	_HMG_SYSDATA [ 26 ] [i] := 0
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [i] := 0
 
-	First   := iif( HMG_LEN( _HMG_SYSDATA [ 14 ][i] ) == 0, 1, 2 ) // Browse+ ( 2= bitmap definido, se cargan campos a partir de 2º )
+	First   := iif( HMG_LEN( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ][i] ) == 0, 1, 2 ) // Browse+ ( 2= bitmap definido, se cargan campos a partir de 2º )
 
-	Fields := _HMG_SYSDATA [ 31 ] [i]
+	Fields := _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]
 
-	ListViewReset ( _HMG_SYSDATA [3][i] )
-	PageLength := ListViewGetCountPerPage ( _HMG_SYSDATA [3][i] ) 
+	ListViewReset ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] )
+	PageLength := ListViewGetCountPerPage ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) 
 
 
 	if processdbc == .t.
@@ -708,7 +708,7 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
                         
 		Next j
 
-		AddListViewItems ( _HMG_SYSDATA [3][i] , aTemp , Image )
+		AddListViewItems ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , aTemp , Image )
 
 		_Rec := RecNo()
 
@@ -727,7 +727,7 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 		Skip
 
 		If Eof()
-			_HMG_SYSDATA [ 26 ] [i] := 1
+			_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [i] := 1
 			Go Bottom
 			Exit
 		EndIf
@@ -736,25 +736,25 @@ Local cTempType	// added by Marek Olszewski 2016.05.25
 
 	if processdbc == .t.
 
-		_HMG_SYSDATA [ 40 ] [ I ] [ 6 ] := colormap
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 6 ] := colormap
 
 	else
 
-		_HMG_SYSDATA [ 40 ] [ I ] [ 6 ] := Nil
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 6 ] := Nil
 
 	endif
 
 	if processdfc == .t.
 
-		_HMG_SYSDATA [ 40 ] [ I ] [ 7 ] := fcolormap
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 7 ] := fcolormap
 
 	else
 
-		_HMG_SYSDATA [ 40 ] [ I ] [ 7 ] := Nil
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 7 ] := Nil
 
 	endif
 
-	_HMG_SYSDATA [ 32 ] [i] := _BrowseRecMap
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] := _BrowseRecMap
 
 Return
 
@@ -769,22 +769,22 @@ Local i , PageLength , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScr
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	PageLength := LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [3][i] ) 
+	PageLength := LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) 
 
-	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] )
+	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 	If  s == PageLength 
 
-		if _HMG_SYSDATA [ 26 ] [i] != 0
+		if _HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [i] != 0
 			Return
 		EndIf
 
 		_Alias := Alias()
-		_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+		_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 		If Select (_BrowseArea) == 0
 			Return
 		EndIf
@@ -794,8 +794,8 @@ Local i , PageLength , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScr
 		Go _BrowseRecMap [PageLength] 
 		_BrowseUpdate( ControlName , ParentForm , i )
 		_BrowseVscrollUpdate( i )
-		ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , HMG_LEN(_HMG_SYSDATA [ 32 ] [i] ) )
+		ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , HMG_LEN(_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] ) )
 		Go _RecNo
 		if Select( _Alias ) != 0
 			Select &_Alias
@@ -805,7 +805,7 @@ Local i , PageLength , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScr
 
 	Else
 
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , HMG_LEN(_BrowseRecMap) )
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , HMG_LEN(_BrowseRecMap) )
 		_BrowseVscrollFastUpdate ( i , PageLength - s )
 
 	EndIf
@@ -824,23 +824,23 @@ Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) == 1
+	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == 1
 		_Alias := Alias()
-		_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+		_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 		If Select (_BrowseArea) == 0
 			Return
 		EndIf
 		Select &_BrowseArea
 		_RecNo := RecNo()
 		Go _BrowseRecMap [1]
-		Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [3][i] ) + 1 
+		Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) + 1 
 		_BrowseVscrollUpdate( i )
 		_BrowseUpdate(ControlName , ParentForm , i )
-		ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
+		ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
 		Go _RecNo
 		if Select( _Alias ) != 0
 			Select &_Alias
@@ -850,11 +850,11 @@ Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 
 	Else
 
-		_BrowseVscrollFastUpdate ( i , 1 - LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) )
+		_BrowseVscrollFastUpdate ( i , 1 - LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) )
 
 	EndIf
 
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , 1 )		
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , 1 )		
 
 	_BrowseOnChange (i)
 
@@ -870,11 +870,11 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 	If Select (_BrowseArea) == 0
 		Return
 	EndIf
@@ -883,7 +883,7 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll
 	Go Top
 	_BrowseVscrollUpdate( i )
 	_BrowseUpdate( ControlName , ParentForm , i )
-	ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
+	ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
 	Go _RecNo
 	if Select( _Alias ) != 0
 		Select &_Alias
@@ -891,7 +891,7 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll
 		Select 0
 	Endif
 
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , 1 )		
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , 1 )		
 
 	_BrowseOnChange (i)
 
@@ -907,11 +907,11 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll , _BottomRec
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 	If Select (_BrowseArea) == 0
 		Return
 	EndIf
@@ -921,9 +921,9 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll , _BottomRec
 	_BottomRec := RecNo()
 
 	_BrowseVscrollUpdate( i )
-	Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [3][i] ) + 1 
+	Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) + 1 
 	_BrowseUpdate(ControlName , ParentForm , i )
-	ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
+	ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
 	Go _RecNo
 	if Select( _Alias ) != 0
 		Select &_Alias
@@ -931,7 +931,7 @@ Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll , _BottomRec
 		Select 0
 	Endif
 
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , ascan ( _HMG_SYSDATA [ 32 ] [i] , _BottomRec ) )
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , ascan ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] , _BottomRec ) )
 
 	_BrowseOnChange (i)
 
@@ -947,15 +947,15 @@ Local i , s  , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) 
+	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) 
 
 	If s == 1
 		_Alias := Alias()
-		_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+		_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 		If Select (_BrowseArea) == 0
 			Return
 		EndIf
@@ -965,17 +965,17 @@ Local i , s  , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 		Skip - 1
 		_BrowseVscrollUpdate( i )
 		_BrowseUpdate(ControlName , ParentForm , i )
-		ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
+		ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
 		Go _RecNo
 		if Select( _Alias ) != 0
 			Select &_Alias
 		Else
 			Select 0
 		Endif
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , 1 )		
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , 1 )		
 
 	Else
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , s - 1 )		
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , s - 1 )		
 		_BrowseVscrollFastUpdate ( i , -1 )
 	EndIf
 
@@ -993,22 +993,22 @@ Local i , PageLength , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _Delt
 		i := z
 	EndIf
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) 
+	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) 
 
-	PageLength := LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [3][i] ) 
+	PageLength := LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) 
 
 	If s == PageLength
 
-		if _HMG_SYSDATA [ 26 ] [i] != 0
+		if _HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [i] != 0
 			Return
 		EndIf
 
 		_Alias := Alias()
-		_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+		_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 		If Select (_BrowseArea) == 0
 			Return
 		EndIf
@@ -1019,7 +1019,7 @@ Local i , PageLength , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _Delt
 		Skip
 		_BrowseUpdate( ControlName , ParentForm , i )
 		_BrowseVscrollUpdate( i )
-		ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
+		ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
 		Go _RecNo
 		if Select( _Alias ) != 0
 			Select &_Alias
@@ -1027,11 +1027,11 @@ Local i , PageLength , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _Delt
 			Select 0
 		Endif
 
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , HMG_LEN(_HMG_SYSDATA [ 32 ] [i]) )		
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , HMG_LEN(_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i]) )		
 
 	Else
 
-		ListView_SetCursel ( _HMG_SYSDATA [3] [i] , s+1 )		
+		ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , s+1 )		
 		_BrowseVscrollFastUpdate ( i , 1 )
 
 	EndIf
@@ -1056,17 +1056,17 @@ Private cMacroVar
 
 	v := _BrowseGetValue ( '','' , i )
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
 
-	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) 
+	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) 
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 
 
 	If Select (_BrowseArea) == 0
-		ListViewReset ( _HMG_SYSDATA [3][i] )
+		ListViewReset ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] )
 		Return
 	EndIf
 
@@ -1107,7 +1107,7 @@ Private cMacroVar
 
 	If Eof()
 
-		ListViewReset ( _HMG_SYSDATA [3][i] )
+		ListViewReset ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] )
 
 		Go _RecNo 
 
@@ -1132,8 +1132,8 @@ Private cMacroVar
 	_BrowseUpdate( '' , '' , i )
 
 
-	ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , ascan ( _HMG_SYSDATA [ 32 ] [i] , v ) )		
+	ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , ascan ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] , v ) )		
 
 
 	Go _RecNo
@@ -1168,15 +1168,15 @@ Private cMacroVar
 	EndIf
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 
 	If Select (_BrowseArea) == 0
 		Return
 	EndIf
 
 	If Value == (_BrowseArea)->(RecCount()) + 1
-		_HMG_SYSDATA [  8 ] [i] := Value
-		ListViewReset ( _HMG_SYSDATA [3][i] )
+		_HMG_SYSDATA [  HMG_CTL_VALUE ] [i] := Value
+		ListViewReset ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] )
 		_BrowseOnChange (i)
 		Return
 	EndIf
@@ -1190,12 +1190,12 @@ Private cMacroVar
 	EndIf
 
 	If valtype ( mp ) == 'U'
-		m := int ( ListViewGetCountPerPage ( _HMG_SYSDATA [3][i] ) / 2 )
+		m := int ( ListViewGetCountPerPage ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) / 2 )
 	else
 		m := mp
 	endif
 
-	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
+	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , 0 , 0 ) 
 
 	Select &_BrowseArea
 	
@@ -1237,7 +1237,7 @@ Private cMacroVar
 		Skip -m + 1
 	EndIf
 
-	_HMG_SYSDATA [  8 ] [i] := Value
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [i] := Value
 	_BrowseUpdate( '' , '' , i )
 	Go _RecNo
 	if Select( _Alias ) != 0
@@ -1246,8 +1246,8 @@ Private cMacroVar
 		Select 0
 	Endif
 
-	ListView_Scroll( _HMG_SYSDATA [3][i] , _DeltaScroll[2] * (-1) , 0 )
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , ascan ( _HMG_SYSDATA [ 32 ] [i] , Value ) )		
+	ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _DeltaScroll[2] * (-1) , 0 )
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , ascan ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] , Value ) )		
 
 	_HMG_SYSDATA [ 232 ] := 'BROWSE_ONCHANGE'
 	_BrowseOnChange (i)
@@ -1265,16 +1265,16 @@ Local i , RetVal , _BrowseRecMap , _BrowseArea
 		i := z
 	EndIf
 
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 
 	If Select (_BrowseArea) == 0
 		Return 0
 	EndIf
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) != 0
-		RetVal := _BrowseRecMap [ LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) ]
+	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) != 0
+		RetVal := _BrowseRecMap [ LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) ]
 	Else
 		RetVal := 0
 	EndIf
@@ -1292,20 +1292,20 @@ Local i , _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 		i := z
 	EndIf
 
-	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) == 0
+	If LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == 0
 		Return Nil
 	EndIf
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
+	_BrowseRecMap := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] 
 
-	Value := _BrowseRecMap [ LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) ]
+	Value := _BrowseRecMap [ LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) ]
 
 	If Value == 0
 		Return Nil
 	EndIf
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 	If Select (_BrowseArea) == 0
 		Return Nil
 	EndIf
@@ -1314,7 +1314,7 @@ Local i , _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 
 	Go Value
 
-	If _HMG_SYSDATA [  9 ] [i] == .t.
+	If _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [i] == .t.
 		If Rlock()
 			Delete
 			Skip
@@ -1323,7 +1323,7 @@ Local i , _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 			EndIf
 
 			If Set ( _SET_DELETED ) == .T.
-				_BrowseSetValue( '' , '' , RecNo() , i , LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) )
+				_BrowseSetValue( '' , '' , RecNo() , i , LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) )
 			EndIf
 
 		Else
@@ -1340,7 +1340,7 @@ Local i , _BrowseRecMap , Value , _Alias , _RecNo , _BrowseArea
 			Go Bottom
 		EndIf
 		If Set ( _SET_DELETED ) == .T.
-			_BrowseSetValue( '' , '' , RecNo() , i  , LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) )
+			_BrowseSetValue( '' , '' , RecNo() , i  , LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) )
 		EndIf
 
 	EndIf
@@ -1414,7 +1414,7 @@ Local br
 
 	If append
 
-		I := ascan ( _HMG_SYSDATA [3] , GridHandle )
+		I := ascan ( _HMG_SYSDATA [HMG_CTL_HANDLE] , GridHandle )
 
 		_BrowseInPlaceAppend ( '' , '' , i )
 
@@ -1426,18 +1426,18 @@ Local br
 		Return Nil
 	EndIf
 
-	I := ascan ( _HMG_SYSDATA [3] , GridHandle )
+	I := ascan ( _HMG_SYSDATA [HMG_CTL_HANDLE] , GridHandle )
 
-	BFN := _HMG_SYSDATA [ 27 ] [i]
-	BFS := _HMG_SYSDATA [ 28 ] [i]
+	BFN := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	BFS := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
 
-	aInputMask := _HMG_SYSDATA [ 40 ] [ I ] [ 4 ]
+	aInputMask := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 4 ]
 
-	aFormat := _HMG_SYSDATA [40] [I] [5]
+	aFormat := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [I] [5]
 
-	_GridWorkArea := _HMG_SYSDATA [ 22 ] [i]
+	_GridWorkArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 
-	_GridFields := _HMG_SYSDATA [ 31 ] [i]
+	_GridFields := _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]
 
 	CellColIndex := This.CellColIndex
 
@@ -1445,7 +1445,7 @@ Local br
 		Return Nil
 	EndIf
 
-	if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 .And. CellColIndex == 1
+	if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 .And. CellColIndex == 1
 		PlayHand()
 		Return Nil
 	EndIf
@@ -1508,7 +1508,7 @@ Local br
 		EndIf
 	EndIf
 
-	aTemp := _HMG_SYSDATA [40] [i] [3]
+	aTemp := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [3]
 
 	IF VALTYPE ( aTemp ) = 'A'
 		IF HMG_LEN (aTemp) == HMG_LEN (_GridFields)
@@ -1586,7 +1586,7 @@ Local br
 
 	If ControlType == 'M'
 
-		r := InputBox ( '' , _HMG_SYSDATA [ 33 ] [I] [CellColIndex] , HB_UTF8STRTRAN(CellData,CHR(141),' ') , , , .T. )
+		r := InputBox ( '' , _HMG_SYSDATA [ HMG_CTL_CAPTION ] [I] [CellColIndex] , HB_UTF8STRTRAN(CellData,CHR(141),' ') , , , .T. )
 
 		If _HMG_SYSDATA [ 257 ] == .F.
 			Replace &FieldName With r
@@ -1600,7 +1600,7 @@ Local br
 		_HMG_SYSDATA [ 109 ] := GetActiveWindow()
 
 		DEFINE WINDOW _InPlaceEdit ;
-			AT This.CellRow + GridRow - _HMG_SYSDATA [ 18 ] [i] - 1 , This.CellCol + GridCol - _HMG_SYSDATA [ 19 ] [i] + 2 ;
+			AT This.CellRow + GridRow - _HMG_SYSDATA [ HMG_CTL_ROW ] [i] - 1 , This.CellCol + GridCol - _HMG_SYSDATA [ HMG_CTL_COL ] [i] + 2 ;
 			WIDTH This.CellWidth ;
 			HEIGHT This.CellHeight + 6 + Ldelta ;
 			MODAL ;
@@ -1610,7 +1610,7 @@ Local br
 
 			ON KEY CONTROL+W ACTION if ( _IsWindowActive ( '_InPlaceEdit' ) , _InPlaceEditOk ( i , Fieldname , _InPlaceEdit.Control_1.Value , ControlType , aValid , CellColIndex , sFieldName , _GridWorkArea , aValidMessages , lock , aInputItems ) , Nil )
 			ON KEY RETURN ACTION if ( _IsWindowActive ( '_InPlaceEdit' ) , _InPlaceEditOk ( i , Fieldname , _InPlaceEdit.Control_1.Value , ControlType , aValid , CellColIndex , sFieldName , _GridWorkArea , aValidMessages , lock , aInputItems ) , Nil )
-			ON KEY ESCAPE ACTION ( _HMG_SYSDATA [ 256 ] := .T. , dbrunlock() , _InPlaceEdit.Release , setfocus ( _HMG_SYSDATA [3] [i] ) )
+			ON KEY ESCAPE ACTION ( _HMG_SYSDATA [ 256 ] := .T. , dbrunlock() , _InPlaceEdit.Release , setfocus ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) )
 
 			If lInputItems == .T.
 
@@ -1960,7 +1960,7 @@ Local b , Result , mVar , TmpName
 
 	_HMG_SYSDATA [ 256 ] := .F.
 
-	setfocus ( _HMG_SYSDATA [3] [i] )
+	setfocus ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 Return
 *------------------------------------------------------------------------------*
@@ -1971,25 +1971,25 @@ Local IPE_MAXCOL
 Local TmpRow
 Local xs,xd
 
-	If _HMG_SYSDATA [ 15 ] [ i ] == .F.
+	If _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [ i ] == .F.
 		Return
 	EndIf
 
-	if LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) == 0
+	if LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == 0
 		Return
 	EndIf
 
-	IPE_MAXCOL := HMG_LEN ( _HMG_SYSDATA [ 31 ] [i] )
+	IPE_MAXCOL := HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i] )
 
 	Do While .T.
 
-		TmpRow := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] )
+		TmpRow := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 		If TmpRow != _HMG_SYSDATA [ 341 ] 
 
 			_HMG_SYSDATA [ 341 ] := TmpRow
 
-			if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+			if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 				_HMG_SYSDATA [ 340 ] := 2
 			Else
 				_HMG_SYSDATA [ 340 ] := 1
@@ -2001,36 +2001,36 @@ Local xs,xd
 		_HMG_SYSDATA [ 196 ] := _HMG_SYSDATA [ 340 ]
 
 		If _HMG_SYSDATA [ 340 ] == 1
-			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
+			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
 		Else
-			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
+			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
 		EndIf
 
-		xs :=	( ( _HMG_SYSDATA [ 19 ] [i] + r [2] ) +( r[3] ))  -  ( _HMG_SYSDATA [ 19 ] [i] + _HMG_SYSDATA [ 20 ] [i] )
+		xs :=	( ( _HMG_SYSDATA [ HMG_CTL_COL ] [i] + r [2] ) +( r[3] ))  -  ( _HMG_SYSDATA [ HMG_CTL_COL ] [i] + _HMG_SYSDATA [ HMG_CTL_WIDTH ] [i] )
 
 		xd := 20
 
 		If xs > -xd 
-			ListView_Scroll( _HMG_SYSDATA [3] [i] ,	xs + xd , 0 ) 
+			ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	xs + xd , 0 ) 
 		Else
 
         		If r [2] < 0
-                	     ListView_Scroll( _HMG_SYSDATA [3] [i] , r[2]	, 0 )
+                	     ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , r[2]	, 0 )
 	                EndIf
 
 		endIf
 
 		If _HMG_SYSDATA [ 340 ] == 1
-			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
+			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
 		Else
-			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
+			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
 		EndIf
 
-		_HMG_SYSDATA [ 197 ] := _HMG_SYSDATA [ 18 ] [i] + r [1]
-		_HMG_SYSDATA [ 198 ] := _HMG_SYSDATA [ 19 ] [i] + r [2]
+		_HMG_SYSDATA [ 197 ] := _HMG_SYSDATA [ HMG_CTL_ROW ] [i] + r [1]
+		_HMG_SYSDATA [ 198 ] := _HMG_SYSDATA [ HMG_CTL_COL ] [i] + r [2]
 		_HMG_SYSDATA [ 199 ] := r[3]
 		_HMG_SYSDATA [ 200 ] := r[4]
-		_BrowseEdit ( _HMG_SYSDATA [3][i] , _HMG_SYSDATA [ 39 ] [i] [4] , _HMG_SYSDATA [ 39 ] [i] [5] , _HMG_SYSDATA [ 39 ] [i] [3] , _HMG_SYSDATA [  9 ] [i] , .f. , _HMG_SYSDATA [ 15 ] [i] , _HMG_SYSDATA [ 39 ] [i] [7] )  
+		_BrowseEdit ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [4] , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [5] , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [3] , _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [i] , .f. , _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [7] )  
 		_HMG_SYSDATA [ 203 ] := 0
 		_HMG_SYSDATA [ 231 ] := ''
 
@@ -2045,13 +2045,13 @@ Local xs,xd
 
 			If _HMG_SYSDATA [ 340 ] == IPE_MAXCOL
 
-				if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+				if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 					_HMG_SYSDATA [ 340 ] := 2
 				Else
 					_HMG_SYSDATA [ 340 ] := 1
 				EndIf
 
-				ListView_Scroll( _HMG_SYSDATA [3] [i] ,	-10000  , 0 ) 
+				ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	-10000  , 0 ) 
 			EndIf
 
 			Exit
@@ -2062,13 +2062,13 @@ Local xs,xd
 
 			If _HMG_SYSDATA [ 340 ] > IPE_MAXCOL
 
-				if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+				if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 					_HMG_SYSDATA [ 340 ] := 2
 				Else
 					_HMG_SYSDATA [ 340 ] := 1
 				EndIf
 
-				ListView_Scroll( _HMG_SYSDATA [3] [i] ,	-10000  , 0 ) 
+				ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	-10000  , 0 ) 
 				Exit
 			EndIf
 
@@ -2088,7 +2088,7 @@ Local _CurrentValue
 	If _HMG_SYSDATA [ 254 ] == .T.
 
 		_Alias := Alias()
-		_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+		_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 		If Select (_BrowseArea) == 0
 			Return
 		EndIf
@@ -2116,7 +2116,7 @@ Procedure _BrowseOnChange (i)
 
 	_BrowseSync (i)
 
-	_DoControlEventProcedure ( _HMG_SYSDATA [ 12 ] [i] , i )
+	_DoControlEventProcedure ( _HMG_SYSDATA [ HMG_CTL_CHANGE ] [i] , i )
 
 Return
 
@@ -2133,7 +2133,7 @@ Local i , _Alias , _RecNo , _BrowseArea , _NewRec , aTemp
 
 
 	_Alias := Alias()
-	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
+	_BrowseArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 	If Select (_BrowseArea) == 0
 		Return
 	EndIf
@@ -2143,9 +2143,9 @@ Local i , _Alias , _RecNo , _BrowseArea , _NewRec , aTemp
 
 	_NewRec := RecCount() + 1
 
-	if ListView_GetItemCount(_HMG_SYSDATA [3][i] ) != 0
+	if ListView_GetItemCount(_HMG_SYSDATA [HMG_CTL_HANDLE][i] ) != 0
 		_BrowseVscrollUpdate( i )
-		Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [3][i] ) + 2 
+		Skip - LISTVIEWGETCOUNTPERPAGE ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] ) + 2 
 		_BrowseUpdate(ControlName , ParentForm , i )
 	endif
 
@@ -2158,13 +2158,13 @@ Local i , _Alias , _RecNo , _BrowseArea , _NewRec , aTemp
 		Select 0
 	Endif
 
-	aTemp := array ( HMG_LEN (_HMG_SYSDATA [ 31 ] [i]) )
+	aTemp := array ( HMG_LEN (_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]) )
 	afill ( aTemp , '' )
-	aadd ( _HMG_SYSDATA [ 32 ] [i] , _NewRec )
+	aadd ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] , _NewRec )
 
-	AddListViewItems ( _HMG_SYSDATA [3][i] , aTemp , 0 )
+	AddListViewItems ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , aTemp , 0 )
 
-	ListView_SetCursel ( _HMG_SYSDATA [3] [i] , HMG_LEN ( _HMG_SYSDATA [ 32 ] [i] ) )
+	ListView_SetCursel ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] ) )
 
 	_BrowseOnChange (i)
 
@@ -2179,7 +2179,7 @@ Procedure _BrowseVscrollUpdate (i)
 Local ActualRecord , RecordCount , KeyCount 
 
 	// If vertical scrollbar is used it must be updated
-	If _HMG_SYSDATA [  5 ] [i] != 0
+	If _HMG_SYSDATA [  HMG_CTL_ID ] [i] != 0
 
 		KeyCount := OrdKeyCount()
 		If KeyCount > 0
@@ -2190,14 +2190,14 @@ Local ActualRecord , RecordCount , KeyCount
 			RecordCount := RecCount()
 		EndIf
 
-		_HMG_SYSDATA [ 37 ] [i] := RecordCount
+		_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [i] := RecordCount
 
 		If RecordCount < 100
-			SetScrollRange (_HMG_SYSDATA [  5 ] [i] , 2 , 1 , RecordCount , .t. )
-			SetScrollPos ( _HMG_SYSDATA [  5 ] [i] , 2 , ActualRecord , .T. )
+			SetScrollRange (_HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , RecordCount , .t. )
+			SetScrollPos ( _HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , ActualRecord , .T. )
 		Else
-			SetScrollRange (_HMG_SYSDATA [  5 ] [i] , 2 , 1 , 100 , .t. )
-			SetScrollPos ( _HMG_SYSDATA [  5 ] [i] , 2 , Int ( ActualRecord * 100 / RecordCount ) , .T. )
+			SetScrollRange (_HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , 100 , .t. )
+			SetScrollPos ( _HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , Int ( ActualRecord * 100 / RecordCount ) , .T. )
 		EndIf
 
 	EndIf
@@ -2210,9 +2210,9 @@ Procedure _BrowseVscrollFastUpdate ( i , d )
 Local ActualRecord , RecordCount
 
 	// If vertical scrollbar is used it must be updated
-	If _HMG_SYSDATA [  5 ] [i] != 0
+	If _HMG_SYSDATA [  HMG_CTL_ID ] [i] != 0
 
-		RecordCount := _HMG_SYSDATA [ 37 ] [i]
+		RecordCount := _HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [i]
 
                 If ValType(RecordCount) <> 'N'
 			Return
@@ -2223,10 +2223,10 @@ Local ActualRecord , RecordCount
 		EndIf
 
 		If RecordCount < 100
-	                ActualRecord := GetScrollPos(_HMG_SYSDATA [  5 ] [i],2)
+	                ActualRecord := GetScrollPos(_HMG_SYSDATA [  HMG_CTL_ID ] [i],2)
 	                ActualRecord := ActualRecord + d
-			SetScrollRange (_HMG_SYSDATA [  5 ] [i] , 2 , 1 , RecordCount , .t. )
-			SetScrollPos ( _HMG_SYSDATA [  5 ] [i] , 2 , ActualRecord , .T. )
+			SetScrollRange (_HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , RecordCount , .t. )
+			SetScrollPos ( _HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , ActualRecord , .T. )
 		EndIf
 
 	EndIf
@@ -2244,7 +2244,7 @@ Local i
 	
 	i := GetControlIndex ( cControlName , cWindowName )
 
-	_HMG_SYSDATA [ 39 ] [i] [6] := lValue
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [6] := lValue
 
 Return Nil
 
@@ -2259,7 +2259,7 @@ Local i
 	
 	i := GetControlIndex ( cControlName , cWindowName )
 
-	_HMG_SYSDATA [ 39 ] [i] [2] := lValue
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [2] := lValue
 
 Return Nil
 
@@ -2274,7 +2274,7 @@ Local i
 	
 	i := GetControlIndex ( cControlName , cWindowName )
 
-	_HMG_SYSDATA [ 25 ] [i] := lValue
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [i] := lValue
 
 Return Nil
 
@@ -2288,7 +2288,7 @@ Local i
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-	_HMG_SYSDATA [ 39 ] [ i ] [ 7 ] := aValue
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ] [ 7 ] := aValue
 
 Return Nil
 
@@ -2302,7 +2302,7 @@ Local i
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-	_HMG_SYSDATA [ 39 ] [ i ] [ 8 ] := aValue
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ] [ 8 ] := aValue
 
 Return Nil
 
@@ -2313,7 +2313,7 @@ Local i
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-Return _HMG_SYSDATA [ 39 ] [i] [7] 
+Return _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [7] 
 
 *------------------------------------------------------------------------------*
 Function _GetBrowseDisplayItems ( cControlName , cWindowName )	
@@ -2322,7 +2322,7 @@ Local i
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-Return _HMG_SYSDATA [ 39 ] [i] [8] 
+Return _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [8] 
 
 *------------------------------------------------------------------------------*
 Function _GetBrowseAllowEdit ( cControlName , cWindowName )	
@@ -2331,7 +2331,7 @@ Local i
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-Return _HMG_SYSDATA [ 39 ] [i] [6] 
+Return _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [6] 
 
 *------------------------------------------------------------------------------*
 Function _GetBrowseAllowAppend ( cControlName , cWindowName , lValue )
@@ -2342,7 +2342,7 @@ lValue := NIL   // ADD
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-Return _HMG_SYSDATA [ 39 ] [i] [2] 
+Return _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] [2] 
 
 *------------------------------------------------------------------------------*
 Function _GetBrowseAllowDelete ( cControlName , cWindowName , lValue )
@@ -2353,7 +2353,7 @@ lValue := NIL   // ADD
 
 	i := GetControlIndex ( cControlName , cWindowName )
 
-Return _HMG_SYSDATA [ 25 ] [i]
+Return _HMG_SYSDATA [ HMG_CTL_PICTURE ] [i]
 
 *------------------------------------------------------------------------------*
 Function _BrowseCharMaskDisplay ( cText , cMask )

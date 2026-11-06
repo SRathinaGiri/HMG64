@@ -59,10 +59,10 @@ MEMVAR _HMG_SYSDATA
 *----------------------------------------------------------------------------*
 FUNCTION RedrawLabel (i)   // by Giancarlo, Febraury 2015
 *----------------------------------------------------------------------------*
-   IF _HMG_SYSDATA [ 1 ] [i]  ==  "LABEL" 
-      IF ValType ( _HMG_SYSDATA [ 9 ] [i] ) == 'L'
-         IF _HMG_SYSDATA [ 9 ] [i] == .T.
-            RedrawWindowControlRect( _HMG_SYSDATA [4] [i] , _HMG_SYSDATA [ 18 ][i] , _HMG_SYSDATA [ 19 ][i] , _HMG_SYSDATA [ 18 ][i] + _HMG_SYSDATA [ 21 ][i] , _HMG_SYSDATA [ 19 ][i] + _HMG_SYSDATA [ 20 ] [i] )
+   IF _HMG_SYSDATA [ HMG_CTL_TYPE ] [i]  ==  "LABEL" 
+      IF ValType ( _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [i] ) == 'L'
+         IF _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [i] == .T.
+            RedrawWindowControlRect( _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [i] , _HMG_SYSDATA [ HMG_CTL_ROW ][i] , _HMG_SYSDATA [ HMG_CTL_COL ][i] , _HMG_SYSDATA [ HMG_CTL_ROW ][i] + _HMG_SYSDATA [ HMG_CTL_HEIGHT ][i] , _HMG_SYSDATA [ HMG_CTL_COL ][i] + _HMG_SYSDATA [ HMG_CTL_WIDTH ] [i] )
          ENDIF
       ENDIF
    ENDIF
@@ -76,7 +76,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 27 ] [i] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i] )
 *-----------------------------------------------------------------------------*
 Function _GetFontSize ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
@@ -84,7 +84,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 28 ] [i] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i] )
 *-----------------------------------------------------------------------------*
 Function _GetFontBold ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
@@ -92,7 +92,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 29 ] [i] [1] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1] )
 *-----------------------------------------------------------------------------*
 Function _GetFontItalic ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
@@ -100,7 +100,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 29 ] [i] [2] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2] )
 *-----------------------------------------------------------------------------*
 Function _GetFontUnderline ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
@@ -108,7 +108,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 29 ] [i] [3] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3] )
 *-----------------------------------------------------------------------------*
 Function _GetFontStrikeOut ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
@@ -116,7 +116,7 @@ Local i
 
 	i := GetControlIndex ( ControlName, ParentForm )
 
-Return	( _HMG_SYSDATA [ 29 ] [i] [4] )
+Return	( _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4] )
 *-----------------------------------------------------------------------------*
 Function _SetFontName ( ControlName, ParentForm , Value )
 *-----------------------------------------------------------------------------*
@@ -126,19 +126,19 @@ Local i , h , s, ab , ai , au , as , x
 	//T = GetControlType (ControlName,ParentForm)
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	s := _HMG_SYSDATA [ 28 ] [i]
-	ab := _HMG_SYSDATA [ 29 ] [i] [1]
-	ai := _HMG_SYSDATA [ 29 ] [i] [2]
-	au := _HMG_SYSDATA [ 29 ] [i] [3]
-	as := _HMG_SYSDATA [ 29 ] [i] [4]
-	_HMG_SYSDATA [ 27 ] [i] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	s := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
+	ab := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1]
+	ai := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2]
+	au := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3]
+	as := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4]
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 	   SetFontNameSize ( h [1] , Value , s , ab , ai , au , as )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 			SetFontNameSize ( h [x] , Value , s , ab , ai , au , as )
@@ -156,19 +156,19 @@ Function _SetFontSize ( ControlName, ParentForm , Value  )
 Local i , h , n , ab , ai , au , as , x 
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	n := _HMG_SYSDATA [ 27 ] [i]
-	ab := _HMG_SYSDATA [ 29 ] [i] [1]
-	ai := _HMG_SYSDATA [ 29 ] [i] [2]
-	au := _HMG_SYSDATA [ 29 ] [i] [3]
-	as := _HMG_SYSDATA [ 29 ] [i] [4]
-	_HMG_SYSDATA [ 28 ] [i] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	n := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	ab := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1]
+	ai := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2]
+	au := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3]
+	as := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4]
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 	   SetFontNameSize ( h [1], n , Value , ab , ai , au , as )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 			SetFontNameSize ( h [x], n , Value , ab , ai , au , as )
@@ -186,20 +186,20 @@ Function _SetFontBold ( ControlName, ParentForm , Value  )
 Local i , h , n , s , ai , au , as , x 
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	n := _HMG_SYSDATA [ 27 ] [i]
-	s := _HMG_SYSDATA [ 28 ] [i]
-	ai := _HMG_SYSDATA [ 29 ] [i] [2]
-	au := _HMG_SYSDATA [ 29 ] [i] [3]
-	as := _HMG_SYSDATA [ 29 ] [i] [4]
-	_HMG_SYSDATA [ 29 ] [i] [1] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	n := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	s := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
+	ai := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2]
+	au := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3]
+	as := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4]
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 
 		SetFontNameSize ( h [1], n , s , Value , ai , au , as )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 
@@ -219,20 +219,20 @@ Function _SetFontItalic ( ControlName, ParentForm , Value  )
 Local i , h , n , s , ab , au , as , x
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	n := _HMG_SYSDATA [ 27 ] [i]
-	s := _HMG_SYSDATA [ 28 ] [i]
-	ab := _HMG_SYSDATA [ 29 ] [i] [1]
-	au := _HMG_SYSDATA [ 29 ] [i] [3]
-	as := _HMG_SYSDATA [ 29 ] [i] [4]
-	_HMG_SYSDATA [ 29 ] [i] [2] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	n := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	s := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
+	ab := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1]
+	au := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3]
+	as := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4]
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 
 	   SetFontNameSize ( h [1], n , s , ab , Value , au , as )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 
@@ -252,19 +252,19 @@ Function _SetFontUnderline ( ControlName, ParentForm , Value  )
 Local i , h , n , s , ab , ai , as , x 
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	n := _HMG_SYSDATA [ 27 ] [i]
-	s := _HMG_SYSDATA [ 28 ] [i]
-	ab := _HMG_SYSDATA [ 29 ] [i] [1]
-	ai := _HMG_SYSDATA [ 29 ] [i] [2]
-	as := _HMG_SYSDATA [ 29 ] [i] [4]
-	_HMG_SYSDATA [ 29 ] [i] [3] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	n := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	s := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
+	ab := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1]
+	ai := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2]
+	as := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4]
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 	   SetFontNameSize ( h [1], n , s , ab , ai , Value , as )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 
@@ -284,19 +284,19 @@ Function _SetFontStrikeOut ( ControlName, ParentForm , Value  )
 Local i , h , n , s , ab , ai , au , x 
 
 	i := GetControlIndex ( ControlName, ParentForm )
-	DeleteObject ( _HMG_SYSDATA [ 36 ] [i] )
-	h := _HMG_SYSDATA [3] [i]
-	n := _HMG_SYSDATA [ 27 ] [i]
-	s := _HMG_SYSDATA [ 28 ] [i]
-	ab := _HMG_SYSDATA [ 29 ] [i] [1]
-	ai := _HMG_SYSDATA [ 29 ] [i] [2]
-	au := _HMG_SYSDATA [ 29 ] [i] [3]
-	_HMG_SYSDATA [ 29 ] [i] [4] := Value
+	DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] )
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
+	n := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i]
+	s := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i]
+	ab := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [1]
+	ai := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [2]
+	au := _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [3]
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [4] := Value
 	do case
-	case _HMG_SYSDATA [1] [i] == "SPINNER"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "SPINNER"
 	   SetFontNameSize ( h [1], n , s , ab , ai , au , Value )
 
-	case _HMG_SYSDATA [1] [i] == "RADIOGROUP"
+	case _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "RADIOGROUP"
 
 		For x := 1 To HMG_LEN (h)
 
@@ -323,12 +323,12 @@ Function GetControlFont ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 LOCAL i := GetControlIndex ( ControlName, ParentForm )
 LOCAL aFontData := {}
-      AADD ( aFontData , _HMG_SYSDATA [ 27 ] [i] )         //   FontName
-      AADD ( aFontData , _HMG_SYSDATA [ 28 ] [i] )         //   FontSize
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 1 ] )   //   Bold
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 2 ] )   //   Italic
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 3 ] )   //   Underline
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 4 ] )   //   Strikeout
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i] )         //   FontName
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i] )         //   FontSize
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 1 ] )   //   Bold
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 2 ] )   //   Italic
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 3 ] )   //   Underline
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 4 ] )   //   Strikeout
 Return aFontData
 
 
@@ -336,12 +336,12 @@ Return aFontData
 Function GetControlFontByIndex ( i )
 *-----------------------------------------------------------------------------*
 LOCAL aFontData := {}
-      AADD ( aFontData , _HMG_SYSDATA [ 27 ] [i] )         //   FontName
-      AADD ( aFontData , _HMG_SYSDATA [ 28 ] [i] )         //   FontSize
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 1 ] )   //   Bold
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 2 ] )   //   Italic
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 3 ] )   //   Underline
-      AADD ( aFontData , _HMG_SYSDATA [ 29 ] [i] [ 4 ] )   //   Strikeout
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [i] )         //   FontName
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [i] )         //   FontSize
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 1 ] )   //   Bold
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 2 ] )   //   Italic
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 3 ] )   //   Underline
+      AADD ( aFontData , _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [i] [ 4 ] )   //   Strikeout
 Return aFontData
 
 
@@ -349,13 +349,13 @@ Return aFontData
 Function GetControlFontHandle ( ControlName, ParentForm )
 *-----------------------------------------------------------------------------*
 LOCAL i := GetControlIndex ( ControlName, ParentForm )
-Return _HMG_SYSDATA [ 36 ] [i]
+Return _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i]
 
 
 *-----------------------------------------------------------------------------*
 Function GetControlFontHandleByIndex ( i )
 *-----------------------------------------------------------------------------*
-Return _HMG_SYSDATA [ 36 ] [i]
+Return _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i]
 
 
 
@@ -365,8 +365,8 @@ Function SetControlFont ( ControlName, ParentForm , aFont )
 LOCAL i := GetControlIndex (ControlName, ParentForm)
 LOCAL ControlHandle := GetControlHandle (ControlName, ParentForm)
 LOCAL hFont := _SetFont (ControlHandle, aFont[1], aFont[2], aFont[3], aFont[4], aFont[5], aFont[6])
-   DeleteObject (_HMG_SYSDATA [ 36 ] [i])
-   _HMG_SYSDATA [ 36 ] [i] := hFont
+   DeleteObject (_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i])
+   _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] := hFont
    RedrawLabel (i)
 Return hFont
 
@@ -374,10 +374,10 @@ Return hFont
 *-----------------------------------------------------------------------------*
 Function SetControlFontByIndex ( i , aFont )
 *-----------------------------------------------------------------------------*
-LOCAL ControlHandle := _HMG_SYSDATA [ 3 ] [i]
+LOCAL ControlHandle := _HMG_SYSDATA [ HMG_CTL_HANDLE ] [i]
 LOCAL hFont := _SetFont (ControlHandle, aFont[1], aFont[2], aFont[3], aFont[4], aFont[5], aFont[6])
-   DeleteObject (_HMG_SYSDATA [ 36 ] [i])
-   _HMG_SYSDATA [ 36 ] [i] := hFont
+   DeleteObject (_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i])
+   _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] := hFont
    RedrawLabel (i)
 Return hFont
 
@@ -386,14 +386,14 @@ Return hFont
 Function ChangeControlFontSize ( ControlName, ParentForm , nSize )
 *-----------------------------------------------------------------------------*
 LOCAL i             := GetControlIndex  (ControlName, ParentForm)
-LOCAL ControlHandle := _HMG_SYSDATA [ 3 ] [i]
+LOCAL ControlHandle := _HMG_SYSDATA [ HMG_CTL_HANDLE ] [i]
 LOCAL aFont         := GetControlFontByIndex ( i )
 LOCAL hFont
    IF ValType (nSize) == "N" .AND. nSize > 0
       aFont[2] := nSize
    ENDIF
    hFont := _SetFont (ControlHandle, aFont[1], aFont[2], aFont[3], aFont[4], aFont[5], aFont[6])
-   DeleteObject (_HMG_SYSDATA [ 36 ] [i])
-   _HMG_SYSDATA [ 36 ] [i] := hFont
+   DeleteObject (_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i])
+   _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] := hFont
    RedrawLabel (i)
 Return hFont

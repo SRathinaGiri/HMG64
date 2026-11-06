@@ -255,8 +255,8 @@ LOCAL i:=0, k, nSubIndex1:=0, ret := NIL
 
    IF ( EventIsKeyboardMessage() == .T. .OR. EventIsMouseMessage() == .T. ) .AND.  EventIsHMGWindowsMessage() == .F.
 
-      FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [3])
-         IF HMG_CompareHandle (_HMG_SYSDATA [3] [k],  EventHWND(), @nSubIndex1) == .T.
+      FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_HANDLE])
+         IF HMG_CompareHandle (_HMG_SYSDATA [HMG_CTL_HANDLE] [k],  EventHWND(), @nSubIndex1) == .T.
             i := k
             EXIT
          ENDIF

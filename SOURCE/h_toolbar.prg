@@ -160,46 +160,46 @@ Default nImageHeight	To -1
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1]		[k] := "TOOLBAR" 
-	_HMG_SYSDATA [2]		[k] := cControlName
-	_HMG_SYSDATA [3]		[k] := nControlHandle 
-	_HMG_SYSDATA [4]		[k] := nParentWindowHandle 
-	_HMG_SYSDATA [  5 ]		[k] := nId
-	_HMG_SYSDATA [  6 ]		[k] := Nil
-	_HMG_SYSDATA [  7 ]		[k] := {} 
-	_HMG_SYSDATA [  8 ]		[k] := Nil 
-	_HMG_SYSDATA [  9 ]		[k] := "" 
-	_HMG_SYSDATA [ 10 ]		[k] := "" 
-	_HMG_SYSDATA [ 11 ]		[k] := "" 
-	_HMG_SYSDATA [ 12 ]		[k] := "" 
-	_HMG_SYSDATA [ 13 ]		[k] := .F.	
-	_HMG_SYSDATA [ 14 ]		[k] := Nil 
-	_HMG_SYSDATA [ 15 ]		[k] := Nil 
-	_HMG_SYSDATA [ 16 ]		[k] := ""  
-	_HMG_SYSDATA [ 17 ]		[k] := {} 
-	_HMG_SYSDATA [ 18 ]		[k] := IF (VALTYPE (lBottom) == "L",         lBottom,         .F.)   // ADD
-	_HMG_SYSDATA [ 19 ]		[k] := IF (VALTYPE (lSplitBoxActive) == "L", lSplitBoxActive, .F.)   // ADD
-	_HMG_SYSDATA [ 20 ]		[k] := nButtonWidth
-	_HMG_SYSDATA [ 21 ]		[k] := nButtonHeight
-	_HMG_SYSDATA [ 22 ]		[k] := 0 
-	_HMG_SYSDATA [ 23 ]		[k] := -1  
-	_HMG_SYSDATA [ 24 ]		[k] := -1 
-	_HMG_SYSDATA [ 25 ]		[k] := "" 
-	_HMG_SYSDATA [ 26 ]		[k] := 0 
-	_HMG_SYSDATA [ 27 ]		[k] := "" 
-	_HMG_SYSDATA [ 28 ]		[k] := 0  
-	_HMG_SYSDATA [ 29 ]		[k] := {.f.,.f.,.f.,.f.} 
-	_HMG_SYSDATA [ 30 ]		[k] := "" 
-	_HMG_SYSDATA [ 31 ]		[k] := 0  
-	_HMG_SYSDATA [ 32 ]		[k] := 0  
-	_HMG_SYSDATA [ 33 ]		[k] := ""  
-	_HMG_SYSDATA [ 34 ]		[k] := .t. 
-	_HMG_SYSDATA [ 35 ]		[k] := 0 
-	_HMG_SYSDATA [ 36 ]		[k] := 0 
-	_HMG_SYSDATA [ 37 ]		[k] := 0 
-	_HMG_SYSDATA [ 38 ]		[k] := .T. 
-	_HMG_SYSDATA [ 39 ]		[k] := 0
-	_HMG_SYSDATA [ 40 ] 		[k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE]		[k] := "TOOLBAR" 
+	_HMG_SYSDATA [HMG_CTL_NAME]		[k] := cControlName
+	_HMG_SYSDATA [HMG_CTL_HANDLE]		[k] := nControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE]		[k] := nParentWindowHandle 
+	_HMG_SYSDATA [  HMG_CTL_ID ]		[k] := nId
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]		[k] := Nil
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]		[k] := {} 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]		[k] := Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]		[k] := .F.	
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]		[k] := Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]		[k] := Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]		[k] := ""  
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]		[k] := {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]		[k] := IF (VALTYPE (lBottom) == "L",         lBottom,         .F.)   // ADD
+	_HMG_SYSDATA [ HMG_CTL_COL ]		[k] := IF (VALTYPE (lSplitBoxActive) == "L", lSplitBoxActive, .F.)   // ADD
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]		[k] := nButtonWidth
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]		[k] := nButtonHeight
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]		[k] := -1  
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]		[k] := -1 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]		[k] := 0  
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]		[k] := {.f.,.f.,.f.,.f.} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]		[k] := 0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]		[k] := 0  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]		[k] := ""  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]		[k] := .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]		[k] := .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ]		[k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] 		[k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 
 Return Nil
@@ -285,50 +285,50 @@ Local nButtonPos
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1]		[k] := "TOOLBUTTON" 
-	_HMG_SYSDATA [2]		[k] :=  cControlName 
-	_HMG_SYSDATA [3]		[k] :=  nControlHandle
-	_HMG_SYSDATA [4]		[k] :=  nParentWindowHandle
-	_HMG_SYSDATA [  5 ]		[k] :=  nId 
-	_HMG_SYSDATA [  6 ]		[k] :=  bAction
-	_HMG_SYSDATA [  7 ]		[k] :=  {} 
-	_HMG_SYSDATA [  8 ]		[k] :=  _HMG_SYSDATA [ 309 ]   // ToolBar Button Count
-	_HMG_SYSDATA [  9 ]		[k] :=  "" 
-	_HMG_SYSDATA [ 10 ]		[k] :=  ""
-	_HMG_SYSDATA [ 11 ]		[k] :=  "" 
-	_HMG_SYSDATA [ 12 ]		[k] :=  "" 
-	_HMG_SYSDATA [ 13 ]		[k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]		[k] :=  Nil 
-	_HMG_SYSDATA [ 15 ]		[k] :=  Nil 
-	_HMG_SYSDATA [ 16 ]		[k] := "" 
-	_HMG_SYSDATA [ 17 ]		[k] := {} 
-	_HMG_SYSDATA [ 18 ]		[k] := Nil
-	_HMG_SYSDATA [ 19 ]		[k] := Nil 
-	_HMG_SYSDATA [ 20 ]		[k] := 0 
-	_HMG_SYSDATA [ 21 ]		[k] := 0 
-	_HMG_SYSDATA [ 22 ]		[k] := 0 
-	_HMG_SYSDATA [ 23 ]		[k] := -1 
-	_HMG_SYSDATA [ 24 ]		[k] := -1 
-	_HMG_SYSDATA [ 25 ]		[k] := cPicture
-	_HMG_SYSDATA [ 26 ]		[k] := _HMG_SYSDATA [ 310 ]   // ToolBar Handle
-	_HMG_SYSDATA [ 27 ]		[k] := '' 
-	_HMG_SYSDATA [ 28 ]		[k] := 0 
-	_HMG_SYSDATA [ 29 ]		[k] := {.f.,.f.,.f.,.f.} 
-	_HMG_SYSDATA [ 30 ]		[k] := cToolTip
-	_HMG_SYSDATA [ 31 ]		[k] := 0  
-	_HMG_SYSDATA [ 32 ]		[k] := notrans  
-	_HMG_SYSDATA [ 33 ]		[k] := cCaption  
-	_HMG_SYSDATA [ 34 ]		[k] := .t. 
-	_HMG_SYSDATA [ 35 ]		[k] := 0 
-	_HMG_SYSDATA [ 36 ]		[k] := 0 
-	_HMG_SYSDATA [ 37 ]		[k] := 0 
-	_HMG_SYSDATA [ 38 ]		[k] := .T. 
-	_HMG_SYSDATA [ 39 ]		[k] := 0
-	_HMG_SYSDATA [ 40 ] 		[k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE]		[k] := "TOOLBUTTON" 
+	_HMG_SYSDATA [HMG_CTL_NAME]		[k] :=  cControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE]		[k] :=  nControlHandle
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE]		[k] :=  nParentWindowHandle
+	_HMG_SYSDATA [  HMG_CTL_ID ]		[k] :=  nId 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]		[k] :=  bAction
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]		[k] :=  {} 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]		[k] :=  _HMG_SYSDATA [ 309 ]   // ToolBar Button Count
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]		[k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]		[k] :=  ""
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]		[k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]		[k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]		[k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]		[k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]		[k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]		[k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]		[k] := {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]		[k] := Nil
+	_HMG_SYSDATA [ HMG_CTL_COL ]		[k] := Nil 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]		[k] := -1 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]		[k] := -1 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]		[k] := cPicture
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]		[k] := _HMG_SYSDATA [ 310 ]   // ToolBar Handle
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]		[k] := '' 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]		[k] := {.f.,.f.,.f.,.f.} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]		[k] := cToolTip
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]		[k] := 0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]		[k] := notrans  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]		[k] := cCaption  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]		[k] := .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]		[k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]		[k] := .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ]		[k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] 		[k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	If ValType ( cCaption ) != 'U'
 
-      SetToolButtonCaption ( _HMG_SYSDATA [26] [k] , _HMG_SYSDATA [5] [k] , cCaption)   // ADD HMG 3.0.45
+      SetToolButtonCaption ( _HMG_SYSDATA [HMG_CTL_CONTAINERHANDLE] [k] , _HMG_SYSDATA [HMG_CTL_ID] [k] , cCaption)   // ADD HMG 3.0.45
 		cCaption := HMG_UPPER ( cCaption )
 
 		i := HB_UAT ( '&' , cCaption )
@@ -338,7 +338,7 @@ Local nButtonPos
 
 			If c >= 48 .And. c <= 90
 
-				nToolBarIndex := aScan ( _HMG_SYSDATA [ 3 ] , _HMG_SYSDATA [ 310 ] )
+				nToolBarIndex := aScan ( _HMG_SYSDATA [ HMG_CTL_HANDLE ] , _HMG_SYSDATA [ 310 ] )
 				nButtonPos := _HMG_SYSDATA [ 309 ]
 
 				If lWholeDropDown == .T.
@@ -365,7 +365,7 @@ Local i
 		i := GetFormIndex ( _HMG_SYSDATA [ 222 ] )
 
 		AddSplitBoxItem ( _HMG_SYSDATA [ 310 ] , ;
-				_HMG_SYSDATA [ 87 ] [i] ,  ;
+				_HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] ,  ;
 				 GetToolBarWidth(_HMG_SYSDATA [ 310 ]) , ;
 				_HMG_SYSDATA [ 261 ] , ;
 				_HMG_SYSDATA [ 313 ] , ;
@@ -389,18 +389,18 @@ Local aSize
 Local x
 
 
-	x  := Ascan ( _HMG_SYSDATA [  5 ] , nToolButtonId )
+	x  := Ascan ( _HMG_SYSDATA [  HMG_CTL_ID ] , nToolButtonId )
 
-	if x > 0 .And. _HMG_SYSDATA [1] [x] = "TOOLBUTTON"
+	if x > 0 .And. _HMG_SYSDATA [HMG_CTL_TYPE] [x] = "TOOLBUTTON"
 		aPos:= {0,0,0,0}
-		GetWindowRect(_HMG_SYSDATA [3] [i],aPos)
-		aSize := GetToolButtonSize ( _HMG_SYSDATA [3] [i] , _HMG_SYSDATA [  8 ] [ x ] - 1 )
+		GetWindowRect(_HMG_SYSDATA [HMG_CTL_HANDLE] [i],aPos)
+		aSize := GetToolButtonSize ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , _HMG_SYSDATA [  HMG_CTL_VALUE ] [ x ] - 1 )
 
-		SendMessage( _HMG_SYSDATA [3] [i] , TB_SETHOTITEM, nButtonPos - 1 ,  0 )
+		SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , TB_SETHOTITEM, nButtonPos - 1 ,  0 )
 
-		TrackPopupMenu ( _HMG_SYSDATA [ 32 ] [x] , aPos[1] + aSize [1] , aPos[2] + aSize [2] + ( aPos[4] - aPos[2] - aSize [2] ) / 2 , nParentWindowHandle )
+		TrackPopupMenu ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [x] , aPos[1] + aSize [1] , aPos[2] + aSize [2] + ( aPos[4] - aPos[2] - aSize [2] ) / 2 , nParentWindowHandle )
 
-		SendMessage( _HMG_SYSDATA [3] [i] , TB_SETHOTITEM, -1 ,  0 )
+		SendMessage( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , TB_SETHOTITEM, -1 ,  0 )
 
     	EndIf
 

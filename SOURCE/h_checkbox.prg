@@ -145,46 +145,46 @@ Local cParentWindowName := ''
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "CHECKBOX" 
-	_HMG_SYSDATA [2] [k] :=   ControlName 
-	_HMG_SYSDATA [3] [k] :=   ControlHandle
-	_HMG_SYSDATA [4] [k] :=   ParentForm 
-	_HMG_SYSDATA [  5 ] [k] :=   0 
-	_HMG_SYSDATA [  6 ] [k] :=   OnEnter
-	_HMG_SYSDATA [  7 ] [k] :=   Field 
-	_HMG_SYSDATA [  8 ] [k] :=   Nil 
-	_HMG_SYSDATA [  9 ] [k] :=   transparent 
-	_HMG_SYSDATA [ 10 ] [k] :=   lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] :=   gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] :=   changeprocedure 
-	_HMG_SYSDATA [ 13 ] [k] :=   .F. 
-	_HMG_SYSDATA [ 14 ] [k] :=   backcolor 
-	_HMG_SYSDATA [ 15 ] [k] :=   fontcolor 
-	_HMG_SYSDATA [ 16 ] [k] :=   _HMG_SYSDATA [ 266 ] 
-	_HMG_SYSDATA [ 17 ] [k] :=   {}
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ] [k] :=   x 
-	_HMG_SYSDATA [ 20 ]  [k] :=  w 
-	_HMG_SYSDATA [ 21 ] [k] :=   h 
-	_HMG_SYSDATA [ 22 ]  [k] :=  0 
-	_HMG_SYSDATA [ 23 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 26 ]  [k] :=  0 
-	_HMG_SYSDATA [ 27 ]  [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ]  [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]  [k] :=   tooltip  
-	_HMG_SYSDATA [ 31 ]  [k] :=  cParentTabName
-	_HMG_SYSDATA [ 32 ]  [k] :=  cParentWindowName
-	_HMG_SYSDATA [ 33 ]  [k] :=  Caption  
-	_HMG_SYSDATA [ 34 ]  [k] :=  if(invisible,FALSE,TRUE) 
-	_HMG_SYSDATA [ 35 ]  [k] :=  HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] := FontHandle 
-	_HMG_SYSDATA [ 37 ] [k] :=  0
-	_HMG_SYSDATA [ 38 ] [k] :=  .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHECKBOX" 
+	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] :=   ControlHandle
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] :=   ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] :=   0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] :=   OnEnter
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] :=   Field 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] :=   Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] :=   transparent 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] :=   lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] :=   gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] :=   changeprocedure 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] :=   .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] :=   backcolor 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] :=   fontcolor 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] :=   _HMG_SYSDATA [ 266 ] 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] :=   {}
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] :=   x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] :=   h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 )
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=   tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=  cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=  cParentWindowName
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=  Caption  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=  if(invisible,FALSE,TRUE) 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=  HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] := FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] :=  0
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] :=  .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	if value = .t.
 	     	SendMessage( Controlhandle , BM_SETCHECK  , BST_CHECKED , 0 )
@@ -192,9 +192,9 @@ Local cParentWindowName := ''
 
 	if valtype ( Field ) != 'U'
 		if k > 0
-			aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+			aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 		Else
-			aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , HMG_LEN (_HMG_SYSDATA [3]) )
+			aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , HMG_LEN (_HMG_SYSDATA [HMG_CTL_HANDLE]) )
 		EndIf
 	EndIf
 
@@ -269,46 +269,46 @@ Local FontHandle
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "CHECKBOX" 
-	_HMG_SYSDATA [2] [k] :=   ControlName 
-	_HMG_SYSDATA [3] [k] :=   ControlHandle 
-	_HMG_SYSDATA [4] [k] :=   ParentForm 
-	_HMG_SYSDATA [  5 ] [k] :=   0 
-	_HMG_SYSDATA [  6 ] [k] :=  OnEnter
-	_HMG_SYSDATA [  7 ]  [k] :=  {} 
-	_HMG_SYSDATA [  8 ]  [k] :=  Nil 
-	_HMG_SYSDATA [  9 ]   [k] := "" 
-	_HMG_SYSDATA [ 10 ]  [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ]  [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ]  [k] :=  changeprocedure 
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]   [k] := Nil 
-	_HMG_SYSDATA [ 15 ]   [k] := Nil
-	_HMG_SYSDATA [ 16 ]   [k] := "" 
-	_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ]   [k] := x 
-	_HMG_SYSDATA [ 20 ]   [k] := w 
-	_HMG_SYSDATA [ 21 ]   [k] := h 
-	_HMG_SYSDATA [ 22 ]   [k] := 0 
-	_HMG_SYSDATA [ 23 ]   [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 26 ]  [k] :=  0 
-	_HMG_SYSDATA [ 27 ]   [k] := fontname 
-	_HMG_SYSDATA [ 28 ]   [k] := fontsize 
-	_HMG_SYSDATA [ 29 ]   [k] := {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]  [k] :=   tooltip  
-	_HMG_SYSDATA [ 31 ]   [k] :=  0  
-	_HMG_SYSDATA [ 32 ]   [k] :=  0  
-	_HMG_SYSDATA [ 33 ]   [k] :=  Caption  
-	_HMG_SYSDATA [ 34 ]  [k] :=   if(invisible,FALSE,TRUE) 
-	_HMG_SYSDATA [ 35 ]  [k] :=   HelpId
-	_HMG_SYSDATA [ 36 ]   [k] :=  FontHandle 
-	_HMG_SYSDATA [ 37 ]   [k] :=  0 
-	_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHECKBOX" 
+	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] :=   ControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] :=   ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] :=   0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] :=  OnEnter
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  {} 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]   [k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  changeprocedure 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]   [k] := Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]   [k] := Nil
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]   [k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]   [k] := x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]   [k] := w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]   [k] := h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]   [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]   [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]   [k] := fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]   [k] := fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]   [k] := {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=   tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]   [k] :=  0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]   [k] :=  0  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]   [k] :=  Caption  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   if(invisible,FALSE,TRUE) 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   HelpId
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]   [k] :=  FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]   [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	if value = .t.
 	     	SendMessage( Controlhandle , BM_SETCHECK  , BST_CHECKED , 0 )
@@ -379,46 +379,46 @@ Local aRet
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [  1 ]  [k] :=  "CHECKBOX" 
-	_HMG_SYSDATA [  2 ]  [k] :=  ControlName 
-	_HMG_SYSDATA [  3 ]  [k] :=  ControlHandle 
-	_HMG_SYSDATA [  4 ]  [k] :=  ParentForm
-	_HMG_SYSDATA [  5 ]  [k] :=  0 
-	_HMG_SYSDATA [  6 ]  [k] :=  OnEnter
-	_HMG_SYSDATA [  7 ]  [k] :=  {}
-	_HMG_SYSDATA [  8 ]  [k] :=  Nil 
-	_HMG_SYSDATA [  9 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 10 ]  [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ]  [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ]  [k] :=  changeprocedure 
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]  [k] :=  Nil 
-	_HMG_SYSDATA [ 15 ]  [k] :=  Nil 
-	_HMG_SYSDATA [ 16 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ]  [k] :=  x 
-	_HMG_SYSDATA [ 20 ]  [k] :=  w 
-	_HMG_SYSDATA [ 21 ]  [k] :=  h 
-	_HMG_SYSDATA [ 22 ]  [k] :=  0 
-	_HMG_SYSDATA [ 23 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 )
-	_HMG_SYSDATA [ 25 ]  [k] :=  Picture 
-	_HMG_SYSDATA [ 26 ]  [k] :=  4 // BUTTON_IMAGELIST_ALIGN_CENTER
-	_HMG_SYSDATA [ 27 ]  [k] :=  fontname
-	_HMG_SYSDATA [ 28 ]  [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {.f.,.f.,.f.,.f.} 
-	_HMG_SYSDATA [ 30 ]  [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ]  [k] :=  0  
-	_HMG_SYSDATA [ 32 ]  [k] :=  notrans // ADD  
-	_HMG_SYSDATA [ 33 ]  [k] :=  ''  
-	_HMG_SYSDATA [ 34 ]  [k] :=  if (invisible,FALSE,TRUE)
-	_HMG_SYSDATA [ 35 ]  [k] :=  HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] :=  0 
-	_HMG_SYSDATA [ 37 ]  [k] :=  aRet [2]
-	_HMG_SYSDATA [ 38 ]  [k] :=  .T. 
-	_HMG_SYSDATA [ 39 ]  [k] :=  1
-	_HMG_SYSDATA [ 40 ]  [k] :=  { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [  HMG_CTL_TYPE ]  [k] :=  "CHECKBOX" 
+	_HMG_SYSDATA [  HMG_CTL_NAME ]  [k] :=  ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ]  [k] :=  ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ]  [k] :=  ParentForm
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  OnEnter
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  {}
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  changeprocedure 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=  h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 )
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  Picture 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  4 // BUTTON_IMAGELIST_ALIGN_CENTER
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  fontname
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {.f.,.f.,.f.,.f.} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=  0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=  notrans // ADD  
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=  ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=  if (invisible,FALSE,TRUE)
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=  HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=  aRet [2]
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=  .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ]  [k] :=  1
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ]  [k] :=  { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	if value = .t.
 	    	SendMessage( Controlhandle , BM_SETCHECK  , BST_CHECKED , 0 )
@@ -429,7 +429,7 @@ Return Nil
 Procedure _DataCheckBoxRefresh (i)
 Local Field
 
-	Field		:= _HMG_SYSDATA [  7 ] [i]
+	Field		:= _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 	_SetValue ( '' , '' , &Field , i ) 
 
 Return
@@ -439,7 +439,7 @@ Local Field , i
 
 	i := GetControlIndex ( ControlName , ParentForm)	
 
-	Field := _HMG_SYSDATA [  7 ] [i]
+	Field := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 
 	REPLACE &Field WITH _GetValue ( Controlname , ParentForm ) 
 

@@ -162,15 +162,15 @@ ENDIF
 
 		if i > 0
 
-			ControlHandle := InitRichEditBox ( _HMG_SYSDATA [ 87 ] [i] , 0, x, y, w, h, '', 0 , MaxLength , readonly, invisible, notabstop, noHscroll, noVscroll )
+			ControlHandle := InitRichEditBox ( _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , 0, x, y, w, h, '', 0 , MaxLength , readonly, invisible, notabstop, noHscroll, noVscroll )
 			if valtype(fontname) != "U" .and. valtype(fontsize) != "U"
 				FontHandle := _SetFont (ControlHandle,FontName,FontSize,bold,italic,underline,strikeout)
 			Else
 				FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)
 			endif
 
-			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ 87 ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
-			Containerhandle := _HMG_SYSDATA [ 87 ] [i]
+			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
+			Containerhandle := _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i]
 
 			if HMG_LEN(value) > 0
 				SetWindowText ( ControlHandle , value )
@@ -209,54 +209,54 @@ ENDIF
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "RICHEDIT" 
-	_HMG_SYSDATA [2] [k] :=  ControlName 
-	_HMG_SYSDATA [3] [k] :=  ControlHandle 
-	_HMG_SYSDATA [4] [k] :=  ParentForm 
-	_HMG_SYSDATA [  5 ]  [k] :=  0 
-	_HMG_SYSDATA [  6 ]  [k] :=  "" 
-	_HMG_SYSDATA [  7 ]  [k] :=  Field 
-	_HMG_SYSDATA [  8 ]  [k] :=  NIL
-	_HMG_SYSDATA [  9 ]  [k] :=  ""
-	_HMG_SYSDATA [ 10 ]  [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ]  [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] :=   change 
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]  [k] :=  backcolor 
-	_HMG_SYSDATA [ 15 ]  [k] :=  Nil
-	_HMG_SYSDATA [ 16 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 17 ]   [k] := {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ]  [k] :=  x 
-	_HMG_SYSDATA [ 20 ]   [k] := w 
-	_HMG_SYSDATA [ 21 ]   [k] := h 
-	_HMG_SYSDATA [ 22 ]   [k] := selectionchange
-	_HMG_SYSDATA [ 23 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 26 ] [k] :=   ContainerHandle 
-	_HMG_SYSDATA [ 27 ]  [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ]  [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]   [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ]  [k] :=  OnLink
-	_HMG_SYSDATA [ 32 ]  [k] :=  OnVScroll
-	_HMG_SYSDATA [ 33 ]   [k] :=  ''  
-	_HMG_SYSDATA [ 34 ]  [k] :=   if(invisible,.f.,.t.) 
-	_HMG_SYSDATA [ 35 ]  [k] :=   HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] :=   FontHandle 
-	_HMG_SYSDATA [ 37 ]  [k] :=   0 
-	_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "RICHEDIT" 
+	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=  ControlName 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] :=  ControlHandle 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] :=  ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  "" 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  Field 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  NIL
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  ""
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] :=   change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  backcolor 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=  Nil
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]   [k] := {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]   [k] := w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]   [k] := h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]   [k] := selectionchange
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] :=   ContainerHandle 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]   [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=  OnLink
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=  OnVScroll
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]   [k] :=  ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   if(invisible,.f.,.t.) 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	if valtype ( Field ) != 'U'
-		aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+		aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 	EndIf
 
 	if valtype ( BackColor ) == 'A'
 		if HMG_LEN ( BackColor ) == 3
-			SendMessage ( _HMG_SYSDATA [3] [k] , EM_SETBKGNDCOLOR  , 0 , RGB ( BackColor[1] , BackColor[2] , BackColor[3] ) )
+			SendMessage ( _HMG_SYSDATA [HMG_CTL_HANDLE] [k] , EM_SETBKGNDCOLOR  , 0 , RGB ( BackColor[1] , BackColor[2] , BackColor[3] ) )
 		endif
 	EndIf
 
@@ -266,7 +266,7 @@ Procedure _DataRichEditBoxRefresh (i)
 *------------------------------------------------------------------------------*
 Local Field
 
-	Field		:= _HMG_SYSDATA [  7 ] [i]
+	Field		:= _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 	_SetValue ( '' , '' , &Field , i ) 
 
 Return
@@ -277,7 +277,7 @@ Local Field , i
 
 	i := GetControlIndex ( ControlName , ParentForm)	
 
-	Field := _HMG_SYSDATA [  7 ] [i]
+	Field := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
 
 	REPLACE &Field WITH _GetValue ( Controlname , ParentForm ) 
 

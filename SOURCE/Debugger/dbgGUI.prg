@@ -433,9 +433,9 @@ HMG_DebuggerWaitMessage( _HMG_DEBUGGER_MSG_ + '( DEFINE PAGE "Setting" )' )
                   @ 0,0 CHECKBOX CheckBox_Config1 CAPTION "Allow Tracing of Code Blocks"       VALUE .T. FONT "Arial"  SIZE 10  ITALIC BOLD ON CHANGE( HMG_Debugger():lCBTrace := _HMG_FormDebugger.CheckBox_Config1.VALUE, HMG_Debugger():SetCBTrace( HMG_Debugger():lCBTrace ) )
                   @ 0,0 CHECKBOX CheckBox_Config2 CAPTION "Stop at BreakPoint in Animate mode" VALUE .T. FONT "Arial"  SIZE 10  ITALIC BOLD ON CHANGE( HMG_Debugger():lAnimateStopBP := _HMG_FormDebugger.CheckBox_Config2.VALUE )
                   @ 0,0 CHECKBOX CheckBox_Config3 CAPTION "Stop at TracePoint in Animate mode" VALUE .T. FONT "Arial"  SIZE 10  ITALIC BOLD ON CHANGE( HMG_Debugger():lAnimateStopTP := _HMG_FormDebugger.CheckBox_Config3.VALUE )
-                  _HMG_FormDebugger.CheckBox_Config1.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config1.CAPTION, _HMG_SYSDATA [ 36 ] [ _HMG_FormDebugger.CheckBox_Config1.INDEX ] ) + 50
-                  _HMG_FormDebugger.CheckBox_Config2.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config2.CAPTION, _HMG_SYSDATA [ 36 ] [ _HMG_FormDebugger.CheckBox_Config2.INDEX ] ) + 50
-                  _HMG_FormDebugger.CheckBox_Config3.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config3.CAPTION, _HMG_SYSDATA [ 36 ] [ _HMG_FormDebugger.CheckBox_Config3.INDEX ] ) + 50
+                  _HMG_FormDebugger.CheckBox_Config1.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config1.CAPTION, _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [ _HMG_FormDebugger.CheckBox_Config1.INDEX ] ) + 50
+                  _HMG_FormDebugger.CheckBox_Config2.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config2.CAPTION, _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [ _HMG_FormDebugger.CheckBox_Config2.INDEX ] ) + 50
+                  _HMG_FormDebugger.CheckBox_Config3.WIDTH := GetTextWidth (NIL, _HMG_FormDebugger.CheckBox_Config3.CAPTION, _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [ _HMG_FormDebugger.CheckBox_Config3.INDEX ] ) + 50
                   
                   @ 0,0 LABEL Label_Config VALUE "Speed in Animate mode ( in milliseconds ) " AUTOSIZE FONT "Arial"  SIZE 10  ITALIC BOLD
                   @ 0,0 SPINNER Spinner_Config  RANGE 0, 65534 VALUE 0 FONT "Arial"  SIZE 10  ON CHANGE( HMG_Debugger():nSpeed := _HMG_FormDebugger.Spinner_Config.VALUE )

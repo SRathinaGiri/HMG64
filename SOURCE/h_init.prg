@@ -200,46 +200,46 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
 
 	* _HMG_SYSDATA Reference ;)
 
-	* _HMG_SYSDATA [   1 ] -> Control Data
-	* _HMG_SYSDATA [   2 ] -> Control Data
-	* _HMG_SYSDATA [   3 ] -> Control Data
-	* _HMG_SYSDATA [   4 ] -> Control Data
-	* _HMG_SYSDATA [   5 ] -> Control Data
-	* _HMG_SYSDATA [   6 ] -> Control Data
-	* _HMG_SYSDATA [   7 ] -> Control Data
-	* _HMG_SYSDATA [   8 ] -> Control Data
-	* _HMG_SYSDATA [   9 ] -> Control Data
-	* _HMG_SYSDATA [  10 ] -> Control Data
-	* _HMG_SYSDATA [  11 ] -> Control Data
-	* _HMG_SYSDATA [  12 ] -> Control Data
-	* _HMG_SYSDATA [  13 ] -> Control Data
-	* _HMG_SYSDATA [  14 ] -> Control Data
-	* _HMG_SYSDATA [  15 ] -> Control Data
-	* _HMG_SYSDATA [  16 ] -> Control Data
-	* _HMG_SYSDATA [  17 ] -> Control Data
-	* _HMG_SYSDATA [  18 ] -> Control Data
-	* _HMG_SYSDATA [  19 ] -> Control Data
-	* _HMG_SYSDATA [  20 ] -> Control Data
-	* _HMG_SYSDATA [  21 ] -> Control Data
-	* _HMG_SYSDATA [  22 ] -> Control Data
-	* _HMG_SYSDATA [  23 ] -> Control Data
-	* _HMG_SYSDATA [  24 ] -> Control Data
-	* _HMG_SYSDATA [  25 ] -> Control Data
-	* _HMG_SYSDATA [  26 ] -> Control Data
-	* _HMG_SYSDATA [  27 ] -> Control Data
-	* _HMG_SYSDATA [  28 ] -> Control Data
-	* _HMG_SYSDATA [  29 ] -> Control Data
-	* _HMG_SYSDATA [  30 ] -> Control Data
-	* _HMG_SYSDATA [  31 ] -> Control Data
-	* _HMG_SYSDATA [  32 ] -> Control Data
-	* _HMG_SYSDATA [  33 ] -> Control Data
-	* _HMG_SYSDATA [  34 ] -> Control Data
-	* _HMG_SYSDATA [  35 ] -> Control Data
-	* _HMG_SYSDATA [  36 ] -> Control Data
-	* _HMG_SYSDATA [  37 ] -> Control Data
-	* _HMG_SYSDATA [  38 ] -> Control Data
-	* _HMG_SYSDATA [  39 ] -> Control Data
-	* _HMG_SYSDATA [  40 ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_TYPE ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_NAME ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_HANDLE ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_PARENTHANDLE ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_ID ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_PROCEDURE ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_PAGEMAP ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_VALUE ] -> Control Data
+	* _HMG_SYSDATA [   HMG_CTL_INPUTMASK ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_LOSTFOCUS ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_GOTFOCUS ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_CHANGE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_DELETED ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_BKCOLOR ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_FONTCOLOR ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_DBLCLICK ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_HEADCLICK ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_ROW ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_COL ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_WIDTH ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_HEIGHT ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_SPACING ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_CONTAINERROW ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_CONTAINERCOL ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_PICTURE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_CONTAINERHANDLE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_FONTNAME ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_FONTSIZE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_FONTATTRIBUTES ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_TOOLTIP ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_RANGEMIN ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_RANGEMAX ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_CAPTION ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_VISIBLE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_HELPID ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_FONTHANDLE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_BRUSHHANDLE ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_ENABLED ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_MISCDATA1 ] -> Control Data
+	* _HMG_SYSDATA [  HMG_CTL_MISCDATA2 ] -> Control Data
 
 	* _HMG_SYSDATA [  41 ] -> _RESERVED_   // array --> { OnKeyControlEventProc, OnMouseControlEventProc, ToolTip_CustomDrawData }
 	* _HMG_SYSDATA [  42 ] -> _RESERVED_
@@ -265,50 +265,50 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
 	* _HMG_SYSDATA [  62 ] -> Custom Methods Procedures Array
 	* _HMG_SYSDATA [  63 ] -> User Component Process Flag
 	* _HMG_SYSDATA [  64 ] -> _RESERVED_
-	* _HMG_SYSDATA [  65 ] -> _HMG_aFormDeleted
-	* _HMG_SYSDATA [  66 ] -> _HMG_aFormNames
-	* _HMG_SYSDATA [  67 ] -> _HMG_aFormHandles
-	* _HMG_SYSDATA [  68 ] -> _HMG_aFormActive
-	* _HMG_SYSDATA [  69 ] -> _HMG_aFormType
-	* _HMG_SYSDATA [  70 ] -> _HMG_aFormParentHandle
-	* _HMG_SYSDATA [  71 ] -> _HMG_aFormReleaseProcedure
-	* _HMG_SYSDATA [  72 ] -> _HMG_aFormInitProcedure
-	* _HMG_SYSDATA [  73 ] -> _HMG_aFormToolTipHandle
-	* _HMG_SYSDATA [  74 ] -> _HMG_aFormContextMenuHandle
-	* _HMG_SYSDATA [  75 ] -> _HMG_aFormMouseDragProcedure
-	* _HMG_SYSDATA [  76 ] -> _HMG_aFormSizeProcedure
-	* _HMG_SYSDATA [  77 ] -> _HMG_aFormClickProcedure
-	* _HMG_SYSDATA [  78 ] -> _HMG_aFormMouseMoveProcedure
-	* _HMG_SYSDATA [  79 ] -> _HMG_aFormBkColor
-	* _HMG_SYSDATA [  80 ] -> _HMG_aFormPaintProcedure
-	* _HMG_SYSDATA [  81 ] -> _HMG_aFormNoShow
-	* _HMG_SYSDATA [  82 ] -> _HMG_aFormNotifyIconName
-	* _HMG_SYSDATA [  83 ] -> _HMG_aFormNotifyIconToolTip
-	* _HMG_SYSDATA [  84 ] -> _HMG_aFormNotifyIconLeftClick
-	* _HMG_SYSDATA [  85 ] -> _HMG_aFormGotFocusProcedure
-	* _HMG_SYSDATA [  86 ] -> _HMG_aFormLostFocusProcedure
-	* _HMG_SYSDATA [  87 ] -> _HMG_aFormReBarHandle
-	* _HMG_SYSDATA [  88 ] -> _HMG_aFormNotifyMenuHandle
-	* _HMG_SYSDATA [  89 ] -> _HMG_aFormBrowseList
-	* _HMG_SYSDATA [  90 ] -> _HMG_aFormSplitChildList
-	* _HMG_SYSDATA [  91 ] -> _HMG_aFormVirtualHeight
-	* _HMG_SYSDATA [  92 ] -> _HMG_aFormVirtualWidth
-	* _HMG_SYSDATA [  93 ] -> _HMG_aFormFocused
-	* _HMG_SYSDATA [  94 ] -> _HMG_aFormScrollUp
-	* _HMG_SYSDATA [  95 ] -> _HMG_aFormScrollDown
-	* _HMG_SYSDATA [  96 ] -> _HMG_aFormScrollLeft
-	* _HMG_SYSDATA [  97 ] -> _HMG_aFormScrollRight
-	* _HMG_SYSDATA [  98 ] -> _HMG_aFormHScrollBox
-	* _HMG_SYSDATA [  99 ] -> _HMG_aFormVScrollBox
-	* _HMG_SYSDATA [ 100 ] -> _HMG_aFormBrushHandle
-	* _HMG_SYSDATA [ 101 ] -> _HMG_aFormFocusedControl
-	* _HMG_SYSDATA [ 102 ] -> _HMG_aFormGraphTasks
-	* _HMG_SYSDATA [ 103 ] -> _HMG_aFormMaximizeProcedure
-	* _HMG_SYSDATA [ 104 ] -> _HMG_aFormMinimizeProcedure
-	* _HMG_SYSDATA [ 105 ] -> _HMG_aFormAutoRelease
-	* _HMG_SYSDATA [ 106 ] -> _HMG_aFormInteractiveCloseProcedure
-	* _HMG_SYSDATA [ 107 ] -> _HMG_aFormActivateId
-	* _HMG_SYSDATA [ 108 ] -> Coordinates For Window Graph
+	* _HMG_SYSDATA [  HMG_FRM_DELETED ] -> _HMG_aFormDeleted
+	* _HMG_SYSDATA [  HMG_FRM_NAME ] -> _HMG_aFormNames
+	* _HMG_SYSDATA [  HMG_FRM_HANDLE ] -> _HMG_aFormHandles
+	* _HMG_SYSDATA [  HMG_FRM_ACTIVE ] -> _HMG_aFormActive
+	* _HMG_SYSDATA [  HMG_FRM_TYPE ] -> _HMG_aFormType
+	* _HMG_SYSDATA [  HMG_FRM_PARENTHANDLE ] -> _HMG_aFormParentHandle
+	* _HMG_SYSDATA [  HMG_FRM_RELEASE ] -> _HMG_aFormReleaseProcedure
+	* _HMG_SYSDATA [  HMG_FRM_INIT ] -> _HMG_aFormInitProcedure
+	* _HMG_SYSDATA [  HMG_FRM_TOOLTIPHANDLE ] -> _HMG_aFormToolTipHandle
+	* _HMG_SYSDATA [  HMG_FRM_CONTEXTMENU ] -> _HMG_aFormContextMenuHandle
+	* _HMG_SYSDATA [  HMG_FRM_MOUSEDRAG ] -> _HMG_aFormMouseDragProcedure
+	* _HMG_SYSDATA [  HMG_FRM_SIZE ] -> _HMG_aFormSizeProcedure
+	* _HMG_SYSDATA [  HMG_FRM_CLICK ] -> _HMG_aFormClickProcedure
+	* _HMG_SYSDATA [  HMG_FRM_MOUSEMOVE ] -> _HMG_aFormMouseMoveProcedure
+	* _HMG_SYSDATA [  HMG_FRM_BKCOLOR ] -> _HMG_aFormBkColor
+	* _HMG_SYSDATA [  HMG_FRM_PAINT ] -> _HMG_aFormPaintProcedure
+	* _HMG_SYSDATA [  HMG_FRM_NOSHOW ] -> _HMG_aFormNoShow
+	* _HMG_SYSDATA [  HMG_FRM_NOTIFYICON ] -> _HMG_aFormNotifyIconName
+	* _HMG_SYSDATA [  HMG_FRM_NOTIFYTOOLTIP ] -> _HMG_aFormNotifyIconToolTip
+	* _HMG_SYSDATA [  HMG_FRM_NOTIFYCLICK ] -> _HMG_aFormNotifyIconLeftClick
+	* _HMG_SYSDATA [  HMG_FRM_GOTFOCUS ] -> _HMG_aFormGotFocusProcedure
+	* _HMG_SYSDATA [  HMG_FRM_LOSTFOCUS ] -> _HMG_aFormLostFocusProcedure
+	* _HMG_SYSDATA [  HMG_FRM_REBARHANDLE ] -> _HMG_aFormReBarHandle
+	* _HMG_SYSDATA [  HMG_FRM_NOTIFYMENU ] -> _HMG_aFormNotifyMenuHandle
+	* _HMG_SYSDATA [  HMG_FRM_BROWSELIST ] -> _HMG_aFormBrowseList
+	* _HMG_SYSDATA [  HMG_FRM_SPLITCHILDLIST ] -> _HMG_aFormSplitChildList
+	* _HMG_SYSDATA [  HMG_FRM_VIRTUALHEIGHT ] -> _HMG_aFormVirtualHeight
+	* _HMG_SYSDATA [  HMG_FRM_VIRTUALWIDTH ] -> _HMG_aFormVirtualWidth
+	* _HMG_SYSDATA [  HMG_FRM_FOCUSED ] -> _HMG_aFormFocused
+	* _HMG_SYSDATA [  HMG_FRM_SCROLLUP ] -> _HMG_aFormScrollUp
+	* _HMG_SYSDATA [  HMG_FRM_SCROLLDOWN ] -> _HMG_aFormScrollDown
+	* _HMG_SYSDATA [  HMG_FRM_SCROLLLEFT ] -> _HMG_aFormScrollLeft
+	* _HMG_SYSDATA [  HMG_FRM_SCROLLRIGHT ] -> _HMG_aFormScrollRight
+	* _HMG_SYSDATA [  HMG_FRM_HSCROLLBOX ] -> _HMG_aFormHScrollBox
+	* _HMG_SYSDATA [  HMG_FRM_VSCROLLBOX ] -> _HMG_aFormVScrollBox
+	* _HMG_SYSDATA [ HMG_FRM_BRUSHHANDLE ] -> _HMG_aFormBrushHandle
+	* _HMG_SYSDATA [ HMG_FRM_FOCUSEDCONTROL ] -> _HMG_aFormFocusedControl
+	* _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] -> _HMG_aFormGraphTasks
+	* _HMG_SYSDATA [ HMG_FRM_MAXIMIZE ] -> _HMG_aFormMaximizeProcedure
+	* _HMG_SYSDATA [ HMG_FRM_MINIMIZE ] -> _HMG_aFormMinimizeProcedure
+	* _HMG_SYSDATA [ HMG_FRM_AUTORELEASE ] -> _HMG_aFormAutoRelease
+	* _HMG_SYSDATA [ HMG_FRM_INTERACTIVECLOSE ] -> _HMG_aFormInteractiveCloseProcedure
+	* _HMG_SYSDATA [ HMG_FRM_ACTIVATEID ] -> _HMG_aFormActivateId
+	* _HMG_SYSDATA [ HMG_FRM_RESERVED108 ] -> Coordinates For Window Graph
 	* _HMG_SYSDATA [ 109 ] -> Current Alternate Modal Parent
 	* _HMG_SYSDATA [ 110 ] -> Current Report Image FromRow
 	* _HMG_SYSDATA [ 111 ] -> Current Report Image FromCol
@@ -705,7 +705,7 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    * _HMG_SYSDATA [ 501 ] -> ScrollPage
    * _HMG_SYSDATA [ 502 ] -> #xtranslate --> _HMG_PrinterMetaFileDC
    * _HMG_SYSDATA [ 503 ] -> #xtranslate --> _HMG_FindReplaceOptions
-   * _HMG_SYSDATA [ 504 ] -> {x,y,w,h}   --> Position of Panel Window
+   * _HMG_SYSDATA [ HMG_FRM_POSITION ] -> {x,y,w,h}   --> Position of Panel Window
  
    * _HMG_SYSDATA [ 505 ] -> PrintPreview NotSaveButton --> .T. or .F.
    * _HMG_SYSDATA [ 506 ] -> PrintPreview Dialog cFileName
@@ -713,8 +713,8 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    * _HMG_SYSDATA [ 508 ] -> Open PrintPreview Dialog  --> .T. or .F.
    * _HMG_SYSDATA [ 509 ] -> ToolTip CustomDraw  --> .T. or .F.
    * _HMG_SYSDATA [ 510 ] -> ToolTip Menu --> .T. or .F.
-   * _HMG_SYSDATA [ 511 ] -> ToolTip Menu Handle  --> { hWndToolTipMenu, ... }
-   * _HMG_SYSDATA [ 512 ] -> ToolTip Form Data
+   * _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP ] -> ToolTip Menu Handle  --> { hWndToolTipMenu, ... }
+   * _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] -> ToolTip Form Data
    * _HMG_SYSDATA [ 513 ] -> Default Print PDF Mode --> .T. or .F.
    * _HMG_SYSDATA [ 514 ] -> SetGridCustomDrawNewBehavior() --> .T. or .F.
    * _HMG_SYSDATA [ 515 ] -> #xtranslate --> OpenPrinterGetJobID()
@@ -820,15 +820,15 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    _HMG_SYSDATA [ 285 ] := .F.
 
    _HMG_SYSDATA [ 375 ] := ""  // OpenPrinterGetName()
-   _HMG_SYSDATA [ 504 ] := {}
+   _HMG_SYSDATA [ HMG_FRM_POSITION ] := {}
    _HMG_SYSDATA [ 505 ] := NIL
    _HMG_SYSDATA [ 506 ] := NIL
    _HMG_SYSDATA [ 507 ] := NIL
    _HMG_SYSDATA [ 508 ] := NIL
    _HMG_SYSDATA [ 509 ] := .F. // ToolTip CustomDraw
    _HMG_SYSDATA [ 510 ] := .T. // ToolTip Menu
-   _HMG_SYSDATA [ 511 ] := {}  // ToolTip Menu Handle  --> { hWndToolTipMenu, ... }
-   _HMG_SYSDATA [ 512 ] := {}  // ToolTip Form Data
+   _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP ] := {}  // ToolTip Menu Handle  --> { hWndToolTipMenu, ... }
+   _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] := {}  // ToolTip Form Data
    _HMG_SYSDATA [ 513 ] := .F. // Default Print PDF Mode off
    _HMG_SYSDATA [ 514 ] := .T. // SetGridCustomDrawNewBehavior(), for default is .T.
    _HMG_SYSDATA [ 515 ] := 0   // OpenPrinterGetJobID()

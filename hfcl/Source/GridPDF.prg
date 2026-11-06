@@ -326,9 +326,9 @@ if lArrayMode
 else
    i := GetControlIndex ( gridname , windowname )
 
-   aEditcontrols := _HMG_SYSDATA [ 40 ] [ i ] [ 2 ]
+   aEditcontrols := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 2 ]
 
-   aJustify := _HMG_SYSDATA [ 37 ] [i]
+   aJustify := _HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [i]
 endif
    
 

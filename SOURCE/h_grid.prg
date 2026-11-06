@@ -366,7 +366,7 @@ Available3 := Nil
 
 		if i > 0 
 
-			ControlHandle := InitListView ( _HMG_SYSDATA [ 87 ] [i] , 0, 0, 0, w, h ,'',0, NoGridLines, ownerdata , itemcount , multiselect , columnheaders )
+			ControlHandle := InitListView ( _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , 0, 0, 0, w, h ,'',0, NoGridLines, ownerdata , itemcount , multiselect , columnheaders )
 
 			if ValType(fontname) != "U" .and. ValType(fontsize) != "U"
 				FontHandle := _SetFont (ControlHandle,FontName,FontSize,bold,italic,underline,strikeout)
@@ -374,7 +374,7 @@ Available3 := Nil
 				FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)		
 			endif
 
-			AddSplitBoxItem ( Controlhandle, _HMG_SYSDATA [ 87 ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
+			AddSplitBoxItem ( Controlhandle, _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , w , break , , , , _HMG_SYSDATA [ 258 ] )
 		EndIf
 
 	Else
@@ -436,102 +436,102 @@ Available3 := Nil
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [  1 ] [k] :=  if ( multiselect , "MULTIGRID" , "GRID" ) 
-	_HMG_SYSDATA [  2 ] [k] :=  ControlName 
-	_HMG_SYSDATA [  3 ] [k] :=  ControlHandle 
-	_HMG_SYSDATA [  4 ] [k] :=  ParentForm 
-	_HMG_SYSDATA [  5 ] [k] :=  ListView_GetHeader ( ControlHandle )
-	_HMG_SYSDATA [  6 ] [k] :=  ondispinfo
-	_HMG_SYSDATA [  7 ] [k] :=  aHeaders
-	_HMG_SYSDATA [  8 ] [k] :=  Value
-	_HMG_SYSDATA [  9 ] [k] :=  Nil 
-	_HMG_SYSDATA [ 10 ] [k] :=  lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] :=  gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] :=  change 
-	_HMG_SYSDATA [ 13 ] [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ] [k] :=  aImage 
-	_HMG_SYSDATA [ 15 ] [k] :=  1       // nCol cellnavigation
-	_HMG_SYSDATA [ 16 ] [k] :=  dblclick 
-	_HMG_SYSDATA [ 17 ] [k] :=  aHeadClick 
-	_HMG_SYSDATA [ 18 ] [k] :=  y 
-	_HMG_SYSDATA [ 19 ] [k] :=  x 
-	_HMG_SYSDATA [ 20 ] [k] :=  w 
-	_HMG_SYSDATA [ 21 ] [k] :=  h 
-	_HMG_SYSDATA [ 22 ] [k] :=  Nil 
-	_HMG_SYSDATA [ 23 ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ] [k] :=  Nil 
-	_HMG_SYSDATA [ 26 ] [k] :=  0  // nHeaderImageListHandle
-	_HMG_SYSDATA [ 27 ] [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ] [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ] [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ] [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ] [k] :=  cParentTabName
-	_HMG_SYSDATA [ 32 ] [k] :=  cellnavigation
-	_HMG_SYSDATA [ 33 ] [k] :=  aHeaders  
-	_HMG_SYSDATA [ 34 ] [k] :=  .t. 
-	_HMG_SYSDATA [ 35 ] [k] :=  HelpId 
-	_HMG_SYSDATA [ 36 ] [k] :=  FontHandle 
-	_HMG_SYSDATA [ 37 ] [k] :=  aJust 
-	_HMG_SYSDATA [ 38 ] [k] :=  .T. 
-	_HMG_SYSDATA [ 39 ] [k] :=  0       // nRow cellnavigation
-	_HMG_SYSDATA [ 40 ] [k] := Array (47)
+	_HMG_SYSDATA [  HMG_CTL_TYPE ] [k] :=  if ( multiselect , "MULTIGRID" , "GRID" ) 
+	_HMG_SYSDATA [  HMG_CTL_NAME ] [k] :=  ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ] [k] :=  ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ] [k] :=  ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] :=  ListView_GetHeader ( ControlHandle )
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] :=  ondispinfo
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] :=  aHeaders
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] :=  Value
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] :=  lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] :=  gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] :=  change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] :=  aImage 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] :=  1       // nCol cellnavigation
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] :=  dblclick 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] :=  aHeadClick 
+	_HMG_SYSDATA [ HMG_CTL_ROW ] [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] :=  x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] :=  w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] :=  h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] :=  iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] :=  0  // nHeaderImageListHandle
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ] [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] :=  cParentTabName
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] :=  cellnavigation
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] :=  aHeaders  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] :=  .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ] [k] :=  HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] :=  FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] :=  aJust 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] :=  .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] :=  0       // nRow cellnavigation
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := Array (47)
    
    
-	_HMG_SYSDATA [ 40 ] [ K ] [  1 ] := alloweditInplace   // Allow ENTER
-	_HMG_SYSDATA [ 40 ] [ K ] [  2 ] := editcontrols
-	_HMG_SYSDATA [ 40 ] [ K ] [  3 ] := dynamicbackcolor
-	_HMG_SYSDATA [ 40 ] [ K ] [  4 ] := dynamicforecolor
-	_HMG_SYSDATA [ 40 ] [ K ] [  5 ] := columnvalid
-	_HMG_SYSDATA [ 40 ] [ K ] [  6 ] := columnwhen
-   _HMG_SYSDATA [ 40 ] [ K ] [  7 ] := NIL // old internal dynamicforecolor --> ARRAY (nRowCount , nColCount)
-   _HMG_SYSDATA [ 40 ] [ K ] [  8 ] := NIL // old internal dynamicforecolor --> ARRAY (nRowCount , nColCount)
-	_HMG_SYSDATA [ 40 ] [ K ] [  9 ] := OWNERDATA
-	_HMG_SYSDATA [ 40 ] [ K ] [ 10 ] := cRecordSource
-	_HMG_SYSDATA [ 40 ] [ K ] [ 11 ] := aColumnFields
-	_HMG_SYSDATA [ 40 ] [ K ] [ 12 ] := allowappend   // Allow ALT+A
-	_HMG_SYSDATA [ 40 ] [ K ] [ 13 ] := if ( ValType (aColumnFields) == 'A' , array ( HMG_LEN (aColumnFields) ) , Nil )
-	_HMG_SYSDATA [ 40 ] [ K ] [ 14 ] := .F.   // old Grid
-	_HMG_SYSDATA [ 40 ] [ K ] [ 15 ] := buffered
-	_HMG_SYSDATA [ 40 ] [ K ] [ 16 ] := ldfc
-	_HMG_SYSDATA [ 40 ] [ K ] [ 17 ] := allowdelete   // Allow ALT+D and ALT+R
-	_HMG_SYSDATA [ 40 ] [ K ] [ 18 ] := dynamicdisplay
-	_HMG_SYSDATA [ 40 ] [ K ] [ 19 ] := .F.
-	_HMG_SYSDATA [ 40 ] [ K ] [ 20 ] := .F. // Pending Edit Updates Flag
-	_HMG_SYSDATA [ 40 ] [ K ] [ 21 ] := {}  // Edit Updates Buffer
-	_HMG_SYSDATA [ 40 ] [ K ] [ 22 ] := 0   // Appended Record Buffer Count ( Negative )
-	_HMG_SYSDATA [ 40 ] [ K ] [ 23 ] := ItemCount // Buffered Session Initial ItemCount
-	_HMG_SYSDATA [ 40 ] [ K ] [ 24 ] :=  0 // Deleted / Recalled record count
-	_HMG_SYSDATA [ 40 ] [ K ] [ 25 ] := {} // Delete / Recall Buffer Array { nLogicalRow , nPhysicalRow , cStatus ( 'D' or 'R' ) }
-	_HMG_SYSDATA [ 40 ] [ K ] [ 26 ] := OnSave
-	_HMG_SYSDATA [ 40 ] [ K ] [ 27 ] := NIL // old internal Enable Virtual Database Grid Optimization
-	_HMG_SYSDATA [ 40 ] [ K ] [ 28 ] := backcolor
-	_HMG_SYSDATA [ 40 ] [ K ] [ 29 ] := fontcolor
-	_HMG_SYSDATA [ 40 ] [ K ] [ 30 ] := aColumnClassMap
-	_HMG_SYSDATA [ 40 ] [ K ] [ 31 ] := aWidths
-	_HMG_SYSDATA [ 40 ] [ K ] [ 32 ] := lockcolumns  
-	_HMG_SYSDATA [ 40 ] [ K ] [ 33 ] := .T.  // ENABLEUPDATE = .T. | DISABLEUPDATE = .F. 
-	_HMG_SYSDATA [ 40 ] [ K ] [ 34 ] := .T.
-   _HMG_SYSDATA [ 40 ] [ K ] [ 35 ] := OnClick   // ADD
-   _HMG_SYSDATA [ 40 ] [ K ] [ 36 ] := OnKey     // ADD
-   _HMG_SYSDATA [ 40 ] [ K ] [ 37 ] := {0,0}   // CellRowClicked and CellColClicked       // ADD
-   _HMG_SYSDATA [ 40 ] [ K ] [ 38 ] := IF (ValType(InplaceEditOption) == "N", InplaceEditOption, 0)
-   _HMG_SYSDATA [ 40 ] [ K ] [ 39 ] := NotransHeader
-   _HMG_SYSDATA [ 40 ] [ K ] [ 40 ] := cParentForm    // ADD
-   _HMG_SYSDATA [ 40 ] [ K ] [ 41 ] := aDynamicFont   // ADD
-   _HMG_SYSDATA [ 40 ] [ K ] [ 42 ] := 0              // hFont_Dynamic
-   _HMG_SYSDATA [ 40 ] [ K ] [ 43 ] := NIL            // aHeaderFont
-   _HMG_SYSDATA [ 40 ] [ K ] [ 44 ] := NIL            // aHeaderBackColor
-   _HMG_SYSDATA [ 40 ] [ K ] [ 45 ] := NIL            // aHeaderForeColor
-   _HMG_SYSDATA [ 40 ] [ K ] [ 46 ] := OnCheckBoxClicked
-   _HMG_SYSDATA [ 40 ] [ K ] [ 47 ] := OnInplaceEditEvent
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  1 ] := alloweditInplace   // Allow ENTER
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  2 ] := editcontrols
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  3 ] := dynamicbackcolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  4 ] := dynamicforecolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  5 ] := columnvalid
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  6 ] := columnwhen
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  7 ] := NIL // old internal dynamicforecolor --> ARRAY (nRowCount , nColCount)
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  8 ] := NIL // old internal dynamicforecolor --> ARRAY (nRowCount , nColCount)
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [  9 ] := OWNERDATA
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 10 ] := cRecordSource
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 11 ] := aColumnFields
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 12 ] := allowappend   // Allow ALT+A
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 13 ] := if ( ValType (aColumnFields) == 'A' , array ( HMG_LEN (aColumnFields) ) , Nil )
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 14 ] := .F.   // old Grid
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 15 ] := buffered
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 16 ] := ldfc
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 17 ] := allowdelete   // Allow ALT+D and ALT+R
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 18 ] := dynamicdisplay
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 19 ] := .F.
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 20 ] := .F. // Pending Edit Updates Flag
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 21 ] := {}  // Edit Updates Buffer
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 22 ] := 0   // Appended Record Buffer Count ( Negative )
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 23 ] := ItemCount // Buffered Session Initial ItemCount
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 24 ] :=  0 // Deleted / Recalled record count
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 25 ] := {} // Delete / Recall Buffer Array { nLogicalRow , nPhysicalRow , cStatus ( 'D' or 'R' ) }
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 26 ] := OnSave
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 27 ] := NIL // old internal Enable Virtual Database Grid Optimization
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 28 ] := backcolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 29 ] := fontcolor
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 30 ] := aColumnClassMap
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 31 ] := aWidths
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 32 ] := lockcolumns  
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 33 ] := .T.  // ENABLEUPDATE = .T. | DISABLEUPDATE = .F. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 34 ] := .T.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 35 ] := OnClick   // ADD
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 36 ] := OnKey     // ADD
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 37 ] := {0,0}   // CellRowClicked and CellColClicked       // ADD
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 38 ] := IF (ValType(InplaceEditOption) == "N", InplaceEditOption, 0)
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 39 ] := NotransHeader
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 40 ] := cParentForm    // ADD
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 41 ] := aDynamicFont   // ADD
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 42 ] := 0              // hFont_Dynamic
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 43 ] := NIL            // aHeaderFont
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 44 ] := NIL            // aHeaderBackColor
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 45 ] := NIL            // aHeaderForeColor
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 46 ] := OnCheckBoxClicked
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 47 ] := OnInplaceEditEvent
 
    InitListViewColumns ( ControlHandle, aHeaders , aWidths, aJust )
 
 
 IF ValType ( cRecordSource ) == 'C'   // ADD, May 2016
    ItemCount := GridRecCount( K )
-   _HMG_SYSDATA [ 40 ] [ K ] [ 23 ] := ItemCount
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ K ] [ 23 ] := ItemCount
    ListView_SetItemCount ( ControlHandle , ItemCount )
 ENDIF
 
@@ -564,8 +564,8 @@ ENDIF
 
 	If ValType(aHeaderImages) <> "U"
 		nHeaderImageListHandle := SetListViewHeaderImages ( ControlHandle , aHeaderImages , aJust, NotransHeader )
-		_HMG_SYSDATA [ 22 ] [k] := aHeaderImages
-		_HMG_SYSDATA [ 26 ] [k] := nHeaderImageListHandle
+		_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := aHeaderImages
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := nHeaderImageListHandle
 	EndIf
 
 
@@ -581,31 +581,31 @@ Return Nil
 
 FUNCTION _HMG_GridOnClickAndOnKeyEvent
 LOCAL ret := NIL, lInplacedEdit := .F.
-LOCAL i := ASCAN ( _HMG_SYSDATA [3] ,  EventHWND() )
+LOCAL i := ASCAN ( _HMG_SYSDATA [HMG_CTL_HANDLE] ,  EventHWND() )
 
    IF i > 0 .AND. ( EventHWND() == _HMG_GridInplaceEdit_ControlHandle )
       i := _HMG_GridInplaceEdit_GridIndex
       lInplacedEdit := .T.
    ENDIF
 
-   IF i > 0 .AND. ( _HMG_SYSDATA [1] [i] == "GRID" .OR. _HMG_SYSDATA [1] [i] == "MULTIGRID" )
+   IF i > 0 .AND. ( _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "GRID" .OR. _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "MULTIGRID" )
 
       _HMG_GridEx_InplaceEdit_nMsg  := EventMSG()
-      _HMG_GridEx_InplaceEditOption := _HMG_SYSDATA [40] [i] [38]
+      _HMG_GridEx_InplaceEditOption := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [38]
 
       IF EventMSG() == WM_SETFOCUS
          HMG_GetLastCharacterEx()
       ENDIF
 
-      IF ( EventMSG() == WM_LBUTTONDOWN .OR. EventMSG() == WM_LBUTTONDBLCLK ) .AND. ValType( _HMG_SYSDATA [40] [i] [35] ) == "B"
+      IF ( EventMSG() == WM_LBUTTONDOWN .OR. EventMSG() == WM_LBUTTONDBLCLK ) .AND. ValType( _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [35] ) == "B"
          IF lInplacedEdit == .F.
-            _HMG_SYSDATA [40] [i] [37] := _GetGridCellData (i)   // { CellRowClicked, CellColClicked }
+            _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [37] := _GetGridCellData (i)   // { CellRowClicked, CellColClicked }
          ENDIF
-         ret := EVAL ( _HMG_SYSDATA [40] [i] [35] )   // OnClick Event
+         ret := EVAL ( _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [35] )   // OnClick Event
       ENDIF
 
-      IF EventIsKeyboardMessage() == .T. .AND. ValType( _HMG_SYSDATA [40] [i] [36] ) == "B"
-         ret := EVAL ( _HMG_SYSDATA [40] [i] [36] )   // OnKey Event
+      IF EventIsKeyboardMessage() == .T. .AND. ValType( _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [36] ) == "B"
+         ret := EVAL ( _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [36] )   // OnKey Event
       ENDIF
 
       IF lInplacedEdit == .F.
@@ -669,15 +669,15 @@ LOCAL iImage := 0, aTemp
       MsgHMGError ("Grid.AddItem (nRowIndex = " +ALLTRIM(STR(nRowIndex))+ "): Invalid nRowIndex. Program Terminated")
    ENDIF
   
-   if HMG_LEN ( _HMG_SYSDATA [ 7 ] [i] ) != HMG_LEN ( aItem )
+   if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_PAGEMAP ] [i] ) != HMG_LEN ( aItem )
       MsgHMGError ("Grid.AddItem (nRowIndex = " +ALLTRIM(STR(nRowIndex))+ "): Item size mismatch. Program Terminated")
    EndIf
   
-   IF ValType ( _HMG_SYSDATA [40] [i] [2] ) == 'A'   // editcontrols
+   IF ValType ( _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [2] ) == 'A'   // editcontrols
    
       aTemp := ARRAY ( HMG_LEN(aItem) )
       AFILL ( aTemp , '' )
-      if HMG_LEN( _HMG_SYSDATA [14] [i] ) > 0   // aImage
+      if HMG_LEN( _HMG_SYSDATA [HMG_CTL_BKCOLOR] [i] ) > 0   // aImage
          iImage   := aItem[1]
          aItem[1] := NIL
          aTemp[1] := NIL
@@ -687,7 +687,7 @@ LOCAL iImage := 0, aTemp
    
    ELSE
    
-      if HMG_LEN( _HMG_SYSDATA [ 14 ][i] ) > 0   // aImage
+      if HMG_LEN( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ][i] ) > 0   // aImage
          iImage   := aItem[1]
          aItem[1] := NIL
       endif
@@ -818,7 +818,7 @@ LOCAL nIndex, cProc
 _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
 /*
-   AEDITCONTROLS := _HMG_SYSDATA [ 40 ] [ IDX ] [ 2 ]
+   AEDITCONTROLS := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ IDX ] [ 2 ]
    IF ValType (AEDITCONTROLS) == "A" .AND. HMG_LEN (AEDITCONTROLS) >= This.CellRowIndex
       IF ValType (AEDITCONTROLS [This.CellRowIndex]) == "A" .AND. HMG_LEN (AEDITCONTROLS [This.CellRowIndex]) >= 2
          IF ValType (AEDITCONTROLS [This.CellRowIndex] [1]) == "C" .AND. ValType (AEDITCONTROLS [This.CellRowIndex] [2]) == "B"
@@ -839,15 +839,15 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
    EndIf
 
 
-   IF _HMG_SYSDATA [32] [idx] == .F.
+   IF _HMG_SYSDATA [HMG_CTL_RANGEMAX] [idx] == .F.
 
-      If This.CellRowIndex != LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [ idx ] )
+      If This.CellRowIndex != LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [ idx ] )
          Return .f.
       EndIf
 
    ELSE
 
-      If This.CellRowIndex != _HMG_SYSDATA [39] [ idx ]
+      If This.CellRowIndex != _HMG_SYSDATA [HMG_CTL_MISCDATA1] [ idx ]
          Return .f.
       EndIf
 
@@ -862,13 +862,13 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
    endif
 
 
-   IF ValType ( _HMG_SYSDATA [ 40 ] [ idx ] [ 10 ] ) == 'C'
+   IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
       if IsDataGridDeleted ( idx , ri )
          return .f.
       endif
 
-      cRecordSource   := _HMG_SYSDATA [ 40 ] [ idx ] [ 10 ]
+      cRecordSource   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ]
 
       if &cRecordSource->(RddName()) == 'PGRDD'
          MsgHMGError("GRID: Modify PostGre RDD tables is not allowed. Program terminated" )
@@ -880,13 +880,13 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
    endif
 
-   GFN := _HMG_SYSDATA [ 27 ] [idx]   // FontName
-   GFS := _HMG_SYSDATA [ 28 ] [idx]   // FontSize
+   GFN := _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [idx]   // FontName
+   GFS := _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [idx]   // FontSize
 
 
 //Problem3031
 
-   IF _HMG_SYSDATA [ 40 ] [ idx ] [ 9 ] == .F.
+   IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 9 ] == .F.
 
       aTemp := this.item(ri)
 
@@ -900,13 +900,13 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
       _HMG_SYSDATA [ 320 ] := .T.
 
-      IF ValType ( _HMG_SYSDATA [ 40 ] [ idx ] [ 10 ] ) == 'C'
+      IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
          GetDataGridCellData ( idx , .t. )
 
       ELSE
 
-         Eval( _HMG_SYSDATA [  6 ] [ idx ]  )      
+         Eval( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [ idx ]  )      
 
       ENDIF
 
@@ -918,7 +918,7 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
    ENDIF
 
-   CWH :=    _HMG_SYSDATA [40] [IDX] [6]   // ColumnWhen
+   CWH :=    _HMG_SYSDATA [HMG_CTL_MISCDATA2] [IDX] [6]   // ColumnWhen
 
 //Problem3031
 
@@ -947,7 +947,7 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
    ENDIF
 
-   h := _HMG_SYSDATA [3] [IDX]   // ControlHandle
+   h := _HMG_SYSDATA [HMG_CTL_HANDLE] [IDX]   // ControlHandle
 
 //   This.CellRow    --> _HMG_SYSDATA [ 197 ]
 //   This.CellCol    --> _HMG_SYSDATA [ 198 ]
@@ -956,20 +956,20 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
    r := This.CellRow + GetWindowRow ( h ) - this.row - 1
 
-   if _HMG_SYSDATA [ 23 ]  [idx] <> -1
-      r := r - _HMG_SYSDATA [ 23 ] [idx]
+   if _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [idx] <> -1
+      r := r - _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [idx]
    endif
 
    c := This.CellCol + GetWindowCol ( h ) - this.col + 2
 
-   if _HMG_SYSDATA [ 24 ] [idx] <> -1
-      c := c - _HMG_SYSDATA [ 24 ] [idx]
+   if _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [idx] <> -1
+      c := c - _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [idx]
    endif
 
 
-   AEDITCONTROLS := _HMG_SYSDATA [ 40 ] [ IDX ] [ 2 ]
+   AEDITCONTROLS := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ IDX ] [ 2 ]
 
-   CVA :=    _HMG_SYSDATA [ 40 ] [ IDX ] [ 5 ]
+   CVA :=    _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ IDX ] [ 5 ]
 
    XRES := _HMG_PARSEGRIDCONTROLS ( AEDITCONTROLS , CI )
 
@@ -1008,7 +1008,7 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
       DEFINE WINDOW _HMG_GRID_InplaceEdit AT 0 , 0 ;
          WIDTH   350    ;
          HEIGHT   350 + IF ( IsAppThemed() , 3 , 0 ) ;
-         TITLE _HMG_SYSDATA [  7 ] [ idx ] [ ci ] ;
+         TITLE _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ idx ] [ ci ] ;
          MODAL ;
          NOSIZE ;
          SHORTTITLEBAR
@@ -1313,7 +1313,7 @@ _HMG_GridInplaceEdit_GridIndex     := 0   //ADD
 
    _HMG_SYSDATA [ 109 ] := 0
 
-   SETFOCUS ( _HMG_SYSDATA [3] [IDX] )
+   SETFOCUS ( _HMG_SYSDATA [HMG_CTL_HANDLE] [IDX] )
 
    _HMG_SYSDATA [321] := .F.
 
@@ -1322,8 +1322,8 @@ RETURN .t.
 
 FUNCTION _HMG_OnInplaceEditEvent( nIndex )
 LOCAL Ret := NIL
-   IF _HMG_GridInplaceEdit_ControlHandle <> 0 .AND. ValType( _HMG_SYSDATA [ 40 ] [ nIndex ] [ 47 ] ) == "B"
-      Ret := EVAL( _HMG_SYSDATA [ 40 ] [ nIndex ] [ 47 ] )
+   IF _HMG_GridInplaceEdit_ControlHandle <> 0 .AND. ValType( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ nIndex ] [ 47 ] ) == "B"
+      Ret := EVAL( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ nIndex ] [ 47 ] )
    ENDIF
 RETURN Ret
 
@@ -1519,7 +1519,7 @@ CFORMAT    := NIL   // ADD
 
 				ENDIF
 
-				redrawwindow( _HMG_SYSDATA [3] [IDX] )
+				redrawwindow( _HMG_SYSDATA [HMG_CTL_HANDLE] [IDX] )
 
 			ENDIF
 
@@ -1527,29 +1527,29 @@ CFORMAT    := NIL   // ADD
 
 	ENDIF
 
-	IF _HMG_SYSDATA [ 40 ] [ idx ] [ 9 ] == .F.
+	IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 9 ] == .F.
 
 		aTemp := _GetItem (  ,  , ri , idx )
 
 	ELSE
 
-		aTemp := array ( HMG_LEN( _HMG_SYSDATA [  7 ] [ idx ] ) )
+		aTemp := array ( HMG_LEN( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ idx ] ) )
 
 		aTemp := aFill ( aTemp , '' )
 
-		FOR Z := 1 TO HMG_LEN ( _HMG_SYSDATA [  7 ] [ idx ] )
+		FOR Z := 1 TO HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ idx ] )
 
 			_HMG_SYSDATA [ 201 ] := ri	// QueryRowIndex
 
 			_HMG_SYSDATA [ 202 ] := z	// QueryColIndex
 
-			IF ValType ( _HMG_SYSDATA [ 40 ] [ idx ] [ 10 ] ) == 'C'
+			IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
 				GetDataGridCellData ( idx , .t. )
 
 			ELSE
 
-				Eval( _HMG_SYSDATA [  6 ] [ idx ]  )
+				Eval( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [ idx ]  )
 
 			ENDIF
 
@@ -1585,7 +1585,7 @@ CFORMAT    := NIL   // ADD
 		aTemp [ci] := _HMG_GRID_InplaceEdit.c.value
 	ENDIF
 
-   IF _HMG_SYSDATA [ 40 ] [ idx ] [ 9 ] == .F.
+   IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 9 ] == .F.
    
       If AEC == 'EDITBOX'  // By Pablo on February, 2015
          If ":" $ cValCell .and. File(cValCell)
@@ -1606,7 +1606,7 @@ CFORMAT    := NIL   // ADD
        
    ENDIF
 
-	IF ValType ( _HMG_SYSDATA [ 40 ] [ idx ] [ 10 ] ) == 'C'
+	IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
 		_HMG_SYSDATA [ 196 ] := ci
 
@@ -1670,10 +1670,10 @@ return
 
 
 Function GetControlSafeRow (i) 
-Return IF (ValType(_HMG_SYSDATA [18] [i]) == "N", _HMG_SYSDATA [18] [i], 0)   // for SplitBox
+Return IF (ValType(_HMG_SYSDATA [HMG_CTL_ROW] [i]) == "N", _HMG_SYSDATA [HMG_CTL_ROW] [i], 0)   // for SplitBox
 
 Function GetControlSafeCol (i) 
-Return IF (ValType(_HMG_SYSDATA [19] [i]) == "N", _HMG_SYSDATA [19] [i], 0)   // for SplitBox
+Return IF (ValType(_HMG_SYSDATA [HMG_CTL_COL] [i]) == "N", _HMG_SYSDATA [HMG_CTL_COL] [i], 0)   // for SplitBox
 
 
 *-----------------------------------------------------------------------------*
@@ -1686,17 +1686,17 @@ LOCAL R
 LOCAL IPE_MAXCOL
 
 
-	IPE_MAXCOL := HMG_LEN ( _HMG_SYSDATA [ 33 ] [i] )
+	IPE_MAXCOL := HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] )
 
 	Do While .T.
 
-		TmpRow := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] )
+		TmpRow := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
 		If TmpRow != _HMG_SYSDATA [ 341 ] 
 
 			_HMG_SYSDATA [ 341 ] := TmpRow
 
-			if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+			if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 				_HMG_SYSDATA [ 340 ] := 2
 			Else
 				_HMG_SYSDATA [ 340 ] := 1
@@ -1708,29 +1708,29 @@ LOCAL IPE_MAXCOL
 		_HMG_SYSDATA [ 196 ] := _HMG_SYSDATA [ 340 ]
 
 		If _HMG_SYSDATA [ 340 ] == 1
-			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
+			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
 		Else
-			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
+			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
 		EndIf
 
-		xs :=	( ( GetControlSafeCol(i) + r [2] ) +( r[3] ))  -  ( GetControlSafeCol(i) + _HMG_SYSDATA [ 20 ] [i] )
+		xs :=	( ( GetControlSafeCol(i) + r [2] ) +( r[3] ))  -  ( GetControlSafeCol(i) + _HMG_SYSDATA [ HMG_CTL_WIDTH ] [i] )
 
 		xd := 20
 
 		If xs > -xd 
-			ListView_Scroll( _HMG_SYSDATA [3] [i] ,	xs + xd , 0 ) 
+			ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	xs + xd , 0 ) 
 		Else
 
         If r [2] < 0
-           ListView_Scroll( _HMG_SYSDATA [3] [i] , r[2]	, 0 )
+           ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , r[2]	, 0 )
         EndIf
 
 		endIf
 
 		If _HMG_SYSDATA [ 340 ] == 1
-			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
+			r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 )
 		Else
-			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
+			r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ 341 ] - 1 , _HMG_SYSDATA [ 340 ] - 1 )
 		EndIf
 
 		_HMG_SYSDATA [ 197 ] := GetControlSafeRow(i) + r [1]
@@ -1739,11 +1739,11 @@ LOCAL IPE_MAXCOL
 		_HMG_SYSDATA [ 200 ] := r[4]
 
 		*
-		_HMG_SYSDATA [ 194 ] := ascan ( _HMG_SYSDATA [ 67  ] , _HMG_SYSDATA [4][i] )
+		_HMG_SYSDATA [ 194 ] := ascan ( _HMG_SYSDATA [ HMG_FRM_HANDLE  ] , _HMG_SYSDATA [HMG_CTL_PARENTHANDLE][i] )
 		_HMG_SYSDATA [ 231 ] := 'C'
 		_HMG_SYSDATA [ 203 ] := i
-		_HMG_SYSDATA [ 316 ] :=  _HMG_SYSDATA [  66 ] [ _HMG_SYSDATA [ 194 ] ]  
-		_HMG_SYSDATA [ 317 ] :=  _HMG_SYSDATA [2] [_HMG_SYSDATA [ 203 ]]
+		_HMG_SYSDATA [ 316 ] :=  _HMG_SYSDATA [  HMG_FRM_NAME ] [ _HMG_SYSDATA [ 194 ] ]  
+		_HMG_SYSDATA [ 317 ] :=  _HMG_SYSDATA [HMG_CTL_NAME] [_HMG_SYSDATA [ 203 ]]
 		*
 
 		_HMG_GRIDINPLACEEDIT(I)
@@ -1769,13 +1769,13 @@ LOCAL IPE_MAXCOL
 
 			If _HMG_SYSDATA [ 340 ] == IPE_MAXCOL
 
-				if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+				if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 					_HMG_SYSDATA [ 340 ] := 2
 				Else
 					_HMG_SYSDATA [ 340 ] := 1
 				EndIf
 
-				ListView_Scroll( _HMG_SYSDATA [3] [i] ,	-10000  , 0 ) 
+				ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	-10000  , 0 ) 
 			EndIf
 
 			Exit
@@ -1786,13 +1786,13 @@ LOCAL IPE_MAXCOL
 
 			If _HMG_SYSDATA [ 340 ] > IPE_MAXCOL
 
-				if HMG_LEN ( _HMG_SYSDATA [ 14 ] [i] ) > 0 
+				if HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 
 					_HMG_SYSDATA [ 340 ] := 2
 				Else
 					_HMG_SYSDATA [ 340 ] := 1
 				EndIf
 
-				ListView_Scroll( _HMG_SYSDATA [3] [i] ,	-10000  , 0 ) 
+				ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ,	-10000  , 0 ) 
 				Exit
 			EndIf
 
@@ -1894,7 +1894,7 @@ PROCEDURE _HMG_GRIDINPLACEKBDEDIT_2(i)
 *-----------------------------------------------------------------------------*
 LOCAL R
 LOCAL S
-Local aColumnWhen := _HMG_SYSDATA [ 40 ] [ i ] [  6 ]
+Local aColumnWhen := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [  6 ]
 Local j
 Local nWhenRow
 Local xTmpCellValue
@@ -1905,19 +1905,19 @@ Local nStart, nEnd, lResult
 
    _HMG_GRID_KBDSCROLL(I)
 
-   If _HMG_SYSDATA [ 15 ] [i] == 1   // nCol cellnavigation
+   If _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] == 1   // nCol cellnavigation
                                                         // nRow cellnavigation
-      r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 39 ] [i] - 1 )
+      r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] - 1 )
    Else
                                                         //   nRow cellnavigation          nCol cellnavigation
-      r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 39 ] [i]- 1 , _HMG_SYSDATA [ 15 ] [i] - 1 )
+      r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i]- 1 , _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] - 1 )
    EndIf
 
 
-// MsgDebug( _HMG_SYSDATA [ 195 ] , _HMG_SYSDATA [ 39 ] [i], _HMG_SYSDATA [ 341 ] )
+// MsgDebug( _HMG_SYSDATA [ 195 ] , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i], _HMG_SYSDATA [ 341 ] )
 
-IF _HMG_SYSDATA [ 195 ] == 0 .AND. _HMG_SYSDATA [ 39 ] [i] > 0   // ADD, march 2017
-   _HMG_SYSDATA [ 195 ] := _HMG_SYSDATA [ 39 ] [i]
+IF _HMG_SYSDATA [ 195 ] == 0 .AND. _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] > 0   // ADD, march 2017
+   _HMG_SYSDATA [ 195 ] := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i]
 ENDIF
 
    
@@ -1930,20 +1930,20 @@ ENDIF
 
 
    *
-   _HMG_SYSDATA [ 194 ] := ascan ( _HMG_SYSDATA [ 67  ] , _HMG_SYSDATA [4][i] )
+   _HMG_SYSDATA [ 194 ] := ascan ( _HMG_SYSDATA [ HMG_FRM_HANDLE  ] , _HMG_SYSDATA [HMG_CTL_PARENTHANDLE][i] )
    _HMG_SYSDATA [ 231 ] := 'C'
    _HMG_SYSDATA [ 203 ] := i
-   _HMG_SYSDATA [ 316 ] :=  _HMG_SYSDATA [  66 ] [ _HMG_SYSDATA [ 194 ] ] 
-   _HMG_SYSDATA [ 317 ] :=  _HMG_SYSDATA [2] [_HMG_SYSDATA [ 203 ]]
+   _HMG_SYSDATA [ 316 ] :=  _HMG_SYSDATA [  HMG_FRM_NAME ] [ _HMG_SYSDATA [ 194 ] ] 
+   _HMG_SYSDATA [ 317 ] :=  _HMG_SYSDATA [HMG_CTL_NAME] [_HMG_SYSDATA [ 203 ]]
    *
 
    S := _HMG_GRIDINPLACEEDIT(I)
 
-   IF _HMG_SYSDATA [ 32 ] [I] .AND. _HMG_SYSDATA [ 245 ] == .F.
+   IF _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [I] .AND. _HMG_SYSDATA [ 245 ] == .F.
 
-      IF   _HMG_SYSDATA [ 15 ] [I] < HMG_LEN(_HMG_SYSDATA [  7 ] [I])
+      IF   _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] < HMG_LEN(_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [I])
 
-         IF _HMG_SYSDATA [ 40 ] [ I ] [ 32 ] == 0
+         IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 32 ] == 0
 
             IF S
 
@@ -1955,12 +1955,12 @@ ENDIF
                         InsertReturn()
                      ENDIF
                   ELSE
-                     _HMG_SYSDATA [ 15 ] [I]++
+                     _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I]++
                   ENDIF
 
                ELSE
 
-                  _HMG_SYSDATA [ 15 ] [I]++
+                  _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I]++
                   _HMG_SYSDATA [ 285 ] := .F.
                   InsertReturn()
 
@@ -1969,7 +1969,7 @@ ENDIF
 
                If ValType ( aColumnWhen ) == 'A'
 
-                  nStart := _HMG_SYSDATA [ 15 ] [I]
+                  nStart := _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I]
    
                   nEnd := HMG_LEN ( aColumnWhen )
 
@@ -1978,17 +1978,17 @@ ENDIF
                      If ValType ( aColumnWhen [j] ) == 'B'
 
 *******************************************************************************************************************************
-                        IF _HMG_SYSDATA [ 40 ] [ i ] [ 9 ] == .F.
+                        IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 9 ] == .F.
                            aTemp := this.item( nWhenRow )
                            xTmpCellValue := aTemp [j]
                         ELSE
                            _HMG_SYSDATA [ 201 ] := nWhenRow // QueryRowIndex
                            _HMG_SYSDATA [ 202 ] := j   // QueryColIndex
                            _HMG_SYSDATA [ 320 ] := .T.
-                           IF ValType ( _HMG_SYSDATA [ 40 ] [ i ] [ 10 ] ) == 'C'
+                           IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 10 ] ) == 'C'
                               GetDataGridCellData ( i , .t. )
                            ELSE
-                              Eval( _HMG_SYSDATA [  6 ] [ i ]  )      
+                              Eval( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [ i ]  )      
                            ENDIF
                            _HMG_SYSDATA [ 320 ] := .F.
                            xTmpCellValue := _HMG_SYSDATA [ 230 ]   
@@ -2005,7 +2005,7 @@ ENDIF
 
                         If lResult == .F.
 
-                           _HMG_SYSDATA [ 15 ] [I]++
+                           _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I]++
                         
                         Else
 
@@ -2019,9 +2019,9 @@ ENDIF
 
                   IF .NOT. _HMG_SYSDATA [ 284 ]
 
-                     IF _HMG_SYSDATA [ 15 ] [I] > nEnd
+                     IF _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] > nEnd
 
-                        _HMG_SYSDATA [ 15 ] [I] := nStart - 1
+                        _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] := nStart - 1
 
                      ENDIF
 
@@ -2033,16 +2033,16 @@ ENDIF
 
          ENDIF
 
-      ELSEIF _HMG_SYSDATA [ 15 ] [I] == HMG_LEN(_HMG_SYSDATA [  7 ] [I])
+      ELSEIF _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] == HMG_LEN(_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [I])
 
-         IF _HMG_SYSDATA [ 40 ] [ I ] [ 32 ] == 0
+         IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ I ] [ 32 ] == 0
 
             IF S
 
                IF .NOT. _HMG_SYSDATA [ 285 ]
 
                   IF .NOT. _HMG_SYSDATA [ 284 ]
-                     _HMG_SYSDATA [ 15 ] [I] := 1
+                     _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] := 1
                   ELSE
                      IF .NOT. _HMG_SYSDATA [ 256 ]
                         InsertDown()
@@ -2052,7 +2052,7 @@ ENDIF
 
                ELSE
 
-                  _HMG_SYSDATA [ 15 ] [I] := 1
+                  _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [I] := 1
                   _HMG_SYSDATA [ 285 ] := .F.
 
                ENDIF
@@ -2063,8 +2063,8 @@ ENDIF
 
       ENDIF
 
-      LISTVIEW_REDRAWITEMS( _HMG_SYSDATA[3][I] , _HMG_SYSDATA[39][I]-1 , _HMG_SYSDATA[39][I]-1 )
-      _DoControlEventProcedure ( _HMG_SYSDATA [ 12 ] [i] , i )
+      LISTVIEW_REDRAWITEMS( _HMG_SYSDATA[HMG_CTL_HANDLE][I] , _HMG_SYSDATA[HMG_CTL_MISCDATA1][I]-1 , _HMG_SYSDATA[HMG_CTL_MISCDATA1][I]-1 )
+      _DoControlEventProcedure ( _HMG_SYSDATA [ HMG_CTL_CHANGE ] [i] , i )
 
    ENDIF
 
@@ -2092,23 +2092,23 @@ PROCEDURE _HMG_GRID_KBDSCROLL(I)
 *-----------------------------------------------------------------------------*
 LOCAL R ,XS , XD 
 
-   _HMG_SYSDATA [ 195 ] := _HMG_SYSDATA [ 39 ] [i]
-   _HMG_SYSDATA [ 196 ] := _HMG_SYSDATA [ 15 ] [i]
+   _HMG_SYSDATA [ 195 ] := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i]
+   _HMG_SYSDATA [ 196 ] := _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i]
 
-   If _HMG_SYSDATA [ 15 ] [i] == 1
-      r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 39 ] [i] - 1 )
+   If _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] == 1
+      r := LISTVIEW_GETITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] - 1 )
    Else
-      r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [3] [i]  , _HMG_SYSDATA [ 39 ] [i] - 1 , _HMG_SYSDATA [ 15 ] [i] - 1 )
+      r := LISTVIEW_GETSUBITEMRECT ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i]  , _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [i] - 1 , _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] - 1 )
    EndIf
 
-   xs := ( ( GetControlSafeCol(i) + r [2] ) +( r[3] ))  -  ( GetControlSafeCol(i) + _HMG_SYSDATA [ 20 ] [i] )
+   xs := ( ( GetControlSafeCol(i) + r [2] ) +( r[3] ))  -  ( GetControlSafeCol(i) + _HMG_SYSDATA [ HMG_CTL_WIDTH ] [i] )
    xd := 20
 
    If xs > -xd 
-      ListView_Scroll( _HMG_SYSDATA [3] [i], xs + xd, 0 ) 
+      ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], xs + xd, 0 ) 
    Else
       If r [2] < 0
-         ListView_Scroll( _HMG_SYSDATA [3] [i], r[2], 0 )
+         ListView_Scroll( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], r[2], 0 )
       EndIf
    endIf
 
@@ -2132,7 +2132,7 @@ Function GridRecCount( index )
 **************************************************
 Local nCount := 0
 Local nOldRecno
-Local cRecordSource := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+Local cRecordSource := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    IF _IS_ACTIVE_FILTER_
       nOldRecno := &cRecordSource->( RECNO() )
       &cRecordSource->( DBGOTOP() )
@@ -2147,9 +2147,9 @@ Return nCount
 ***********************************************
 Function GetGridFieldName ( index , nField )
 ***********************************************
-Local cRecordSource   := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
-Local aColumnFields   := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
-Local aColumnClassMap := _HMG_SYSDATA [ 40 ] [ index ] [ 30 ]
+Local cRecordSource   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
+Local aColumnFields   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 11 ]
+Local aColumnClassMap := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 30 ]
 Local cFieldName
    IF aColumnClassMap [ nField ] == 'F'
       cFieldName := cRecordSource + '->' + aColumnFields[ nField ]   //  Field in this Area
@@ -2173,7 +2173,7 @@ Return .F.
 Function IsDataGridDeleted ( index , nRecno )
 *************************************************
 Local lRet := .F.
-Local cRecordSource := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+Local cRecordSource := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
 Local nOldRecno := &cRecordSource->( RECNO() )
    &cRecordSource->( ORDKEYGOTO( nRecno ) )
    if &cRecordSource->( DELETED() )
@@ -2193,7 +2193,7 @@ Local lOk
 Local nBackRecNo
 LOCAL nColumn := 0
 
-   cRecordSource  := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   cRecordSource  := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    nBackRecNo     := &cRecordSource->( RECNO() )
    aValue         := _GetValue (  ,  ,  index )
    if ValType (aValue) == 'A'
@@ -2248,7 +2248,7 @@ Local nBuffLogicalRow
 Local nBuffPhysicalRow 
 Local k
 
-   cRecordSource  := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   cRecordSource  := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    nBackRecNo     := &cRecordSource->( RECNO() )
    aValue         := _GetValue (  ,  ,  index )
    nValue         := if ( ValType (aValue) == 'A', aValue[1], aValue )
@@ -2263,12 +2263,12 @@ Local k
    If &cRecordSource->(EOF())
       nRecNo := 0
       // Try to get the buffer record number (if available)
-      aTemp := _HMG_SYSDATA [ 40 ] [ index ] [21]
+      aTemp := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21]
       For k := 1 To HMG_LEN ( aTemp )
          // Get Buffer Data
          nBuffLogicalRow  := aTemp [ k ] [ 1 ] 
          nBuffPhysicalRow := aTemp [ k ] [ 4 ] 
-         If nBuffLogicalRow == _HMG_SYSDATA [ 39 ] [ index ]
+         If nBuffLogicalRow == _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ index ]
             nRecNo := nBuffPhysicalRow
             Exit
          EndIf
@@ -2294,15 +2294,15 @@ Local x
    cOperation := 'D'
 
    // Get Logical Row
-   nLogicalRow := _HMG_SYSDATA [ 39 ] [index]
+   nLogicalRow := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [index]
 
    // Get Physical Row
    nPhysicalRow := GetDataGridRecNo(index)
 
    // Process Double-Deleted/Recalled
-   For x := 1 To _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]
-      If _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ x ] [ 1 ] == nLogicalRow 
-         _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ x ] [ 3 ] := 'D'
+   For x := 1 To _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]
+      If _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ x ] [ 1 ] == nLogicalRow 
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ x ] [ 3 ] := 'D'
          Return .T. 
       EndIf
    Next
@@ -2310,13 +2310,13 @@ Local x
    // Not Double Deleted/Recalled *********************************************
 
    // Append Record To Deleted / Recalled Buffer
-   aadd ( _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] , { nLogicalRow , nPhysicalRow , cOperation } ) 
+   aadd ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] , { nLogicalRow , nPhysicalRow , cOperation } ) 
 
    // Update Deleted / Recalled Buffer Count
-   _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]++
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]++
 
    // Set Pending Updates Flag
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .T.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .T.
 
 Return .T.
 
@@ -2333,15 +2333,15 @@ Local x
    cOperation := 'R'
 
    // Get Logical Row
-   nLogicalRow := _HMG_SYSDATA [ 39 ] [index]
+   nLogicalRow := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [index]
 
    // Get Physical Row
    nPhysicalRow := GetDataGridRecNo(index)
 
    // Process Double-Deleted/Recalled
-   For x := 1 To _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]
-      If _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ x ] [ 1 ] == nLogicalRow 
-         _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ x ] [ 3 ] := 'R'
+   For x := 1 To _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]
+      If _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ x ] [ 1 ] == nLogicalRow 
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ x ] [ 3 ] := 'R'
          Return .T. 
       EndIf
    Next
@@ -2350,13 +2350,13 @@ Local x
    // Not Double Deleted/Recalled *******************************************
 
    // Append Record To Deleted / Recalled Buffer
-   aadd ( _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] , { nLogicalRow , nPhysicalRow , cOperation } ) 
+   aadd ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] , { nLogicalRow , nPhysicalRow , cOperation } ) 
 
    // Update Deleted / Recalled Buffer Count
-   _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]++
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]++
 
    // Set Pending Updates Flag
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .T.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .T.
 
 Return .T.
 
@@ -2366,7 +2366,7 @@ Return .T.
 Function IsDataGridFiltered ( index )
 ****************************************
 Local cRecordSource, lRet, nRecNo
-   cRecordSource := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   cRecordSource := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    if _IS_ACTIVE_FILTER_
       lRet := .t.
    else
@@ -2387,20 +2387,20 @@ Local nBufferRow
 Local x, nRecNo
 
    // Get Logical Position
-   nLogicalRow := _HMG_SYSDATA [ 39 ] [index]
-   nLogicalCol := _HMG_SYSDATA [ 15 ] [index]
+   nLogicalRow := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [index]
+   nLogicalCol := _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [index]
 
    // Get Selected Row Record Number
    nRecNo := GetDataGridRecNo(index)
 
    // New Buffered Record Without a True RecNo
    If nRecNo == 0
-      nRecNo := _HMG_SYSDATA [ 40 ] [ index ] [ 23 ] - nLogicalRow
+      nRecNo := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 23 ] - nLogicalRow
    EndIf
 
    // Is re-edit of the same cell ?
-   If _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] == .T.
-      aTemp := _HMG_SYSDATA [ 40 ] [ index ] [21]
+   If _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] == .T.
+      aTemp := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21]
       For x := 1 To HMG_LEN ( aTemp )
          If aTemp [ x ] [ 1 ] == nLogicalRow
             If aTemp [ x ] [ 2 ] == nLogicalCol
@@ -2414,13 +2414,13 @@ Local x, nRecNo
 
    // Add Data to Pending Updates Buffer
    If lReEdit
-      _HMG_SYSDATA [ 40 ] [ index ] [21] [ nBufferRow ] := { nLogicalRow , nLogicalCol , Value , nRecNo }
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] [ nBufferRow ] := { nLogicalRow , nLogicalCol , Value , nRecNo }
    Else
-      aadd ( _HMG_SYSDATA [ 40 ] [ index ] [21] , { nLogicalRow , nLogicalCol , Value , nRecNo } )
+      aadd ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] , { nLogicalRow , nLogicalCol , Value , nRecNo } )
    EndIf
 
    // Set Pending Updates Flag
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .T.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .T.
 
 Return .T.
 
@@ -2436,9 +2436,9 @@ Local lRet := .T.
 Local j
 
    // Get Control Data
-   nHandle        := _HMG_SYSDATA [  3 ] [ index ] 
-   aColumnFields  := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
-   cRecordSource  := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   nHandle        := _HMG_SYSDATA [  HMG_CTL_HANDLE ] [ index ] 
+   aColumnFields  := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 11 ]
+   cRecordSource  := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    nItemCount     := ListView_GetItemCount ( nHandle )
 
    // Append a Row To The Grid
@@ -2452,26 +2452,26 @@ Local j
    _SetValue ( , , { nItemCount , 1 } , index )
 
    // Update New Record Buffer Count (Negative)
-   _HMG_SYSDATA [ 40 ] [ index ] [ 22 ]--
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ]--
 
    // Set Default Values For The New Record
-   for j := 1 to HMG_LEN ( _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] )
+   for j := 1 to HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] )
       if type ( aColumnFields [j] ) == 'C'
-         _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] := ''
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] := ''
       elseif type ( aColumnFields [j] ) == 'N'
-         _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] := 0
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] := 0
       elseif   type ( aColumnFields [j] ) == 'D'
-         _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] := ctod('  /  /  ')
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] := ctod('  /  /  ')
       elseif   type ( aColumnFields [j] ) == 'L'
-         _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] := .F.
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] := .F.
       elseif   type ( aColumnFields [j] ) == 'M'
-         _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] := '<Memo>'
+         _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] := '<Memo>'
       endif
-      aadd ( _HMG_SYSDATA [ 40 ] [ index ] [21] , { nItemCount , j , _HMG_SYSDATA [ 40 ] [ index ] [ 13 ] [j] , _HMG_SYSDATA [ 40 ] [ index ] [ 22 ] } )
+      aadd ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] , { nItemCount , j , _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 13 ] [j] , _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ] } )
    next
 
    // Set Pending Updates Flag
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .T.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .T.
 
 Return lRet
 
@@ -2498,29 +2498,29 @@ Local aColumnClassMap
 Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, cCommand
 
    // If Not Buffered Data Then Return ************************************
-   If _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] == .F.
+   If _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] == .F.
       Return .F.
    EndIf
 
    // Get Control Data ****************************************************
-   cRecordSource     := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
-   aColumnFields     := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
-   aColumnClassMap   := _HMG_SYSDATA [ 40 ] [ index ] [ 30 ]
+   cRecordSource     := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
+   aColumnFields     := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 11 ]
+   aColumnClassMap   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 30 ]
 
    // Backup Record Number ************************************************
    nRecNo := &cRecordSource->( RECNO() )
 
    // If OnSave Specified, Process It And Exit ****************************
-   If ValType ( _HMG_SYSDATA [ 40 ] [ index ] [ 26 ] ) == 'B'
+   If ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 26 ] ) == 'B'
 
       // Create User Buffer Arrays From Internal Ones ****************
       aAppendBuffer  := {}
       aEditBuffer    := {}
-      aMarkBuffer    := _HMG_SYSDATA [ 40 ] [ index ] [ 25 ]
-      aTemp := _HMG_SYSDATA [ 40 ] [ index ] [ 21 ] // Internal Buffer
+      aMarkBuffer    := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ]
+      aTemp := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 21 ] // Internal Buffer
 
       nColumnCount := HMG_LEN ( aColumnFields )
-      nAppendRecordCount := _HMG_SYSDATA [ 40 ] [ index ] [ 22 ]
+      nAppendRecordCount := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ]
 
       // Create User Append Buffer ***********************************
       for h := -1 To nAppendRecordCount Step -1
@@ -2547,27 +2547,27 @@ Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, c
       _HMG_SYSDATA [ 280 ] := aClone ( aAppendBuffer ) 
 
       // Execute It!
-      Eval ( _HMG_SYSDATA [ 40 ] [ index ] [ 26 ] )
+      Eval ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 26 ] )
 
       // Cleanup ********************************************
 
       // Set Pending Updates Flag
-      _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .F.
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .F.
 
       // Clean Data Buffer
-      _HMG_SYSDATA [ 40 ] [ index ] [21] := {}
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] := {}
 
       // Update New Records Buffer Count
-      _HMG_SYSDATA [ 40 ] [ index ] [ 22 ] := 0
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ] := 0
 
       // Reset Buffered Session Initial Item Count
-      _HMG_SYSDATA [ 40 ] [ index ] [ 23 ] := GridRecCount( index )
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 23 ] := GridRecCount( index )
 
       // Reset Deleted / Recalled Buffer Count
-      _HMG_SYSDATA [ 40 ] [ index ] [ 24 ] :=  0 
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ] :=  0 
 
       // Reset Deleted / Recalled Buffer
-      _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] := {} 
+      _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] := {} 
 
       // Refresh
       DataGridRefresh(index)
@@ -2590,7 +2590,7 @@ Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, c
       _HMG_SYSDATA [ 347 ] := .F.   // Grid Automatic Update
 
       // Process Existing Records *************************************************
-      aTemp := _HMG_SYSDATA [ 40 ] [ index ] [ 21 ]
+      aTemp := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 21 ]
       For x := 1 To HMG_LEN ( aTemp )
 
          // Get Buffer Data
@@ -2660,11 +2660,11 @@ Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, c
       Next z
 
       // Precess Delete / ReCall Commands ****************************
-      For k := 1 To _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]
+      For k := 1 To _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]
 
          // Get Row And Command
-         nPhysicalRow := _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ k ] [ 2 ]
-         cCommand := _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ k ] [ 3 ]
+         nPhysicalRow := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ k ] [ 2 ]
+         cCommand := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ k ] [ 3 ]
 
          // Position On The Record To Process
          &cRecordSource->( DBGOTO( nPhysicalRow ) )
@@ -2701,22 +2701,22 @@ Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, c
    &cRecordSource->( DBGOTO( nRecNo ) )
 
    // Set Pending Updates Flag ********************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .F.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .F.
 
    // Clean Data Buffer ***************************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [21] := {}
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] := {}
 
    // Update New Records Buffer Count *************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 22 ] := 0
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ] := 0
 
    // Reset Buffered Session Initial Item Count
-   _HMG_SYSDATA [ 40 ] [ index ] [ 23 ] := GridRecCount( index )
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 23 ] := GridRecCount( index )
 
    // Reset Deleted / Recalled Buffer Count
-   _HMG_SYSDATA [ 40 ] [ index ] [ 24 ] :=  0 
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ] :=  0 
 
    // Reset Deleted / Recalled Buffer
-   _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] := {} 
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] := {} 
 
    // Refresh
    DataGridRefresh(index)
@@ -2730,10 +2730,10 @@ Function IsBufferedRecordMarkedForDeletion( index , nPhysicalRow )
 Local lRetVal := .F.
 Local k, cCommand
 
-   For k := 1 To _HMG_SYSDATA [ 40 ] [ index ] [ 24 ]
-      cCommand := _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ k ] [ 3 ]
+   For k := 1 To _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ]
+      cCommand := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ k ] [ 3 ]
       If cCommand == 'D'
-         If nPhysicalRow == _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] [ k ] [ 2 ]
+         If nPhysicalRow == _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] [ k ] [ 2 ]
             lRetVal := .T.
             Exit
          EndIf
@@ -2753,8 +2753,8 @@ Local aValue
    DEFAULT lPreserveSelection TO .F.
 
    // Get Control Data ****************************************************
-   nHandle       := _HMG_SYSDATA [  3 ] [ index ] 
-   cRecordSource := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   nHandle       := _HMG_SYSDATA [  HMG_CTL_HANDLE ] [ index ] 
+   cRecordSource := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
    IF ValType ( cRecordSource ) <> 'C'
       return .F.   // Not Grid with cRecordSource ( DataBase )
    ENDIF
@@ -2764,8 +2764,8 @@ Local aValue
    endif
 
    // Reset Cell Position Data ********************************************
-   _HMG_SYSDATA [ 39 ] [ index ] := 0
-   _HMG_SYSDATA [ 15 ] [ index ] := 0
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ index ] := 0
+   _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [ index ] := 0
 
    // Set New ItemCount ***************************************************
 // ListView_SetItemCount ( nHandle , 0 )
@@ -2789,19 +2789,19 @@ Function DataGridClearBuffer(index)
    // Get Control Data ****************************************************
 
    // Set Pending Updates Flag ********************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .F.
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] := .F.
 
    // Clean Data Buffer ***************************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [21] := {}
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [21] := {}
 
    // Update New Records Buffer Count *************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 22 ] := 0
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 22 ] := 0
 
    // Reset Deleted / Recalled Buffer Count *******************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 24 ] :=  0 
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 24 ] :=  0 
 
    // Reset Deleted / Recalled Buffer *************************************
-   _HMG_SYSDATA [ 40 ] [ index ] [ 25 ] := {} 
+   _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 25 ] := {} 
 
    // Refresh *************************************************************
    DataGridRefresh(index)
@@ -2825,17 +2825,17 @@ LOCAL nRecNo
       RETURN
    ENDIF
 
-   IF _HMG_SYSDATA [ 40 ] [ index ] [ 33 ] == .F.  // ENABLEUPDATE = .T. | DISABLEUPDATE = .F. 
+   IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 33 ] == .F.  // ENABLEUPDATE = .T. | DISABLEUPDATE = .F. 
       RETURN
    ENDIF
 
-   cRecordSource     := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+   cRecordSource     := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
 
    nRecNo := &cRecordSource->( RECNO() )   // ADD, march 2017
 
    // Update Physical Record position
-   If nLasthandle <> _HMG_SYSDATA [3] [ Index ] .OR. nLastLogicalRecord <> This.QueryRowIndex .OR. ListView_GetItemCount( _HMG_SYSDATA [3] [ Index ] ) == 1
-      nLasthandle := _HMG_SYSDATA [3] [ Index ]
+   If nLasthandle <> _HMG_SYSDATA [HMG_CTL_HANDLE] [ Index ] .OR. nLastLogicalRecord <> This.QueryRowIndex .OR. ListView_GetItemCount( _HMG_SYSDATA [HMG_CTL_HANDLE] [ Index ] ) == 1
+      nLasthandle := _HMG_SYSDATA [HMG_CTL_HANDLE] [ Index ]
       nLastLogicalRecord := This.QueryRowIndex
       nLastPhysicalRecord := GridSetPhysicalRecord( index, This.QueryRowIndex )
    else
@@ -2843,8 +2843,8 @@ LOCAL nRecNo
    endif
 
    // Determine If The Required Cell Is Buffered
-   IF _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] == .T.  // Pending Edit Updates Flag
-      aTemp := _HMG_SYSDATA [ 40 ] [ index ] [ 21 ]   // { nLogicalRow , nLogicalCol , xValue , nRecNo }
+   IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 20 ] == .T.  // Pending Edit Updates Flag
+      aTemp := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 21 ]   // { nLogicalRow , nLogicalCol , xValue , nRecNo }
       lBufferedCell := .F.
       FOR x := 1 TO HMG_LEN ( aTemp )
          IF  aTemp [ x ] [ 1 ] == This.QueryRowIndex .and. aTemp [ x ] [ 2 ] == This.QueryColIndex
@@ -2867,11 +2867,11 @@ LOCAL nRecNo
       If lTrueData
          This.QueryData := iif( lBufferedCell == .T., xBufferedCellValue, GetFiledData( index , This.QueryColIndex ) )
       else 
-         If ValType ( _HMG_SYSDATA [ 40 ] [ index ] [ 18 ] ) = 'A' // DynamicDisplay
+         If ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 18 ] ) = 'A' // DynamicDisplay
             This.CellRowIndex := This.QueryRowIndex
             This.CellColIndex := This.QueryColIndex
             This.CellValueEx := iif( lBufferedCell == .T., xBufferedCellValue, GetFiledData( index , This.QueryColIndex ) )
-            This.QueryData := EVAL ( _HMG_SYSDATA [ 40 ] [ index ] [ 18 ] [ This.QueryColIndex ] )   // Eval DynamicDisplay CodeBlock
+            This.QueryData := EVAL ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 18 ] [ This.QueryColIndex ] )   // Eval DynamicDisplay CodeBlock
          Else
             This.QueryData := iif( lBufferedCell == .T., xBufferedCellValue, GetFiledData( index , This.QueryColIndex ) )
          EndIf
@@ -2886,9 +2886,9 @@ Return
 ************************************************************
 Function GetFiledData ( index, nField )   // ADD May 2016
 ************************************************************
-Local cRecordSource   := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
-Local aColumnFields   := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
-Local aColumnClassMap := _HMG_SYSDATA [ 40 ] [ index ] [ 30 ]
+Local cRecordSource   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
+Local aColumnFields   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 11 ]
+Local aColumnClassMap := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 30 ]
 Local xData 
    IF aColumnClassMap [ nField ] == 'F'
    // xData := &cRecordSource->( FIELDGET( &cRecordSource->( FIELDPOS( aColumnFields[ nField ] ) ) ) )
@@ -2902,7 +2902,7 @@ Return xData
 ***********************************************************************************
 Function GridSetPhysicalRecord( index, nLogicalRecno )   // ADD May 2016 
 ***********************************************************************************
-Local cRecordSource   := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
+Local cRecordSource   := _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ index ] [ 10 ]
 Local nPhysicalRecord := 0
 Local nLogicalRecord  := 0
 Local nOldWorkArea

@@ -135,51 +135,51 @@ Local ControlHandle, BackgroundColor, TransparentColor
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [  1 ]  [k] :=   "IMAGE" 
-	_HMG_SYSDATA [  2 ]  [k] :=   ControlName 
-	_HMG_SYSDATA [  3 ]  [k] :=   ControlHandle 
-	_HMG_SYSDATA [  4 ]  [k] :=   ParentForm 
-	_HMG_SYSDATA [  5 ]  [k] :=   0 
-	_HMG_SYSDATA [  6 ]  [k] :=   ProcedureName 
-	_HMG_SYSDATA [  7 ]  [k] :=   {} 
-	_HMG_SYSDATA [  8 ]  [k] :=   if ( stretch == .t. , 1 , 0 ) 
-	_HMG_SYSDATA [  9 ]  [k] :=   "" 
-	_HMG_SYSDATA [ 10 ]  [k] :=   "" 
-	_HMG_SYSDATA [ 11 ]  [k] :=   "" 
-	_HMG_SYSDATA [ 12 ]  [k] :=   "" 
-	_HMG_SYSDATA [ 13 ]  [k] :=   .F.   // Is Deleted 
-	_HMG_SYSDATA [ 14 ]  [k] :=   Nil 
-	_HMG_SYSDATA [ 15 ]  [k] :=   Nil 
-	_HMG_SYSDATA [ 16 ]  [k] :=   "" 
-	_HMG_SYSDATA [ 17 ]  [k] :=   {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=   y 
-	_HMG_SYSDATA [ 19 ]  [k] :=   x 
-	_HMG_SYSDATA [ 20 ]  [k] :=   w 
-	_HMG_SYSDATA [ 21 ]  [k] :=   h 
-	_HMG_SYSDATA [ 22 ]  [k] :=   0 
-	_HMG_SYSDATA [ 23 ]  [k] :=   if ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ]  [k] :=   if ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ]  [k] :=   FileName 
-	_HMG_SYSDATA [ 26 ]  [k] :=   BackgroundColor 
-	_HMG_SYSDATA [ 27 ]  [k] :=   '' 
-	_HMG_SYSDATA [ 28 ]  [k] :=   TransparentColor
-	_HMG_SYSDATA [ 29 ]  [k] :=   {.f.,.f.,.f.,.f.} 
-	_HMG_SYSDATA [ 30 ]  [k] :=   cToolTip
-	_HMG_SYSDATA [ 31 ]  [k] :=   w   // original Width
-	_HMG_SYSDATA [ 32 ]  [k] :=   h   // original Height
-	_HMG_SYSDATA [ 33 ]  [k] :=   ''  
-	_HMG_SYSDATA [ 34 ]  [k] :=   if( invisible, .f., .t.) 
-	_HMG_SYSDATA [ 35 ]  [k] :=   HelpId 
-	_HMG_SYSDATA [ 36 ]  [k] :=   if ( adjustimage == .t. , 1 , 0)
-	_HMG_SYSDATA [ 37 ]  [k] :=   0 
-	_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-	_HMG_SYSDATA [ 39 ]  [k] :=   if ( transparent == .t. , 1 , 0 )
-	_HMG_SYSDATA [ 40 ]  [k] :=   { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [  HMG_CTL_TYPE ]  [k] :=   "IMAGE" 
+	_HMG_SYSDATA [  HMG_CTL_NAME ]  [k] :=   ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ]  [k] :=   ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ]  [k] :=   ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=   0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=   ProcedureName 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=   {} 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=   if ( stretch == .t. , 1 , 0 ) 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=   "" 
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=   "" 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=   "" 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=   "" 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=   .F.   // Is Deleted 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=   Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=   Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=   "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=   {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=   y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=   x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=   w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=   h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=   if ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=   if ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=   FileName 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=   BackgroundColor 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=   '' 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=   TransparentColor
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=   {.f.,.f.,.f.,.f.} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=   cToolTip
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=   w   // original Width
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=   h   // original Height
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   ''  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   if( invisible, .f., .t.) 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   if ( adjustimage == .t. , 1 , 0)
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ]  [k] :=   if ( transparent == .t. , 1 , 0 )
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ]  [k] :=   { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
    // Dr. Claudio Soto (May 2013)
-   _HMG_SYSDATA [ 37 ]  [k] :=   C_SetPicture    ( ControlHandle , FileName , w , h , if ( stretch == .t. , 1 , 0 ) , if ( transparent == .t. , 1 , 0 ), BackgroundColor, if ( adjustimage == .t. , 1 , 0), TransparentColor)
-   _HMG_SYSDATA [ 20 ]  [k] :=   GetWindowWidth  ( ControlHandle )
-   _HMG_SYSDATA [ 21 ]  [k] :=   GetWindowHeight ( ControlHandle )
+   _HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   C_SetPicture    ( ControlHandle , FileName , w , h , if ( stretch == .t. , 1 , 0 ) , if ( transparent == .t. , 1 , 0 ), BackgroundColor, if ( adjustimage == .t. , 1 , 0), TransparentColor)
+   _HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=   GetWindowWidth  ( ControlHandle )
+   _HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=   GetWindowHeight ( ControlHandle )
 
 Return Nil
 

@@ -122,49 +122,49 @@ Local FontHandle
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [1] [k] := "TAB" 
-	_HMG_SYSDATA [2] [k] :=   ControlName 
-	_HMG_SYSDATA [4] [k] :=   ParentForm 
-	_HMG_SYSDATA [3] [k] :=   Controlhandle 
-	_HMG_SYSDATA [  5 ]  [k] :=  0 
-	_HMG_SYSDATA [  7 ]  [k] :=  aPageMap 
-	_HMG_SYSDATA [  6 ]  [k] :=  "" 
-	_HMG_SYSDATA [  8 ]  [k] :=  Nil 
-	_HMG_SYSDATA [  9 ]  [k] :=  0   // hImageList
-	_HMG_SYSDATA [ 10 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 11 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 12 ]  [k] :=  change 
-	_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-	_HMG_SYSDATA [ 14 ]  [k] :=  Nil 
-	_HMG_SYSDATA [ 15 ]  [k] :=  Nil 
-	_HMG_SYSDATA [ 16 ]  [k] :=  "" 
-	_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-	_HMG_SYSDATA [ 18 ]  [k] :=  y 
-	_HMG_SYSDATA [ 19 ]  [k] :=  x 
-	_HMG_SYSDATA [ 20 ]  [k] :=  w 
-	_HMG_SYSDATA [ 21 ]   [k] := h 
-	_HMG_SYSDATA [ 22 ]  [k] :=  0 
-	_HMG_SYSDATA [ 23 ]  [k] :=  -1 
-	_HMG_SYSDATA [ 24 ]  [k] :=  -1 
-	_HMG_SYSDATA [ 25 ]  [k] :=  Images 
-	_HMG_SYSDATA [ 26 ]  [k] :=  NoTrans 
-	_HMG_SYSDATA [ 27 ]  [k] :=  fontname 
-	_HMG_SYSDATA [ 28 ]  [k] :=  fontsize 
-	_HMG_SYSDATA [ 29 ]  [k] :=  {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ]   [k] :=  tooltip  
-	_HMG_SYSDATA [ 31 ]   [k] :=  Buttons
-	_HMG_SYSDATA [ 32 ]   [k] :=  0
-	_HMG_SYSDATA [ 33 ]   [k] :=  aCaptions  
-	_HMG_SYSDATA [ 34 ]  [k] :=   .t. 
-	_HMG_SYSDATA [ 35 ]  [k] :=   0 
-	_HMG_SYSDATA [ 36 ]   [k] :=  FontHandle 
-	_HMG_SYSDATA [ 37 ]    [k] := 0 
-	_HMG_SYSDATA [ 38 ]   [k] :=  .T. 
-	_HMG_SYSDATA [ 39 ] [k] := 0
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "TAB" 
+	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
+	_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] :=   ParentForm 
+	_HMG_SYSDATA [HMG_CTL_HANDLE] [k] :=   Controlhandle 
+	_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  aPageMap 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  "" 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  0   // hImageList
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  change 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=  Nil 
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=  "" 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  y 
+	_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ]   [k] := h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  0 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  -1 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  -1 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  Images 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  NoTrans 
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]   [k] :=  tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]   [k] :=  Buttons
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]   [k] :=  0
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ]   [k] :=  aCaptions  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   .t. 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   0 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]   [k] :=  FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]    [k] := 0 
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ]   [k] :=  .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	If ImageFlag == .T.
-		_HMG_SYSDATA [  9 ] [ k ] := AddtabBitMap ( ControlHandle , Images , NoTrans )
+		_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [ k ] := AddtabBitMap ( ControlHandle , Images , NoTrans )
 	EndIf
 
 	For z := 1 To HMG_LEN ( aCaptions )
@@ -279,39 +279,39 @@ Function UpdateTab (y) // Internal Function
 Local r,w,s,z
 
 	* Hide All Pages 
-	for r = 1 to HMG_LEN ( _HMG_SYSDATA [  7 ] [y] )
-		for w = 1 to HMG_LEN (_HMG_SYSDATA [  7 ] [y] [r])
-			if valtype ( _HMG_SYSDATA [  7 ] [y] [r] [w] ) <> "A"
-				HideWindow ( _HMG_SYSDATA [  7 ] [y] [r] [w] ) 
+	for r = 1 to HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] )
+		for w = 1 to HMG_LEN (_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [r])
+			if valtype ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [r] [w] ) <> "A"
+				HideWindow ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [r] [w] ) 
          else
-				for z = 1 to HMG_LEN ( _HMG_SYSDATA [  7 ] [y] [r] [w] )
-               HideWindow ( _HMG_SYSDATA [  7 ] [y] [r] [w] [z] ) 
+				for z = 1 to HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [r] [w] )
+               HideWindow ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [r] [w] [z] ) 
 				Next z
 			endif
 		Next w
 	Next r
 
 	* Show New Active Page
-	s = TabCtrl_GetCurSel (_HMG_SYSDATA [3] [y] )
-	for w = 1 to HMG_LEN (_HMG_SYSDATA [  7 ] [y] [s])
-		if valtype (_HMG_SYSDATA [  7 ] [y] [s] [w]) <> "A"
+	s = TabCtrl_GetCurSel (_HMG_SYSDATA [HMG_CTL_HANDLE] [y] )
+	for w = 1 to HMG_LEN (_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s])
+		if valtype (_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w]) <> "A"
 
-			if _IsControlVisibleFromHandle ( _HMG_SYSDATA [  7 ] [y] [s] [w] )
+			if _IsControlVisibleFromHandle ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] )
 
-				CShowControl ( _HMG_SYSDATA [  7 ] [y] [s] [w] ) 
+				CShowControl ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] ) 
 
-			ElseIf _IsWindowVisibleFromHandle ( _HMG_SYSDATA [  7 ] [y] [s] [w] )
+			ElseIf _IsWindowVisibleFromHandle ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] )
 		
-				CShowControl ( _HMG_SYSDATA [  7 ] [y] [s] [w] ) 
+				CShowControl ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] ) 
 
 			EndIf
 
 		else
 
-			if _IsControlVisibleFromHandle ( _HMG_SYSDATA [  7 ] [y] [s] [w] [1] )
+			if _IsControlVisibleFromHandle ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] [1] )
 
-				for z = 1 to HMG_LEN ( _HMG_SYSDATA [  7 ] [y] [s] [w] )
-   		                        CShowControl ( _HMG_SYSDATA [  7 ] [y] [s] [w] [z] ) 
+				for z = 1 to HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] )
+   		                        CShowControl ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [y] [s] [w] [z] ) 
 				next z
 
 			EndIf
@@ -480,25 +480,25 @@ Local i
 
 	i := GetControlIndex ( Controlname , ParentForm )
 
-	TABCTRL_INSERTITEM ( _HMG_SYSDATA [3] [i] , Position - 1 , Caption )
+	TABCTRL_INSERTITEM ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , Position - 1 , Caption )
 
-	aAdd ( _HMG_SYSDATA [  7 ][i] , Nil )
-	aIns ( _HMG_SYSDATA [  7 ][i] , Position )
-	_HMG_SYSDATA [  7 ] [i] [Position] := {}   // aPageMap
+	aAdd ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ][i] , Nil )
+	aIns ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ][i] , Position )
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i] [Position] := {}   // aPageMap
 
-	aAdd ( _HMG_SYSDATA [ 33 ][i] , Nil )
-	aIns ( _HMG_SYSDATA [ 33 ][i] , Position )
-	_HMG_SYSDATA [ 33 ] [i] [Position] := Caption
+	aAdd ( _HMG_SYSDATA [ HMG_CTL_CAPTION ][i] , Nil )
+	aIns ( _HMG_SYSDATA [ HMG_CTL_CAPTION ][i] , Position )
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] [Position] := Caption
 
-	aAdd ( _HMG_SYSDATA [ 25 ][i] , Nil )
-	aIns ( _HMG_SYSDATA [ 25 ][i] , Position )
-	_HMG_SYSDATA [ 25 ] [i] [Position] := cImage
+	aAdd ( _HMG_SYSDATA [ HMG_CTL_PICTURE ][i] , Nil )
+	aIns ( _HMG_SYSDATA [ HMG_CTL_PICTURE ][i] , Position )
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [i] [Position] := cImage
 
 // ADD
-   IF _HMG_SYSDATA [ 9 ] [ i ] <> 0
-      IMAGELIST_DESTROY ( _HMG_SYSDATA [ 9 ] [ i ] )
+   IF _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [ i ] <> 0
+      IMAGELIST_DESTROY ( _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [ i ] )
    ENDIF
-   _HMG_SYSDATA [ 9 ] [ i ] := AddtabBitMap ( _HMG_SYSDATA [3] [i] , _HMG_SYSDATA [ 25 ][i] , _HMG_SYSDATA [ 26 ][i] )
+   _HMG_SYSDATA [ HMG_CTL_INPUTMASK ] [ i ] := AddtabBitMap ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , _HMG_SYSDATA [ HMG_CTL_PICTURE ][i] , _HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ][i] )
 //
 
 	UpdateTab (i)
@@ -515,21 +515,21 @@ Local i , h , x
 
 	x := GetControlIndex ( ControlName , ParentForm )
 
-	h := _HMG_SYSDATA [3] [x]
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [x]
 
-	If	_HMG_SYSDATA [1] [x] == "CHECKBOX"	;
+	If	_HMG_SYSDATA [HMG_CTL_TYPE] [x] == "CHECKBOX"	;
 		.or.					;
-		_HMG_SYSDATA [1] [x] == "FRAME"		;
+		_HMG_SYSDATA [HMG_CTL_TYPE] [x] == "FRAME"		;
 
-		_HMG_SYSDATA [31] [x] := TabName
-		_HMG_SYSDATA [32] [x] := ParentForm
+		_HMG_SYSDATA [HMG_CTL_RANGEMIN] [x] := TabName
+		_HMG_SYSDATA [HMG_CTL_RANGEMAX] [x] := ParentForm
 
 	EndIf
 
-	aadd ( _HMG_SYSDATA [  7 ] [i] [PageNumber] , h )
+	aadd ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i] [PageNumber] , h )
 
-	_HMG_SYSDATA [ 23 ] [x] := _HMG_SYSDATA [ 18 ] [i]
-	_HMG_SYSDATA [ 24 ] [x] := _HMG_SYSDATA [ 19 ] [i]
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [x] := _HMG_SYSDATA [ HMG_CTL_ROW ] [i]
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [x] := _HMG_SYSDATA [ HMG_CTL_COL ] [i]
 
 	_SetControlRow ( ControlName , ParentForm , Row )
 	_SetControlCol ( ControlName , ParentForm , Col )
@@ -550,48 +550,48 @@ Local i , NewValue , j , NewMap := {}
 
 		// Control Map
 
-		For j := 1 To HMG_LEN ( _HMG_SYSDATA [  7 ] [i] )  
+		For j := 1 To HMG_LEN ( _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i] )  
 
 			if j <> position 
-				aAdd ( NewMap , _HMG_SYSDATA [  7 ] [i] [j] )
+				aAdd ( NewMap , _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i] [j] )
 			endif
 
 		Next j
 
-		_HMG_SYSDATA [  7 ] [i] := NewMap
+		_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i] := NewMap
 
 
 		// Images
 
 		NewMap := {}
 
-		For j := 1 To HMG_LEN ( _HMG_SYSDATA [ 25 ] [i] )  
+		For j := 1 To HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_PICTURE ] [i] )  
 
 			if j <> position 
-				aAdd ( NewMap , _HMG_SYSDATA [ 25 ] [i] [j] )
+				aAdd ( NewMap , _HMG_SYSDATA [ HMG_CTL_PICTURE ] [i] [j] )
 			endif
 
 		Next j
 
-		_HMG_SYSDATA [ 25 ] [i] := NewMap
+		_HMG_SYSDATA [ HMG_CTL_PICTURE ] [i] := NewMap
 
 
 		// Captions
 
 		NewMap := {}
 
-		For j := 1 To HMG_LEN ( _HMG_SYSDATA [ 33 ] [i] )  
+		For j := 1 To HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] )  
 
 			if j <> position 
-				aAdd ( NewMap , _HMG_SYSDATA [ 33 ] [i] [j] )
+				aAdd ( NewMap , _HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] [j] )
 			endif
 
 		Next j
 
-		_HMG_SYSDATA [ 33 ] [i] := NewMap
+		_HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] := NewMap
 
 
-		TabCtrl_DeleteItem(_HMG_SYSDATA [3][i] , Position - 1 )
+		TabCtrl_DeleteItem(_HMG_SYSDATA [HMG_CTL_HANDLE][i] , Position - 1 )
 
 		NewValue := Position - 1
 
@@ -599,11 +599,11 @@ Local i , NewValue , j , NewMap := {}
 			NewValue := 1
 		EndIf
 
-		AddTabBitMap ( _HMG_SYSDATA [3] [i] , _HMG_SYSDATA [ 25 ][i] , _HMG_SYSDATA [ 26 ][i] )
+		AddTabBitMap ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , _HMG_SYSDATA [ HMG_CTL_PICTURE ][i] , _HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ][i] )
 
-		TABCTRL_SETCURSEL ( _HMG_SYSDATA [3][i] , NewValue )
+		TABCTRL_SETCURSEL ( _HMG_SYSDATA [HMG_CTL_HANDLE][i] , NewValue )
 
-      IF HMG_LEN ( _HMG_SYSDATA [ 7 ] [i] ) > 0
+      IF HMG_LEN ( _HMG_SYSDATA [ HMG_CTL_PAGEMAP ] [i] ) > 0
          UpdateTab (i)
       ENDIF
 

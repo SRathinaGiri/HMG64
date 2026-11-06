@@ -75,6 +75,7 @@ REQUEST ERRORSYS
 
 #include "i_UsrInit.ch"
 #include "i_UsrSOOP.ch"
+#include "hmg_sysdata.ch"
 
 #include "i_Thread.ch"
 #include "i_Class.ch"

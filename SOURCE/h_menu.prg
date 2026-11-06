@@ -109,46 +109,46 @@ Local mVar , k
 
 			Public &mVar. := k
 	
-			_HMG_SYSDATA [1] [k] :=  "POPUP" 
-			_HMG_SYSDATA [2]  [k] :=  Name 
-			_HMG_SYSDATA [3]  [k] :=  _HMG_SYSDATA [ 172 ]   // Main Menu Handle  // Dr. Claudio Soto (July 2013)  // 0
-			_HMG_SYSDATA [4]  [k] :=  _HMG_SYSDATA [ 173 ]   // Form Parent Handle
-			_HMG_SYSDATA [  5 ]  [k] :=  0 
-			_HMG_SYSDATA [  6 ] [k] :=   Nil
-			_HMG_SYSDATA [  7 ]  [k] :=   _HMG_SYSDATA [ 172 ]   // Main Menu Handle
-			_HMG_SYSDATA [  8 ]  [k] :=  Nil 
-			_HMG_SYSDATA [  9 ]   [k] := "" 
-			_HMG_SYSDATA [ 10 ]  [k] :=  "" 
-			_HMG_SYSDATA [ 11 ]  [k] :=  "" 
-			_HMG_SYSDATA [ 12 ]  [k] :=  "MAIN_MENU_POPUP"   // ADD
-			_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-			_HMG_SYSDATA [ 14 ]  [k] :=  Nil 
-			_HMG_SYSDATA [ 15 ]  [k] :=  Nil 
-			_HMG_SYSDATA [ 16 ]   [k] := "" 
-			_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-			_HMG_SYSDATA [ 18 ]  [k] :=  0 
-			_HMG_SYSDATA [ 19 ]  [k] :=  0 
-			_HMG_SYSDATA [ 20 ]  [k] :=  0 
-			_HMG_SYSDATA [ 21 ]  [k] :=  0 
-			_HMG_SYSDATA [ 22 ]  [k] :=  _HMG_SYSDATA [ 335 ] [ _HMG_SYSDATA [ 174 ] ]   // Popup Menu Handle
-			_HMG_SYSDATA [ 23 ]  [k] :=  -1 
-			_HMG_SYSDATA [ 24 ]  [k] :=  -1 
-			_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-			_HMG_SYSDATA [ 26 ]  [k] :=  0 
-			_HMG_SYSDATA [ 27 ]  [k] :=  '' 
-			_HMG_SYSDATA [ 28 ]  [k] :=  0 
-			_HMG_SYSDATA [ 29 ]  [k] :=  {.f.,.f.,.f.,.f.} 
-			_HMG_SYSDATA [ 30 ]   [k] :=  ''  
-			_HMG_SYSDATA [ 31 ]   [k] :=  0  
-			_HMG_SYSDATA [ 32 ]  [k] :=   0  
-			_HMG_SYSDATA [ 33 ]  [k] :=   Caption  
-			_HMG_SYSDATA [ 34 ]  [k] :=   .t. 
-			_HMG_SYSDATA [ 35 ]  [k] :=   0 
-			_HMG_SYSDATA [ 36 ]   [k] :=  0 
-			_HMG_SYSDATA [ 37 ]  [k] :=   0 
-			_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-			_HMG_SYSDATA [ 39 ] [k] := 0
-			_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+			_HMG_SYSDATA [HMG_CTL_TYPE] [k] :=  "POPUP" 
+			_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  Name 
+			_HMG_SYSDATA [HMG_CTL_HANDLE]  [k] :=  _HMG_SYSDATA [ 172 ]   // Main Menu Handle  // Dr. Claudio Soto (July 2013)  // 0
+			_HMG_SYSDATA [HMG_CTL_PARENTHANDLE]  [k] :=  _HMG_SYSDATA [ 173 ]   // Form Parent Handle
+			_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  0 
+			_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] :=   Nil
+			_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=   _HMG_SYSDATA [ 172 ]   // Main Menu Handle
+			_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil 
+			_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]   [k] := "" 
+			_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  "" 
+			_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  "" 
+			_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  "MAIN_MENU_POPUP"   // ADD
+			_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+			_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  Nil 
+			_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=  Nil 
+			_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]   [k] := "" 
+			_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+			_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  _HMG_SYSDATA [ 335 ] [ _HMG_SYSDATA [ 174 ] ]   // Popup Menu Handle
+			_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  -1 
+			_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  -1 
+			_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+			_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  '' 
+			_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {.f.,.f.,.f.,.f.} 
+			_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]   [k] :=  ''  
+			_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]   [k] :=  0  
+			_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=   0  
+			_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   Caption  
+			_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   .t. 
+			_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   0 
+			_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]   [k] :=  0 
+			_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   0 
+			_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+			_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+			_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 		EndIf
 
@@ -207,46 +207,46 @@ LOCAL cParentName := "", MenuItemID
 			Name := ''
 		EndIf
 
-		_HMG_SYSDATA [1] [k] := "MENU" 
-		_HMG_SYSDATA [2]  [k] :=  Name 
-		_HMG_SYSDATA [3]  [k] :=  _HMG_SYSDATA [ 172 ]   // Main Menu Handle   // Dr. Claudio Soto (July 2013)  Controlhandle   // This Not a Handle, this is lBoolean value
-		_HMG_SYSDATA [4]  [k] :=  _HMG_SYSDATA [ 173 ]   // Form Parent Handle
-		_HMG_SYSDATA [  5 ]  [k] :=  id 
-		_HMG_SYSDATA [  6 ]  [k] :=  action 
-		_HMG_SYSDATA [  7 ]  [k] :=  _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ] ]   // Popup Menu Handle
-		_HMG_SYSDATA [  8 ]  [k] :=  Nil                                            // _HMG_SYSDATA [ 335 ] -> _HMG_xMenuPopuphandle
-		_HMG_SYSDATA [  9 ]  [k] :=  ""                                             // _HMG_SYSDATA [ 174 ] -> counter of Popup Menu Handle 
-		_HMG_SYSDATA [ 10 ]  [k] :=  ""
-		_HMG_SYSDATA [ 11 ]  [k] :=  ""
-		_HMG_SYSDATA [ 12 ]  [k] :=  "MAIN_MENU_ITEM"   // ADD 
-		_HMG_SYSDATA [ 13 ]  [k] :=  .F. 
-		_HMG_SYSDATA [ 14 ]  [k] :=  Nil 
-		_HMG_SYSDATA [ 15 ] [k] :=   Nil 
-		_HMG_SYSDATA [ 16 ]   [k] := "" 
-		_HMG_SYSDATA [ 17 ]  [k] :=  {} 
-		_HMG_SYSDATA [ 18 ]  [k] :=  0 
-		_HMG_SYSDATA [ 19 ]   [k] := 0 
-		_HMG_SYSDATA [ 20 ]  [k] :=  0 
-		_HMG_SYSDATA [ 21 ]  [k] :=  0 
-		_HMG_SYSDATA [ 22 ]  [k] :=  0 
-		_HMG_SYSDATA [ 23 ]  [k] :=  -1 
-		_HMG_SYSDATA [ 24 ]  [k] :=  -1 
-		_HMG_SYSDATA [ 25 ]  [k] :=  "" 
-		_HMG_SYSDATA [ 26 ]  [k] :=  0 
-		_HMG_SYSDATA [ 27 ]  [k] :=  '' 
-		_HMG_SYSDATA [ 28 ]  [k] :=  0 
-		_HMG_SYSDATA [ 29 ]  [k] :=  {.f.,.f.,.f.,.f.} 
-		_HMG_SYSDATA [ 30 ]   [k] :=  ToolTip
-		_HMG_SYSDATA [ 31 ]  [k] :=   0  
-		_HMG_SYSDATA [ 32 ]   [k] :=  0  
-		_HMG_SYSDATA [ 33 ]  [k] :=   Caption  
-		_HMG_SYSDATA [ 34 ]  [k] :=   .t. 
-		_HMG_SYSDATA [ 35 ]  [k] :=   0 
-		_HMG_SYSDATA [ 36 ]  [k] :=   0 
-		_HMG_SYSDATA [ 37 ]   [k] :=  0 
-		_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-		_HMG_SYSDATA [ 39 ] [k] := 0
-		_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }   // ToolTip MenuItem Data
+		_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "MENU" 
+		_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  Name 
+		_HMG_SYSDATA [HMG_CTL_HANDLE]  [k] :=  _HMG_SYSDATA [ 172 ]   // Main Menu Handle   // Dr. Claudio Soto (July 2013)  Controlhandle   // This Not a Handle, this is lBoolean value
+		_HMG_SYSDATA [HMG_CTL_PARENTHANDLE]  [k] :=  _HMG_SYSDATA [ 173 ]   // Form Parent Handle
+		_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=  id 
+		_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=  action 
+		_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=  _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ] ]   // Popup Menu Handle
+		_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=  Nil                                            // _HMG_SYSDATA [ 335 ] -> _HMG_xMenuPopuphandle
+		_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=  ""                                             // _HMG_SYSDATA [ 174 ] -> counter of Popup Menu Handle 
+		_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=  ""
+		_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=  ""
+		_HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=  "MAIN_MENU_ITEM"   // ADD 
+		_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=  .F. 
+		_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=  Nil 
+		_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] :=   Nil 
+		_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]   [k] := "" 
+		_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=  {} 
+		_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_COL ]   [k] := 0 
+		_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=  -1 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=  -1 
+		_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=  "" 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=  '' 
+		_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=  {.f.,.f.,.f.,.f.} 
+		_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]   [k] :=  ToolTip
+		_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=   0  
+		_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]   [k] :=  0  
+		_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   Caption  
+		_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   .t. 
+		_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]   [k] :=  0 
+		_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }   // ToolTip MenuItem Data
 
 		if checked == .t.
 			xCheckMenuItem ( _HMG_SYSDATA [ 335 ] [_HMG_SYSDATA [ 174 ] ] , id )
@@ -286,46 +286,46 @@ LOCAL cParentName := "", MenuItemID
         ENDIF
 
 
-		_HMG_SYSDATA [  1 ]  [k] :=   "MENU" 
-		_HMG_SYSDATA [  2 ]  [k] :=   Name 
-		_HMG_SYSDATA [  3 ]  [k] :=   _HMG_SYSDATA [ 175 ]   // Popup Menu Handle  // Dr. Claudio Soto (July 2013)   Controlhandle   // This Not a Handle, this is lBoolean value
-		_HMG_SYSDATA [  4 ]  [k] :=   _HMG_SYSDATA [ 176 ]   // _HMG_SYSDATA [ 176 ] := GetFormHandle ( Parent )   // Form Parent Handle
-		_HMG_SYSDATA [  5 ]  [k] :=   id 
-		_HMG_SYSDATA [  6 ]  [k] :=   action 
-		_HMG_SYSDATA [  7 ]  [k] :=   _HMG_SYSDATA [ 175 ]   //_HMG_SYSDATA [ 175 ] := CreatePopupMenu()   // Popup Menu Handle 
-		_HMG_SYSDATA [  8 ]  [k] :=   Nil 
-		_HMG_SYSDATA [  9 ]  [k] :=   ""
-		_HMG_SYSDATA [ 10 ]  [k] :=   ""
-		_HMG_SYSDATA [ 11 ]  [k] :=   _HMG_SYSDATA_cButtonName   // ADD
-      _HMG_SYSDATA [ 12 ]  [k] :=   cTypeMenu         // ADD
-		_HMG_SYSDATA [ 13 ]  [k] :=   .F. 
-		_HMG_SYSDATA [ 14 ]  [k] :=   Nil 
-		_HMG_SYSDATA [ 15 ]  [k] :=   Nil 
-		_HMG_SYSDATA [ 16 ]  [k] :=   "" 
-		_HMG_SYSDATA [ 17 ]  [k] :=   {} 
-		_HMG_SYSDATA [ 18 ]  [k] :=   _HMG_SYSDATA_nControlHandle // ADD
-		_HMG_SYSDATA [ 19 ]  [k] :=   0 
-		_HMG_SYSDATA [ 20 ]  [k] :=   0 
-		_HMG_SYSDATA [ 21 ]  [k] :=   0 
-		_HMG_SYSDATA [ 22 ]  [k] :=   0 
-		_HMG_SYSDATA [ 23 ]  [k] :=   -1 
-		_HMG_SYSDATA [ 24 ]  [k] :=   -1 
-		_HMG_SYSDATA [ 25 ]  [k] :=   "" 
-		_HMG_SYSDATA [ 26 ]  [k] :=   0 
-		_HMG_SYSDATA [ 27 ]  [k] :=   '' 
-		_HMG_SYSDATA [ 28 ]  [k] :=   0 
-		_HMG_SYSDATA [ 29 ]  [k] :=   {.f.,.f.,.f.,.f.} 
-		_HMG_SYSDATA [ 30 ]  [k] :=   ToolTip
-		_HMG_SYSDATA [ 31 ]  [k] :=   0  
-		_HMG_SYSDATA [ 32 ]  [k] :=   0  
-		_HMG_SYSDATA [ 33 ]  [k] :=   Caption  
-		_HMG_SYSDATA [ 34 ]  [k] :=   .t. 
-		_HMG_SYSDATA [ 35 ]  [k] :=   0 
-		_HMG_SYSDATA [ 36 ]  [k] :=   0
-		_HMG_SYSDATA [ 37 ]  [k] :=   0
-		_HMG_SYSDATA [ 38 ]  [k] :=   .T. 
-		_HMG_SYSDATA [ 39 ]  [k] :=   0
-		_HMG_SYSDATA [ 40 ]  [k] :=   { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+		_HMG_SYSDATA [  HMG_CTL_TYPE ]  [k] :=   "MENU" 
+		_HMG_SYSDATA [  HMG_CTL_NAME ]  [k] :=   Name 
+		_HMG_SYSDATA [  HMG_CTL_HANDLE ]  [k] :=   _HMG_SYSDATA [ 175 ]   // Popup Menu Handle  // Dr. Claudio Soto (July 2013)   Controlhandle   // This Not a Handle, this is lBoolean value
+		_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ]  [k] :=   _HMG_SYSDATA [ 176 ]   // _HMG_SYSDATA [ 176 ] := GetFormHandle ( Parent )   // Form Parent Handle
+		_HMG_SYSDATA [  HMG_CTL_ID ]  [k] :=   id 
+		_HMG_SYSDATA [  HMG_CTL_PROCEDURE ]  [k] :=   action 
+		_HMG_SYSDATA [  HMG_CTL_PAGEMAP ]  [k] :=   _HMG_SYSDATA [ 175 ]   //_HMG_SYSDATA [ 175 ] := CreatePopupMenu()   // Popup Menu Handle 
+		_HMG_SYSDATA [  HMG_CTL_VALUE ]  [k] :=   Nil 
+		_HMG_SYSDATA [  HMG_CTL_INPUTMASK ]  [k] :=   ""
+		_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ]  [k] :=   ""
+		_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ]  [k] :=   _HMG_SYSDATA_cButtonName   // ADD
+      _HMG_SYSDATA [ HMG_CTL_CHANGE ]  [k] :=   cTypeMenu         // ADD
+		_HMG_SYSDATA [ HMG_CTL_DELETED ]  [k] :=   .F. 
+		_HMG_SYSDATA [ HMG_CTL_BKCOLOR ]  [k] :=   Nil 
+		_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ]  [k] :=   Nil 
+		_HMG_SYSDATA [ HMG_CTL_DBLCLICK ]  [k] :=   "" 
+		_HMG_SYSDATA [ HMG_CTL_HEADCLICK ]  [k] :=   {} 
+		_HMG_SYSDATA [ HMG_CTL_ROW ]  [k] :=   _HMG_SYSDATA_nControlHandle // ADD
+		_HMG_SYSDATA [ HMG_CTL_COL ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_WIDTH ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_HEIGHT ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_SPACING ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ]  [k] :=   -1 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ]  [k] :=   -1 
+		_HMG_SYSDATA [ HMG_CTL_PICTURE ]  [k] :=   "" 
+		_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_FONTNAME ]  [k] :=   '' 
+		_HMG_SYSDATA [ HMG_CTL_FONTSIZE ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ]  [k] :=   {.f.,.f.,.f.,.f.} 
+		_HMG_SYSDATA [ HMG_CTL_TOOLTIP ]  [k] :=   ToolTip
+		_HMG_SYSDATA [ HMG_CTL_RANGEMIN ]  [k] :=   0  
+		_HMG_SYSDATA [ HMG_CTL_RANGEMAX ]  [k] :=   0  
+		_HMG_SYSDATA [ HMG_CTL_CAPTION ]  [k] :=   Caption  
+		_HMG_SYSDATA [ HMG_CTL_VISIBLE ]  [k] :=   .t. 
+		_HMG_SYSDATA [ HMG_CTL_HELPID ]  [k] :=   0 
+		_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ]  [k] :=   0
+		_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ]  [k] :=   0
+		_HMG_SYSDATA [ HMG_CTL_ENABLED ]  [k] :=   .T. 
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ]  [k] :=   0
+		_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ]  [k] :=   { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 		if checked == .t.
 			xCheckMenuItem ( _HMG_SYSDATA [ 175 ] , id )
@@ -335,8 +335,8 @@ LOCAL cParentName := "", MenuItemID
 
     // by Dr. Claudio Soto, December 2014
    if valtype(tooltip) != "U"
-      GetFormNameByHandle ( _HMG_SYSDATA [ 4 ] [ k ] , @cParentName )
-      MenuItemID  := _HMG_SYSDATA [ 5 ] [ k ]
+      GetFormNameByHandle ( _HMG_SYSDATA [ HMG_CTL_PARENTHANDLE ] [ k ] , @cParentName )
+      MenuItemID  := _HMG_SYSDATA [ HMG_CTL_ID ] [ k ]
       SetToolTipMenuItem ( GetFormHandle (cParentName), ToolTip, MenuItemID, GetMenuToolTipHandle (cParentName) )
    endif
 
@@ -368,16 +368,16 @@ Local i
 	Case _HMG_SYSDATA [ 218 ] == 'CONTEXT'
 
 		i := GetFormIndex ( _HMG_SYSDATA [ 221 ] )
-		_HMG_SYSDATA [ 74  ] [i] := _HMG_SYSDATA [ 175 ]
+		_HMG_SYSDATA [ HMG_FRM_CONTEXTMENU  ] [i] := _HMG_SYSDATA [ 175 ]
 
 	Case _HMG_SYSDATA [ 218 ] == 'NOTIFY'
 
 		i := GetFormIndex ( _HMG_SYSDATA [ 221 ] )
-		_HMG_SYSDATA [ 88 ] [i] := _HMG_SYSDATA [ 175 ]
+		_HMG_SYSDATA [ HMG_FRM_NOTIFYMENU ] [i] := _HMG_SYSDATA [ 175 ]
 
 	Case _HMG_SYSDATA [ 218 ] == 'DROPDOWN'
 
-		_HMG_SYSDATA [ 32 ] [_HMG_SYSDATA [ 169 ]] := _HMG_SYSDATA [ 175 ]
+		_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [_HMG_SYSDATA [ 169 ]] := _HMG_SYSDATA [ 175 ]
 
 	EndCase
 
@@ -389,12 +389,12 @@ Local i , h , x
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	xDisableMenuItem ( h , i )
@@ -407,12 +407,12 @@ Local i , h , x
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	xEnableMenuItem ( h , i )
@@ -425,12 +425,12 @@ Local i , h , x
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	xCheckMenuItem ( h , i )
@@ -443,12 +443,12 @@ Local i , h , x
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	xUncheckMenuItem ( h , i )
@@ -461,12 +461,12 @@ Local x,h,i,r,z
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	r := xGetMenuCheckState ( h , i )
@@ -485,12 +485,12 @@ Local x,h,i,r,z
 
 	x := GetControlIndex ( ItemName , FormName )
 
-	h := _HMG_SYSDATA [  7 ] [ x ]
+	h := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ x ]
 
-	If _HMG_SYSDATA [1] [ x ] == "MENU"
-		i := _HMG_SYSDATA [  5 ] [ x ]
-	ElseIf _HMG_SYSDATA [1] [ x ] == "POPUP"
-		i := _HMG_SYSDATA [ 22 ] [ x ]
+	If _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "MENU"
+		i := _HMG_SYSDATA [  HMG_CTL_ID ] [ x ]
+	ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [ x ] == "POPUP"
+		i := _HMG_SYSDATA [ HMG_CTL_SPACING ] [ x ]
 	EndIf
 
 	r := xGetMenuEnabledState ( h , i )
@@ -600,46 +600,46 @@ Return Nil
 *------------------------------------------------------------------------------*
 Procedure DeleteItem_HMG_SYSDATA (k)
 *------------------------------------------------------------------------------*
-          _HMG_SYSDATA [ 13 ] [k] := .T.
-          _HMG_SYSDATA [  1 ] [k] := ""
-          _HMG_SYSDATA [  2 ] [k] := ""
-          _HMG_SYSDATA [  3 ] [k] := 0
-          _HMG_SYSDATA [  4 ] [k] := 0
-          _HMG_SYSDATA [  5 ] [k] := 0
-          _HMG_SYSDATA [  6 ] [k] := ""
-          _HMG_SYSDATA [  7 ] [k] := {}
-          _HMG_SYSDATA [  8 ] [k] := NIL
-          _HMG_SYSDATA [  9 ] [k] := ""
-          _HMG_SYSDATA [ 10 ] [k] := ""
-          _HMG_SYSDATA [ 11 ] [k] := ""
-          _HMG_SYSDATA [ 12 ] [k] := ""
-          _HMG_SYSDATA [ 14 ] [k] := NIL
-          _HMG_SYSDATA [ 15 ] [k] := NIL
-          _HMG_SYSDATA [ 16 ] [k] := ""
-          _HMG_SYSDATA [ 17 ] [k] := {}
-          _HMG_SYSDATA [ 18 ] [k] := 0
-          _HMG_SYSDATA [ 19 ] [k] := 0
-          _HMG_SYSDATA [ 20 ] [k] := 0
-          _HMG_SYSDATA [ 21 ] [k] := 0
-          _HMG_SYSDATA [ 22 ] [k] := 0
-          _HMG_SYSDATA [ 23 ] [k] := 0 
-          _HMG_SYSDATA [ 24 ] [k] := 0 
-          _HMG_SYSDATA [ 25 ] [k] := ''
-          _HMG_SYSDATA [ 26 ] [k] := 0 
-          _HMG_SYSDATA [ 27 ] [k] := '' 
-          _HMG_SYSDATA [ 28 ] [k] := 0  
-          _HMG_SYSDATA [ 30 ] [k] := ''  
-          _HMG_SYSDATA [ 31 ] [k] := 0
-          _HMG_SYSDATA [ 32 ] [k] := 0
-          _HMG_SYSDATA [ 33 ] [k] := '' 
-          _HMG_SYSDATA [ 34 ] [k] := .F.
-          _HMG_SYSDATA [ 35 ] [k] := 0
-          _HMG_SYSDATA [ 36 ] [k] := 0
-          _HMG_SYSDATA [ 29 ] [k] := {}
-          _HMG_SYSDATA [ 37 ] [k] := 0
-          _HMG_SYSDATA [ 38 ] [k] := .F.
-          _HMG_SYSDATA [ 39 ] [k] := 0
-          _HMG_SYSDATA [ 40 ] [k] := NIL
+          _HMG_SYSDATA [ HMG_CTL_DELETED ] [k] := .T.
+          _HMG_SYSDATA [  HMG_CTL_TYPE ] [k] := ""
+          _HMG_SYSDATA [  HMG_CTL_NAME ] [k] := ""
+          _HMG_SYSDATA [  HMG_CTL_HANDLE ] [k] := 0
+          _HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ] [k] := 0
+          _HMG_SYSDATA [  HMG_CTL_ID ] [k] := 0
+          _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] := ""
+          _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] := {}
+          _HMG_SYSDATA [  HMG_CTL_VALUE ] [k] := NIL
+          _HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] := ""
+          _HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] := ""
+          _HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] := ""
+          _HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] := ""
+          _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] := NIL
+          _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] := NIL
+          _HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] := ""
+          _HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] := {}
+          _HMG_SYSDATA [ HMG_CTL_ROW ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_COL ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] := 0 
+          _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] := 0 
+          _HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] := ''
+          _HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := 0 
+          _HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] := '' 
+          _HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] := 0  
+          _HMG_SYSDATA [ HMG_CTL_TOOLTIP ] [k] := ''  
+          _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] := '' 
+          _HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] := .F.
+          _HMG_SYSDATA [ HMG_CTL_HELPID ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] := {}
+          _HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] := .F.
+          _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := 0
+          _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := NIL
 Return
 
 
@@ -657,9 +657,9 @@ Function IsContextMenuDefined ( cParentForm )
 *------------------------------------------------------------------------------*
 LOCAL hWnd, k
     hWnd := GetFormHandle ( cParentForm )
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "CONTEXT_MENU_ITEM") .AND. (_HMG_SYSDATA [4] [k] == hWnd))
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "CONTEXT_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
                Return .T.
           ENDIF
        ENDIF
@@ -672,9 +672,9 @@ Function IsNotifyMenuDefined ( cParentForm )
 *------------------------------------------------------------------------------*
 LOCAL hWnd, k
     hWnd := GetFormHandle ( cParentForm )
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "NOTIFY_MENU_ITEM") .AND. (_HMG_SYSDATA [4] [k] == hWnd))
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "NOTIFY_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
                Return .T.
           ENDIF
        ENDIF
@@ -687,9 +687,9 @@ Function IsDropDownMenuDefined ( cButton, cParentForm )
 *------------------------------------------------------------------------------*
 LOCAL hWnd, k
     hWnd := GetFormHandle ( cParentForm )
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "DROPDOWN_MENU_ITEM") .AND. (_HMG_SYSDATA [11] [k] == cButton) .AND. (_HMG_SYSDATA [4] [k] == hWnd))
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "DROPDOWN_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_GOTFOCUS] [k] == cButton) .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
                Return .T.
           ENDIF
        ENDIF
@@ -713,9 +713,9 @@ LOCAL hWnd, k, Ret := 0
     hWnd := GetFormHandle ( cParentForm )    
     DeleteMainMenu (hWnd)
     
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-        IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "MAIN_MENU_ITEM" .OR. _HMG_SYSDATA [12] [k] == "MAIN_MENU_POPUP") .AND. (_HMG_SYSDATA [4] [k] == hWnd))
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+        IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "MAIN_MENU_ITEM" .OR. _HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "MAIN_MENU_POPUP") .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
                DeleteItem_HMG_SYSDATA (k)
                Ret ++
           ENDIF
@@ -739,10 +739,10 @@ LOCAL hWnd, hMenu, k, Ret := 0
 
     hWnd := GetFormHandle ( cParentForm )    
     
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-        IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "CONTEXT_MENU_ITEM") .AND. (_HMG_SYSDATA [4] [k] == hWnd))
-               hMenu := _HMG_SYSDATA [7] [k]
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+        IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "CONTEXT_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
+               hMenu := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [k]
                DestroyMenu (hMenu)
                DeleteItem_HMG_SYSDATA (k)
                Ret ++
@@ -767,10 +767,10 @@ LOCAL hWnd, hMenu, k, Ret := 0
 
     hWnd := GetFormHandle ( cParentForm )    
     
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-        IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "NOTIFY_MENU_ITEM") .AND. (_HMG_SYSDATA [4] [k] == hWnd))
-               hMenu := _HMG_SYSDATA [7] [k]
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+        IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "NOTIFY_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
+               hMenu := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [k]
                DestroyMenu (hMenu)
                DeleteItem_HMG_SYSDATA (k)
                Ret ++
@@ -795,10 +795,10 @@ LOCAL hWnd, hMenu, k, Ret := 0
 
     hWnd := GetFormHandle ( cParentForm )    
     
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-        IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "DROPDOWN_MENU_ITEM") .AND. (_HMG_SYSDATA [11] [k] == cButton) .AND. (_HMG_SYSDATA [4] [k] == hWnd))
-               hMenu := _HMG_SYSDATA [7] [k]
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+        IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "DROPDOWN_MENU_ITEM") .AND. (_HMG_SYSDATA [HMG_CTL_GOTFOCUS] [k] == cButton) .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
+               hMenu := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [k]
                DestroyMenu (hMenu)
                DeleteItem_HMG_SYSDATA (k)
                Ret ++
@@ -856,9 +856,9 @@ Function IsControlContextMenuDefined ( cControl, cParentForm )
 LOCAL hWnd, nControlHandle, k
     hWnd := GetFormHandle ( cParentForm )
     nControlHandle := GetControlHandle ( cControl, cParentForm )
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "CONTROL_MENU_ITEM") .AND. _TestControlHandle_ContextMenu (_HMG_SYSDATA [18] [k], nControlHandle) .AND. (_HMG_SYSDATA [4] [k] == hWnd))
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "CONTROL_MENU_ITEM") .AND. _TestControlHandle_ContextMenu (_HMG_SYSDATA [HMG_CTL_ROW] [k], nControlHandle) .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
                Return .T.
           ENDIF
        ENDIF
@@ -883,10 +883,10 @@ LOCAL hWnd, hMenu, nControlHandle, k, Ret := 0
     hWnd := GetFormHandle ( cParentForm )    
     nControlHandle := GetControlHandle ( cControl, cParentForm )
     
-    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [1])
-        IF (_HMG_SYSDATA [1] [k] == "MENU") .OR. (_HMG_SYSDATA [1] [k] == "POPUP")
-          IF ((_HMG_SYSDATA [12] [k] == "CONTROL_MENU_ITEM") .AND. _TestControlHandle_ContextMenu (_HMG_SYSDATA [18] [k], nControlHandle) .AND. (_HMG_SYSDATA [4] [k] == hWnd))
-               hMenu := _HMG_SYSDATA [7] [k]
+    FOR k = 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+        IF (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "MENU") .OR. (_HMG_SYSDATA [HMG_CTL_TYPE] [k] == "POPUP")
+          IF ((_HMG_SYSDATA [HMG_CTL_CHANGE] [k] == "CONTROL_MENU_ITEM") .AND. _TestControlHandle_ContextMenu (_HMG_SYSDATA [HMG_CTL_ROW] [k], nControlHandle) .AND. (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd))
+               hMenu := _HMG_SYSDATA [HMG_CTL_PAGEMAP] [k]
                DestroyMenu (hMenu)
                DeleteItem_HMG_SYSDATA (k)
                Ret ++

@@ -16,7 +16,7 @@ MEMVAR _HMG_SYSDATA
 
 function drawline(window,row,col,row1,col1,penrgb,penwidth)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i]
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i]
 
 	if formhandle > 0
 
@@ -30,7 +30,7 @@ Local FormHandle := _HMG_SYSDATA [ 67  ] [i]
 
 		linedraw( formhandle,row,col,row1,col1,penrgb,penwidth)
 
-		aadd ( _HMG_SYSDATA [ 102 ] [i] , { || linedraw( formhandle,row,col,row1,col1,penrgb,penwidth) } )
+		aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || linedraw( formhandle,row,col,row1,col1,penrgb,penwidth) } )
 
 	endif
 
@@ -38,7 +38,7 @@ return nil
 
 function drawrect(window,row,col,row1,col1,penrgb,penwidth,fillrgb)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] , fill
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] , fill
 
 if formhandle > 0
 
@@ -59,14 +59,14 @@ if formhandle > 0
 
    rectdraw( FormHandle,row,col,row1,col1,penrgb,penwidth,fillrgb,fill)
 
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || rectdraw( FormHandle,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || rectdraw( FormHandle,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
 
 endif
 return nil
 
 function drawroundrect(window,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] , fill 
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] , fill 
 
 if formhandle > 0
    if valtype(penrgb) == "U"
@@ -83,14 +83,14 @@ if formhandle > 0
    endif
    roundrectdraw( FormHandle,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb,fill)
 
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || roundrectdraw( FormHandle,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb,fill) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || roundrectdraw( FormHandle,row,col,row1,col1,width,height,penrgb,penwidth,fillrgb,fill) } )
 
 endif
 return nil
 
 function drawellipse(window,row,col,row1,col1,penrgb,penwidth,fillrgb)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] , fill
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] , fill
 
 if formhandle > 0
    if valtype(penrgb) == "U"
@@ -107,14 +107,14 @@ if formhandle > 0
    endif
    ellipsedraw( FormHandle ,row,col,row1,col1,penrgb,penwidth,fillrgb,fill)
 
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || ellipsedraw( FormHandle ,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || ellipsedraw( FormHandle ,row,col,row1,col1,penrgb,penwidth,fillrgb,fill) } )
 
 endif
 return nil
 
 function drawarc(window,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] 
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] 
 
 if formhandle > 0
    if valtype(penrgb) == "U"
@@ -124,7 +124,7 @@ if formhandle > 0
       penwidth = 1
    endif
    arcdraw( FormHandle ,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth)
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || arcdraw( FormHandle ,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || arcdraw( FormHandle ,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth) } )
 
 endif
 
@@ -132,7 +132,7 @@ return nil
 
 function drawpie(window,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] , fill
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] , fill
 
 if formhandle > 0
    if valtype(penrgb) == "U"
@@ -149,14 +149,14 @@ if formhandle > 0
    endif
    piedraw( FormHandle,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb,fill)
 
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || piedraw( FormHandle,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb,fill) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || piedraw( FormHandle,row,col,row1,col1,rowr,colr,rowr1,colr1,penrgb,penwidth,fillrgb,fill) } )
 
 endif
 return nil
 
 function drawpolygon(window,apoints,penrgb,penwidth,fillrgb)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i] , fill
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] , fill
 local xarr := {}
 local yarr := {}
 local x := 0
@@ -179,13 +179,13 @@ if formhandle > 0
        aadd(yarr,apoints[x,1])
    next x
    polygondraw(FormHandle,xarr,yarr,penrgb,penwidth,fillrgb,fill)
-   aadd( _HMG_SYSDATA [ 102 ][i] , {||polygondraw(FormHandle,xarr,yarr,penrgb,penwidth,fillrgb,fill)})   
+   aadd( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ][i] , {||polygondraw(FormHandle,xarr,yarr,penrgb,penwidth,fillrgb,fill)})   
 endif
 return nil
 
 function drawpolybezier(window,apoints,penrgb,penwidth)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i]
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i]
 local xarr := {}
 local yarr := {}
 local x := 0
@@ -202,21 +202,21 @@ if formhandle > 0
        aadd(yarr,apoints[x,1])
    next x
    polybezierdraw(FormHandle,xarr,yarr,penrgb,penwidth)
-   aadd( _HMG_SYSDATA [ 102 ][i] , {||polybezierdraw(FormHandle,xarr,yarr,penrgb,penwidth)})   
+   aadd( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ][i] , {||polybezierdraw(FormHandle,xarr,yarr,penrgb,penwidth)})   
 endif
 return nil
 
 function erasewindow(window)
 Local i := GetFormIndex ( Window )
-Local FormHandle := _HMG_SYSDATA [ 67  ] [i]
+Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i]
 
 	if formhandle > 0
 
-		if _HMG_SYSDATA [  65 ] [i] == .F.
+		if _HMG_SYSDATA [  HMG_FRM_DELETED ] [i] == .F.
 
-			If ValType ( _HMG_SYSDATA [ 102 ] [i] ) == 'A'
+			If ValType ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] ) == 'A'
 
-				asize(_HMG_SYSDATA [ 102 ][i],0)
+				asize(_HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ][i],0)
 				redrawwindow(formhandle)
 
 			endif
@@ -244,7 +244,7 @@ Procedure GraphShow(parent,nTop,nLeft,nBottom,nRight,nHeight,nWidth,aData,cTitle
 		MsgHMGError("DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' arrays size mismatch. Program terminated","HMG Error")
 	EndIf
 
-	_HMG_SYSDATA [ 108 ] [ GetFormIndex (parent) ] := { nTop , nLeft , nRight - nLeft , nBottom - nTop }
+	_HMG_SYSDATA [ HMG_FRM_RESERVED108 ] [ GetFormIndex (parent) ] := { nTop , nLeft , nRight - nLeft , nBottom - nTop }
 
 	If _IsControlDefined ( 'Graph_Title', Parent )
 		_ReleaseControl ( 'Graph_Title', Parent )
@@ -835,11 +835,11 @@ RETURN { Int( nR * 255 ), Int( nG * 255 ), Int( nB * 255 ) }
 
 function DrawWindowBoxIn(window,row,col,rowr,colr)
    Local i := GetFormIndex ( Window )
-   Local FormHandle := _HMG_SYSDATA [ 67  ] [i] 
+   Local FormHandle := _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [i] 
    Local hDC := GetDC( FormHandle )
 
    WndBoxIn( hDC, row, col, rowr, colr )
-   aadd ( _HMG_SYSDATA [ 102 ] [i] , { || WndBoxIn( hDC := GetDC( FormHandle ), row, col, rowr, colr ), ReleaseDC( FormHandle, hDC ) } )
+   aadd ( _HMG_SYSDATA [ HMG_FRM_GRAPHTASKS ] [i] , { || WndBoxIn( hDC := GetDC( FormHandle ), row, col, rowr, colr ), ReleaseDC( FormHandle, hDC ) } )
    ReleaseDC( FormHandle, hDC )
 
 return nil
@@ -873,7 +873,7 @@ local cname := ""
 local shadowcolor := {}
 local previos_cumulative
 
-_HMG_SYSDATA [ 108 ] [ GetFormIndex (windowname) ] := { fromrow , fromcol , tocol - fromcol , torow - fromrow }
+_HMG_SYSDATA [ HMG_FRM_RESERVED108 ] [ GetFormIndex (windowname) ] := { fromrow , fromcol , tocol - fromcol , torow - fromrow }
 
 if ! lnoborder
 
@@ -1094,12 +1094,12 @@ local aLocation
 		MsgHMGError("Window: "+ cWindowName + " is not defined. Program terminated" )
 	Endif
 
-	If ValType ( _HMG_SYSDATA [ 108 ] [ GetFormIndex (cWindowName ) ] ) <> 'A'
+	If ValType ( _HMG_SYSDATA [ HMG_FRM_RESERVED108 ] [ GetFormIndex (cWindowName ) ] ) <> 'A'
 		MsgHMGError("Window: "+ cWindowName + " Don't have a graph. Program terminated" )
 		Return Nil
 	Endif
 
-	If HMG_LEN ( _HMG_SYSDATA [ 108 ] [ GetFormIndex (cWindowName ) ] ) <> 4
+	If HMG_LEN ( _HMG_SYSDATA [ HMG_FRM_RESERVED108 ] [ GetFormIndex (cWindowName ) ] ) <> 4
 		MsgHMGError("Window: "+ cWindowName + " Don't have a graph. Program terminated" )
 		Return Nil
 	Endif
@@ -1112,7 +1112,7 @@ local aLocation
 		lDialog := .F.
 	endif
 
-	aLocation := _HMG_SYSDATA [ 108 ] [ GetFormIndex (cWindowName ) ] 
+	aLocation := _HMG_SYSDATA [ HMG_FRM_RESERVED108 ] [ GetFormIndex (cWindowName ) ] 
 
 	PrintWindow ( cWindowName , lPreview , lDialog , aLocation [1] , aLocation [2] , aLocation [3] , aLocation [4] )
 

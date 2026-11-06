@@ -402,9 +402,9 @@ Return Height
 Function bt_StatusBarHandle (Win)
    LOCAL hWnd := bt_WinHandle (Win)
    LOCAL k, hWndStatusBar := 0
-   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF _HMG_SYSDATA [1] [k] == "STATUSBAR" .AND. _HMG_SYSDATA [4] [k] == hWnd
-          hWndStatusBar := _HMG_SYSDATA [3] [k]
+   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF _HMG_SYSDATA [HMG_CTL_TYPE] [k] == "STATUSBAR" .AND. _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd
+          hWndStatusBar := _HMG_SYSDATA [HMG_CTL_HANDLE] [k]
        ENDIF
    NEXT
 Return hWndStatusBar
@@ -434,9 +434,9 @@ Return Height
 Function bt_ToolBarBottomHandle (Win)
    LOCAL hWnd := bt_WinHandle (Win)
    LOCAL k, hWndToolBar := 0
-   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF _HMG_SYSDATA [1] [k] == "TOOLBAR" .AND. _HMG_SYSDATA [4] [k] == hWnd .AND. _HMG_SYSDATA [18] [k] == .T. .AND. _HMG_SYSDATA [19] [k] == .F.
-          hWndToolBar := _HMG_SYSDATA [3] [k]
+   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF _HMG_SYSDATA [HMG_CTL_TYPE] [k] == "TOOLBAR" .AND. _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd .AND. _HMG_SYSDATA [HMG_CTL_ROW] [k] == .T. .AND. _HMG_SYSDATA [HMG_CTL_COL] [k] == .F.
+          hWndToolBar := _HMG_SYSDATA [HMG_CTL_HANDLE] [k]
        ENDIF
    NEXT
 Return hWndToolBar
@@ -466,9 +466,9 @@ Return nWidth
 Function bt_ToolBarTopHandle (Win)
    LOCAL hWnd := bt_WinHandle (Win)
    LOCAL k, hWndToolBar := 0
-   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [1])
-       IF _HMG_SYSDATA [1] [k] == "TOOLBAR" .AND. _HMG_SYSDATA [4] [k] == hWnd .AND. _HMG_SYSDATA [18] [k] == .F. .AND. _HMG_SYSDATA [19] [k] == .F.
-          hWndToolBar := _HMG_SYSDATA [3] [k]
+   FOR k := 1 TO HMG_LEN (_HMG_SYSDATA [HMG_CTL_TYPE])
+       IF _HMG_SYSDATA [HMG_CTL_TYPE] [k] == "TOOLBAR" .AND. _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [k] == hWnd .AND. _HMG_SYSDATA [HMG_CTL_ROW] [k] == .F. .AND. _HMG_SYSDATA [HMG_CTL_COL] [k] == .F.
+          hWndToolBar := _HMG_SYSDATA [HMG_CTL_HANDLE] [k]
        ENDIF
    NEXT
 Return hWndToolBar

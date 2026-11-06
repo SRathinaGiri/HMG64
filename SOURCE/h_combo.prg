@@ -204,11 +204,11 @@ Local cImageField
 
 			If ValType ( aImage ) == 'U'
 		
-				ControlHandle := InitComboBox ( _HMG_SYSDATA [ 87 ] [i], 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displayedit , _HMG_SYSDATA [ 250 ] , DroppedWidth )
+				ControlHandle := InitComboBox ( _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i], 0, x, y, w, '', 0 , h, invisible, notabstop, sort, displayedit , _HMG_SYSDATA [ 250 ] , DroppedWidth )
 
 			Else
 
-				aRet		:= InitImageCombo ( _HMG_SYSDATA [ 87 ] [i] , y , x , w , h , aImage , displayedit , .Not. invisible , .Not. notabstop , IF ( WINMAJORVERSIONNUMBER() + ( WINMINORVERSIONNUMBER() / 10 ) > 5.1 , .T. , .F. ) , DroppedWidth, NoTransparent )
+				aRet		:= InitImageCombo ( _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , y , x , w , h , aImage , displayedit , .Not. invisible , .Not. notabstop , IF ( WINMAJORVERSIONNUMBER() + ( WINMINORVERSIONNUMBER() / 10 ) > 5.1 , .T. , .F. ) , DroppedWidth, NoTransparent )
 				ControlHandle	:= aRet [1]
 				ImageListHandle	:= aRet [2]
 
@@ -220,9 +220,9 @@ Local cImageField
 				FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)
 			endif
 
-			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ 87 ] [i] , w , break , GripperText , w , , _HMG_SYSDATA [ 258 ] )
+			AddSplitBoxItem ( Controlhandle , _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i] , w , break , GripperText , w , , _HMG_SYSDATA [ 258 ] )
 
-			Containerhandle := _HMG_SYSDATA [ 87 ] [i]
+			Containerhandle := _HMG_SYSDATA [ HMG_FRM_REBARHANDLE ] [i]
 
 		EndIf
 
@@ -264,49 +264,49 @@ Local cImageField
 
 	Public &mVar. := k
 
-	_HMG_SYSDATA [  1 ] [k] := "COMBO" 
-	_HMG_SYSDATA [  2 ] [k] := ControlName 
-	_HMG_SYSDATA [  3 ] [k] := ControlHandle 
-	_HMG_SYSDATA [  4 ] [k] := ParentForm 
-	_HMG_SYSDATA [  5 ] [k] := 0 
-	_HMG_SYSDATA [  6 ] [k] := ondisplaychangeprocedure 
-	_HMG_SYSDATA [  7 ] [k] := cField 
-	_HMG_SYSDATA [  8 ] [k] := Value 
-	_HMG_SYSDATA [  9 ] [k] := Nil
-	_HMG_SYSDATA [ 10 ] [k] := lostfocus 
-	_HMG_SYSDATA [ 11 ] [k] := gotfocus 
-	_HMG_SYSDATA [ 12 ] [k] := changeprocedure 
-	_HMG_SYSDATA [ 13 ] [k] := FALSE 
-	_HMG_SYSDATA [ 14 ] [k] := cImageField
-	_HMG_SYSDATA [ 15 ] [k] := ImageListHandle
-	_HMG_SYSDATA [ 16 ] [k] := uEnter 
-	_HMG_SYSDATA [ 17 ] [k] := {} 
-	_HMG_SYSDATA [ 18 ] [k] := y 
-	_HMG_SYSDATA [ 19 ] [k] := x 
-	_HMG_SYSDATA [ 20 ] [k] := w 
-	_HMG_SYSDATA [ 21 ] [k] := h 
-	_HMG_SYSDATA [ 22 ] [k] := WorkArea 
-	_HMG_SYSDATA [ 23 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 24 ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
-	_HMG_SYSDATA [ 25 ] [k] := "" 
-	_HMG_SYSDATA [ 26 ] [k] := ContainerHandle  
-	_HMG_SYSDATA [ 27 ] [k] := fontname 
-	_HMG_SYSDATA [ 28 ] [k] := fontsize 
-	_HMG_SYSDATA [ 29 ] [k] := {bold,italic,underline,strikeout} 
-	_HMG_SYSDATA [ 30 ] [k] := tooltip  
-	_HMG_SYSDATA [ 31 ] [k] := 0  
-	_HMG_SYSDATA [ 32 ] [k] := OnCancel
-	_HMG_SYSDATA [ 33 ] [k] := valuesource  
-	_HMG_SYSDATA [ 34 ] [k] := if(invisible,FALSE,TRUE) 
-	_HMG_SYSDATA [ 35 ] [k] := HelpId 
-	_HMG_SYSDATA [ 36 ] [k] := FontHandle 
-	_HMG_SYSDATA [ 37 ] [k] := closeupprocedure
-	_HMG_SYSDATA [ 38 ] [k] := .T. 
-	_HMG_SYSDATA [ 39 ] [k] := dropdownprocedure
-	_HMG_SYSDATA [ 40 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
+	_HMG_SYSDATA [  HMG_CTL_TYPE ] [k] := "COMBO" 
+	_HMG_SYSDATA [  HMG_CTL_NAME ] [k] := ControlName 
+	_HMG_SYSDATA [  HMG_CTL_HANDLE ] [k] := ControlHandle 
+	_HMG_SYSDATA [  HMG_CTL_PARENTHANDLE ] [k] := ParentForm 
+	_HMG_SYSDATA [  HMG_CTL_ID ] [k] := 0 
+	_HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [k] := ondisplaychangeprocedure 
+	_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [k] := cField 
+	_HMG_SYSDATA [  HMG_CTL_VALUE ] [k] := Value 
+	_HMG_SYSDATA [  HMG_CTL_INPUTMASK ] [k] := Nil
+	_HMG_SYSDATA [ HMG_CTL_LOSTFOCUS ] [k] := lostfocus 
+	_HMG_SYSDATA [ HMG_CTL_GOTFOCUS ] [k] := gotfocus 
+	_HMG_SYSDATA [ HMG_CTL_CHANGE ] [k] := changeprocedure 
+	_HMG_SYSDATA [ HMG_CTL_DELETED ] [k] := FALSE 
+	_HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] := cImageField
+	_HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [k] := ImageListHandle
+	_HMG_SYSDATA [ HMG_CTL_DBLCLICK ] [k] := uEnter 
+	_HMG_SYSDATA [ HMG_CTL_HEADCLICK ] [k] := {} 
+	_HMG_SYSDATA [ HMG_CTL_ROW ] [k] := y 
+	_HMG_SYSDATA [ HMG_CTL_COL ] [k] := x 
+	_HMG_SYSDATA [ HMG_CTL_WIDTH ] [k] := w 
+	_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [k] := h 
+	_HMG_SYSDATA [ HMG_CTL_SPACING ] [k] := WorkArea 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [k] := iif ( _HMG_SYSDATA [ 183 ] > 0 ,_HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]] , -1 ) 
+	_HMG_SYSDATA [ HMG_CTL_PICTURE ] [k] := "" 
+	_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := ContainerHandle  
+	_HMG_SYSDATA [ HMG_CTL_FONTNAME ] [k] := fontname 
+	_HMG_SYSDATA [ HMG_CTL_FONTSIZE ] [k] := fontsize 
+	_HMG_SYSDATA [ HMG_CTL_FONTATTRIBUTES ] [k] := {bold,italic,underline,strikeout} 
+	_HMG_SYSDATA [ HMG_CTL_TOOLTIP ] [k] := tooltip  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] := 0  
+	_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] := OnCancel
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [k] := valuesource  
+	_HMG_SYSDATA [ HMG_CTL_VISIBLE ] [k] := if(invisible,FALSE,TRUE) 
+	_HMG_SYSDATA [ HMG_CTL_HELPID ] [k] := HelpId 
+	_HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [k] := FontHandle 
+	_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [k] := closeupprocedure
+	_HMG_SYSDATA [ HMG_CTL_ENABLED ] [k] := .T. 
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [k] := dropdownprocedure
+	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] := { NIL , NIL , NIL , NIL , NIL , NIL , NIL , NIL }
 
 	If displayedit == .T.
-		_HMG_SYSDATA [ 31 ] [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
+		_HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [k] := FindWindowEx( Controlhandle , 0, "Edit", Nil )
 	EndIf
 
 	If  ValType( WorkArea ) == "C"  
@@ -373,15 +373,15 @@ Local cImageField
 	if valtype ( ItemSource ) != 'U'
 
 		if k > 0
-			aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , k )
+			aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )
 		Else
-			aAdd ( _HMG_SYSDATA [ 89 ]	[ GetFormIndex ( cParentForm ) ] , HMG_LEN (_HMG_SYSDATA [3]) )
+			aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , HMG_LEN (_HMG_SYSDATA [HMG_CTL_HANDLE]) )
 		EndIf
 	EndIf
 
 	If ValType ( aImage ) <> 'U'
 
-		_HMG_SYSDATA [ 32 ] [k] := SendMessage( Controlhandle, 1030 , 0 , 0 )
+		_HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [k] := SendMessage( Controlhandle, 1030 , 0 , 0 )
 
 	EndIf
 
@@ -391,29 +391,29 @@ Procedure _DataComboRefresh (i)
 *-----------------------------------------------------------------------------*
 Local BackRec , WorkArea , cField , cImageField , xCurrentValue , Tmp
 
-	Tmp := _HMG_SYSDATA [ 33 ] [i]
-	_HMG_SYSDATA [ 33 ] [i] := Nil
+	Tmp := _HMG_SYSDATA [ HMG_CTL_CAPTION ] [i]
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] := Nil
 
 	xCurrentValue := _GetValue ( , , i )
 
-	_HMG_SYSDATA [ 33 ] [i] := Tmp
+	_HMG_SYSDATA [ HMG_CTL_CAPTION ] [i] := Tmp
 
-	cField := _HMG_SYSDATA [  7 ] [i]
-	cImageField := _HMG_SYSDATA [  14 ] [i]
+	cField := _HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [i]
+	cImageField := _HMG_SYSDATA [  HMG_CTL_BKCOLOR ] [i]
 
-	WorkArea := _HMG_SYSDATA [ 22 ] [i]
+	WorkArea := _HMG_SYSDATA [ HMG_CTL_SPACING ] [i]
 
 	BackRec := (WorkArea)->(RecNo())
 
 	(WorkArea)->(DBGoTop())	
 
-	ComboboxReset ( _HMG_SYSDATA [3] [i] )
+	ComboboxReset ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 
-	If _HMG_SYSDATA [15] [i] == Nil
+	If _HMG_SYSDATA [HMG_CTL_FONTCOLOR] [i] == Nil
 
 		Do While ! (WorkArea)->(Eof())	 		
 
-			ComboAddString ( _HMG_SYSDATA [3] [i] , (WorkArea)->&(cField) )
+			ComboAddString ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , (WorkArea)->&(cField) )
 
 			(WorkArea)->(DBSkip())
 
@@ -422,8 +422,8 @@ Local BackRec , WorkArea , cField , cImageField , xCurrentValue , Tmp
 	Else
 
 		Do While ! (WorkArea)->(Eof())	 		
-			ComboAddString ( _HMG_SYSDATA [3] [i] , (WorkArea)->&(cField) )                 
-			ImageComboAddItem ( _HMG_SYSDATA [3] [i] , (WorkArea)->&(cImageField) , (WorkArea)->&(cField) , -1 )
+			ComboAddString ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , (WorkArea)->&(cField) )                 
+			ImageComboAddItem ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , (WorkArea)->&(cImageField) , (WorkArea)->&(cField) , -1 )
 			(WorkArea)->(DBSkip())
 		EndDo	      
 
