@@ -16,8 +16,16 @@ Notes:		This is very simple crypt algorithm based on XOR encryption.
    way - PAN, Aadhaar, bank details, financials - must be treated as UNPROTECTED.
 
    The functions are kept unchanged only so existing applications can still DECRYPT data
-   they already hold. Do not use them for new data. An authenticated replacement
-   (AES-GCM via Windows CNG) is planned.
+   they already hold. Do not use them for new data.
+
+   Use instead (SOURCE/c_crypt_cng.c, SOURCE/h_crypt_aes.prg - AES-256-GCM, PBKDF2):
+      HMG_AESEncrypt( cData, cPassword ) / HMG_AESDecrypt( cBlob, cPassword )
+      HMG_AESEncryptFile() / HMG_AESDecryptFile()
+   To move existing data across:
+      HMG_AESMigrateString( cLegacy, cOldPass, cNewPass )   - for _ENCRYPT() / DB_CODE() values
+      HMG_AESMigrateFile( cFile, cOldPass, cOutFile, cNewPass ) - for FI_CODE() files
+   DB_ENCRYPT() only scrambles the DBF header (the records stay plain text): run
+   DB_UNENCRYPT(), then HMG_AESEncryptFile() the whole DBF.
 */
 MEMVAR _HMG_SYSDATA
 #define MSGALERT( c ) MsgEXCLAMATION( c, "Attention" )
