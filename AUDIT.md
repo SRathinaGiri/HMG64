@@ -155,6 +155,7 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 3. Keep the ANSI build (M5, decision 06-11-2026) and test both modes. Raise `_WIN32_WINNT` to Windows 10 (`0x0A00`). Switch the manifest to PerMonitorV2 + longPathAware + UTF-8 code page.
 
 **Phase 3 — Architecture (breaking internally, keep the PRG command syntax)**
+> Revised 06-11-2026: see PHASE3-DESIGN.md. User programs embed slot numbers and read slots directly, so the layout is frozen for HMG5 and wrapped instead of replaced.
 1. Replace `_HMG_SYSDATA` and the macro-named memvars with a window/control object model. Use hash lookups keyed by `HWND` and by `form.control` name.
 2. Split `Events()` per control class. Dispatch from C only for messages a control actually subscribes to.
 3. Keep `DEFINE WINDOW … END WINDOW` / `@ … BUTTON` / `GetProperty/SetProperty` as a compatibility layer, so existing user code compiles unchanged. That is the main value of HMG.
