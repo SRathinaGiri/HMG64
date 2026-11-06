@@ -1,3 +1,9 @@
+-HMG 5.0 (test) 2026/11/06
+   - New name for the revamped HMG 3 line (HMG4/Qt is not continued)
+   - One-folder setup: trimmed MinGW-w64 GCC 16.2.0 (UCRT) + Harbour 3.2.1dev (r2610242111) bundled
+   - Fixed string-conversion memory leak, buffer overflows, NULL crashes, DLL search-path hijacking, temp-file race
+   - ANSI and UNICODE library modes both kept and tested
+   - Executables need Windows 10 or later (Universal C Runtime)
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

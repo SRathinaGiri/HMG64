@@ -17,3 +17,6 @@ windres.log
 _temp.rc
 _hmg_resconfig.h
 /tests/out/
+
+# HMG5 Setup output
+/dist/Output/
