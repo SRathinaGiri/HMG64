@@ -64,6 +64,18 @@ function Copy-Tree ($from, $to, [string[]] $extra) {
    if ($LASTEXITCODE -ge 8) { Fail "Copying $from failed (robocopy exit $LASTEXITCODE)." }
 }
 
+# Removes only what "hmgbuild test" generated inside the new folder (sample/test exes and logs),
+# so the folder (and Setup.exe) ships clean.
+function Remove-TestOutput ($root) {
+   foreach ($sub in 'SAMPLES', 'tests') {
+      Get-ChildItem -Recurse -File -Include '*.exe', '*.log' (Join-Path $root $sub) | Remove-Item -Force
+   }
+   foreach ($p in 'tests\out', 'build.log') {
+      $x = Join-Path $root $p
+      if (Test-Path $x) { Remove-Item -Recurse -Force $x }
+   }
+}
+
 # ---- 1. HMG itself ------------------------------------------------------------------------
 Step "Copying HMG to $Dest"
 Copy-Tree $HmgDir $Dest @(
@@ -103,5 +115,6 @@ if (-not $NoVerify) {
    # Absolute path: with NoDefaultCurrentDirectoryInExePath set, cmd does not search the current folder.
    cmd /c "`"$(Join-Path $Dest 'hmgbuild.bat')`" test"
    if ($LASTEXITCODE -ne 0) { Fail 'The new HMG5 folder failed its tests (see above).' }
+   Remove-TestOutput $Dest
 }
 Write-Host "HMG5 ready: $Dest   Next: build Setup.exe with dist\HMG5.iss (Inno Setup 6)" -ForegroundColor Green

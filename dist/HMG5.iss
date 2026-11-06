@@ -36,9 +36,11 @@ LicenseFile={#Src}\license.txt
 InfoAfterFile={#Src}\README-HMG5.txt
 OutputDir=Output
 OutputBaseFilename=HMG5-Setup
-Compression=lzma2/ultra64
+Compression=lzma2/max
 SolidCompression=yes
-LZMANumBlockThreads=4
+; ISCC 6 is 32-bit: ultra64 + block threads runs it out of memory. A separate
+; compressor process gets its own address space.
+LZMAUseSeparateProcess=yes
 WizardStyle=modern
 UninstallDisplayName=HMG {#AppVer} (64-bit)
 UninstallDisplayIcon={app}\IDE\IDE.exe

@@ -43,7 +43,7 @@ iscc dist\HMG5.iss                                                          & re
 | 0 | Baseline in git, single build entry point, smoke + regression tests | done |
 | 1 | Fix leaks, buffer overflows, NULL crashes, DLL hijacking, temp-file race; deprecate XOR "crypt" | done (see AUDIT.md §6) |
 | 2a | Toolchain refresh: GCC 16.2 / UCRT, Harbour 3.2.1 from source, current bundled libs; reproducible setup script; ANSI + UNICODE build matrix | done |
-| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Test" | folder done; Setup.exe not yet compiled |
+| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Test" | done (Setup.exe tested: silent install, build, uninstall) |
 | 2b | Windows 10+ target (`_WIN32_WINNT`), PerMonitorV2 / long-path / UTF-8 manifest, libHaru 2.3 headers | next |
 | 3 | Replace `_HMG_SYSDATA` with an object model while keeping the command syntax | planned |
 
