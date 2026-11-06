@@ -4,6 +4,7 @@ rem  tests\run.bat - HMG smoke + regression tests (called by: hmgbuild test)
 rem
 rem  smoke-<sample> : every SAMPLES\Basics\*\*.hbp must compile and link
 rem  leak           : tests\leak\leakprobe - AUDIT.md finding C1
+rem  unit-<name>    : tests\unit\<name>.hbp, console build, exit code 0 = pass
 rem
 rem  Tests listed in tests\known-fail.txt are reported as XFAIL and do not fail
 rem  the run; if one starts passing it is reported as XPASS.
@@ -51,6 +52,26 @@ if exist leakprobe.exe (
 )
 popd
 call :RESULT leak !R!
+
+rem --- unit: every tests\unit\*.hbp is built as a console app and run ---------
+rem     exit code 0 = pass; the program prints its own per-check details
+for %%P in ("%TESTS%unit\*.hbp") do (
+   pushd "%TESTS%unit"
+   if exist error.log del error.log
+   if exist "%%~nP.exe" del "%%~nP.exe"
+   call "%HMGPATH%\build64.bat" /n /c "%%~nxP" >nul 2>&1
+   set "R=1"
+   if exist "%%~nP.exe" (
+      ".\%%~nP.exe" >"%OUT%\unit-%%~nP.log" 2>&1
+      if not errorlevel 1 set "R=0"
+      type "%OUT%\unit-%%~nP.log"
+   ) else (
+      if exist error.log copy /y error.log "%OUT%\unit-%%~nP-build.log" >nul
+      echo %%~nP did not build - see tests\out\unit-%%~nP-build.log
+   )
+   popd
+   call :RESULT unit-%%~nP !R!
+)
 
 echo.
 echo PASS=%PASS%  FAIL=%FAIL%  XFAIL=%XFAIL%  XPASS=%XPASS%

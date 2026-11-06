@@ -4,7 +4,7 @@
  *
  * Calls string wrappers N times with a 50 KB argument and measures the growth
  * of process private bytes. Exit code 0 = no leak, 1 = leak detected.
- * Expected to FAIL until Phase 1 fixes the macro layer (listed in tests\known-fail.txt).
+ * Fixed in Phase 1 (frame-owned conversions); before the fix this leaked ~190-290 MB.
  */
 
 #define N_CALLS        2000
