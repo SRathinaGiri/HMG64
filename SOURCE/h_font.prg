@@ -386,7 +386,7 @@ Return hFont
 Function ChangeControlFontSize ( ControlName, ParentForm , nSize )
 *-----------------------------------------------------------------------------*
 LOCAL i             := GetControlIndex  (ControlName, ParentForm)
-LOCAL ControlHandle := ControlHandle := _HMG_SYSDATA [ 3 ] [i]
+LOCAL ControlHandle := _HMG_SYSDATA [ 3 ] [i]
 LOCAL aFont         := GetControlFontByIndex ( i )
 LOCAL hFont
    IF ValType (nSize) == "N" .AND. nSize > 0

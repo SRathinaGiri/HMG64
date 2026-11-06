@@ -57,8 +57,8 @@ MEMVAR _HMG_SYSDATA
 *-----------------------------------------------------------------------------*
 Function _DefineTimer ( ControlName ,ParentForm , Interval , ProcedureName )
 *-----------------------------------------------------------------------------*
-Local mVar , k := 0
-Local FontHandle
+Local mVar , k
+Local FontHandle := NIL
 Local id
 
 	if _HMG_SYSDATA [ 264 ] = .T.

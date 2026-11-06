@@ -57,7 +57,7 @@ MEMVAR _HMG_SYSDATA
 *-----------------------------------------------------------------------------*
 Function _DefineFrame ( ControlName, ParentForm, x, y, w, h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local mVar , k
 Local ControlHandle
 Local FontHandle
 Local cParentTabName := ''
@@ -74,7 +74,6 @@ Local cParentWindowName := ''
 
 	mVar := '_' + ParentForm + '_' + ControlName
 
-	cParentForm := ParentForm
 
 	ParentForm = GetFormHandle (ParentForm)
 

@@ -251,7 +251,7 @@ RETURN nIndex
 
 
 FUNCTION _HMG_OnKey_OnMouse_Controls
-LOCAL i:=0, k:=0, nSubIndex1:=0, ret := NIL
+LOCAL i:=0, k, nSubIndex1:=0, ret := NIL
 
    IF ( EventIsKeyboardMessage() == .T. .OR. EventIsMouseMessage() == .T. ) .AND.  EventIsHMGWindowsMessage() == .F.
 

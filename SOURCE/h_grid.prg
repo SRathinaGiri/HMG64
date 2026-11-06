@@ -146,7 +146,7 @@ Function _DefineGrid (	ControlName	, ;
          Notrans, NotransHeader,;
          aDynamicFont, OnCheckBoxClicked, OnInplaceEditEvent )
 *-----------------------------------------------------------------------------*
-Local i , cParentForm , mVar, wBitmap , k := 0
+Local i , cParentForm , mVar, wBitmap , k
 Local ControlHandle
 Local FontHandle
 Local cParentTabName
@@ -792,14 +792,14 @@ FUNCTION _HMG_GRIDINPLACEEDIT(IDX)
 Local r , c , h , aTemp , ri , ci , DW := 0, DH := 0 , DR := 0 , DC := 0
 LOCAL AEDITCONTROLS
 LOCAL AEC := 'TEXTBOX'
-LOCAL AITEMS := {}
-LOCAL ARANGE := {}
-LOCAL DTYPE := 'D'
+LOCAL AITEMS
+LOCAL ARANGE
+LOCAL DTYPE
 LOCAL ALABELS := { '.T.' ,'.F.' }
 LOCAL CTYPE := 'CHARACTER'
 LOCAL CINPUTMASK := ''
 LOCAL CFORMAT := ''
-LOCAL XRES := {}
+LOCAL XRES
 LOCAL CVA
 LOCAL CWH
 LOCAL WHEN
@@ -813,7 +813,7 @@ LOCAL Z
 Local xValue := 0
 Local cRecordSource
 Local cTextFile
-LOCAL nIndex := 0, cProc
+LOCAL nIndex, cProc
 
 _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
 
@@ -1358,8 +1358,7 @@ LOCAL ALABELS := { '.T.' ,'.F.' }
 LOCAL CTYPE := 'CHARACTER'
 LOCAL CINPUTMASK := ''
 LOCAL CFORMAT := ''
-LOCAL ARET := {}
-LOCAL DW , DH , DR , DC
+LOCAL ARET
 LOCAL ARETURNVALUES := {}
 
 	IF ValType ( AEDITCONTROLS ) = 'A'
@@ -1441,10 +1440,6 @@ LOCAL ARETURNVALUES := {}
                
 
 					IF HMG_LEN ( AEDITCONTROLS [CI] ) == 3   .AND.   AEC == 'CHECKBOX'
-						DW := -4
-						DH := -7
-						DR := 3
-						DC := 2
 						IF ValType ( AEDITCONTROLS [CI] [2] ) = 'C'   .AND.   ValType ( AEDITCONTROLS [CI] [3] ) = 'C' 
 							ALABELS := { AEDITCONTROLS [CI] [2] , AEDITCONTROLS [CI] [3] }
 						ENDIF
@@ -2193,8 +2188,8 @@ function SetDataGridRecNo ( index , nRecNo  )
 ************************************************
 Local cRecordSource
 Local aValue
-Local nLogicalPos := 0
-Local lOk := .f.
+Local nLogicalPos
+Local lOk
 Local nBackRecNo
 LOCAL nColumn := 0
 
@@ -2242,10 +2237,7 @@ return nil
 *************************************
 function GetDataGridRecno( index )
 *************************************
-Local cRecordSource := ''
-Local nHandle
-Local aColumnFields := {}
-Local lRet := .T.
+Local cRecordSource
 Local aValue
 Local nValue
 Local nRecNo
@@ -2256,8 +2248,6 @@ Local nBuffLogicalRow
 Local nBuffPhysicalRow 
 Local k
 
-   nHandle        := _HMG_SYSDATA [  3 ] [ index ] 
-   aColumnFields  := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
    cRecordSource  := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
    nBackRecNo     := &cRecordSource->( RECNO() )
    aValue         := _GetValue (  ,  ,  index )
@@ -2392,7 +2382,7 @@ Function SaveDataGridField ( index , Value )
 Local nLogicalRow 
 Local nLogicalCol 
 Local lReEdit := .F.
-Local aTemp := {}
+Local aTemp
 Local nBufferRow
 Local x, nRecNo
 
@@ -2438,10 +2428,10 @@ Return .T.
 ***********************************
 Function DataGridAppend( index )
 ***********************************
-Local cRecordSource := ''
+Local cRecordSource
 Local nItemCount
 Local nHandle
-Local aColumnFields := {}
+Local aColumnFields
 Local lRet := .T.
 Local j
 
@@ -2505,7 +2495,7 @@ Local nColumnCount
 Local nAppendRecordCount
 Local aRecord
 Local aColumnClassMap
-Local cRecordSource, aColumnFields, nHandle, nItemCount, nRecNo, nLogicalRow, nLogicalCol, xValue, nPhysicalRow, cCommand
+Local cRecordSource, aColumnFields, nRecNo, nLogicalCol, xValue, nPhysicalRow, cCommand
 
    // If Not Buffered Data Then Return ************************************
    If _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] == .F.
@@ -2513,11 +2503,9 @@ Local cRecordSource, aColumnFields, nHandle, nItemCount, nRecNo, nLogicalRow, nL
    EndIf
 
    // Get Control Data ****************************************************
-   nHandle           := _HMG_SYSDATA [  3 ] [ index ] 
    cRecordSource     := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
    aColumnFields     := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
    aColumnClassMap   := _HMG_SYSDATA [ 40 ] [ index ] [ 30 ]
-   nItemCount        := ListView_GetItemCount ( nHandle )
 
    // Backup Record Number ************************************************
    nRecNo := &cRecordSource->( RECNO() )
@@ -2606,7 +2594,6 @@ Local cRecordSource, aColumnFields, nHandle, nItemCount, nRecNo, nLogicalRow, nL
       For x := 1 To HMG_LEN ( aTemp )
 
          // Get Buffer Data
-         nLogicalRow    := aTemp [ x ] [ 1 ] 
          nLogicalCol    := aTemp [ x ] [ 2 ] 
          xValue         := aTemp [ x ] [ 3 ] 
          nPhysicalRow   := aTemp [ x ] [ 4 ] 
@@ -2798,11 +2785,8 @@ Return .t.
 ***************************************
 Function DataGridClearBuffer(index)
 ***************************************
-Local cRecordSource, nHandle
 
    // Get Control Data ****************************************************
-   nHandle        := _HMG_SYSDATA [  3 ] [ index ] 
-   cRecordSource  := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
 
    // Set Pending Updates Flag ********************************************
    _HMG_SYSDATA [ 40 ] [ index ] [ 20 ] := .F.
@@ -2833,7 +2817,6 @@ __THREAD STATIC nLastHandle := 0
 __THREAD STATIC nLastPhysicalRecord := 0
 Local x, aTemp 
 Local cRecordSource
-Local aColumnFields
 Local xBufferedCellValue
 Local lBufferedCell := .F.
 LOCAL nRecNo
@@ -2847,7 +2830,6 @@ LOCAL nRecNo
    ENDIF
 
    cRecordSource     := _HMG_SYSDATA [ 40 ] [ index ] [ 10 ]
-   aColumnFields     := _HMG_SYSDATA [ 40 ] [ index ] [ 11 ]
 
    nRecNo := &cRecordSource->( RECNO() )   // ADD, march 2017
 

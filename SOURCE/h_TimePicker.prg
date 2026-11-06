@@ -27,7 +27,7 @@ Function _DefineTimePick ( ControlName, ParentForm, x, y, w, h, cValue, ;
                            gotfocus, shownone, HelpId, invisible, notabstop, ;
                            bold, italic, underline, strikeout , Field, Enter, cTimeFormat)
 *-----------------------------------------------------------------------------*
-LOCAL cParentForm , mVar , k := 0
+LOCAL cParentForm , mVar , k
 LOCAL ControlHandle
 LOCAL FontHandle
 LOCAL cParentTabName

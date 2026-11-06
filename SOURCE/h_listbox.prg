@@ -64,7 +64,7 @@ Function _DefineListbox ( ControlName, ParentForm, x, y, w, h, rows, value, ;
 			multiselect , dragitems )
 *-----------------------------------------------------------------------------*
 Local i , cParentForm , mVar , ControlHandle
-Local FontHandle , k := 0
+Local FontHandle , k
 
 
    DEFAULT w               TO 120

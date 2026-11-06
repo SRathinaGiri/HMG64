@@ -60,7 +60,7 @@ Function _DefineProgressBar ( ControlName, ParentForm, x, y, w, h, lo, hi, ;
                               tooltip, vertical, smooth, HelpId, invisible, ;
                               value, BackColor, BarColor )
 *-----------------------------------------------------------------------------*
-Local cParentForm, mVar, ControlHandle , k := 0
+Local cParentForm, mVar, ControlHandle , k
 
    DEFAULT h         TO if( vertical, 120, 25 )
    DEFAULT w         TO if( vertical, 25, 120 )

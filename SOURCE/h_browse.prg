@@ -111,7 +111,7 @@ Function _DefineBrowse ( ControlName, ;
 			inputitems , displayitems , aHeaderImages, ;
 			NoTrans, NoTransHeader)
 *-----------------------------------------------------------------------------*
-Local i , cParentForm , mVar , ix, wBitmap , z , ScrollBarHandle , DeltaWidth , k := 0
+Local i , cParentForm , mVar , wBitmap , z , ScrollBarHandle , DeltaWidth , k
 Local cParentTabName
 
 Local ControlHandle
@@ -148,7 +148,7 @@ Local nHeaderImageListHandle
 		MsgHMGError ("Control: " + ControlName + " Of " + ParentForm + " Already defined. Program Terminated" )
 	endif
 
-	ix := GetFormIndex (ParentForm)
+	GetFormIndex (ParentForm)
 
 	mVar := '_' + ParentForm + '_' + ControlName
 
@@ -362,7 +362,7 @@ Return Nil
 *-----------------------------------------------------------------------------*
 Procedure _BrowseUpdate( ControlName,ParentName , z )
 *-----------------------------------------------------------------------------*
-Local PageLength , aTemp := {} , cTemp , Fields , _BrowseRecMap := {} , i , x , j , First , Image , _Rec , ColorMap , ColorRow , processdbc , processdfc , k
+Local PageLength , aTemp , cTemp , Fields , _BrowseRecMap := {} , i , x , j , First , Image , _Rec , ColorMap , ColorRow , processdbc , processdfc , k
 Local dbc
 Local dFc 
 
@@ -761,7 +761,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseNext ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , PageLength , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil } , s 
+Local i , PageLength , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll , s 
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -816,7 +816,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowsePrior ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -862,7 +862,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseHome ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -872,7 +872,6 @@ Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil 
 
 	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
 
 	_Alias := Alias()
 	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
@@ -900,7 +899,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseEnd ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , Nil , Nil , Nil } , _BottomRec
+Local i , _Alias , _RecNo , _BrowseArea , _DeltaScroll , _BottomRec
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -910,7 +909,6 @@ Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Ni
 
 	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
 
 	_Alias := Alias()
 	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
@@ -941,7 +939,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseUp ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , s  , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local i , s  , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -987,7 +985,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseDown ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , PageLength , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local i , PageLength , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -1044,7 +1042,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseRefresh ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , s , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , _DeltaScroll := { Nil , Nil , Nil , Nil }
+Local i , s , _Alias , _RecNo , _BrowseArea , _DeltaScroll
 Local v
 MEMVAR cMacroVar
 Private cMacroVar
@@ -1060,7 +1058,6 @@ Private cMacroVar
 
 	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
 
 	s := LISTVIEW_GETFIRSTITEM ( _HMG_SYSDATA [3] [i] ) 
 
@@ -1150,7 +1147,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseSetValue ( ControlName , ParentForm , Value , z , mp )
 *-----------------------------------------------------------------------------*
-Local i  , _Alias , _RecNo , _BrowseArea , _BrowseRecMap , NewPos := 50  , _DeltaScroll := { Nil , Nil , Nil , Nil } , m
+Local i  , _Alias , _RecNo , _BrowseArea , _DeltaScroll , m
 MEMVAR cMacroVar
 Private cMacroVar
 
@@ -1199,7 +1196,6 @@ Private cMacroVar
 	endif
 
 	_DeltaScroll := ListView_GetSubItemRect ( _HMG_SYSDATA [3][i] , 0 , 0 ) 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
 
 	Select &_BrowseArea
 	
@@ -1261,7 +1257,7 @@ Return
 *-----------------------------------------------------------------------------*
 Function _BrowseGetValue ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , RetVal , _BrowseRecMap , _Alias , _BrowseArea
+Local i , RetVal , _BrowseRecMap , _BrowseArea
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -1269,7 +1265,6 @@ Local i , RetVal , _BrowseRecMap , _Alias , _BrowseArea
 		i := z
 	EndIf
 
-	_Alias := Alias()
 	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]
 
 	If Select (_BrowseArea) == 0
@@ -1361,8 +1356,6 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function _BrowseEdit ( GridHandle , aValid , aValidMessages , aReadOnly , lock , append , inplace , INPUTITEMS )
 *------------------------------------------------------------------------------*
-Local actpos:={0,0,0,0}
-Local aInitValues := {} , aFormats := {} , TmpNames := {} , NewRec := 0 , MixedFields := .f.
 Private aWhen
 Private aWhenVarNames
 
@@ -1386,12 +1379,11 @@ Return Nil
 *------------------------------------------------------------------------------*
 Function _BrowseInPlaceEdit ( GridHandle , aValid , aValidMessages , aReadOnly , lock , append , aInputItems )
 *------------------------------------------------------------------------------*
-Local GridCol , GridRow , i , nrec , _GridWorkArea , BackArea , BackRec , _GridFields , FieldName , CellData  := '' , CellColIndex , x
+Local GridCol , GridRow , i , nrec , _GridWorkArea , BackArea , BackRec , _GridFields , FieldName , CellData , CellColIndex , x
 Local aFieldNames
 Local aTypes
 Local aWidths
 Local aDecimals
-Local Type
 Local Width
 Local Decimals
 Local sFieldname
@@ -1565,7 +1557,6 @@ Local br
 	x := FieldPos ( sFieldName )
 
 	If x > 0
-        	Type		:= aTypes [x]
 	        Width		:= aWidths [x]
         	Decimals	:= aDecimals [x]
 	EndIf
@@ -2132,7 +2123,7 @@ Return
 *-----------------------------------------------------------------------------*
 Procedure _BrowseInPlaceAppend ( ControlName , ParentForm , z )
 *-----------------------------------------------------------------------------*
-Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Nil , Nil , Nil , Nil } , _NewRec , aTemp
+Local i , _Alias , _RecNo , _BrowseArea , _NewRec , aTemp
 
 	If pcount() == 2
 		i := GetControlIndex ( ControlName , ParentForm )
@@ -2140,7 +2131,6 @@ Local i , _Alias , _RecNo , _BrowseArea , _BrowseRecMap   , _DeltaScroll := { Ni
 		i := z
 	EndIf
 
-	_BrowseRecMap := _HMG_SYSDATA [ 32 ] [i] 
 
 	_Alias := Alias()
 	_BrowseArea := _HMG_SYSDATA [ 22 ] [i]

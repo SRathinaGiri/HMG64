@@ -101,7 +101,7 @@ Return aRetVal
 Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, nFilterIndex )
 *--------------------------------------------------------------------------------------*
 local c := ''
-local cfiles := ''
+local cfiles
 local fileslist := {}
 local n
 Local i
@@ -184,7 +184,7 @@ Return cFileName
 *------------------------------------------------------------------------------*
 Function GetFont ( cFontName , nFontSize , lBold , lItalic , aFontColor , lUnderLine , lStrikeOut , nCharSet )
 *------------------------------------------------------------------------------*
-Local RetArray [8] , Tmp , nColor
+Local RetArray , Tmp , nColor
 
    If ValType ( cFontName ) == 'U'
       cFontName := ""
@@ -236,7 +236,7 @@ Return RetArray
 *-----------------------------------------------------------------------------------------------------------------------------------------------*
 Function GetFolder ( cTitle, cInitPath, cInvalidDataMsg, lNewFolderButton, lIncludeFiles, nCSIDL_FolderType, nBIF_Flags )
 *-----------------------------------------------------------------------------------------------------------------------------------------------*
-LOCAL nFlags, RetVal:=""
+LOCAL nFlags, RetVal
 
 
 //-----------------------------------------

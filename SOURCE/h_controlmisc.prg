@@ -112,7 +112,7 @@ MEMVAR _Y1,_X1,_Y2,_X2
 
 
 Function _Getvalue ( ControlName, ParentForm , Index )
-Local retval , h , t , x , c , d , bd , ix , auxval , WorkArea , BackRec , rcount , Tmp , Ts , BF
+Local retval , t , x , c , d , bd , ix , auxval , WorkArea , BackRec , rcount , Tmp , Ts , BF
 Local TimeValue24h, cTimeFormat
 
 retval := 0
@@ -132,14 +132,13 @@ If Pcount() == 2
     EndIf
 
     T = GetControlType (ControlName,ParentForm)
-    h = GetControlParentHandle (ControlName,ParentForm)
+    GetControlParentHandle (ControlName,ParentForm)
     c = GetControlHandle (ControlName,ParentForm)
     ix := GetControlIndex ( ControlName, ParentForm )
 
 Else
 
     T = _HMG_SYSDATA [1] [ Index ]
-    h = _HMG_SYSDATA [4] [ Index ]
     c = _HMG_SYSDATA [3] [ Index ]
     ix := Index
 
@@ -352,8 +351,8 @@ endcase
 Return (retval)
 
 Function _SetValue ( ControlName, ParentForm, Value , index )
-Local retval , h , t , x , c, y, r ,controlcount , backrec , workarea , rcount , aPos
-Local TreeItemHandle := 0 , ix
+Local retval , h , t , x , c, y,controlcount , backrec , workarea , rcount , aPos
+Local TreeItemHandle , ix
 Local z
 Local aTemp
 Local lEqual
@@ -363,7 +362,6 @@ LOCAL i, cText
 
 controlcount := HMG_LEN (_HMG_SYSDATA [  5 ])
 retval := 0
-r = 0
 
 if pcount() == 3
 
@@ -863,7 +861,6 @@ do case
             EndIf
 
         Else
-            TreeItemHandle := 0
             
             if ImgDef == 0
                     
@@ -1368,13 +1365,13 @@ _HMG_SYSDATA [ 38 ] [y] := .F.
 Return Nil
 
 Function _EnableControl ( ControlName,ParentForm )
-Local H,t,i,c,x,controlcount , y , s , z , w 
+Local t,i,c,x,controlcount , y , s , z , w 
 
 controlcount := HMG_LEN (_HMG_SYSDATA [2])
 
 T = GetControlType (ControlName,ParentForm)
 i = GetControlId (ControlName,ParentForm)
-h = GetControlParentHandle (ControlName,ParentForm)
+GetControlParentHandle (ControlName,ParentForm)
 c = GetControlHandle (ControlName,ParentForm)
 y := GetControlIndex (ControlName,ParentForm)
 
@@ -1748,8 +1745,6 @@ Local CTYPE
 Local CINPUTMASK
 Local CFORMAT
 Local AITEMS
-Local ARANGE
-Local DTYPE
 Local ALABELS
 Local bd
 Local nCurrentValue
@@ -1833,8 +1828,6 @@ do case
                     CINPUTMASK  := XRES [3] 
                     CFORMAT     := XRES [4] 
                     AITEMS      := XRES [5] 
-                    ARANGE      := XRES [6] 
-                    DTYPE       := XRES [7] 
                     ALABELS     := XRES [8] 
 
                     IF  AEC == 'TEXTBOX'
@@ -1921,11 +1914,8 @@ Local XRES
 Local aTemp
 Local AEC
 Local CTYPE
-Local CINPUTMASK
 Local CFORMAT
 Local AITEMS
-Local ARANGE
-Local DTYPE
 Local ALABELS
 Local V
 Local Z
@@ -2009,11 +1999,8 @@ do case
 
                     AEC     := XRES [1] 
                     CTYPE       := HMG_UPPER( XRES [2] )
-                    CINPUTMASK  := XRES [3] 
                     CFORMAT     := XRES [4] 
                     AITEMS      := XRES [5] 
-                    ARANGE      := XRES [6] 
-                    DTYPE       := XRES [7] 
                     ALABELS     := XRES [8] 
 
                     IF AEC == 'TEXTBOX' 
@@ -2379,7 +2366,6 @@ do case
             _HMG_SYSDATA [ 19 ]     [ x ] := Col + _HMG_SYSDATA [ 24 ] [x]
             _HMG_SYSDATA [ 20 ]     [ x ] := Width
 
-            Spacing             := _HMG_SYSDATA [ 22 ] [ x ] 
 
             if _HMG_SYSDATA [ 8 ] [x] 
 
@@ -2764,7 +2750,7 @@ Set (_SET_DATEFORMAT ,bd)
 Return ( RetVal )
 
 Function SendData ( cDest , Data )
-Local cData := '' , i , j
+Local cData , i , j
 Local pData, cLen, cType, FileName, Rows, Cols
 
 _HMG_SYSDATA [ 290 ]++
@@ -3102,7 +3088,7 @@ Function InputWindow ( cTitle, aLabels, aValues, aFormats, nRow, nCol, aBackColo
 Local i, nLen, nControlRow:=10, nControlCol, LN, CN, nR, nC, nW, nH:=0, nDiff, cType1, cType2, nCWidth:=140, nLWidth:=90
 Local cForm, cGrid, aCtrlsWidths, aCtrlsWhen, nIdx, cValue, cTimeFormat, aEditControls, XRES, aFields, cControlType:=""
 Local cDbf, nPos, lWidthCDefined, nGridRow, nGridCol, xValue, aGridValue, cTxt, lWhen, lHidden, lCheckBoxEnabled:=.F.
-Local aJust, lRightAlign, lHotKeysDefined, nEditOption:=0, lAtFirstImages, oError, OldScrollStep
+Local aJust, lRightAlign, nEditOption:=0, lAtFirstImages, oError, OldScrollStep
 
 
 DEFAULT nRow := 0
@@ -3183,9 +3169,6 @@ If !ValType(aLabels)="A"
          aValues:={}
          If ValType(aFormats)="A"
             aHotKeys:=aFormats
-            lHotKeysDefined:=.T.
-         Else
-            lHotKeysDefined:=.F.
          Endif
          aJust:={}
          aFormats:={}
@@ -3214,7 +3197,6 @@ If !ValType(aLabels)="A"
          nLen:=GetProperty(cForm,cGrid,"COLUMNCOUNT")
 
          
-         nCWidth := 0
          For i=1 To nLen
              nPos:=_GridEx_GetColumnDisplayPosition(cGrid, cForm, i)
 
@@ -3689,8 +3671,6 @@ EndIf
                 ElseIf cType2 == 'A'
                        cTimeFormat:=CharRem("{}",hb_ValToExp(aFormats[i]))
                        cTimeFormat:=CharRem(Chr(34)+Chr(39),cTimeFormat)
-                       cValue:=hb_ValToExp(aValues[i])
-                       cValue:=CharRem(Chr(34)+Chr(39),cValue)
 
 
 
@@ -4751,7 +4731,7 @@ Return Nil
 
 Function _GetCaption( ControlName , ParentForm )
 Local i 
-Local cRetVal := ''
+Local cRetVal
 
 i := GetControlIndex ( ControlName , ParentForm )
 
@@ -4886,14 +4866,13 @@ Return cFilePath( hb_ProgName() )
 
 Function _HMG_PRINTER_SHOWPREVIEW()
 __THREAD STATIC nIndexEvent  := 0   // ADD, April 2014
-Local ModalHandle := 0
+Local ModalHandle
 Local Tmp
 Local i
-Local tWidth
 Local tHeight
 Local tFactor
 Local tvHeight
-Local icb := 0
+Local icb
 Local ppnavtitle
 Local cLang       := HB_USubStr( HMG_UPPER( Set ( _SET_LANGUAGE ) ), 1 , 2 )
 
@@ -5237,7 +5216,6 @@ else
     tFactor := 0.26
 endif
 
-tWidth  :=_HMG_PRINTER_GETPAGEWIDTH(_HMG_SYSDATA [ 372 ]) * tFactor
 tHeight :=_HMG_PRINTER_GETPAGEHEIGHT(_HMG_SYSDATA [ 372 ]) * tFactor
 
 tHeight := Int (tHeight)    
@@ -5503,7 +5481,7 @@ Local i, nFiles, cFileEMF, cTempFolder, cPrintFileName, aFiles := {}
 LOCAL g := {".PDF", ".BMP",".JPG",".GIF",".TIF",".PNG",".EMF"}
 LOCAL nTypePicture := { Nil , BT_FILEFORMAT_BMP, BT_FILEFORMAT_JPG, BT_FILEFORMAT_GIF, BT_FILEFORMAT_TIF, BT_FILEFORMAT_PNG, Nil }
 LOCAL acFilter := { {"PDF", "*.pdf"}, {"BMP", "*.bmp"}, {"JPG", "*.jpg"}, {"GIF", "*.gif"}, {"TIF", "*.tif"}, {"PNG", "*.png"}, {"EMF", "*.emf"} }
-LOCAL cFullName:="", cPath:="", cName:="", cExt:="", cExtFile := ""
+LOCAL cFullName, cPath:="", cName:="", cExt:="", cExtFile := ""
 LOCAL cFileName := "HMG_PrintFile"
 LOCAL cFolder
 
@@ -5680,7 +5658,7 @@ Function _HMG_PRINTER_PREVIEW_OnPaint()   // July 2015
 Local hwnd
 Local nRow
 Local nScrollMax 
-LOCAL aCoord:= {0,0,0,0}
+LOCAL aCoord
 LOCAL hDC, BTstruct   // July 2015
 
 If _IsControlDefined ( 'Image' + ALLTRIM(STR(_HMG_SYSDATA [ 361 ])) , '_HMG_PRINTER_SHOWTHUMBNAILS' ) .and. _HMG_SYSDATA [ 368 ] == .T. .and. _HMG_SYSDATA [ 369 ] == .T.
@@ -5758,7 +5736,6 @@ Return Nil
 
 
 Function _HMG_PRINTER_PrintPages()
-Local aProp := {}
 
 DisableWindow ( GetformHandle ( "_HMG_PRINTER_SHOWPREVIEW" ) )
 DisableWindow ( GetformHandle ( "SPLITCHILD_1" ) )
@@ -7464,7 +7441,7 @@ RETURN _HMG_PrinterGetStatus( cPrinterName ) // --> nStatus
 * Based on HBMZIP Harbour contribution library samples.
 *------------------------------------------------------------------------------*
 Function COMPRESSFILES ( cFileName , aDir , bBlock , lOvr )
-Local hZip , i , cPassword
+Local hZip , i , cPassword := NIL
 
 if valtype (lOvr) == 'L'
     if lOvr == .t.
@@ -7529,8 +7506,8 @@ Return (_HMG_SYSDATA [39] [ &mVar ] )
 
 
 Function _DefineActivex ( cControlName, cParentForm, nRow, nCol , nWidth , nHeight , cProgId )
-Local mVar , nControlHandle , k := 0 , nParentFormHandle , oOle
-Local nAtlDllHandle , cParentTabName, nInterfacePointer
+Local mVar , nControlHandle , k , nParentFormHandle , oOle
+Local nAtlDllHandle , nInterfacePointer
 
 * If defined inside DEFINE WINDOW structure, determine cParentForm
 
@@ -7545,7 +7522,6 @@ if _HMG_SYSDATA [ 183 ] > 0
     nCol        := nCol + _HMG_SYSDATA [ 334 ] [_HMG_SYSDATA [ 183 ]]
     nRow        := nRow + _HMG_SYSDATA [ 333 ] [_HMG_SYSDATA [ 183 ]]
     cParentForm     := _HMG_SYSDATA [ 332 ] [_HMG_SYSDATA [ 183 ]]
-    cParentTabName  := _HMG_SYSDATA [ 225 ] 
 EndIf
 
 * Check for errors
@@ -10602,7 +10578,7 @@ Return EnumFonts ( hDC, cFontFamilyName, nCharSet , nPitch , nFontType, SortCode
 //*********************************************
 
 Function _SetCargo ( ControlName , ParentForm , Item , idx, xData )
-LOCAL i := 0, RetVal := NIL
+LOCAL i, RetVal := NIL
 LOCAL T , c, aPos
 
    if ValType (idx) <> "N"
@@ -10633,7 +10609,7 @@ Return NIL
 
 
 Function _GetCargo ( ControlName , ParentForm , Item , idx )
-LOCAL i := 0, xData := NIL
+LOCAL i, xData := NIL
 LOCAL T , c, aPos
 
    if ValType (idx) <> "N"

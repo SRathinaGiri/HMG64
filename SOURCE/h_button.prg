@@ -71,7 +71,7 @@ Function _DefineButton ( ControlName, ParentForm, x, y, Caption, ;
                          gotfocus, lostfocus, flat, NoTabStop, HelpId, ;
                          invisible , bold, italic, underline, strikeout , multiline )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , ControlHandle , FontHandle , k := 0 , cParentTabName
+Local cParentForm , mVar , ControlHandle , FontHandle , k , cParentTabName
 
    DEFAULT w         TO 100
    DEFAULT h         TO 28
@@ -182,9 +182,9 @@ Function _DefineImageButton ( ControlName, ParentForm, x, y, Caption, ;
                               lostfocus, flat, notrans, HelpId, invisible, ;
                               notabstop )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , ControlHandle , k := 0
+Local cParentForm , mVar , ControlHandle , k
 Local nhImage 
-Local aRet [2]
+Local aRet
 Local cParentTabName
 
 	DEFAULT invisible TO FALSE
@@ -289,8 +289,8 @@ Function _DefineMixedButton ( ControlName, ParentForm, x, y, Caption, ;
 			invisible , bold, italic, underline, strikeout , ;
 			picture , alignment , multiline, notrans )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , ControlHandle , FontHandle , k := 0 , cParentTabName
-Local aRet := {}
+Local cParentForm , mVar , ControlHandle , FontHandle , k , cParentTabName
+Local aRet
 Local aWinver := WindowsVersion()
 
 	if	aWinver [1] = 'Windows 95' ;

@@ -80,8 +80,8 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
 			invisible , notabstop , disabledbackcolor , disabledfontcolor )
 *--------------------------------------------------------*
 
-	local nParentForm := 0
-	local nControlHandle := 0
+	local nParentForm
+	local nControlHandle
 	local mVar
 	Local FontHandle
 	Local WorkArea
@@ -245,7 +245,7 @@ return nil
 *-----------------------------------------------------------------------------*
 Function _DefineMaskedTextbox ( ControlName, ParentForm, x, y, inputmask , width , value , fontname, fontsize , tooltip , lostfocus ,gotfocus , change , height , enter , rightalign  , HelpId , Format , bold, italic, underline, strikeout , field  , backcolor , fontcolor , readonly  , invisible , notabstop  , disabledbackcolor , disabledfontcolor )
 *-----------------------------------------------------------------------------*
-Local i, cParentForm ,c,mVar , WorkArea , k := 0
+Local i, cParentForm ,c,mVar , WorkArea , k
 Local ControlHandle
 Local FontHandle
 Local cParentTabName
@@ -490,7 +490,7 @@ Return s
 *-----------------------------------------------------------------------------*
 Function _DefineCharMaskTextbox ( ControlName, ParentForm, x, y, inputmask , width , value , fontname, fontsize , tooltip , lostfocus ,gotfocus , change , height , enter , rightalign  , HelpId , bold, italic, underline, strikeout , field  , backcolor , fontcolor , date , readonly  , invisible , notabstop , disabledbackcolor , disabledfontcolor )
 *-----------------------------------------------------------------------------*
-Local cParentForm, mVar, WorkArea , dateformat , k := 0
+Local cParentForm, mVar, WorkArea , dateformat , k
 Local ControlHandle
 Local FontHandle
 Local cParentTabName
@@ -696,9 +696,9 @@ Local pc := 0
 Local fnb := 0
 Local dc := 0
 Local pFlag := .F.
-Local ncp := 0
+Local ncp
 Local NegativeZero := .F.
-Local Output := ''
+Local Output
 Local ol := 0
 
 * Unused Parameters

@@ -85,8 +85,7 @@ Local nControlHandle
 Local mVar
 Local k
 Local nId
-Local nFontHandle
-Local aTemp := {}
+Local aTemp
 LOCAL lSplitBoxActive
 
 Default nImageWidth	To -1
@@ -147,9 +146,9 @@ Default nImageHeight	To -1
 
 	* Set Font
 	If ValType(cFontName) != "U" .and. ValType(nFontSize) != "U"
-		nFontHandle := _SetFont (nControlHandle,cFontName,nFontSize,lbold,litalic,lunderline,lstrikeout)
+		_SetFont (nControlHandle,cFontName,nFontSize,lbold,litalic,lunderline,lstrikeout)
 	Else
-		nFontHandle := _SetFont (nControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],lbold,litalic,lunderline,lstrikeout)		
+		_SetFont (nControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],lbold,litalic,lunderline,lstrikeout)		
 	Endif
 
 	if ValType(cToolTip) != "U"
@@ -385,7 +384,7 @@ Return Nil
 *------------------------------------------------------------------------------*
 Procedure _DropDownShortcut ( nToolButtonId , nParentWindowHandle , i , nButtonPos )
 *------------------------------------------------------------------------------*
-Local aPos := { 0 , 0 , 0 , 0 }
+Local aPos
 Local aSize
 Local x
 

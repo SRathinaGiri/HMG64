@@ -89,12 +89,11 @@ Function _DefineCombo ( ControlName, ;
 			break , ;
 			GripperText , aImage , DroppedWidth , dropdownprocedure , closeupprocedure, oncancel,  NoTransparent )
 *-----------------------------------------------------------------------------*
-Local i , cParentForm , mVar , ControlHandle , FontHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0 , k := 0
-Local aRet := {}
+Local i , cParentForm , mVar , ControlHandle , FontHandle , rcount := 0 , BackRec , cset := 0 , WorkArea , cField , ContainerHandle := 0 , k
+Local aRet
 Local ImageListHandle := Nil
 Local aTemp
 Local ImageSource
-Local cImageWorkArea
 Local cImageField
 
 	DEFAULT w               TO 120
@@ -181,7 +180,6 @@ Local cImageField
 		if  HB_UAT ( '>',ImageSource ) == 0 
 			MsgHMGError ("Control: " + ControlName + " Of " + ParentForm + " (ItemSource): You must specify a fully qualified field name. Program Terminated" )
 		Else
-			cImageWorkArea := HB_ULEFT ( ImageSource , HB_UAT ( '>', ImageSource ) - 2 )
 			cImageField := HB_URIGHT ( ImageSource , HMG_LEN (ImageSource) - HB_UAT ( '>', ImageSource ) )	
 		EndIf
 	EndIf

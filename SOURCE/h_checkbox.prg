@@ -64,7 +64,7 @@ Function _DefineCheckBox ( ControlName, ParentForm, x, y, Caption, Value, ;
                            fontname, fontsize, tooltip, changeprocedure, w, h,;
                            lostfocus, gotfocus, HelpId, invisible, notabstop , bold, italic, underline, strikeout , field  , backcolor , fontcolor , transparent, OnEnter )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local cParentForm , mVar , k
 Local ControlHandle
 Local FontHandle
 Local WorkArea
@@ -321,7 +321,7 @@ Function _DefineImageCheckButton ( ControlName, ParentForm, x, y, Picture, ;
                                    changeprocedure, w, h, lostfocus, gotfocus,;
                                    HelpId, invisible, notabstop, notrans, OnEnter )
 *-----------------------------------------------------------------------------*
-Local cParentForm , mVar , k := 0
+Local cParentForm , mVar , k
 Local ControlHandle
 Local aRet
 

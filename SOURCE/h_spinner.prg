@@ -61,7 +61,7 @@ Function _DefineSpinner ( ControlName, ParentForm, x, y, w, value ,fontname, ;
                           gotfocus, h, HelpId, invisible, notabstop , bold, ;
                           italic, underline, strikeout, wrap, readonly, increment , backcolor , fontcolor )
 *-----------------------------------------------------------------------------*
-Local cParentForm , RetArray , mVar , k := 0
+Local cParentForm , RetArray , mVar , k
 Local ControlHandle
 Local FontHandle
 

@@ -57,7 +57,7 @@ MEMVAR _HMG_SYSDATA
 *------------------------------------------------------------------------------*
 Procedure _DefineHotKey ( cParentForm , nMod , nKey , bAction )
 *------------------------------------------------------------------------------*
-Local nParentForm , nId , i , nControlCount , k := 0 , z 
+Local nParentForm , nId , i , nControlCount , k , z 
 
 	If _HMG_SYSDATA [ 264 ] = .T.
 		cParentForm := _HMG_SYSDATA [ 223 ]

@@ -67,7 +67,7 @@ Function _DefineSlider ( ControlName, ParentForm, x, y, w, h ,LO, HI, value, ;
                          tooltip, change, vertical, noticks, both, top, left, ;
                          HelpId, invisible, notabstop , backcolor )
 *-----------------------------------------------------------------------------*
-Local cParentForm,Controlhandle, mVar , k := 0
+Local cParentForm,Controlhandle, mVar , k
 Local cParentTabName := ''
 Local cParentWindowName := ''
 
