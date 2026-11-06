@@ -1,0 +1,3 @@
+# Store files byte-for-byte: the HMG tree mixes CRLF batch files, OEM/ANSI-encoded
+# PRG sources and binaries, so any EOL normalisation would cause churn or corruption.
+* -text

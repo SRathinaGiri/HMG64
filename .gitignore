@@ -1,0 +1,19 @@
+# Bundled toolchain - versions are pinned in TOOLCHAIN.md, binaries are not tracked
+/mingw64/
+/harbour64/
+
+# Installer leftovers
+/unins000.*
+
+# Build outputs
+/LIB-64/*.a
+*.o
+*.exe
+!/IDE/IDE.exe
+build.log
+error.log
+hbmk.log
+windres.log
+_temp.rc
+_hmg_resconfig.h
+/tests/out/
