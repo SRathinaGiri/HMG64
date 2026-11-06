@@ -70,14 +70,13 @@ FUNCTION HMG_Graph( nWidth, nHeight, aSerieValues, cTitle, aSerieYNames, nBarDep
                     lShowValues, cPicture, nLegendWindth, lNoBorder )
                  
    LOCAL nI, nJ, nPos, nMax, nMin, nMaxBar, nDeep
-   LOCAL nRange, nResH, nResV,  nWide, aPoint, cName
+   LOCAL nRange, nResH, nResV,  nWide, aPoint
    LOCAL nXMax, nXMin, nHigh, nRel, nZero, nRPos, nRNeg
    LOCAL hBitmap, hDC, BTStruct
    LOCAL nTop := 0
    LOCAL nLeft := 0
    LOCAL nBottom := nHeight
    LOCAL nRight := nWidth
-   LOCAL nPenWidth := 1
 
    CHECK TYPE SOFT ;
          nWidth         AS NUMERIC     ,; 
@@ -305,13 +304,11 @@ FUNCTION HMG_Graph( nWidth, nHeight, aSerieValues, cTitle, aSerieYNames, nBarDep
    nMin := nMax / nMaxBar
 
    nPos := nLeft + ( ( nWide + nSeparation ) / 2 )            // first point graph
-   nRange := ( ( nWide + nSeparation ) * HMG_LEN(aSerieNames) ) / 2
 
    IF lShowYValues .AND. HMG_LEN( aSerieYNames ) > 0                // Show yLabels
       nBarWidth  := ( nRight - nLeft ) / ( nMax(aSerieValues) + 1 )
       nI := nLeft + nBarWidth
       FOR nJ := 1 TO nMax(aSerieValues)
-         cName := "yVal_Name_"+LTRIM(STR(nJ))
          DrawTextInBitmap( hDC, nBottom + 8, nI - nDeep - IF(l3DView, 0, 8), aSerieYNames[nJ], 'Arial', 8, BLUE )
          nI += nBarWidth
       NEXT
@@ -431,34 +428,30 @@ FUNCTION HMG_PieGraph( nWidth, nHeight, aSerieValues, aSerieNames, aSerieColors,
    LOCAL fromcol := 0
    LOCAL torow := nHeight
    LOCAL tocol := nWidth
-   LOCAL topleftrow := fromrow
-   LOCAL topleftcol := fromcol
-   LOCAL toprightrow := fromrow
-   LOCAL toprightcol := tocol
-   LOCAL bottomrightrow := torow
-   LOCAL bottomrightcol := tocol
-   LOCAL bottomleftrow := torow
-   LOCAL bottomleftcol := fromcol
-   LOCAL middletoprow := fromrow
-   LOCAL middletopcol := fromcol + int(tocol - fromcol) / 2
-   LOCAL middleleftrow := fromrow + int(torow - fromrow) / 2
-   LOCAL middleleftcol := fromcol
-   LOCAL middlebottomrow := torow
-   LOCAL middlebottomcol := fromcol + int(tocol - fromcol) / 2
-   LOCAL middlerightrow := fromrow + int(torow - fromrow) / 2
-   LOCAL middlerightcol := tocol
-   LOCAL fromradialrow := 0
-   LOCAL fromradialcol := 0
-   LOCAL toradialrow := 0
-   LOCAL toradialcol := 0
+   LOCAL topleftrow
+   LOCAL topleftcol
+   LOCAL toprightrow
+   LOCAL toprightcol
+   LOCAL bottomrightrow
+   LOCAL bottomrightcol
+   LOCAL bottomleftrow
+   LOCAL bottomleftcol
+   LOCAL middletopcol
+   LOCAL middleleftrow
+   LOCAL middleleftcol
+   LOCAL middlebottomcol
+   LOCAL middlerightrow
+   LOCAL middlerightcol
+   LOCAL fromradialrow
+   LOCAL fromradialcol
+   LOCAL toradialrow
+   LOCAL toradialcol
    LOCAL degrees := {}
    LOCAL cumulative := {}
    LOCAL j,i,sum := 0
-   LOCAL cname := ""
-   LOCAL shadowcolor := {}
+   LOCAL shadowcolor
    LOCAL previos_cumulative
    LOCAL hDC, hBitmap, BTStruct
-   LOCAL nPenWidth := 1
 
    CHECK TYPE SOFT;
          nWidth         AS NUMERIC   ,; 
@@ -523,11 +516,9 @@ FUNCTION HMG_PieGraph( nWidth, nHeight, aSerieValues, aSerieNames, aSerieColors,
    bottomrightcol := tocol
    bottomleftrow := torow
    bottomleftcol := fromcol
-   middletoprow := fromrow
    middletopcol := fromcol + int(tocol - fromcol) / 2
    middleleftrow := fromrow + int(torow - fromrow) / 2
    middleleftcol := fromcol
-   middlebottomrow := torow
    middlebottomcol := fromcol + int(tocol - fromcol) / 2
    middlerightrow := fromrow + int(torow - fromrow) / 2
    middlerightcol := tocol
@@ -758,7 +749,7 @@ RETURN
 PROCEDURE DrawPolygonInBitmap( hDC, apoints, penrgb, penwidth, fillrgb )
    LOCAL xarr := {}
    LOCAL yarr := {}
-   LOCAL x := 0
+   LOCAL x
    if valtype(penrgb) == "U"
       penrgb = BLACK
    endif

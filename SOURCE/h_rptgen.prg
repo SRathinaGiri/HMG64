@@ -344,7 +344,7 @@ Local cPdfOrientation := ''
 Local nOutfile
 Local xSkipProcedure
 Local xEOF
-Local aReport, lSuccess, lTempEof
+Local lSuccess, lTempEof
 
 	IF _HMG_SYSDATA [ 120 ] > 1
 		MsgHMGError('Only One Group Level Allowed')
@@ -382,7 +382,7 @@ Local aReport, lSuccess, lTempEof
 	ENDIF
 
 	IF _HMG_SYSDATA [ 151 ] == .T.
-		aReport := PdfInit()
+		PdfInit()
 		pdfOpen( cOutputFileName , 200 , .t. )
 	ENDIF
 
@@ -502,6 +502,7 @@ Local aReport, lSuccess, lTempEof
 		ENDIF
 
 	ENDIF
+	HB_SYMBOL_UNUSED( lSuccess )   // SELECT PRINTER ... TO needs a target; the result is not checked here
 
 	***********************************************************************
 	* Determine Paper Dimensions in mm.
@@ -552,12 +553,10 @@ Local aReport, lSuccess, lTempEof
 
 		If 	nOrientation == PRINTER_ORIENT_PORTRAIT
 
-			nPaperWidth	:= aPaper [ nPaperSize ] [ 1 ]
 			npaperHeight	:= aPaper [ nPaperSize ] [ 2 ]
 
 		ElseIf	nOrientation == PRINTER_ORIENT_LANDSCAPE
 
-			nPaperWidth	:= aPaper [ nPaperSize ] [ 2 ]
 			npaperHeight	:= aPaper [ nPaperSize ] [ 1 ]
 
 		Else
@@ -664,6 +663,7 @@ Local aReport, lSuccess, lTempEof
 	nBandSpace		:= nPaperHeight - nHeadeHeight - nFooterHeight
 
 	nDetailBandsPerPage	:= Int ( nBandSpace / nDetailHeight )
+	HB_SYMBOL_UNUSED( nDetailBandsPerPage )   // kept: a zero nDetailHeight still goes through the error handler
 
 	***********************************************************************
 	* Print Document
@@ -710,7 +710,6 @@ Local aReport, lSuccess, lTempEof
 
 			ENDIF
 
-			nCurrentOffset := 0
 
 			_ProcessBand ( aHeader , 0 )
 
@@ -779,7 +778,6 @@ Local aReport, lSuccess, lTempEof
 
 							_HMG_SYSDATA [ 117 ]++
 
-							nCurrentOffset := 0
 							_ProcessBand ( aHeader , 0 )
 							nCurrentOffset := nHeadeHeight
 
@@ -815,7 +813,6 @@ Local aReport, lSuccess, lTempEof
 
 							_HMG_SYSDATA [ 117 ]++
 
-							nCurrentOffset := 0
 							_ProcessBand ( aHeader , 0 )
 							nCurrentOffset := nHeadeHeight
 
@@ -859,7 +856,6 @@ Local aReport, lSuccess, lTempEof
 
 		ELSE
 
-			nCurrentOffset := 0
 
 			_ProcessBand ( aHeader , 0 )
 
@@ -1164,7 +1160,6 @@ Local nRow		:= aObject [ 3]
 Local nCol		:= aObject [ 4]
 Local nWidth		:= aObject [ 5]
 Local nHeight		:= aObject [ 6]
-Local lStretch		:= aObject [ 7]
 
 	IF _HMG_SYSDATA [ 151 ] == .F. .AND. _HMG_SYSDATA [ 163 ] == .F.
 
