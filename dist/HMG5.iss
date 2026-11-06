@@ -46,7 +46,8 @@ UninstallDisplayName=HMG {#AppVer} (64-bit)
 UninstallDisplayIcon={app}\IDE\IDE.exe
 
 [Files]
-Source: "{#Src}\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+; hmg.ini holds the IDE's HMG path; the IDE writes it on first run, so it is never shipped.
+Source: "{#Src}\*"; DestDir: "{app}"; Excludes: "\IDE\hmg.ini,\tests\out"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 [Icons]
 Name: "{group}\HMG IDE";               Filename: "{app}\IDE\IDE.exe"; WorkingDir: "{app}\IDE"

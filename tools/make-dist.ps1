@@ -80,7 +80,7 @@ function Remove-TestOutput ($root) {
 Step "Copying HMG to $Dest"
 Copy-Tree $HmgDir $Dest @(
    '/XD', '.git', 'mingw64', 'harbour64', 'tools', 'dist', '.hbmk',
-   '/XF', '.gitattributes', '.gitignore', 'AUDIT.md', 'unins000.dat', 'unins000.exe', 'build.log', 'error.log', '*.o')
+   '/XF', '.gitattributes', '.gitignore', 'AUDIT.md', 'unins000.dat', 'unins000.exe', 'hmg.ini', 'build.log', 'error.log', '*.o')
 Copy-Item (Join-Path $HmgDir 'dist\HMG5-README.txt') (Join-Path $Dest 'README-HMG5.txt')
 
 # ---- 2. GCC, trimmed ----------------------------------------------------------------------

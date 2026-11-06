@@ -1,0 +1,5 @@
+-mt
+-lhmgsqlite-64
+-lhbsqlit3
+-lsqlite3
+hmgsqlite.prg

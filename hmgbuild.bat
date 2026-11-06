@@ -135,6 +135,11 @@ for %%L in (crypt edit editex graph hbvpdf ini report) do (
    call :BUILD_SUBLIB "%HMGPATH%\SOURCE\%%L" %%L-64.hbp "-i%HMGPATH%\INCLUDE" || exit /b 1
 )
 call :BUILD_SUBLIB "%HMGPATH%\hfcl\Source" hfcl-64.hbp "-i%HMGPATH%\INCLUDE" "-i%HMGPATH%\hfcl\Include" || exit /b 1
+rem HMGSQL bridges (libhmgsqlite-64 etc.). HMG 3.6 shipped them prebuilt in LIB-64 via
+rem SOURCE\HMGSQL\buildlib64.bat; user projects link them from their own .hbc.
+for %%L in (sqlitebridge mysqlbridge pgsqlbridge) do (
+   call :BUILD_SUBLIB "%HMGPATH%\SOURCE\HMGSQL" %%L-64.hbp "-i%HMGPATH%\INCLUDE" || exit /b 1
+)
 echo All libraries built into LIB-64.
 exit /b 0
 

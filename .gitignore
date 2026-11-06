@@ -20,3 +20,6 @@ _hmg_resconfig.h
 
 # HMG5 Setup output
 /dist/Output/
+
+# IDE per-machine setting: the IDE writes its own HMG path here on first run
+/IDE/hmg.ini
