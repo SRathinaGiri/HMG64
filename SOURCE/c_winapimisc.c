@@ -257,7 +257,11 @@ HB_FUNC( MEMORYSTATUS )
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, HMG_parc( 1 ), HMG_parc( 2 ), (HICON) HMG_parnl (3) );
+   // ShellAbout() faults inside shell32 when the title (szApp) is NULL, i.e. when
+   // called with no arguments as the MAIN_DEMO sample does. Pass "" instead.
+   LPCTSTR cApp   = HMG_parc( 1 );
+   LPCTSTR cOther = HMG_parc( 2 );
+   ShellAbout( 0, ( cApp != NULL ) ? cApp : _TEXT( "" ), ( cOther != NULL ) ? cOther : _TEXT( "" ), (HICON) HMG_parnl (3) );
 }
 
 
