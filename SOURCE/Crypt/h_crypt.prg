@@ -6,6 +6,19 @@ Description:	Crypto Library for HMG
 Status:		Public Domain
 Notes:		This is very simple crypt algorithm based on XOR encryption.
 */
+
+/*
+   *** DEPRECATED - NOT ENCRYPTION (AUDIT.md H1) ***
+
+   _ENCRYPT/_DECRYPT, FI_CODE/FI_DECODE, DB_ENCRYPT/DB_UNENCRYPT and DB_CODE XOR the data
+   with the fixed public key "<ORIGINAL>" and then with the password. Repeating-key XOR
+   is broken by known plaintext (DBF headers, file signatures), so data "protected" this
+   way - PAN, Aadhaar, bank details, financials - must be treated as UNPROTECTED.
+
+   The functions are kept unchanged only so existing applications can still DECRYPT data
+   they already hold. Do not use them for new data. An authenticated replacement
+   (AES-GCM via Windows CNG) is planned.
+*/
 MEMVAR _HMG_SYSDATA
 #define MSGALERT( c ) MsgEXCLAMATION( c, "Attention" )
 #define MSGSTOP( c ) MsgStop( c, "Stop!" )
