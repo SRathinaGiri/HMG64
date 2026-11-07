@@ -1,6 +1,6 @@
 # What HMG5 takes from HMG 3.7, Workspace and HB_WebView
 
-Status: A2–A6 **ported** (07-11-2026, see section 5); A1 (HB_WebView) under review for Phase 4.
+Status: A2–A6 **ported** (07-11-2026, section 5); A1 (HB_WebView) reviewed, deferred to Phase 4 (section 6).
 
 Sources looked at:
 
@@ -74,4 +74,27 @@ A2–A6 are ported onto HMG5 (3.7 code reviewed, not copied). All opt-in: a prog
 
 Also from 3.7: `TOOLTIP_MENUDISPLAY` hides the tooltip on separators and unknown items; the default-printer lookup no longer uses `_tcstok`; a self-assignment in the menu tooltip code is fixed.
 
-HB_WebView (A1) is reviewed separately for Phase 4 (WebView2 to replace QHTM).
+HB_WebView (A1): see section 6.
+
+## 6. HB_WebView review (for Phase 4: WebView2 control to replace QHTM)
+
+Reviewed: `hb_webview.prg` / `hb_webview.ch` (wrapper 1.1.0, Claudio Soto) and the bundled webview library 0.12.0 (MIT, `webview-master`). **Decision: not added to HMG5 now.** It is a standalone-window library (its own `webview_run` message loop), not an HMG control, and its bridge has security problems that must not ship. It is the right base for Phase 4: use the webview core (MIT) and its built-in WebView2 loader, and write a new HMG control around it, taking the points below.
+
+**Must fix before anything ships (wrapper):**
+
+| Issue | Where | Fix for HMG5 |
+|---|---|---|
+| **Any page script can run any Harbour code.** The bridge builds a string from the page's JSON and runs it with `&cCodeInvoke`; in "indirect" mode the function name itself comes from JavaScript, and "macro" mode runs any macro text. A remote page, or HTML built from data (e.g. a client name containing `<script>`), can call `hb_run()`, `FErase()` and so on. | `hb_webview_HbBridgeJS` | Call only functions the program binds by name (allow-list); call them with `hb_dynsymFindName` + `hb_vmDo` and the decoded values, no macro. Accept bridge messages only from the app's own content (virtual host mapping or `NavigateToString`); check the source origin. |
+| Buffer overflow: `strcpy` into `func_name[256]` and into a global `[256]` buffer; NULL `hb_parc` crashes | `HB_WEBVIEW_CREATE_CONTEXT`, `HB_WEBVIEW_SET_CALLHB_FUNC` | `hb_strncpy` / store the name as a Harbour string |
+| A Harbour runtime error inside a bound function unwinds through C++ webview frames (undefined behaviour); a non-string result never calls `webview_return`, so the JavaScript promise hangs | `hb_callFunc` | `BEGIN SEQUENCE` in the bridge; always call `webview_return` (status 1 + error text on failure) |
+| Bind contexts are `hb_xgrab`'d and never freed; a freed context can still be bound (use-after-free) | `hb_webview_bind2` | Own the contexts per control; free on unbind and on control release |
+| `HB_WEBVIEW_DISPATCH` calls any raw pointer passed from PRG as a function | | Do not expose; dispatch a Harbour codeblock instead |
+
+**Integration notes for the HMG control:**
+- Embedding works by passing a parent HWND to `webview_create`: the library creates a child "webview_widget" filling the parent's client area and does not call `CoInitialize` or set DPI awareness in that mode (HMG must). It only follows the parent's size when it owns the window, so the HMG control must resize the widget itself on Width/Height/WM_SIZE.
+- Do not call `webview_run`: HMG's message loop drives it. Initialisation pumps a nested `GetMessage` loop until WebView2 is ready, so the control must not be created from inside an event that cannot be re-entered.
+- User data folder defaults to `%APPDATA%\<exe name>` (cookies, cache, local storage). For CA tools this holds client data: allow a per-app folder and a "clear on exit" option, and say so in the docs.
+- DevTools on only when `debug` is set: keep it off in release builds.
+- Build: needs C++ (`-cpp`), `-lshlwapi`, static libstdc++. Put the C++ in its own `.cpp` file instead of `#pragma BEGINDUMP` in a `.prg` (faster builds, proper warnings). Use the WebView2 SDK header inside `webview-master` (6,500 lines, current) and drop the separately bundled 2020 `WebView2.h`.
+- Character sets: the wrapper's UTF-8 ↔ ANSI handling (`hb_UTF8ToStr` / `hb_StrToUTF8` with a chosen codepage) fits HMG5's two library modes and can be kept.
+- WebView2 runtime ships with Windows 10/11; detect it (the library reports `WEBVIEW_ERROR_MISSING_DEPENDENCY`) and show a clear message instead of failing silently.
