@@ -78,9 +78,11 @@
 
 // by Dr. Claudio Soto, January 2014
 
-#ifndef MSFTEDIT_CLASS
-   #define MSFTEDIT_CLASS _TEXT("RICHEDIT50W")
-#endif
+// MinGW's (and the Windows SDK's) richedit.h define MSFTEDIT_CLASS as L"RICHEDIT50W" in
+// both modes, so the old "#ifndef MSFTEDIT_CLASS" fallback never applied: in the ANSI build
+// CreateWindowExA got a wide string, read it as "R", and the control was never created
+// (handle 0, empty Value/FontName). Own TCHAR name; same class in both modes.
+#define HMG_MSFTEDIT_CLASS _TEXT("RICHEDIT50W")
 
 #ifndef CP_UNICODE
    #define CP_UNICODE   1200   // The text is UTF-16 (the WCHAR data type)
@@ -111,7 +113,7 @@ HB_FUNC ( INITRICHEDITBOX )
 
    Style = Style | (( ! hb_parl(14) ) ? WS_VSCROLL : ES_AUTOVSCROLL);
 
-   hWndControl = CreateWindowEx( WS_EX_CLIENTEDGE , ( HMG_IsRichEditBoxVer30() ? (LPCTSTR) RICHEDIT_CLASS : (LPCTSTR) MSFTEDIT_CLASS ) , 
+   hWndControl = CreateWindowEx( WS_EX_CLIENTEDGE , ( HMG_IsRichEditBoxVer30() ? RICHEDIT_CLASS : HMG_MSFTEDIT_CLASS ) ,
                                  TEXT("") , 
                                  Style ,
                                  hb_parni(3) , 
@@ -578,13 +580,16 @@ HB_FUNC ( RICHEDITBOX_GETTEXT )
 
    GETTEXTLENGTHEX  GTL;
    GTL.flags = GTL_PRECISE;
+   #ifndef UNICODE
+       GTL.flags |= GTL_NUMBYTES;   // ANSI: buffer size in bytes (DBCS code pages)
+   #endif
    #ifdef UNICODE
        GTL.codepage = CP_UNICODE;
    #else
        GTL.codepage = CP_ACP;
    #endif
    LONG nLength = SendMessage ( hWndControl, EM_GETTEXTLENGTHEX, (WPARAM) &GTL, 0 );
-   TCHAR cBuffer [ nLength ];
+   TCHAR cBuffer [ nLength + 1 ];   // + 1: EM_GETTEXTEX / EM_GETTEXTRANGE also write the NUL (was cutting the last char / overflowing)
 
    GETTEXTEX  GT;
    GT.cb = sizeof (cBuffer);
@@ -627,13 +632,32 @@ HB_FUNC ( RICHEDITBOX_GETTEXTRANGE )
 
    GETTEXTLENGTHEX  GTL;
    GTL.flags = GTL_PRECISE;
+   #ifndef UNICODE
+       GTL.flags |= GTL_NUMBYTES;   // ANSI: buffer size in bytes (DBCS code pages)
+   #endif
    #ifdef UNICODE
        GTL.codepage = CP_UNICODE;
    #else
        GTL.codepage = CP_ACP;
    #endif
    LONG nLength = SendMessage ( hWndControl, EM_GETTEXTLENGTHEX, (WPARAM) &GTL, 0 );
-   TCHAR cBuffer [ nLength ];
+   TCHAR cBuffer [ nLength + 1 ];   // + 1: EM_GETTEXTEX / EM_GETTEXTRANGE also write the NUL (was cutting the last char / overflowing)
+
+   #ifndef UNICODE
+   if ( ! HMG_IsRichEditBoxVer30() )
+   {  // RICHEDIT50W answers EM_GETTEXTRANGE in UTF-16 even to an ANSI caller (the ANSI build
+      // read "c\0h\0..." as "c"); same approach as RICHEDITBOX_FINDTEXT, converted back here.
+      WCHAR wBuffer [ nLength + 1 ];
+      TEXTRANGEW TextRangeW;
+      TextRangeW.lpstrText  = wBuffer;
+      TextRangeW.chrg.cpMin = hb_parvnl (2, 1);
+      TextRangeW.chrg.cpMax = hb_parvnl (2, 2);
+      wBuffer [ 0 ] = 0;
+      SendMessage ( hWndControl, EM_GETTEXTRANGE, 0, (LPARAM) &TextRangeW );
+      HMG_retc ( HMG_WCtoMB ( wBuffer ) );
+      return;
+   }
+   #endif
 
    TEXTRANGE TextRange;
 

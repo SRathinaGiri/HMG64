@@ -55,16 +55,25 @@ STATIC FUNCTION RunChecks()
    x := GetProperty( "Win_1", "Tree_1", "AllValue" )
    Check( "tree allvalue",      HB_ISARRAY( x ) .AND. Len( x ) == 3 )
 
-   // RichEditBox hook. In the ANSI-only library FontName and Value come back wrong
-   // with or without S2 (same result on the pre-S2 library): known, reported, not asserted.
+   // RichEditBox hook. Before the c_richeditbox.c class-name fix the ANSI library never
+   // created the control (handle 0), so these failed there.
+   Check( "richedit created",   GetControlHandle( "Rich_1", "Win_1" ) != 0 )
    x := GetProperty( "Win_1", "Rich_1", "FontName" )
-   IF HMG_SupportUnicode()
-      Check( "richedit fontname",  HB_ISSTRING( x ) .AND. ! Empty( x ) )
-      Check( "richedit value",     GetProperty( "Win_1", "Rich_1", "Value" ) == "rich" )
-   ELSE
-      OutStd( "props: KNOWN (ANSI library) richedit fontname=" + hb_ValToExp( x ) + ;
-              " value=" + hb_ValToExp( GetProperty( "Win_1", "Rich_1", "Value" ) ) + hb_eol() )
-   ENDIF
+   Check( "richedit fontname",  HB_ISSTRING( x ) .AND. ! Empty( x ) )
+   Check( "richedit value",     GetProperty( "Win_1", "Rich_1", "Value" ) == "rich" )
+   SetProperty( "Win_1", "Rich_1", "Value", "changed" )
+   Check( "richedit set value", GetProperty( "Win_1", "Rich_1", "Value" ) == "changed" )
+   // whole-text range: the buffer used to be one TCHAR short (stack overflow by one)
+   Check( "richedit textrange", RichEditBox_GetTextRange( GetControlHandle( "Rich_1", "Win_1" ), { 0, -1 } ) == "changed" )
+   Check( "richedit textlength", RichEditBox_GetTextLength( GetControlHandle( "Rich_1", "Win_1" ) ) == 7 )
+   Check( "richedit partrange",  RichEditBox_GetTextRange( GetControlHandle( "Rich_1", "Win_1" ), { 1, 4 } ) == "han" )
+   RichEditBox_SetSelRange( GetControlHandle( "Rich_1", "Win_1" ), { 0, 2 } )
+   RichEditBox_ReplaceSel( GetControlHandle( "Rich_1", "Win_1" ), "ex" )
+   Check( "richedit replacesel", GetProperty( "Win_1", "Rich_1", "Value" ) == "exanged" )
+   RichEditBox_SetSelRange( GetControlHandle( "Rich_1", "Win_1" ), { 0, 0 } )
+   RichEditBox_FindText( GetControlHandle( "Rich_1", "Win_1" ), "ang", .T., .F., .F., .T. )
+   x := RichEditBox_GetSelRange( GetControlHandle( "Rich_1", "Win_1" ) )
+   Check( "richedit findtext",   x[ 1 ] == 2 .AND. x[ 2 ] == 5 )
 
    // window properties (2 and 3 arguments: the hooks' guard must reject them)
    Check( "window title",       GetProperty( "Win_1", "Title" ) == "props" )
