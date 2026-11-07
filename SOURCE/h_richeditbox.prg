@@ -87,7 +87,7 @@ Function _DefineRichEditBox ( ControlName, ;
 				strikeout , ;
 				field, ;
 				backcolor, ; 
-            noHscroll, noVscroll, selectionchange, OnLink, OnVScroll )
+            noHscroll, noVscroll, selectionchange, OnLink, OnVScroll, nRounded )
 
 *-----------------------------------------------------------------------------*
 Local i  , cParentForm , mVar , ContainerHandle := 0 , k
@@ -259,6 +259,11 @@ ENDIF
 			SendMessage ( _HMG_SYSDATA [HMG_CTL_HANDLE] [k] , EM_SETBKGNDCOLOR  , 0 , RGB ( BackColor[1] , BackColor[2] , BackColor[3] ) )
 		endif
 	EndIf
+
+	// ROUNDED <n> (from HMG 3.7): opt-in rounded border, see c_rounded.c
+	if valtype( nRounded ) == "N"
+		_SetTextBoxRounded ( _HMG_SYSDATA [HMG_CTL_HANDLE] [k] , nRounded )
+	endif
 
 Return Nil
 *------------------------------------------------------------------------------*

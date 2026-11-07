@@ -80,8 +80,9 @@
 		[ <notabstop: NOTABSTOP> ] ;
 		[ <novscroll: NOVSCROLL> ] 	;                             
 		[ <nohscroll: NOHSCROLL> ] 	;                             
+		[ ROUNDED <nrounded> ] 	;                             
 	=>;
-	_DefineEditBox ( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlength>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <disabledbackcolor> , <disabledfontcolor> )
+	_DefineEditBox ( <"name">, <"parent">, <col>, <row>, <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlength>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , .f. , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <disabledbackcolor> , <disabledfontcolor> , <nrounded> )
 
 //SPLITBOX VERSION
 
@@ -113,7 +114,8 @@
 		[ <notabstop: NOTABSTOP> ] ;
 		[ <novscroll: NOVSCROLL> ] 	;                             
 		[ <nohscroll: NOHSCROLL> ] 	;                             
+		[ ROUNDED <nrounded> ] 	;                             
 	=>;
-	_DefineEditBox ( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlength>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <disabledbackcolor> , <disabledfontcolor> )
+	_DefineEditBox ( <"name">, <"parent">, , , <w>, <h>, <value> ,<f>,<s> , <tooltip>  , <maxlength>  , <{gotfocus}>  , <{change}>  , <{lostfocus}>  , <.readonly.> , <.break.>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field">  , <backcolor> , <fontcolor> , <.novscroll.> , <.nohscroll.> , <disabledbackcolor> , <disabledfontcolor> , <nrounded> )
 
 

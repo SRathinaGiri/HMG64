@@ -193,6 +193,15 @@ _DefineDropDownMenu( <"button"> , <"parent"> )
 #xcommand RELEASE CONTROL CONTEXTMENU  <cControlName>   PARENT <cParentName>  => ReleaseControlContextMenu ( <"cControlName"> , <"cParentName"> )
 
 
+// Menu bar hover: opens a menu popup when the mouse rests on the bar (from HMG 3.7).
+// Opt-in per window. Use it after the window is defined; without OF it applies to
+// the window being defined.
+#xcommand SET MENUHOVER ON                     => SetMenuBarHover( NIL , .T. )
+#xcommand SET MENUHOVER OFF                    => SetMenuBarHover( NIL , .F. )
+#xcommand SET MENUHOVER OF <cFormName> ON      => SetMenuBarHover( <"cFormName"> , .T. )
+#xcommand SET MENUHOVER OF <cFormName> OFF     => SetMenuBarHover( <"cFormName"> , .F. )
+
+
 #define WM_MENURBUTTONUP 290
 #define WM_MENUCOMMAND 0x0126
 #define WM_MENUGETOBJECT 0x0124

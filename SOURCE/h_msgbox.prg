@@ -231,3 +231,10 @@ Function MessageBoxTimeout ( Message , Title , nTypeIconButton , nMilliseconds )
    nRetValue := HMG_MessageBoxTimeout ( HMG_ValToStr(Message), HB_VALTOSTR(Title), nTypeIconButton, nMilliseconds )
 Return nRetValue
 
+
+
+// SetMsgBoxModern( [<lOn>] ) --> lPrevious. HMG 3.7 feature (Dr. Claudio Soto, 2026); HMG5 default is OFF.
+*-------------------------------------------------------------------------------------------------*
+Function SetMsgBoxModern ( lOn )
+*-------------------------------------------------------------------------------------------------*
+Return HMG_SetMsgBoxModern ( iif( HB_ISLOGICAL( lOn ), lOn, NIL ) )

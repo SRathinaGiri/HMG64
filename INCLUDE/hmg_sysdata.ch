@@ -1,8 +1,8 @@
 /*
  * hmg_sysdata.ch - names for the _HMG_SYSDATA slots (HMG5, PHASE3-DESIGN.md step S1)
  *
- * _HMG_SYSDATA is HMG's internal state: one PUBLIC array of 518 slots. Its layout is
- * FROZEN for HMG5: user and contrib code may read _HMG_SYSDATA[ n ] by number, and
+ * _HMG_SYSDATA is HMG's internal state: one PUBLIC array of 521 slots. Its layout is
+ * FROZEN for HMG5 (append-only): user and contrib code may read _HMG_SYSDATA[ n ] by number, and
  * the commands in INCLUDE\*.ch expand to slot numbers inside compiled programs.
  * These names are aliases for the same numbers - _HMG_SYSDATA[ HMG_CTL_HANDLE ] and
  * _HMG_SYSDATA[ 3 ] are the same slot - so either spelling keeps working.
@@ -106,5 +106,11 @@
 #define HMG_FRM_POSITION        504    // {x, y, w, h} for virtual-size scrolling
 #define HMG_FRM_MENUTOOLTIP     511    // menu tooltip HWND
 #define HMG_FRM_TOOLTIPDATA     512    // tooltip settings array
+
+/* ---- Global settings added after 3.6 (same numbers as HMG 3.7, so .ch files and
+        programs stay interchangeable between 3.7 and HMG5) -------------------------- */
+#define HMG_SYS_TOOLTIPSTYLE    519    // { nRadius, nMarginX, nMarginY, cFontName, nFontSize, aBorder, aBack, aFore, nGradient, nVisualStyle }
+#define HMG_SYS_TOOLTIPFONT     520    // cached HFONT of the tooltip default font (0 = not created)
+#define HMG_SYS_ROUNDED         521    // ROUNDED <n> clause of the control being defined (NIL = native look)
 
 #endif

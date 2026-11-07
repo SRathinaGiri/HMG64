@@ -292,3 +292,284 @@ HB_FUNC ( TABCTRL_GETITEMRECT )
    hb_storvnl (Rect.bottom, -1, 4);
 }
 
+
+/* ===========================================================================
+   TAB with a "TabView" look (from HMG 3.7, Oct 2026): accent-coloured strip
+   behind the tabs and the selected tab drawn as a rounded pill.
+
+      TabSetModern ( hTab, [nR,nG,nB strip], [nR,nG,nB pill], [nR,nG,nB text],
+                     [nR,nG,nB selected text], [nMinTabWidth] ) --> lOk
+      TabClearModern ( hTab ) --> lOk          back to the native look
+      IsTabModern ( hTab ) --> lModern
+      TabDrawItem ( lParam ) --> lHandled      called from Events on WM_DRAWITEM
+
+   What 3.7 measured on a themed tab (comctl32 6.10):
+     - SysTabControl32 sends no NM_CUSTOMDRAW, but TCS_OWNERDRAWFIXED works and can
+       be switched on at run time (SetWindowLongPtr + SWP_FRAMECHANGED): the parent
+       then gets WM_DRAWITEM with CtlType ODT_TAB;
+     - the strip behind the tabs is not an item, so it is painted from a subclass
+       answering WM_ERASEBKGND;
+     - TCM_SETMINTABWIDTH widens the tabs.
+   Owner-drawn tabs show text only (no tab images).
+
+   HMG5 changes against 3.7: the colours live in per-window data hung on the
+   subclass (dwRefData) instead of a fixed 64-slot table, so there is no limit, no
+   stale "already subclassed" flag when a slot is reused, and the data is freed on
+   WM_NCDESTROY; brushes are created once per TabSetModern, not on every erase.
+   ========================================================================= */
+
+#define HMG_MODERNTAB_ID   0x484D5203
+
+typedef struct {
+	COLORREF  cStrip;
+	COLORREF  cPill;
+	COLORREF  cText;
+	COLORREF  cTextSel;
+	HBRUSH    hStrip;
+	HBRUSH    hPill;
+} HMG_MODERN_TAB;
+
+static LRESULT CALLBACK HMG_ModernTabProc ( HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR );
+
+static HMG_MODERN_TAB * HMG_ModernTabGet ( HWND hWnd )
+{
+	DWORD_PTR dwRef = 0;
+
+	if( hWnd != NULL && GetWindowSubclass( hWnd, HMG_ModernTabProc, HMG_MODERNTAB_ID, &dwRef ) )
+		return (HMG_MODERN_TAB *) dwRef;
+
+	return NULL;
+}
+
+static void HMG_ModernTabFreeBrushes ( HMG_MODERN_TAB * p )
+{
+	if( p->hStrip ) { DeleteObject( p->hStrip ); p->hStrip = NULL; }
+	if( p->hPill  ) { DeleteObject( p->hPill );  p->hPill  = NULL; }
+}
+
+static LRESULT CALLBACK HMG_ModernTabProc ( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam,
+											UINT_PTR uIdSubclass, DWORD_PTR dwRefData )
+{
+	HMG_MODERN_TAB * p = (HMG_MODERN_TAB *) dwRefData;
+
+	switch( msg )
+	{
+		case WM_ERASEBKGND:
+		{
+			RECT rc, rcDisp;
+
+			GetClientRect( hWnd, &rc );
+
+			/* The page area gets the pill colour so the selected tab (same colour)
+			   looks joined to its content. Body first, then only the tab strip (top
+			   of the control down to the top of the display rectangle): the other
+			   way round, the margins the control leaves around the display area
+			   would stay accent-coloured and look like a frame. */
+			rcDisp = rc;
+			SendMessage( hWnd, TCM_ADJUSTRECT, (WPARAM) FALSE, (LPARAM) &rcDisp );
+
+			FillRect( (HDC) wParam, &rc, p->hPill );
+			rc.bottom = rcDisp.top;
+			FillRect( (HDC) wParam, &rc, p->hStrip );
+			return 1;
+		}
+
+		case WM_NCDESTROY:
+			RemoveWindowSubclass( hWnd, HMG_ModernTabProc, uIdSubclass );
+			HMG_ModernTabFreeBrushes( p );
+			LocalFree( (HLOCAL) p );
+			break;
+	}
+
+	return DefSubclassProc( hWnd, msg, wParam, lParam );
+}
+
+static void HMG_DrawModernTabItem ( HMG_MODERN_TAB * p, LPDRAWITEMSTRUCT pDI )
+{
+	TCHAR  szText [ 256 ];
+	TCITEM tii;
+	HFONT  hFont, hOldFont = NULL;
+	RECT   rcText = pDI->rcItem;
+
+	szText [ 0 ] = 0;
+	tii.mask       = TCIF_TEXT;
+	tii.pszText    = szText;
+	tii.cchTextMax = 255;
+	TabCtrl_GetItem( pDI->hwndItem, pDI->itemID, &tii );
+
+	hFont = (HFONT) SendMessage( pDI->hwndItem, WM_GETFONT, 0, 0 );
+	if( hFont != NULL )
+		hOldFont = (HFONT) SelectObject( pDI->hDC, hFont );
+
+	SetBkMode( pDI->hDC, TRANSPARENT );
+
+	if( pDI->itemState & ODS_SELECTED )
+	{
+		HPEN    hPen  = CreatePen( PS_SOLID, 1, p->cPill );
+		HGDIOBJ hOldB = SelectObject( pDI->hDC, p->hPill );
+		HGDIOBJ hOldP = SelectObject( pDI->hDC, hPen );
+
+		/* the selected tab's rcItem is taller than the others and the control
+		   already reserves the border, so the pill is sunk by a couple of pixels */
+		RoundRect( pDI->hDC, pDI->rcItem.left + 2, pDI->rcItem.top + 2,
+				   pDI->rcItem.right - 2, pDI->rcItem.bottom - 1, 8, 8 );
+
+		SelectObject( pDI->hDC, hOldB );
+		SelectObject( pDI->hDC, hOldP );
+		DeleteObject( hPen );
+
+		SetTextColor( pDI->hDC, p->cTextSel );
+	}
+	else
+		SetTextColor( pDI->hDC, p->cText );
+
+	rcText.left  += 8;
+	rcText.right -= 4;
+	DrawText( pDI->hDC, szText, -1, &rcText, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS );
+
+	if( hOldFont != NULL )
+		SelectObject( pDI->hDC, hOldFont );
+}
+
+/* The controls of a TAB PAGE are siblings (children of the form) placed over the
+   display area: repainting the whole TAB covers them. So the TAB is repainted first,
+   then, bottom to top in z-order, the visible siblings that overlap it. */
+static void HMG_RepaintModernTab ( HWND hTab )
+{
+	HWND hParent = GetParent( hTab );
+	HWND hSib;
+	RECT rcTab, rcSib;
+
+	InvalidateRect( hTab, NULL, TRUE );
+	if( hParent == NULL )
+		return;
+
+	GetWindowRect( hTab, &rcTab );
+	UpdateWindow( hTab );
+
+	for( hSib = GetWindow( hTab, GW_HWNDPREV ); hSib != NULL; hSib = GetWindow( hSib, GW_HWNDPREV ) )
+	{
+		if( ! IsWindowVisible( hSib ) )
+			continue;
+
+		GetWindowRect( hSib, &rcSib );   /* both in screen coordinates */
+		if( IntersectRect( &rcSib, &rcSib, &rcTab ) )
+			RedrawWindow( hSib, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_UPDATENOW );
+	}
+}
+
+static BOOL HMG_IsTabControl ( HWND hWnd )
+{
+	TCHAR aClass [ 32 ];
+
+	return IsWindow( hWnd ) && GetClassName( hWnd, aClass, 31 ) > 0 && _tcsicmp( aClass, WC_TABCONTROL ) == 0;
+}
+
+static COLORREF HMG_ModernTabColor ( int nParam, int nSysColor )
+{
+	if( HB_ISNUM( nParam ) && HB_ISNUM( nParam + 1 ) && HB_ISNUM( nParam + 2 ) )
+		return RGB( hb_parni( nParam ), hb_parni( nParam + 1 ), hb_parni( nParam + 2 ) );
+
+	return GetSysColor( nSysColor );
+}
+
+HB_FUNC( TABSETMODERN )
+{
+	HWND             hWnd = (HWND) HMG_parnl( 1 );
+	HMG_MODERN_TAB * p;
+	LONG_PTR         lStyle;
+
+	if( ! HMG_IsTabControl( hWnd ) )
+	{
+		hb_retl( FALSE );
+		return;
+	}
+
+	p = HMG_ModernTabGet( hWnd );
+	if( p == NULL )
+	{
+		p = (HMG_MODERN_TAB *) LocalAlloc( LPTR, sizeof( HMG_MODERN_TAB ) );
+		if( p == NULL || ! SetWindowSubclass( hWnd, HMG_ModernTabProc, HMG_MODERNTAB_ID, (DWORD_PTR) p ) )
+		{
+			if( p != NULL )
+				LocalFree( (HLOCAL) p );
+			hb_retl( FALSE );
+			return;
+		}
+	}
+
+	/* colours: each RGB triple is optional; missing -> system colour */
+	p->cStrip   = HMG_ModernTabColor(  2, COLOR_HIGHLIGHT );
+	p->cPill    = HMG_ModernTabColor(  5, COLOR_WINDOW );
+	p->cText    = HMG_ModernTabColor(  8, COLOR_HIGHLIGHTTEXT );
+	p->cTextSel = HMG_ModernTabColor( 11, COLOR_WINDOWTEXT );
+
+	HMG_ModernTabFreeBrushes( p );
+	p->hStrip = CreateSolidBrush( p->cStrip );
+	p->hPill  = CreateSolidBrush( p->cPill );
+
+	if( HB_ISNUM( 14 ) )
+		SendMessage( hWnd, TCM_SETMINTABWIDTH, 0, (LPARAM) hb_parni( 14 ) );
+
+	lStyle = GetWindowLongPtr( hWnd, GWL_STYLE );
+	if( ! ( lStyle & TCS_OWNERDRAWFIXED ) )
+	{
+		SetWindowLongPtr( hWnd, GWL_STYLE, lStyle | TCS_OWNERDRAWFIXED );
+		SetWindowPos( hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
+	}
+
+	HMG_RepaintModernTab( hWnd );
+
+	hb_retl( TRUE );
+}
+
+HB_FUNC( TABCLEARMODERN )
+{
+	HWND             hWnd = (HWND) HMG_parnl( 1 );
+	HMG_MODERN_TAB * p    = HMG_ModernTabGet( hWnd );
+	LONG_PTR         lStyle;
+
+	if( p == NULL )
+	{
+		hb_retl( FALSE );
+		return;
+	}
+
+	RemoveWindowSubclass( hWnd, HMG_ModernTabProc, HMG_MODERNTAB_ID );
+	HMG_ModernTabFreeBrushes( p );
+	LocalFree( (HLOCAL) p );
+
+	lStyle = GetWindowLongPtr( hWnd, GWL_STYLE );
+	if( lStyle & TCS_OWNERDRAWFIXED )
+	{
+		SetWindowLongPtr( hWnd, GWL_STYLE, lStyle & ~TCS_OWNERDRAWFIXED );
+		SetWindowPos( hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
+	}
+
+	SendMessage( hWnd, TCM_SETMINTABWIDTH, 0, (LPARAM) -1 );   /* -1: default minimum width */
+
+	HMG_RepaintModernTab( hWnd );
+
+	hb_retl( TRUE );
+}
+
+HB_FUNC( TABDRAWITEM )
+{
+	LPDRAWITEMSTRUCT pDI = (LPDRAWITEMSTRUCT) HMG_parnl( 1 );
+	HMG_MODERN_TAB * p;
+
+	if( pDI == NULL || pDI->CtlType != ODT_TAB || ( p = HMG_ModernTabGet( pDI->hwndItem ) ) == NULL )
+	{
+		hb_retl( FALSE );
+		return;
+	}
+
+	HMG_DrawModernTabItem( p, pDI );
+
+	hb_retl( TRUE );
+}
+
+HB_FUNC( ISTABMODERN )
+{
+	hb_retl( HMG_ModernTabGet( (HWND) HMG_parnl( 1 ) ) != NULL );
+}

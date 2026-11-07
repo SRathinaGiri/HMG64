@@ -68,6 +68,7 @@
 		[ FONTCOLOR <fontcolor> ] ;
 		[ <opaque: OPAQUE> ] ;
 		[ <transparent: TRANSPARENT> ] ;
+		[ ROUNDED <nrounded> ] ;
 	=>;
-	_BeginFrame ( <"name">, <"parent">, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.> ) 
+	_BeginFrame ( <"name">, <"parent">, <row>, <col>, <w>, <h> , <caption> , <fontname> , <fontsize> , <.opaque.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <backcolor> , <fontcolor> , <.transparent.> , <nrounded> ) 
 

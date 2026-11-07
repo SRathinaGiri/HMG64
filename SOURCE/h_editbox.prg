@@ -59,7 +59,7 @@ MEMVAR _HMG_SYSDATA
 Function _DefineEditbox ( ControlName, ParentForm, x, y, w, h, value, ;
                           fontname, fontsize, tooltip, MaxLength, gotfocus, ;
                           change, lostfocus, readonly, break, HelpId, ;
-                          invisible, notabstop , bold, italic, underline, strikeout , field , backcolor , fontcolor , novscroll , nohscroll , DISABLEDBACKCOLOR , DISABLEDFORECOLOR  )
+                          invisible, notabstop , bold, italic, underline, strikeout , field , backcolor , fontcolor , novscroll , nohscroll , DISABLEDBACKCOLOR , DISABLEDFORECOLOR , nRounded  )
 *-----------------------------------------------------------------------------*
 Local i  , cParentForm , mVar , ContainerHandle := 0 , k
 Local ControlHandle
@@ -231,6 +231,11 @@ Local cParentTabName
 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [  9 ] := DISABLEDBACKCOLOR
 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 10 ] := DISABLEDFORECOLOR
 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 11 ] := readonly
+
+	// ROUNDED <n> (from HMG 3.7): opt-in rounded border, see c_rounded.c
+	if valtype( nRounded ) == "N"
+		_SetTextBoxRounded ( ControlHandle , nRounded )
+	endif
 		
 	if valtype ( Field ) != 'U'
 		aAdd ( _HMG_SYSDATA [ HMG_FRM_BROWSELIST ]	[ GetFormIndex ( cParentForm ) ] , k )

@@ -593,6 +593,16 @@ LOCAL hFont
 		endif
 
         ***********************************************************************
+	case nMsg == WM_DRAWITEM
+        ***********************************************************************
+
+		* Owner-drawn TAB of TabSetModern (c_tab.c): the tab control sends no
+		* NM_CUSTOMDRAW, TCS_OWNERDRAWFIXED makes it send WM_DRAWITEM to the parent.
+		if TabDrawItem ( lParam )
+			return 1
+		endif
+
+        ***********************************************************************
 	case nMsg == WM_CTLCOLORSTATIC
         ***********************************************************************
 
@@ -1540,6 +1550,8 @@ EndIf
       IF i > 0
           _HMG_LastFormIndexWithCursor := i
       ENDIF
+      // Menu-bar hover: only windows registered with SetMenuBarHover (h_menuhover.prg)
+      HandleMenuBarHover ( hWnd, lParam )
 
         ***********************************************************************
 	case nMsg == WM_MOUSEMOVE
@@ -1622,6 +1634,11 @@ EndIf
         ***********************************************************************
 	case nMsg == WM_TIMER
         ***********************************************************************
+
+		// Menu-bar hover watcher (h_menuhover.prg); its id is never a control id
+		if HandleMenuBarHoverTimer ( wParam )
+			return 0
+		endif
 
 		i := Ascan ( _HMG_SYSDATA [  HMG_CTL_ID ] , wParam )
 
@@ -3546,6 +3563,9 @@ EndIf
       
       if i > 0
 
+      * Menu-bar hover: forget this window (h_menuhover.prg)
+         ClearMenuBarHover ( hWnd )
+
       * Remove Child Controls
          For x:=1 To ControlCount
             if _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [x] == hWnd              // _HMG_aParentHandle
@@ -4358,6 +4378,8 @@ ENDIF
 	htooltip := InitToolTip ( FormHandle , _HMG_SYSDATA [55] )
    
    hWnd_ToolTip := TOOLTIP_INITMENU ( FormHandle , _HMG_SYSDATA [55] )
+   _ApplyToolTipStyle ( htooltip )      // no-op unless SET TOOLTIPCUSTOMDRAW ON
+   _ApplyToolTipStyle ( hWnd_ToolTip )
 
 	If Main 
 
@@ -4723,6 +4745,8 @@ ENDIF
 	htooltip := InitToolTip ( NIL , _HMG_SYSDATA [55] )
    
    hWnd_ToolTip := TOOLTIP_INITMENU ( NIL , _HMG_SYSDATA [55] )
+   _ApplyToolTipStyle ( htooltip )      // no-op unless SET TOOLTIPCUSTOMDRAW ON
+   _ApplyToolTipStyle ( hWnd_ToolTip )
 
 	k := ascan ( _HMG_SYSDATA [  HMG_FRM_DELETED ] , .T. )
 
@@ -4990,6 +5014,8 @@ ENDIF
 	htooltip := InitToolTip (FormHandle , _HMG_SYSDATA [55]  )
 
    hWnd_ToolTip := TOOLTIP_INITMENU ( FormHandle , _HMG_SYSDATA [55] )
+   _ApplyToolTipStyle ( htooltip )      // no-op unless SET TOOLTIPCUSTOMDRAW ON
+   _ApplyToolTipStyle ( hWnd_ToolTip )
 
 	k := ascan ( _HMG_SYSDATA [  HMG_FRM_DELETED ] , .T. )
 

@@ -273,18 +273,25 @@ HB_FUNC ( TOOLTIP_MENUDISPLAY )
 
    SendMessage (hWndToolTip, WM_SETFONT, (WPARAM) hFont, MAKELPARAM (TRUE, 0));
 
-   if ( nMenuFlags & MF_POPUP || (nMenuFlags == 0xFFFF && hMenu == NULL) ) 
+   // From HMG 3.7: a separator, or an id this menu does not own, has no item rectangle.
+   // Moving the tooltip to (10,2) would cover the open menu, so hide it instead.
+   if ( nMenuFlags & MF_POPUP || nMenuFlags & MF_SEPARATOR || hMenu == NULL ) 
    {   ToolTip_ShowMenu (hWndToolTip, hWndMenu, nMenuItemID, FALSE);
        return;
    }
 
    RECT Rect = {0,0,0,0};
-   int nItem;
-   for ( nItem = 0; nItem < GetMenuItemCount (hMenu); nItem++ ) 
+   int nItem, nCount = GetMenuItemCount (hMenu);
+   for ( nItem = 0; nItem < nCount; nItem++ ) 
    {  if ( GetMenuItemID (hMenu, nItem) == nMenuItemID ) 
       {    GetMenuItemRect (NULL, hMenu, nItem, &Rect);
            break;
       }
+   }
+
+   if ( nItem >= nCount )
+   {   ToolTip_ShowMenu (hWndToolTip, hWndMenu, nMenuItemID, FALSE);
+       return;
    }
 
    SendMessage (hWndToolTip, TTM_TRACKPOSITION, 0, (LPARAM) MAKELPARAM (Rect.right + 10, Rect.top + 2));
@@ -295,55 +302,7 @@ HB_FUNC ( TOOLTIP_MENUDISPLAY )
 }
 
 
-HB_FUNC ( TOOLTIP_CUSTOMDRAW )
-{
-   LPARAM    lParam    = (LPARAM)   HMG_parnl (1);
-   COLORREF  BackColor = (COLORREF) hb_parni  (2);
-   COLORREF  TextColor = (COLORREF) hb_parni  (3);
-
-   LPNMTTCUSTOMDRAW lpNMTTCustomDraw = (LPNMTTCUSTOMDRAW) lParam;
-
-   if( lpNMTTCustomDraw->nmcd.dwDrawStage == CDDS_PREPAINT )
-   {
-      if ( BackColor != (COLORREF) -1 )
-         SetBkColor( lpNMTTCustomDraw->nmcd.hdc, BackColor );
-
-      if ( TextColor != (COLORREF) -1 )
-         SetTextColor( lpNMTTCustomDraw->nmcd.hdc, TextColor );
-
-      lpNMTTCustomDraw->uDrawFlags = DT_CALCRECT | DT_EDITCONTROL | DT_WORDBREAK;
-
-   }
-   hb_retni( CDRF_DODEFAULT );
-}
-
-
-//        ToolTip_SetTitle ( hwndToolTip, [ cTitle ] , [ cIconName | nIconName ] )
-HB_FUNC ( TOOLTIP_SETTITLE)
-{
-   HWND  hwndToolTip = (HWND)    HMG_parnl (1);
-   TCHAR *cTitle     = (TCHAR *) HMG_parc  (2);
-   TCHAR *cIconName  = (TCHAR *) HMG_parc  (3);
-   INT    nIconName  = (INT)     hb_parni  (3);
-         
-   if ( HB_ISNUM ( 3 ) )
-      SendMessage(hwndToolTip, TTM_SETTITLE, (WPARAM) nIconName, (LPARAM) cTitle);
-   else
-   {
-      HICON hIcon = NULL;
-   
-      if ( cIconName != NULL )
-      {    hIcon = LoadImage (GetModuleHandle (NULL), cIconName, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADTRANSPARENT);
-           if ( hIcon == NULL )
-                hIcon = LoadImage (NULL, cIconName, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE | LR_LOADTRANSPARENT);
-      }
-   
-      SendMessage(hwndToolTip, TTM_SETTITLE, (WPARAM) hIcon, (LPARAM) cTitle);
-
-      if ( hIcon != NULL )
-         DestroyIcon(hIcon);
-   }
-}
+// TOOLTIP_CUSTOMDRAW and TOOLTIP_SETTITLE: moved to c_tooltip.c (HMG5)
 
 
 /*********************************************************************************************************************/
@@ -1944,8 +1903,13 @@ HB_FUNC (GETDEFAULTPRINTER)
 	{
 
 		GetProfileString(_TEXT("windows"),_TEXT("device"),_TEXT(""),DefaultPrinter,BufferSize);
-		// strtok(DefaultPrinter, ",");
-      _tcstok (DefaultPrinter, _TEXT(","));
+		// "device,driver,port": keep the device name. In place, and independent of
+		// the CRT's 2- or 3-argument wcstok (from HMG 3.7).
+		{
+			LPTSTR pComma = _tcschr( DefaultPrinter, _T(',') );
+			if ( pComma != NULL )
+				*pComma = _T(' ');
+		}
 
 	}
 

@@ -67,61 +67,283 @@
 
 #include <shlobj.h>
 #include <windows.h>
+#include <commctrl.h>
 #include "hbapi.h"
 
 #include "hbthread.h"
 extern HB_CRITICAL_T _HMG_Mutex;   // global Mutex variable defined into c_Thread.c
 
 
+/*----------------------------------------------------------------------------
+   SET MSGBOXMODERN ON: MsgBox/MsgInfo/MsgYesNo ... shown as a TaskDialog
+   (Windows 10/11 look) instead of MessageBox(). Idea and dialog layout from
+   HMG 3.7 (Dr. Claudio Soto, 2026). HMG5 differences:
+   - OFF by default, so existing programs look and behave as before;
+   - works in the ANSI library too (TaskDialog is wide-only: text is converted);
+   - comctl32 is taken from the process (no LoadLibrary search path);
+   - button sets TaskDialog has no system-translated buttons for
+     (Abort/Retry/Ignore, Cancel/Try Again/Continue) stay on MessageBox(),
+     so their captions stay in the user's language.
+   The return values are the MessageBox() ones (IDOK, IDYES ..., ID_TIMEDOUT).
+---------------------------------------------------------------------------*/
+
+#define ID_TIMEDOUT        32000
+#define HMG_NO_TIMEOUT     ( ( DWORD ) 0xFFFFFFFF )
+#define HMG_MB_DEFBUTTONS  0x00000F00
+
+int WINAPI MessageBoxTimeout (HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds);
+
+typedef HRESULT ( WINAPI * HMG_PFTASKDIALOGINDIRECT ) ( const TASKDIALOGCONFIG *, int *, int *, BOOL * );
+
+typedef struct {
+   DWORD dwMillis;       /* HMG_NO_TIMEOUT = never */
+   DWORD dwStart;
+   BOOL  lTimedOut;
+   BOOL  lTopMost;
+} HMG_MSGDATA;
+
+static int s_lMsgBoxModern = 0;
+
+static HMG_PFTASKDIALOGINDIRECT HMG_TaskDialogPointer ( void )
+{
+   static HMG_PFTASKDIALOGINDIRECT pfn = NULL;
+   static int lChecked = 0;
+
+   _THREAD_LOCK();
+   if ( ! lChecked )
+   {
+      /* comctl32 v6 (the manifest's) is already loaded by InitCommonControlsEx */
+      HMODULE hLib = GetModuleHandle( _TEXT( "comctl32.dll" ) );
+      if ( hLib == NULL )
+         hLib = HMG_LoadSystemLibrary( _TEXT( "comctl32.dll" ) );
+      if ( hLib != NULL )   /* comctl32 v5 has no TaskDialog: the classic path is used */
+         pfn = ( HMG_PFTASKDIALOGINDIRECT ) GetProcAddress( hLib, "TaskDialogIndirect" );
+      lChecked = 1;
+   }
+   _THREAD_UNLOCK();
+   return pfn;
+}
+
+static HRESULT CALLBACK HMG_MsgDialogCallback ( HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData )
+{
+   HMG_MSGDATA * pData = ( HMG_MSGDATA * ) lpRefData;
+   ( void ) wParam; ( void ) lParam;
+
+   if ( msg == TDN_DIALOG_CONSTRUCTED )
+   {
+      if ( pData->lTopMost )
+         SetWindowPos( hDlg, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE );
+      pData->dwStart = GetTickCount();
+   }
+   else if ( msg == TDN_TIMER && pData->dwMillis != HMG_NO_TIMEOUT &&
+             GetTickCount() - pData->dwStart >= pData->dwMillis )   /* unsigned: safe across wrap */
+   {
+      pData->lTimedOut = TRUE;
+      /* a TaskDialog ignores WM_CLOSE: "click" a button id it does not have */
+      SendMessageW( hDlg, TDM_CLICK_BUTTON, ID_TIMEDOUT, 0 );
+   }
+   return S_OK;
+}
+
+/* TaskDialog path. Returns the button id, or -1 when the caller must use MessageBox(). */
+static int HMG_MsgDialog ( HWND hWnd, LPCTSTR pcText, LPCTSTR pcCaption, UINT uType, DWORD dwMillis, HICON hUserIcon )
+{
+   HMG_PFTASKDIALOGINDIRECT pfn;
+   TASKDIALOGCONFIG cfg;
+   HMG_MSGDATA      data;
+   WCHAR            szApp [ MAX_PATH ];
+   const WCHAR *    pwText;
+   const WCHAR *    pwCaption;
+   WCHAR *          pwMain = NULL;
+   const WCHAR *    p;
+   int              aIds [ 3 ] = { 0, 0, 0 }, nIds, nDef, nButton = 0;
+   DWORD            dwButtons, dwFlags;
+   HRESULT          hr;
+
+   if ( ! s_lMsgBoxModern || pcText == NULL || ( pfn = HMG_TaskDialogPointer() ) == NULL )
+      return -1;
+
+   switch ( uType & MB_TYPEMASK )
+   {
+      case MB_OK:
+         dwButtons = TDCBF_OK_BUTTON;
+         nIds = 1; aIds[0] = IDOK;
+         break;
+      case MB_OKCANCEL:
+         dwButtons = TDCBF_OK_BUTTON | TDCBF_CANCEL_BUTTON;
+         nIds = 2; aIds[0] = IDOK; aIds[1] = IDCANCEL;
+         break;
+      case MB_YESNO:
+         dwButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON;
+         nIds = 2; aIds[0] = IDYES; aIds[1] = IDNO;
+         break;
+      case MB_YESNOCANCEL:
+         dwButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON | TDCBF_CANCEL_BUTTON;
+         nIds = 3; aIds[0] = IDYES; aIds[1] = IDNO; aIds[2] = IDCANCEL;
+         break;
+      case MB_RETRYCANCEL:
+         dwButtons = TDCBF_RETRY_BUTTON | TDCBF_CANCEL_BUTTON;
+         nIds = 2; aIds[0] = IDRETRY; aIds[1] = IDCANCEL;
+         break;
+      default:
+         return -1;   /* no system-translated common buttons for these */
+   }
+
+#ifdef UNICODE
+   pwText    = pcText;
+   pwCaption = pcCaption;
+#else
+   pwText    = HMG_MBtoWC( pcText );      /* frame-owned: freed when the HB_FUNC returns */
+   pwCaption = HMG_MBtoWC( pcCaption );
+   if ( pwText == NULL )
+      return -1;
+#endif
+
+   memset( &cfg, 0, sizeof( cfg ) );
+   memset( &data, 0, sizeof( data ) );
+   cfg.cbSize          = sizeof( cfg );
+   cfg.hwndParent      = hWnd;
+   cfg.dwCommonButtons = ( TASKDIALOG_COMMON_BUTTON_FLAGS ) dwButtons;
+
+   nDef = ( int ) ( ( uType & HMG_MB_DEFBUTTONS ) >> 8 );   /* MB_DEFBUTTON1..3 -> 0..2 */
+   cfg.nDefaultButton = aIds [ ( nDef < nIds ) ? nDef : 0 ];
+
+   /* No caption: the exe name, as MessageBox does. (The TD_WINDOWTITLE_* sentinels crash
+      comctl32 on x64 - found by HMG 3.7.) */
+   if ( pwCaption == NULL || *pwCaption == 0 )
+   {
+      DWORD   n = GetModuleFileNameW( NULL, szApp, MAX_PATH );
+      WCHAR * q, * pLast = szApp;
+      if ( n == 0 || n >= MAX_PATH )
+         szApp [ 0 ] = 0;
+      for ( q = szApp; *q; q++ )
+         if ( *q == L'\\' || *q == L'/' )
+            pLast = q + 1;
+      cfg.pszWindowTitle = pLast;
+   }
+   else
+      cfg.pszWindowTitle = pwCaption;
+
+   dwFlags = TDF_ALLOW_DIALOG_CANCELLATION | TDF_POSITION_RELATIVE_TO_WINDOW;
+   if ( hUserIcon != NULL )
+   {
+      cfg.hMainIcon = hUserIcon;
+      dwFlags |= TDF_USE_HICON_MAIN;
+   }
+   else switch ( uType & MB_ICONMASK )
+   {
+      case MB_ICONHAND:        cfg.pszMainIcon = TD_ERROR_ICON;       break;
+      case MB_ICONEXCLAMATION: cfg.pszMainIcon = TD_WARNING_ICON;     break;
+      case MB_ICONASTERISK:    cfg.pszMainIcon = TD_INFORMATION_ICON; break;
+      case MB_ICONQUESTION:    /* TaskDialog has no question icon; shared icon, never destroyed */
+         cfg.hMainIcon = LoadIcon( NULL, IDI_QUESTION );
+         if ( cfg.hMainIcon != NULL )
+            dwFlags |= TDF_USE_HICON_MAIN;
+         break;
+   }
+
+   /* first line = main instruction (bold), the rest = content */
+   for ( p = pwText; *p && *p != L'\r' && *p != L'\n'; p++ )
+      ;
+   if ( *p )
+   {
+      SIZE_T nLen = ( SIZE_T ) ( p - pwText );
+      pwMain = ( WCHAR * ) hb_xgrab( ( nLen + 1 ) * sizeof( WCHAR ) );
+      memcpy( pwMain, pwText, nLen * sizeof( WCHAR ) );
+      pwMain [ nLen ] = 0;
+      while ( *p == L'\r' || *p == L'\n' )
+         p++;
+      cfg.pszMainInstruction = pwMain;
+      cfg.pszContent         = *p ? p : NULL;
+   }
+   else
+      cfg.pszMainInstruction = pwText;
+
+   data.dwMillis = ( dwMillis == 0 ) ? HMG_NO_TIMEOUT : dwMillis;
+   data.lTopMost = ( uType & ( MB_SYSTEMMODAL | MB_TOPMOST ) ) != 0;
+   if ( data.dwMillis != HMG_NO_TIMEOUT )
+      dwFlags |= TDF_CALLBACK_TIMER;
+
+   cfg.dwFlags        = ( TASKDIALOG_FLAGS ) dwFlags;
+   cfg.pfCallback     = HMG_MsgDialogCallback;
+   cfg.lpCallbackData = ( LONG_PTR ) &data;
+
+   hr = pfn( &cfg, &nButton, NULL, NULL );
+
+   if ( pwMain != NULL )
+      hb_xfree( pwMain );
+
+   if ( FAILED( hr ) )
+      return -1;
+   if ( data.lTimedOut )
+      return ID_TIMEDOUT;
+   return ( nButton == 0 ) ? IDCANCEL : nButton;   /* closed with X / Esc */
+}
+
+/* One entry for every message box: TaskDialog when SET MSGBOXMODERN is ON, else MessageBox(). */
+static int HMG_MsgShow ( HWND hWnd, LPCTSTR pcText, LPCTSTR pcCaption, UINT uType, DWORD dwMillis )
+{
+   int nRet = HMG_MsgDialog( hWnd, pcText, pcCaption, uType, dwMillis, NULL );
+
+   if ( nRet >= 0 )
+      return nRet;
+   if ( dwMillis == HMG_NO_TIMEOUT )
+      return MessageBox( hWnd, pcText, pcCaption, uType );
+   return MessageBoxTimeout( hWnd, pcText, pcCaption, uType, MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ), dwMillis );
+}
+
+//       HMG_SetMsgBoxModern( [ lOn ] ) --> lPrevious
+HB_FUNC( HMG_SETMSGBOXMODERN )
+{
+   hb_retl( s_lMsgBoxModern != 0 );
+   if ( HB_ISLOG( 1 ) )
+      s_lMsgBoxModern = hb_parl( 1 ) ? 1 : 0;
+}
+
 HB_FUNC( C_MSGBOX )
 {
-   MessageBox( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_OK | MB_SYSTEMMODAL ) ;
+   HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_OK | MB_SYSTEMMODAL, HMG_NO_TIMEOUT );
 }
 
 HB_FUNC( C_MSGINFO )
 {
-   MessageBox( GetActiveWindow(), HMG_parc(1) , HMG_parc(2) , MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL );
+   HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_OK | MB_ICONINFORMATION | MB_SYSTEMMODAL, HMG_NO_TIMEOUT );
 }
 
 HB_FUNC( C_MSGSTOP )
 {
-   MessageBox( GetActiveWindow(), HMG_parc(1) , HMG_parc(2) , MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL );
+   HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_OK | MB_ICONSTOP | MB_SYSTEMMODAL, HMG_NO_TIMEOUT );
 }
 
 HB_FUNC( C_MSGEXCLAMATION )
 {
-   MessageBox( GetActiveWindow(), HMG_parc(1), HMG_parc(2), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+   HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL, HMG_NO_TIMEOUT );
 }
 
 HB_FUNC( C_MSGRETRYCANCEL )
 {
-   int r = MessageBox( GetActiveWindow(), HMG_parc(1), HMG_parc(2) , MB_RETRYCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-   hb_retni ( r ) ;
+   hb_retni( HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_RETRYCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL, HMG_NO_TIMEOUT ) );
 }
 
 HB_FUNC( C_MSGOKCANCEL )
 {
-   int r = MessageBox( GetActiveWindow(), HMG_parc(1),HMG_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-   hb_retni ( r ) ;
+   hb_retni( HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_OKCANCEL | MB_ICONQUESTION | MB_SYSTEMMODAL, HMG_NO_TIMEOUT ) );
 }
 
 HB_FUNC( C_MSGYESNO )
 {
-   int r = MessageBox( GetActiveWindow(), HMG_parc(1),HMG_parc(2) , MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL ) ;
-   hb_retni ( r ) ;
+   hb_retni( HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL, HMG_NO_TIMEOUT ) );
 }
 
 HB_FUNC( C_MSGYESNO_ID )
 {
-   int r = MessageBox( GetActiveWindow(), HMG_parc(1),HMG_parc(2) , MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL | MB_DEFBUTTON2 ) ;
-   hb_retni ( r ) ;
+   hb_retni( HMG_MsgShow( GetActiveWindow(), HMG_parc( 1 ), HMG_parc( 2 ), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL | MB_DEFBUTTON2, HMG_NO_TIMEOUT ) );
 }
 
 
 
 // by Dr. Claudio Soto (October 2013)
 
-#define ID_TIMEDOUT 32000
 
 int WINAPI MessageBoxTimeout (HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds) 
 {
@@ -153,7 +375,9 @@ HB_FUNC (HMG_MESSAGEBOXTIMEOUT)
    UINT  uType          = HB_ISNIL(3) ? MB_OK : (UINT) hb_parnl (3);
    WORD  wLanguageId    = MAKELANGID (LANG_NEUTRAL, SUBLANG_NEUTRAL);
    DWORD dwMilliseconds = HB_ISNIL(4) ? (DWORD)0xFFFFFFFF  : (DWORD) hb_parnl (4);
-   int iRet = MessageBoxTimeout (hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds);
+   int iRet = HMG_MsgDialog (hWnd, lpText, lpCaption, uType, dwMilliseconds, NULL);
+   if (iRet < 0)
+      iRet = MessageBoxTimeout (hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds);
    hb_retni ((int) iRet);
 }
 
@@ -174,5 +398,12 @@ HB_FUNC( MESSAGEBOXINDIRECT )
    mbp.lpfnMsgBoxCallback = NULL;
    mbp.dwLanguageId       = MAKELANGID (LANG_NEUTRAL, SUBLANG_NEUTRAL);
 
-   hb_retni ((INT) MessageBoxIndirect (&mbp));
+   {
+      HICON hIcon = NULL;
+      int   nRet;
+      if ( HB_ISCHAR (5) )   /* shared resource icon: not destroyed */
+         hIcon = (HICON) LoadImage (mbp.hInstance, mbp.lpszIcon, IMAGE_ICON, GetSystemMetrics (SM_CXICON), GetSystemMetrics (SM_CYICON), LR_SHARED);
+      nRet = HMG_MsgDialog (mbp.hwndOwner, mbp.lpszText, mbp.lpszCaption, (UINT) mbp.dwStyle, HMG_NO_TIMEOUT, hIcon);
+      hb_retni (nRet >= 0 ? nRet : (INT) MessageBoxIndirect (&mbp));
+   }
 }

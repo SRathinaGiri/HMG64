@@ -86,12 +86,13 @@
 			[ <invisible: INVISIBLE> ]	;
 			[ <notabstop: NOTABSTOP> ]	;
                         [ HELPID <helpid> ] 		;
+			[ ROUNDED <nrounded> ]		;
          =>;
          _DefineTextBox( <"name">, <"parent">, <col>, <row>, <width>, <height>, <value>, ;
 				<fontname>, <fontsize>, <tooltip>, <maxlength>, ;
                         <.upper.>, <.lower.>, <.numeric.>, <.password.>, ;
 				<{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-				<.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.>  , <disabledbackcolor> , <disabledfontcolor> )
+				<.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.>  , <disabledbackcolor> , <disabledfontcolor> , <nrounded> )
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )

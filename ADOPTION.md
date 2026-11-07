@@ -1,6 +1,6 @@
 # What HMG5 takes from HMG 3.7, Workspace and HB_WebView
 
-Status: **proposal, for review** (07-11-2026). Surveyed read-only; nothing ported yet.
+Status: A2–A6 **ported** (07-11-2026, see section 5); A1 (HB_WebView) under review for Phase 4.
 
 Sources looked at:
 
@@ -55,6 +55,23 @@ Sources looked at:
 
 ## 4. Decisions needed
 
-1. `SET MSGBOXMODERN`: default **OFF** (proposed) or ON as in 3.7?
+1. `SET MSGBOXMODERN`: default **OFF** (proposed) or ON as in 3.7? — implemented as OFF; one line to change if you prefer ON.
 2. Ship **HB_WebView** in the HMG5 setup as an optional library (proposed: yes)?
-3. Order: port A2–A7 before or after S3–S5? (Proposed: after S3, so the new slots get names and accessors from the start.)
+3. Order: port A2–A7 before or after S3–S5? — done after S3.
+
+## 5. Port status (07-11-2026)
+
+A2–A6 are ported onto HMG5 (3.7 code reviewed, not copied). All opt-in: a program that does not use them looks and behaves as with 3.6. Test: `tests/unit/port37` (41 checks, both modes), plus a visual check of rounded controls, the modern tab and hover menus.
+
+| # | Ported as | HMG5 corrections / optimisations against 3.7 |
+|---|---|---|
+| A2 | `SET MSGBOXMODERN ON/OFF/TO`, `SetMsgBoxModern()` → previous value; `c_msgbox.c` | Default **OFF**. Works in the ANSI library too (3.7 read `HMG_parc` as `WCHAR*`); comctl32 found via `GetModuleHandle`/`HMG_LoadSystemLibrary` (3.7: `LoadLibrary`); TaskDialog only for OK/OKCANCEL/YESNO/YESNOCANCEL/RETRYCANCEL, other styles keep `MessageBox` and its localised buttons; timeout uses wrap-safe tick arithmetic. |
+| A3 | `ROUNDED <n>` on TEXTBOX/EDITBOX/RICHEDITBOX/FRAME, `GetProperty/SetProperty(...,"Rounded")`, `Form.Control.Rounded` | New `c_rounded.c`. 3.7's SetProperty compared against type names that do not exist (`TEXTBOX`, `EDITBOX`), so it never applied — fixed. Painting fills straight edges with `FillRect` and blends only the corners (3.7 looped over every pixel with `GetPixel`); per-control data hangs on the subclass and is freed on `WM_NCDESTROY`; `ROUNDED 0` removes the subclass; radius clamped to 0..20. Frames are rounded only with `ROUNDED` (3.7 rounds every frame). Dot syntax added (3.7 has only Get/SetProperty). |
+| A4 | `SET TOOLTIPROUND / MARGIN / FONT / BORDERCOLOR / GRADIENT / THEME`; `c_tooltip.c`, `h_tooltip.prg` | Applied only while `SET TOOLTIPCUSTOMDRAW ON` (slot 509 keeps the 3.6 default `.F.`); `SET TOOLTIPCUSTOMDRAW OFF` gives existing tooltips their native theme back. `ToolTip_SetTitle`: no fixed 64-char buffer (3.7 overflowed it) and no leaked window props. Slots 519/520/521 as in 3.7. |
+| A5 | `SET MENUHOVER [OF form] ON/OFF`, `SetMenuBarHover()`; `c_menuhover.c`, `h_menuhover.prg` | Timer id 65521 (3.7 used 23163, which `_GetId()` can hand to a TIMER control on the same form); bar highlight with the documented `HiliteMenuItem` (3.7 looked up an undocumented `MenuSelect` export); menu mode detected with `GetGUIThreadInfo`; unknown form returns `.F.` instead of a runtime error; fast exit in `WM_NCMOUSEMOVE` when no window uses hover. |
+| A6 | `TabSetModern( hTab, [strip RGB], [pill RGB], [text RGB], [selected-text RGB], [nMinWidth] )`, `TabClearModern()`, `IsTabModern()` | Colours in per-window data on the subclass instead of a fixed 64-slot table (3.7: limit of 64 tabs, and a reused slot never re-subclassed because the flag survived `WM_NCDESTROY`); brushes created once, not on every erase; a missing colour triple means the system colour (3.7: black). Owner-drawn tabs show text only. |
+| A7 | not taken | `€` in numeric masks: already in 3.6/HMG5; 3.7's UTF-8 re-encoding turned it into U+FFFD. MsgBox array elements on separate lines: changes existing output (`MsgInfo( { "Total: ", n } )`). |
+
+Also from 3.7: `TOOLTIP_MENUDISPLAY` hides the tooltip on separators and unknown items; the default-printer lookup no longer uses `_tcstok`; a self-assignment in the menu tooltip code is fixed.
+
+HB_WebView (A1) is reviewed separately for Phase 4 (WebView2 to replace QHTM).

@@ -722,9 +722,15 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    * _HMG_SYSDATA [ 517 ] -> #xtranslate --> oString
    * _HMG_SYSDATA [ 518 ] -> #xtranslate --> This.Cargo 
 
+   * Slots 519-521 were added by HMG 3.7; HMG5 uses the same numbers (INCLUDE\hmg_sysdata.ch):
+   * _HMG_SYSDATA [ HMG_SYS_TOOLTIPSTYLE ] -> modern tooltip look (used only with SET TOOLTIPCUSTOMDRAW ON)
+   *                 --> { nRadius, nMarginX, nMarginY, cFontName, nFontSize, aBorderColor, aBackColor, aForeColor, nGradient, nVisualStyle }
+   * _HMG_SYSDATA [ HMG_SYS_TOOLTIPFONT ]  -> cached tooltip default HFONT ( 0 = not created yet )
+   * _HMG_SYSDATA [ HMG_SYS_ROUNDED ]      -> ROUNDED <n> of the control being defined ( NIL = native look )
+
 	* Create Public Array and Give it Initial Values
 
-	Public _HMG_SYSDATA [ 518 ]
+	Public _HMG_SYSDATA [ 521 ]
 
    
 	For i := 1 to 108
@@ -825,7 +831,7 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    _HMG_SYSDATA [ 506 ] := NIL
    _HMG_SYSDATA [ 507 ] := NIL
    _HMG_SYSDATA [ 508 ] := NIL
-   _HMG_SYSDATA [ 509 ] := .F. // ToolTip CustomDraw
+   _HMG_SYSDATA [ 509 ] := .F. // ToolTip CustomDraw (HMG 3.7 turns it on by default; HMG5 keeps 3.6's .F.)
    _HMG_SYSDATA [ 510 ] := .T. // ToolTip Menu
    _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP ] := {}  // ToolTip Menu Handle  --> { hWndToolTipMenu, ... }
    _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] := {}  // ToolTip Form Data
@@ -833,6 +839,9 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    _HMG_SYSDATA [ 514 ] := .T. // SetGridCustomDrawNewBehavior(), for default is .T.
    _HMG_SYSDATA [ 515 ] := 0   // OpenPrinterGetJobID()
    _HMG_SYSDATA [ 516 ] := ""  // cVarName of STOREJOBDATA <aJobData>
+   _HMG_SYSDATA [ HMG_SYS_TOOLTIPSTYLE ] := { 8, 8, 4, "Segoe UI", 9, { 154, 180, 215 }, { 255, 255, 255 }, { 38, 44, 54 }, 1, 0 }
+   _HMG_SYSDATA [ HMG_SYS_TOOLTIPFONT ]  := 0
+   _HMG_SYSDATA [ HMG_SYS_ROUNDED ]      := NIL
    _HMG_SYSDATA [ 517 ] := HMG_TStringNew()
 
 

@@ -349,6 +349,12 @@
 
 #xcommand TRANSPARENT         <transparent>        => _HMG_SYSDATA \[ 463 \]  := <transparent>
 
+* ROUNDED <n> (from HMG 3.7): corner radius, slot 521 (HMG_SYS_ROUNDED).
+* FRAME / TEXTBOX / EDITBOX / RICHEDITBOX. Opt-in: without the clause the control
+* keeps its native square look. The radius is clamped to 0..20 in C.
+
+#xcommand ROUNDED             <nrounded>           => _HMG_SYSDATA \[ 521 \]  := <nrounded>
+
 #xcommand TRANSPARENTHEADER   <transparentheader>  => _HMG_SYSDATA \[ 452 \]  := <transparentheader>
 
 #xcommand PICTALIGNMENT       <alignment:LEFT,RIGHT,TOP,BOTTOM> => _HMG_SYSDATA \[ 381 \] := <"alignment">
@@ -462,7 +468,8 @@ Frame
 	_HMG_SYSDATA \[ 412 \]		:= .F.		;;
 	_HMG_SYSDATA \[ 413 \]	:= .F.		;;
 	_HMG_SYSDATA \[ 414 \]	:= .F.		;;
-	_HMG_SYSDATA \[ 415 \]	:= .F.		
+	_HMG_SYSDATA \[ 415 \]	:= .F.		;;
+	_HMG_SYSDATA \[ 521 \]	:= NIL
 
 
 #xcommand END FRAME ;
@@ -484,7 +491,8 @@ Frame
 		_HMG_SYSDATA \[ 414 \],;
 		_HMG_SYSDATA \[ 457 \],;
 		_HMG_SYSDATA \[ 458 \],;
-		_HMG_SYSDATA \[ 463 \] )
+		_HMG_SYSDATA \[ 463 \],;
+		_HMG_SYSDATA \[ 521 \] )
 
 
 *-----------------------------------------------------------------------------*
@@ -853,7 +861,8 @@ Text Box
 	_HMG_SYSDATA \[ 430 \]		:= .F.		;;
 	_HMG_SYSDATA \[ 413 \]	:= .F.		;;
 	_HMG_SYSDATA \[ 414 \]	:= .F.		;;
-	_HMG_SYSDATA \[ 415 \]	:= .F.		
+	_HMG_SYSDATA \[ 415 \]	:= .F.		;;
+	_HMG_SYSDATA \[ 521 \]	:= NIL		
 
 
 #xcommand END TEXTBOX;
@@ -886,7 +895,7 @@ Text Box
                         _HMG_SYSDATA \[ 413 \] , ;
                         _HMG_SYSDATA \[ 415 \] , ;
                         _HMG_SYSDATA \[ 414 \] ,;
-                        _HMG_SYSDATA \[ 385 \],_HMG_SYSDATA \[ 457 \],_HMG_SYSDATA \[ 458 \],_HMG_SYSDATA \[ 430 \],_HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] );
+                        _HMG_SYSDATA \[ 385 \],_HMG_SYSDATA \[ 457 \],_HMG_SYSDATA \[ 458 \],_HMG_SYSDATA \[ 430 \],_HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] , _HMG_SYSDATA \[ 521 \] );
 	,;
 		IF ( _HMG_SYSDATA \[ 477 \] == .T. , _DefineMaskedTextBox(;
 			_HMG_SYSDATA \[ 416 \],;
@@ -1488,7 +1497,8 @@ Edit Box
 	_HMG_SYSDATA \[ 458 \]		:= NIL		;;
         _HMG_SYSDATA \[ 385 \]             := NIL ;;
 	_HMG_SYSDATA \[ 398 \]         := .F.          ;;
-	_HMG_SYSDATA \[ 394 \]         := .F.          
+	_HMG_SYSDATA \[ 394 \]         := .F.          ;;
+	_HMG_SYSDATA \[ 521 \]		:= NIL
 	
 
 #xcommand END EDITBOX ;
@@ -1522,7 +1532,7 @@ Edit Box
 			_HMG_SYSDATA \[ 457 \], ;
 			_HMG_SYSDATA \[ 458 \], ;
 			_HMG_SYSDATA \[ 398 \], ;
-			_HMG_SYSDATA \[ 394 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] )
+			_HMG_SYSDATA \[ 394 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] , _HMG_SYSDATA \[ 521 \] )
 
 
 /*----------------------------------------------------------------------------
@@ -1561,7 +1571,8 @@ Rich Edit Box
    _HMG_SYSDATA \[ 462 \]  := NIL ;;
    _HMG_SYSDATA \[ 386 \]     := NIL ;;
    _HMG_SYSDATA \[ 387 \]  := NIL ;;
-   _HMG_SYSDATA \[ 388 \]  := NIL 
+   _HMG_SYSDATA \[ 388 \]  := NIL ;;
+   _HMG_SYSDATA \[ 521 \]  := NIL
    
 #xcommand END RICHEDITBOX ;
 	=>;
@@ -1592,7 +1603,7 @@ Rich Edit Box
                         _HMG_SYSDATA \[ 414 \] ,;
                         _HMG_SYSDATA \[ 385 \],;
 			_HMG_SYSDATA \[ 457 \], _HMG_SYSDATA \[ 461 \], _HMG_SYSDATA \[ 462 \],;
-         _HMG_SYSDATA \[ 386 \], _HMG_SYSDATA \[ 387 \], _HMG_SYSDATA \[ 388 \]  )
+         _HMG_SYSDATA \[ 386 \], _HMG_SYSDATA \[ 387 \], _HMG_SYSDATA \[ 388 \] , _HMG_SYSDATA \[ 521 \] )
 
 /*----------------------------------------------------------------------------
 Label

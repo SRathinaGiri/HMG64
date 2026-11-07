@@ -55,7 +55,7 @@
 MEMVAR _HMG_SYSDATA
 #include "hmg.ch"
 *-----------------------------------------------------------------------------*
-Function _DefineFrame ( ControlName, ParentForm, x, y, w, h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
+Function _DefineFrame ( ControlName, ParentForm, x, y, w, h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent , nrounded )
 *-----------------------------------------------------------------------------*
 Local mVar , k
 Local ControlHandle
@@ -83,6 +83,12 @@ Local cParentWindowName := ''
 		FontHandle := _SetFont (ControlHandle,FontName,FontSize,bold,italic,underline,strikeout)
 	Else
 		FontHandle := _SetFont (ControlHandle,_HMG_SYSDATA [ 342 ],_HMG_SYSDATA [ 343 ],bold,italic,underline,strikeout)		
+	endif
+
+	// ROUNDED <n> (from HMG 3.7): opt-in. HMG5 keeps the native group box unless asked;
+	// 3.7 rounds every FRAME by default. See c_rounded.c.
+	if valtype(nrounded) == "N"
+		_SetFrameRounded ( ControlHandle, nrounded )
 	endif
 
 	if _HMG_SYSDATA [ 183 ] > 0
@@ -143,7 +149,7 @@ Local cParentWindowName := ''
 
 Return Controlhandle
 
-Function _BeginFrame( name , parent , row , col , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent ) 
+Function _BeginFrame( name , parent , row , col , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent , nrounded ) 
 
 	if _HMG_SYSDATA [ 264 ] = .T.
 		if .Not. Empty (_HMG_SYSDATA [ 224 ]) .And. ValType(FontName) == "U"
@@ -180,7 +186,7 @@ Function _BeginFrame( name , parent , row , col , w , h , caption , fontname , f
 		h := 140
 	EndIf
 
-	_DefineFrame ( name , parent , col , row , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent )
+	_DefineFrame ( name , parent , col , row , w , h , caption , fontname , fontsize , opaque , bold, italic, underline, strikeout , backcolor , fontcolor , transparent , nrounded )
 
 Return Nil
 

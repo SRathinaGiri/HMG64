@@ -77,7 +77,7 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
                         uLostFocus, uGotFocus, uChange , uEnter , RIGHT  , ;
 			HelpId , readonly , bold, italic, underline, ;
 			strikeout , field , backcolor , fontcolor , ;
-			invisible , notabstop , disabledbackcolor , disabledfontcolor )
+			invisible , notabstop , disabledbackcolor , disabledfontcolor , nRounded )
 *--------------------------------------------------------*
 
 	local nParentForm
@@ -224,6 +224,12 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 10 ] := DISABLEDFONTCOLOR
 	_HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [k] [ 11 ] := readonly
 
+
+	// ROUNDED <n> (from HMG 3.7): opt-in rounded border, see c_rounded.c. NIL keeps the
+	// native box; 0 restores it. Not available for INPUTMASK text boxes.
+	if valtype( nRounded ) == "N"
+		_SetTextBoxRounded ( nControlHandle , nRounded )
+	endif
 
 	// With NUMERIC clause, transform numeric value into a string.
 	if ( lNumeric )

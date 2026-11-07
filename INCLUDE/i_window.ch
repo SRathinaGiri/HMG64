@@ -73,8 +73,8 @@
    #xtranslate <w> . \<p:Capture> ( \<f\> , \<r\> , \<k\> , \<a\> , \<h\> ) => DoMethod ( <"w">, \<"p"\> , \<f\>  , \<r\> , \<k\> , \<a\> , \<h\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,Object,InputItems,DisplayItems,RecNo,GetTextLength\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,InputItems,DisplayItems,RecNo\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly,Rounded> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly,Rounded> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,HeaderImages> (\<arg\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,HeaderImages,IconHandle> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
@@ -761,6 +761,26 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 
 #xtranslate SET TOOLTIPCUSTOMDRAW CONTROL <ControlName> OF <ParentName> [ BACKCOLOR <aBackColor> ] [ FORECOLOR <aForeColor> ] [ ARRAYFONT <aFont> ] [ BALLOON <lBalloon> ] [ TITLE <cTitle> ] [ ICON <xIcon> ] =>;
             SetToolTipCustomDrawControl ( <"ControlName">, <"ParentName">, <aBackColor>, <aForeColor>, <aFont>, <lBalloon>, <cTitle>, <xIcon> )
+
+// Modern tooltip look (from HMG 3.7). Takes effect only with SET TOOLTIPCUSTOMDRAW ON,
+// so programs that never turn custom draw on keep the system tooltips.
+#xtranslate SET TOOLTIPROUND <nRadius>                  =>   SetToolTipRound ( <nRadius> )
+#xtranslate SET TOOLTIPROUND SQUARE                     =>   SetToolTipRound ( 0 )
+#xtranslate SET TOOLTIPMARGIN <nMarginX>,<nMarginY>     =>   SetToolTipMargins ( <nMarginX>, <nMarginY> )
+#xtranslate SET TOOLTIPFONT <cFontName>,<nFontSize>     =>   SetToolTipFont ( <cFontName>, <nFontSize> )
+#xtranslate SET TOOLTIPBORDERCOLOR <aColor>             =>   SetToolTipBorderColor ( <aColor> )
+#xtranslate SET TOOLTIPGRADIENT ON                      =>   SetToolTipGradient ( .T. )
+#xtranslate SET TOOLTIPGRADIENT OFF                     =>   SetToolTipGradient ( .F. )
+#xtranslate SET TOOLTIPGRADIENT TO <lOn>                =>   SetToolTipGradient ( <lOn> )
+#xtranslate SET TOOLTIPTHEME ON                         =>   SetToolTipVisualStyle ( .T. )
+#xtranslate SET TOOLTIPTHEME OFF                        =>   SetToolTipVisualStyle ( .F. )
+#xtranslate SET TOOLTIPTHEME TO <lOn>                   =>   SetToolTipVisualStyle ( <lOn> )
+
+// Message boxes (MsgBox, MsgInfo, MsgYesNo ...) as Windows TaskDialogs (from HMG 3.7).
+// HMG5 default is OFF: the classic MessageBox().
+#xtranslate SET MSGBOXMODERN ON         =>   SetMsgBoxModern ( .T. )
+#xtranslate SET MSGBOXMODERN OFF        =>   SetMsgBoxModern ( .F. )
+#xtranslate SET MSGBOXMODERN TO <lOn>   =>   SetMsgBoxModern ( <lOn> )
 
 
 // by Dr. Claudio Soto (June 2013)

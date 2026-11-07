@@ -8133,6 +8133,14 @@ ElseIf Pcount() == 4 // CONTROL
 
         EndIf
 
+    ElseIf Arg3 == 'ROUNDED'   // from HMG 3.7; 0 = native look again (text boxes with INPUTMASK: not supported)
+
+        IF AScan ( { 'TEXT', 'NUMTEXT', 'EDIT', 'RICHEDIT' }, GetControlType ( Arg2 , Arg1 ) ) > 0   // 3.7 tests 'TEXTBOX'... and never matches
+            _SetTextBoxRounded ( GetControlHandle ( Arg2 , Arg1 ) , Arg4 )
+        ELSEIF GetControlType ( Arg2 , Arg1 ) == 'FRAME'
+            _SetFrameRounded ( GetControlHandle ( Arg2 , Arg1 ) , Arg4 )
+        EndIf
+
     ElseIf Arg3 == 'ITEMCOUNT'
 
         ListView_SetItemCount ( GetControlHandle ( Arg2 , Arg1 ) , Arg4 ) 
@@ -8700,6 +8708,14 @@ ElseIf Pcount() == 3 // CONTROL
             RetVal := HMG_IsWindowStyle ( GetControlHandle( Arg2 , Arg1 ), ES_READONLY, .F. )   // ADD July 2016
 
         EndIf
+
+    ElseIf Arg3 == 'ROUNDED'   // from HMG 3.7: radius in use, 0 = native look
+
+        IF GetControlType ( Arg2 , Arg1 ) == 'FRAME'
+            RetVal := _GetFrameRounded ( GetControlHandle ( Arg2 , Arg1 ) )
+        ELSE
+            RetVal := _GetTextBoxRounded ( GetControlHandle ( Arg2 , Arg1 ) )
+        ENDIF
 
     EndIf
 
@@ -10708,6 +10724,9 @@ LOCAL k, hWndToolTip
                ToolTip_SetTitle ( hwndToolTip, "", "" )
             ENDIF
          NEXT
+         _ResetToolTipStyle ()     // native theme and shape back (h_tooltip.prg)
+      ELSE
+         _RefreshToolTipStyle ()   // style the tooltips that already exist
       ENDIF
    ENDIF
 RETURN
@@ -10849,25 +10868,21 @@ LOCAL xRet := NIL
 IF GetNotifyCode ( lParam ) ==  NM_CUSTOMDRAW
                ToolTip_SetTitle ( GetHwndFrom (lParam), _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 5 ] , _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 6 ] )
 
-               if _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 4 ] == .T.
-                  HMG_ChangeWindowStyle ( GetHwndFrom (lParam), TTS_BALLOON, NIL, .F., .F. )
-               else
-                  HMG_ChangeWindowStyle ( GetHwndFrom (lParam), NIL, TTS_BALLOON, .F., .F. )
-               endif
+               IF IsToolTipMenu
+                  _ToolTipMenuBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
+               ELSE
+                  _ToolTipBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
+               ENDIF
 
-               xRet := TOOLTIP_CUSTOMDRAW ( lParam,; 
-                                           _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 1 ],;
-                                           _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 2 ],;
-                                           /*_HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 3 ],; 
-                                           IsToolTipMenu,;
-                                           hWnd */ )
+               xRet := _ToolTipCustomDraw ( lParam, i, k )   // h_tooltip.prg (HMG 3.7 look)
 
 ELSEIF GetNotifyCode ( lParam ) ==  TTN_SHOW  .AND.  .NOT.( IsToolTipMenu )
    hFont := _HMG_SYSDATA [ 41 ] [ i ] [ 3 ] [ 3 ]
    IF hFont == 0
-      hFont := GetStockObject( DEFAULT_GUI_FONT )
+      hFont := _ToolTipDefaultFont ()
    ENDIF
    SetWindowFont (GetHwndFrom (lParam), hFont, .T. )
+   _ToolTipBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
    //xRet := 1
 ENDIF
             else
@@ -10875,25 +10890,21 @@ ENDIF
 IF GetNotifyCode ( lParam ) ==  NM_CUSTOMDRAW
                ToolTip_SetTitle ( GetHwndFrom (lParam), _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 5 ], _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 6 ] )
 
-               if _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 4 ] == .T.
-                  HMG_ChangeWindowStyle ( GetHwndFrom (lParam), TTS_BALLOON, NIL, .F., .F. )
-               else
-                  HMG_ChangeWindowStyle ( GetHwndFrom (lParam), NIL, TTS_BALLOON, .F., .F. )
-               endif
+               IF IsToolTipMenu
+                  _ToolTipMenuBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
+               ELSE
+                  _ToolTipBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
+               ENDIF
 
-               xRet := TOOLTIP_CUSTOMDRAW ( lParam,;
-                                           _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 1 ],;
-                                           _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 2 ],;
-                                           /*_HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 3 ],;
-                                           IsToolTipMenu,;
-                                           hWnd */ )
+               xRet := _ToolTipCustomDraw ( lParam, i, k )   // h_tooltip.prg (HMG 3.7 look)
                                            
 ELSEIF GetNotifyCode ( lParam ) ==  TTN_SHOW  .AND.  .NOT.( IsToolTipMenu )
    hFont := _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 3 ]
    IF hFont == 0
-      hFont := GetStockObject( DEFAULT_GUI_FONT )
+      hFont := _ToolTipDefaultFont ()
    ENDIF
    SetWindowFont (GetHwndFrom (lParam), hFont, .T. )
+   _ToolTipBalloonStyle ( GetHwndFrom (lParam), _ToolTipIsBalloon ( i, k ) )
    //xRet := 1
 ENDIF
             endif
@@ -10928,7 +10939,7 @@ LOCAL i, k
 
       hWndToolTip_Old := hWndToolTip
       hWnd_Old        := hWnd
-      nMenuItemID_Old := nMenuItemID_Old
+      nMenuItemID_Old := Menu_ID   // was a self-assignment (fix from HMG 3.7)
 
       k := Ascan ( _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP ], hWndToolTip )   // ToolTipHandleMenu
       i := Ascan ( _HMG_SYSDATA [   HMG_CTL_ID ], Menu_ID     )   // ToolTipID == MenuItemID
@@ -10938,7 +10949,7 @@ LOCAL i, k
          hFont := _HMG_SYSDATA [ HMG_FRM_TOOLTIPDATA ] [ k ] [ 3 ]
       ENDIF
       IF hFont == 0
-         hFont := GetStockObject( DEFAULT_GUI_FONT )
+         hFont := IIF ( _HMG_SYSDATA [ 509 ] == .T., _ToolTipDefaultFont (), GetStockObject( DEFAULT_GUI_FONT ) )
       ENDIF
    
       ToolTip_MenuDisplay ( hWndToolTip, hWnd, hMenu, Menu_ID, Menu_Flag, hFont )
