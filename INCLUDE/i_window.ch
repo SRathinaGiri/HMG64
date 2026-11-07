@@ -782,6 +782,12 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 #xtranslate SET MSGBOXMODERN OFF        =>   SetMsgBoxModern ( .F. )
 #xtranslate SET MSGBOXMODERN TO <lOn>   =>   SetMsgBoxModern ( <lOn> )
 
+// HMG5 (Phase 3 S5): where form/control indexes are kept; must come before the first DEFINE WINDOW.
+// ON (default): PUBLIC variables _<Form> / _<Form>_<Control> as in HMG 3.x.  OFF: internal hash, no PUBLICs.
+#xcommand SET HMG LEGACY VARS ON        =>   HMG_LegacyVars ( .T. )
+#xcommand SET HMG LEGACY VARS OFF       =>   HMG_LegacyVars ( .F. )
+#xcommand SET HMG LEGACY VARS TO <lOn>  =>   HMG_LegacyVars ( <lOn> )
+
 
 // by Dr. Claudio Soto (June 2013)
 

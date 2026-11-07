@@ -150,7 +150,7 @@ LOCAL value := Caption
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] :=  "LABEL" 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 

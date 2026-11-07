@@ -104,7 +104,7 @@ Local cParentWindowName := ''
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "FRAME" 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 

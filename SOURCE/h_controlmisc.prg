@@ -1053,12 +1053,12 @@ Return Nil
 Function GetControlIndex (ControlName,ParentForm)
 Local mVar 
 mVar := '_' + ParentForm + '_' + ControlName
-Return ( &mVar )
+Return ( _HMG_VarGet ( mVar ) )
 
 Function GetControlName (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return ''
 EndIf
@@ -1067,7 +1067,7 @@ Return (_HMG_SYSDATA [HMG_CTL_NAME] [ i ] )
 Function GetControlHandle (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 If i == 0
   Return 0
 EndIf
@@ -1076,7 +1076,7 @@ Return (_HMG_SYSDATA [HMG_CTL_HANDLE] [ i ] )
 Function GetControlContainerHandle (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return 0
 EndIf
@@ -1085,7 +1085,7 @@ Return (_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [ i ] )
 Function GetControlParentHandle (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return 0
 EndIf
@@ -1094,7 +1094,7 @@ Return (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [ i ] )
 Function GetControlId (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return 0
 EndIf
@@ -1103,7 +1103,7 @@ Return (_HMG_SYSDATA [  HMG_CTL_ID ] [ i ] )
 Function GetControlType (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return ''
 EndIf
@@ -1112,7 +1112,7 @@ Return (_HMG_SYSDATA [HMG_CTL_TYPE] [ i ] )
 Function GetControlValue (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return Nil
 EndIf
@@ -1121,7 +1121,7 @@ Return (_HMG_SYSDATA [  HMG_CTL_VALUE ] [ i ] )
 Function GetControlPageMap (ControlName,ParentForm)
 Local mVar , i
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return {}
 EndIf
@@ -1136,12 +1136,12 @@ Local mVar , i , r , cT
 
    mVar := '_' + FormName + '_' + ControlName
 
-   cT := type ( mVar )   // S2: evaluated once (was twice)
+   cT := _HMG_VarType ( mVar )   // S2: evaluated once (was twice)
    if cT = 'U'
       Return (.F.)
    EndIf
    if cT = 'N'
-      i := &mVar
+      i := _HMG_VarGet ( mVar )
       if i == 0
          Return .f.
       EndIf
@@ -2435,7 +2435,7 @@ Local mVar , i
 
 mVar := '_' + ParentForm + '_' + ControlName
 
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return 0
 EndIf
@@ -2452,7 +2452,7 @@ Local mVar , i
 
 mVar := '_' + ParentForm + '_' + ControlName
 
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return 0
 EndIf
@@ -2469,7 +2469,7 @@ Local mVar , i
 
 mVar := '_' + ParentForm + '_' + ControlName
 
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
    Return 0
 EndIf
@@ -2480,7 +2480,7 @@ Local mVar , i
 
 mVar := '_' + ParentForm + '_' + ControlName
 
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
    Return 0
 EndIf
@@ -4281,8 +4281,8 @@ if _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'TAB'
 EndIf
 
 mVar := '_' + _HMG_SYSDATA [ HMG_FRM_NAME ] [ nParentIndex ] + '_' + _HMG_SYSDATA [HMG_CTL_NAME] [i]
-if type ( mVar ) != 'U'
-    __MVPUT ( mVar , 0 )
+if _HMG_VarType ( mVar ) != 'U'
+    _HMG_VarPut ( mVar , 0 )
 EndIf
 
 _HMG_SYSDATA [ HMG_CTL_DELETED ] [i] := .T.
@@ -7494,7 +7494,7 @@ Function _GetControlObject (ControlName,ParentForm)
 Local mVar , i
 
 mVar := '_' + ParentForm + '_' + ControlName
-i := &mVar
+i := _HMG_VarGet ( mVar )
 if i == 0
     Return ''
 EndIf
@@ -7572,7 +7572,7 @@ oOle := ToleAuto():New( nInterfacePointer )
 
 k := _GetControlFree()
 
-Public &mVar. := k
+_HMG_VarSet ( mVar , k )
 
 _HMG_SYSDATA [HMG_CTL_TYPE] [k] := "ACTIVEX" 
 _HMG_SYSDATA [HMG_CTL_NAME] [k] := cControlName 

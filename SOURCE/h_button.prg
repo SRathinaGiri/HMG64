@@ -130,7 +130,7 @@ Local cParentForm , mVar , ControlHandle , FontHandle , k , cParentTabName
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "BUTTON" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] := ControlName 
@@ -236,7 +236,7 @@ Local cParentTabName
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "BUTTON" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
@@ -391,7 +391,7 @@ DEFAULT invisible TO FALSE
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "BUTTON" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] := ControlName 

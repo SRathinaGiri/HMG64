@@ -177,7 +177,7 @@ function _DefineTextBox( cControlName, cParentForm, nx, ny, nWidth, nHeight, ;
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := if( lNumeric, "NUMTEXT", "TEXT" ) 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  cControlName 
@@ -393,7 +393,7 @@ RightAlign := NIL
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "MASKEDTEXT" 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 
@@ -635,7 +635,7 @@ Local cParentTabName
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHARMASKTEXT" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] := ControlName 

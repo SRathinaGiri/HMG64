@@ -171,7 +171,7 @@ Local mVar
 
 	mVar := '_' + cParentForm + '_' + "StatusBar"
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE]		[k]	:= "STATUSBAR" 
 	_HMG_SYSDATA [HMG_CTL_NAME]		[k]	:= "StatusBar"

@@ -107,7 +107,7 @@ Local mVar , k
 
 			k := _GetControlFree()
 
-			Public &mVar. := k
+			_HMG_VarSet ( mVar , k )
 	
 			_HMG_SYSDATA [HMG_CTL_TYPE] [k] :=  "POPUP" 
 			_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  Name 
@@ -199,7 +199,7 @@ LOCAL cParentName := "", MenuItemID
 
 		if valtype (name) != 'U'
 			mVar := '_' + _HMG_SYSDATA [ 220 ] + '_' + Name
-			Public &mVar. := k
+			_HMG_VarSet ( mVar , k )
 		Else
 			*mVar := '_MenuDummyVar'
 			*Name := 'DummyMenuName'
@@ -266,7 +266,7 @@ LOCAL cParentName := "", MenuItemID
 
 		if valtype (name) != 'U'
 			mVar := '_' + _HMG_SYSDATA [ 221 ] + '_' + Name
-			Public &mVar. := k
+			_HMG_VarSet ( mVar , k )
 		Else
 			*mVar := '_MenuDummyVar'
 			*Name := 'DummyMenuName'

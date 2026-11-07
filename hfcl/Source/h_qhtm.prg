@@ -67,7 +67,7 @@ Local mVar, k := 0, ControlHandle, FontHandle, nId
    QHTM_FormCallBack( ControlHandle )
 
    k := _GetControlFree()
-   Public &mVar. := k
+   _HMG_VarSet ( mVar , k )
 
    _HMG_SYSDATA [  HMG_CTL_TYPE ]   [k] := 'QHTM'
    _HMG_SYSDATA [  HMG_CTL_NAME ]   [k] := ControlName

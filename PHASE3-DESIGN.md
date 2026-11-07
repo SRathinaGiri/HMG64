@@ -67,7 +67,7 @@ Harbour already resolves memvars through its symbol table, and `AScan` runs in C
 - `GetProperty` / `SetProperty` / `DoMethod` evaluate the hooks' guard once and call only the hook for the control's type. The hooks keep their own guard, so direct calls behave as before.
 - `GetControl*`, `_GetControlRow/Col/Width/Height`, `GetForm*`, `_IsWindowDefined`/`Active` and `GetWindowType` use the index they already computed instead of a second macro evaluation; `_IsControlDefined` calls `Type()` once.
 - Result: `GetProperty( f, c, "Value" )` on a label 68 → 45 µs (same harness, back to back, `tests/unit/props`). Trade-off: properties the GridEx hook handles (`ColumnHeader`, `ColumnWidth` …) pay ~4 µs more, because the guard now runs in the caller and again in the hook; Tree-handled properties break even; all other control properties save ~10 µs.
-- **Compatibility:** no slot, name or memvar changes; the macro-named PUBLIC variables are still created. A later switch (`SET HMG LEGACY VARS OFF`) can stop creating them.
+- **Compatibility:** no slot, name or memvar changes; the macro-named PUBLIC variables are still created. `SET HMG LEGACY VARS OFF` (S5) stops creating them; only for programs that never read `_Form` / `_Form_Control` variables themselves.
 
 ### 4.3 Optional object API (new, additive) — done
 - **Thin objects** (`SOURCE/h_hmgobject.prg`): `HMG_GetControl( cForm, cControl )` and `HMG_GetForm( cForm )` return an `HMG_Control` / `HMG_Form` object, or NIL if not defined. The object holds the slot index plus identity (name, handle, parent handle); it is not a copy of the control's data.
@@ -111,7 +111,7 @@ Dispatch costs about 1 µs, so a table could save less than that. The time went 
 | S2 | ~~Hash indexes~~ → one guard evaluation per property call, single macro evaluation in accessors (section 4.2) | **Done**: `tests/unit/props` 24 checks pass on the old and the new library; `GetProperty` 68 → 45 µs; matrix green; accounting project builds and starts |
 | S3 | `HMG_Control` object API + docs + unit tests | **Done**: `SOURCE/h_hmgobject.prg`; `tests/unit/ctlapi` 45 checks (incl. slot reuse after release); additive only, samples untouched; matrix green |
 | S4 | Faster `Events()` for the hot messages (re-scoped: C lookup instead of PRG scans, see 4.4) | **Done**: `SOURCE/c_scan.c`; `tests/unit/events` 16 checks, same results as before S4; matrix green |
-| S5 | Optional `SET HMG LEGACY VARS OFF` | default stays ON in HMG5 |
+| S5 | Optional `SET HMG LEGACY VARS OFF` | **Done**: `SOURCE/h_hmgvars.prg`; all 102 memvar sites (45 create, 50 read, 5 `Type()`, 2 reset; hfcl QHTM too) go through `_HMG_VarSet/Get/Type/Put`; default ON is the old code path (no measurable cost); OFF keeps the indexes in a case-insensitive hash, unknown names raise the same BASE/1003; must come before the first DEFINE WINDOW; `tests/unit/legacyvars` 24 checks; the accounting app runs with ON and OFF |
 
 Per-monitor DPI scaling (PerMonitorV2) stays in **Phase 4**, as in AUDIT.md. It needs layout scaling, which is easier on top of S3.
 

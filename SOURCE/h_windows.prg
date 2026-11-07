@@ -3589,8 +3589,8 @@ EndIf
 
          // Update Form Index Variable
          mVar := '_' + _HMG_SYSDATA [ HMG_FRM_NAME ] [i]       // _HMG_aFormNames
-         if type ( mVar ) != 'U'
-            __MVPUT ( mVar , 0 )
+         if _HMG_VarType ( mVar ) != 'U'
+            _HMG_VarPut ( mVar , 0 )
          EndIf
 
          Tmp := NIL   // avoid warning message: defined variable but not used (need only ALLOW_ONLY_ONE_MESSAGE_LOOP is defined)
@@ -3720,7 +3720,7 @@ Local mVar , i
 
 	mVar := '_' + FormName
 
-	i:=&mVar
+	i:=_HMG_VarGet ( mVar )
 	if i == 0
 		Return ''
 	endif
@@ -3735,10 +3735,10 @@ FormName := CharRem ( CHR(34)+CHR(39), FormName )
 
 mVar := '_' + FormName
 
-if type ( mVar ) = 'U'
+if _HMG_VarType ( mVar ) = 'U'
 	Return (.F.)
 Else
-	i := &mVar
+	i := _HMG_VarGet ( mVar )
 	If i == 0
 		Return .f.
 	EndIf
@@ -3756,10 +3756,10 @@ FormName := CharRem ( CHR(34)+CHR(39), FormName )
 
 mVar := '_' + FormName
 
-if type ( mVar ) = 'U'
+if _HMG_VarType ( mVar ) = 'U'
 	Return (.F.)
 Else
-	i := &mVar
+	i := _HMG_VarGet ( mVar )
 	If i == 0
 		Return .f.
 	EndIf
@@ -3776,7 +3776,7 @@ Local mVar , i
 
 	mVar := '_' + FormName
 
-	i:=&mVar
+	i:=_HMG_VarGet ( mVar )
 	if i == 0
 		Return ''
 	endif
@@ -3789,7 +3789,7 @@ Local mVar , i
 
 	mVar := '_' + FormName
 
-	i:=&mVar
+	i:=_HMG_VarGet ( mVar )
 	if i == 0
 		Return 0
 	endif
@@ -3803,7 +3803,7 @@ Local mVar , i
 
 	mVar := '_' + FormName
 
-	i:=&mVar
+	i:=_HMG_VarGet ( mVar )
 	if i == 0
 		Return 0
 	endif
@@ -3817,7 +3817,7 @@ Local mVar , i
 
 	mVar := '_' + FormName
 
-	i:=&mVar
+	i:=_HMG_VarGet ( mVar )
 	if i == 0
 		Return 0
 	endif
@@ -4417,7 +4417,7 @@ ENDIF
 
 		_HMG_SYSDATA [ 164 ] := k
 
-		Public &mVar. := k
+		_HMG_VarSet ( mVar , k )
 
       IF Main 
          _HMG_MainFormIndex := k
@@ -4481,7 +4481,7 @@ ENDIF
          _HMG_MainFormIndex := HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1
       ENDIF
 
-		Public &mVar. := HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1
+		_HMG_VarSet ( mVar , HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1 )
 
 		aAdd ( _HMG_SYSDATA [ HMG_FRM_NAME ]	, FormName )
 		aAdd ( _HMG_SYSDATA [ HMG_FRM_HANDLE ]	, FormHandle )
@@ -4757,7 +4757,7 @@ ENDIF
 
 	if k > 0
 
-		Public &mVar. := k
+		_HMG_VarSet ( mVar , k )
 
 		_HMG_SYSDATA [  HMG_FRM_NAME ]  [k] := FormName 
 		_HMG_SYSDATA [ HMG_FRM_HANDLE  ]   [k] :=  FormHandle 
@@ -4811,7 +4811,7 @@ ENDIF
 
 	Else
 
-		Public &mVar. := HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1
+		_HMG_VarSet ( mVar , HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1 )
 
 		aAdd ( _HMG_SYSDATA [  HMG_FRM_NAME ] , FormName )
 		aAdd ( _HMG_SYSDATA [ HMG_FRM_HANDLE  ] , FormHandle )
@@ -5026,7 +5026,7 @@ ENDIF
 
 	if k > 0
 
-		Public &mVar. := k
+		_HMG_VarSet ( mVar , k )
 		_HMG_SYSDATA [ 171 ] := k
 
 		_HMG_SYSDATA [  HMG_FRM_NAME ]  [k] := FormName 
@@ -5081,7 +5081,7 @@ ENDIF
       
 	Else
 
-		Public &mVar. := HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1
+		_HMG_VarSet ( mVar , HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1 )
 		_HMG_SYSDATA [ 171 ] := HMG_LEN(_HMG_SYSDATA [  HMG_FRM_NAME ]) + 1
 
 		aAdd ( _HMG_SYSDATA [  HMG_FRM_NAME ] , FormName )
@@ -5228,7 +5228,7 @@ Local mVar
 
 	mVar := '_' + FormName
 
-Return ( &mVar )
+Return ( _HMG_VarGet ( mVar ) )
 *-----------------------------------------------------------------------------*
 Function _SetNotifyIconName ( FormName , IconName )
 *-----------------------------------------------------------------------------*

@@ -104,7 +104,7 @@ Local hh , mVar , k
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE]  [k] := "PLAYER" 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 
@@ -171,7 +171,7 @@ function _PlayPlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 1 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -179,7 +179,7 @@ function _StopPlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 2 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -187,7 +187,7 @@ function _PausePlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 3 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -195,7 +195,7 @@ function _ClosePlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 4 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -203,7 +203,7 @@ function _DestroyPlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 5 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -211,7 +211,7 @@ function _EjectPlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 6 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -219,7 +219,7 @@ function _SetPlayerPositionEnd ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 7 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -227,7 +227,7 @@ function _SetPlayerPositionHome ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 8 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -235,7 +235,7 @@ function _OpenPlayer ( ControlName , ParentForm, file )
 *-----------------------------------------------------------------------------*
 Local h , mVar
  mVar := '_' + ParentForm + '_' + ControlName
- h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+ h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
  mcifunc ( h , 9, file )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -243,7 +243,7 @@ function _OpenPlayerDialog ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 10 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -251,7 +251,7 @@ function _PlayPlayerReverse ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 11 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -259,7 +259,7 @@ function _ResumePlayer ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 12 )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -267,7 +267,7 @@ function _SetPlayerRepeatOn ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 13 , .T. )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -275,7 +275,7 @@ function _SetPlayerRepeatOff ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 13 , .F. )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -283,7 +283,7 @@ function _SetPlayerSpeed ( ControlName , ParentForm , speed )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , , 14 , speed )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -291,7 +291,7 @@ function _SetPlayerVolume ( ControlName , ParentForm , volume )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 15 , volume )
 Return Nil
 *-----------------------------------------------------------------------------*
@@ -299,7 +299,7 @@ function _SetPlayerZoom ( ControlName , ParentForm , zoom )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 16 , zoom )
 Return Nil
 
@@ -309,7 +309,7 @@ function _SetPlayerSeek ( ControlName , ParentForm , seek )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	mcifunc ( h , 20 , seek )
 Return Nil
 
@@ -319,7 +319,7 @@ function _GetPlayerLength ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar, nMCILength
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	nMCILength := mcifunc ( h , 17 )
 Return( nMCILength )
 *-----------------------------------------------------------------------------*
@@ -327,7 +327,7 @@ function _GetPlayerPosition ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar, nMCIPosition
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	nMCIPosition := mcifunc ( h , 18 )
 Return( nMCIPosition )
 
@@ -336,7 +336,7 @@ function _GetPlayerVolume ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar, nMCIVolume
    mVar := '_' + ParentForm + '_' + ControlName
-   h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+   h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
    nMCIVolume := mcifunc ( h , 19 )
 Return( nMCIVolume )
 
@@ -377,7 +377,7 @@ Local hh , mVar , k
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "ANIMATEBOX" 
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 
@@ -431,7 +431,7 @@ function _OpenAnimateBox ( ControlName , ParentForm , FileName )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	openanimate ( h , FileName )
 Return Nil
 
@@ -440,7 +440,7 @@ function _PlayAnimateBox ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	playanimate ( h )
 Return Nil
 
@@ -449,7 +449,7 @@ function _SeekAnimateBox ( ControlName , ParentForm , Frame )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	seekanimate ( h , Frame )
 Return Nil
 
@@ -458,7 +458,7 @@ function _StopAnimateBox ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	stopanimate ( h )
 Return Nil
 
@@ -467,7 +467,7 @@ function _CloseAnimateBox ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	closeanimate ( h )
 Return Nil
 
@@ -476,6 +476,6 @@ function _DestroyAnimateBox ( ControlName , ParentForm )
 *-----------------------------------------------------------------------------*
 Local h , mVar
 	mVar := '_' + ParentForm + '_' + ControlName
-	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [&mVar] 
+	h := _HMG_SYSDATA [HMG_CTL_HANDLE] [_HMG_VarGet ( mVar )] 
 	destroyanimate ( h )
 Return Nil

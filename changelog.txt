@@ -7,6 +7,7 @@
    - Faster GetProperty/SetProperty/DoMethod (control validated once per call)
    - Optional object API: HMG_GetControl()/HMG_GetForm() (oCtl:Value, oCtl:Value := x, oCtl:Hide() ...)
    - Fixed RichEditBox in the ANSI library: control was never created; text read one char short; GetTextRange overflow
+   - SET HMG LEGACY VARS OFF: no PUBLIC variable per form/control (default ON, as before)
    - Faster event handling for radio groups, spinners, combo edits and child windows (no per-message scan of every control)
    - From HMG 3.7, all opt-in: ROUNDED <n> (TextBox/EditBox/RichEditBox/Frame), SET MSGBOXMODERN, SET TOOLTIPROUND/MARGIN/FONT/BORDERCOLOR/GRADIENT/THEME, SET MENUHOVER, TabSetModern()
 -HMG 3.6 2023/05/10

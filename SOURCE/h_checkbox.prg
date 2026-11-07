@@ -143,7 +143,7 @@ Local cParentWindowName := ''
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHECKBOX" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
@@ -267,7 +267,7 @@ Local FontHandle
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := "CHECKBOX" 
 	_HMG_SYSDATA [HMG_CTL_NAME] [k] :=   ControlName 
@@ -377,7 +377,7 @@ Local aRet
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [  HMG_CTL_TYPE ]  [k] :=  "CHECKBOX" 
 	_HMG_SYSDATA [  HMG_CTL_NAME ]  [k] :=  ControlName 

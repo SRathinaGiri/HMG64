@@ -158,7 +158,7 @@ Default nImageHeight	To -1
 	* Get Position In Control Arrays
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE]		[k] := "TOOLBAR" 
 	_HMG_SYSDATA [HMG_CTL_NAME]		[k] := cControlName
@@ -283,7 +283,7 @@ Local nButtonPos
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE]		[k] := "TOOLBUTTON" 
 	_HMG_SYSDATA [HMG_CTL_NAME]		[k] :=  cControlName 

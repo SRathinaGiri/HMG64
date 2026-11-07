@@ -216,7 +216,7 @@ Local FontHandle , k
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [ 179 ] := k
 

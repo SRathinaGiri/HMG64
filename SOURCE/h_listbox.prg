@@ -166,7 +166,7 @@ Local FontHandle , k
 
 	k := _GetControlFree()
 
-	Public &mVar. := k
+	_HMG_VarSet ( mVar , k )
 
 	_HMG_SYSDATA [HMG_CTL_TYPE] [k] := if ( multiselect , "MULTILIST" , "LIST" )
 	_HMG_SYSDATA [HMG_CTL_NAME]  [k] :=  ControlName 

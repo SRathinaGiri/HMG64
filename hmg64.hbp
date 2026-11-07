@@ -28,6 +28,7 @@ source/h_crypt_aes.prg
 source/h_hmgobject.prg
 source/h_tooltip.prg
 source/h_menuhover.prg
+source/h_hmgvars.prg
 
 source/ErrorSys.prg
 source/h_browse.prg
