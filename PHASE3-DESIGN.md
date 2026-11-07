@@ -69,12 +69,12 @@ Harbour already resolves memvars through its symbol table, and `AScan` runs in C
 - Result: `GetProperty( f, c, "Value" )` on a label 68 → 45 µs (same harness, back to back, `tests/unit/props`). Trade-off: properties the GridEx hook handles (`ColumnHeader`, `ColumnWidth` …) pay ~4 µs more, because the guard now runs in the caller and again in the hook; Tree-handled properties break even; all other control properties save ~10 µs.
 - **Compatibility:** no slot, name or memvar changes; the macro-named PUBLIC variables are still created. A later switch (`SET HMG LEGACY VARS OFF`) can stop creating them.
 
-### 4.3 Optional object API (new, additive)
-- **Thin control objects:** `HMG_Control()` objects wrap a control index; they are not a copy of its data.
-  - Accessors read and write the same slots: `oCtl:Name`, `oCtl:Handle`, `oCtl:Value`, `oCtl:Parent`.
-  - Obtained through `HMG_GetControl( "Form1", "Text1" )`.
-- **Purpose:** new code and contribs stop needing raw slot numbers. Nothing existing has to change.
-- **`GetProperty` / `SetProperty` stay** as the main user API.
+### 4.3 Optional object API (new, additive) — done
+- **Thin objects** (`SOURCE/h_hmgobject.prg`): `HMG_GetControl( cForm, cControl )` and `HMG_GetForm( cForm )` return an `HMG_Control` / `HMG_Form` object, or NIL if not defined. The object holds the slot index plus identity (name, handle, parent handle); it is not a copy of the control's data.
+- **Properties and methods map 1:1 to the existing functions:** `oCtl:Value` = `GetProperty( f, c, "Value" )`, `oCtl:Value := x` = `SetProperty(...)`, `oCtl:Item( 2 )` passes the index argument, `oCtl:Get/Set/Do( cName, ... )` for names built at run time, `oCtl:Show()/Hide()/SetFocus()/Refresh()/Release()` call `DoMethod`. Same on `HMG_Form` (`oFrm:Title`, `oFrm:Control( c )`, `oFrm:Controls()`).
+- **Identity check before every call:** a released control's slot can be reused by a new control. Every call first checks the slot still holds the same control (deleted flag, handle, parent handle, exact name); if not it raises error subsystem `HMG`, subCode 5501, so an old object never acts on the new control.
+- **Cost:** about 2 µs per call on top of `GetProperty` (≈ 45 µs, mostly Win32 `SendMessage`), i.e. within run-to-run noise.
+- **`GetProperty` / `SetProperty` / `DoMethod` and the `Form.Control.Property` syntax stay** as the main user API. Programs that do not call the new functions are unaffected.
 
 ### 4.4 Event dispatch
 - **Per-type handler table:** `Events()` (the giant `DO CASE` in `h_windows.prg`) gets a table keyed by control type for the hot messages: `WM_COMMAND`, `WM_NOTIFY`, `WM_CTLCOLOR*`.
@@ -93,7 +93,7 @@ Harbour already resolves memvars through its symbol table, and `AScan` runs in C
 |---|---|---|
 | S1 | `hmg_sysdata.ch` + mechanical rename in the library | **Done**: 40 files, 5,334 references (`tools/sysdata-rename.pl`); generated C identical for all 75 `.prg` (`tools/pcode-snapshot.ps1`); matrix green. Not yet renamed: slots 41-64, 109-518, and the 4 files without an `hmg.ch` include |
 | S2 | ~~Hash indexes~~ → one guard evaluation per property call, single macro evaluation in accessors (section 4.2) | **Done**: `tests/unit/props` 24 checks pass on the old and the new library; `GetProperty` 68 → 45 µs; matrix green; accounting project builds and starts |
-| S3 | `HMG_Control` object API + docs + unit tests | additive only; samples untouched |
+| S3 | `HMG_Control` object API + docs + unit tests | **Done**: `SOURCE/h_hmgobject.prg`; `tests/unit/ctlapi` 45 checks (incl. slot reuse after release); additive only, samples untouched; matrix green |
 | S4 | Table-driven `Events()` for the hot messages | GUI smoke tests pass before and after |
 | S5 | Optional `SET HMG LEGACY VARS OFF` | default stays ON in HMG5 |
 
