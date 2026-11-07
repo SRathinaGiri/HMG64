@@ -50,12 +50,24 @@ Two consequences decide the design:
 - **Library rewrite:** the library source moves from magic numbers to these names in a mechanical rewrite. User code may keep using the numbers; both mean the same slot.
 - **Proof of no change:** the defines vanish at preprocessing. So the Harbour-generated C for every library `.prg` must be **byte-identical** before and after the rename, and CI compares it.
 
-### 4.2 O(1) lookups
-- **Two hash indexes**, kept up to date wherever a control or window is defined or released:
-  - handle → control index;
-  - upper-case `"FORM.CONTROL"` → control index.
-- **Fast paths:** `GetControlIndex`, `GetFormIndex` and the 24 handle scans use the hashes.
-- **Compatibility:** the macro-named PUBLIC variables are still created, because user code may use them. A later switch (`SET HMG LEGACY VARS OFF`) can stop creating them.
+### 4.2 Faster property calls (re-scoped after measuring)
+The original plan was two hash indexes (handle → index, `"FORM.CONTROL"` → index). Measuring first, at 1,000 controls on one form (07-11-2026), showed they would not pay:
+
+| Path, per call | Cost |
+|---|---|
+| `GetControlIndex` (memvar macro) | 0.7 µs |
+| Same lookup through a Harbour hash (prototype) | 1.05 µs: **slower** |
+| `AScan( _HMG_SYSDATA[3], h )`, last of 1,000 | 1.0 µs |
+| `GetProperty( f, c, "Value" )` on a label | ~58 µs |
+| one `SendMessage` (Win32 itself) | 8–11 µs |
+
+Harbour already resolves memvars through its symbol table, and `AScan` runs in C, so hashes in `.prg` code add work. The time in `GetProperty` went to two Win32 messages (~22 µs, unavoidable) and to HMG re-validating the same control over and over: the GridEx, Tree and RichEditBox hooks each re-ran the full guard (~15 µs together), and the accessors evaluated their macro twice.
+
+**Done instead (S2):**
+- `GetProperty` / `SetProperty` / `DoMethod` evaluate the hooks' guard once and call only the hook for the control's type. The hooks keep their own guard, so direct calls behave as before.
+- `GetControl*`, `_GetControlRow/Col/Width/Height`, `GetForm*`, `_IsWindowDefined`/`Active` and `GetWindowType` use the index they already computed instead of a second macro evaluation; `_IsControlDefined` calls `Type()` once.
+- Result: `GetProperty( f, c, "Value" )` on a label 68 → 45 µs (same harness, back to back, `tests/unit/props`). Trade-off: properties the GridEx hook handles (`ColumnHeader`, `ColumnWidth` …) pay ~4 µs more, because the guard now runs in the caller and again in the hook; Tree-handled properties break even; all other control properties save ~10 µs.
+- **Compatibility:** no slot, name or memvar changes; the macro-named PUBLIC variables are still created. A later switch (`SET HMG LEGACY VARS OFF`) can stop creating them.
 
 ### 4.3 Optional object API (new, additive)
 - **Thin control objects:** `HMG_Control()` objects wrap a control index; they are not a copy of its data.
@@ -72,7 +84,7 @@ Two consequences decide the design:
 - **Known gap:** `_HMG_SYSDATA` is one PUBLIC array shared by all threads, with no locking (AUDIT M1).
 - **This phase:**
   - document that GUI calls belong on the main thread;
-  - add a mutex around define and release, so the new hash indexes can't be corrupted.
+  - add a mutex around define and release (less urgent now that S2 added no shared index).
 - **Out of scope:** full thread safety.
 
 ## 5. Steps (one reviewed change each, tests green in ANSI and UNICODE)
@@ -80,7 +92,7 @@ Two consequences decide the design:
 | Step | Change | Done when |
 |---|---|---|
 | S1 | `hmg_sysdata.ch` + mechanical rename in the library | **Done**: 40 files, 5,334 references (`tools/sysdata-rename.pl`); generated C identical for all 75 `.prg` (`tools/pcode-snapshot.ps1`); matrix green. Not yet renamed: slots 41-64, 109-518, and the 4 files without an `hmg.ch` include |
-| S2 | Hash indexes for handle and name lookup | matrix green; lookup benchmark (1,000 controls) shows the gain; corpus programs unchanged |
+| S2 | ~~Hash indexes~~ → one guard evaluation per property call, single macro evaluation in accessors (section 4.2) | **Done**: `tests/unit/props` 24 checks pass on the old and the new library; `GetProperty` 68 → 45 µs; matrix green; accounting project builds and starts |
 | S3 | `HMG_Control` object API + docs + unit tests | additive only; samples untouched |
 | S4 | Table-driven `Events()` for the hot messages | GUI smoke tests pass before and after |
 | S5 | Optional `SET HMG LEGACY VARS OFF` | default stays ON in HMG5 |

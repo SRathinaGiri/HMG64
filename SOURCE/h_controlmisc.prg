@@ -132,7 +132,6 @@ If Pcount() == 2
     EndIf
 
     T = GetControlType (ControlName,ParentForm)
-    GetControlParentHandle (ControlName,ParentForm)
     c = GetControlHandle (ControlName,ParentForm)
     ix := GetControlIndex ( ControlName, ParentForm )
 
@@ -1063,7 +1062,7 @@ i := &mVar
 if i == 0
     Return ''
 EndIf
-Return (_HMG_SYSDATA [HMG_CTL_NAME] [ &mVar ] )
+Return (_HMG_SYSDATA [HMG_CTL_NAME] [ i ] )
 
 Function GetControlHandle (ControlName,ParentForm)
 Local mVar , i
@@ -1072,7 +1071,7 @@ i := &mVar
 If i == 0
   Return 0
 EndIf
-Return (_HMG_SYSDATA [HMG_CTL_HANDLE] [ &mVar ] )
+Return (_HMG_SYSDATA [HMG_CTL_HANDLE] [ i ] )
 
 Function GetControlContainerHandle (ControlName,ParentForm)
 Local mVar , i
@@ -1081,7 +1080,7 @@ i := &mVar
 if i == 0
     Return 0
 EndIf
-Return (_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [ &mVar ] )
+Return (_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [ i ] )
 
 Function GetControlParentHandle (ControlName,ParentForm)
 Local mVar , i
@@ -1090,7 +1089,7 @@ i := &mVar
 if i == 0
     Return 0
 EndIf
-Return (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [ &mVar ] )
+Return (_HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [ i ] )
 
 Function GetControlId (ControlName,ParentForm)
 Local mVar , i
@@ -1099,7 +1098,7 @@ i := &mVar
 if i == 0
     Return 0
 EndIf
-Return (_HMG_SYSDATA [  HMG_CTL_ID ] [ &mVar ] )
+Return (_HMG_SYSDATA [  HMG_CTL_ID ] [ i ] )
 
 Function GetControlType (ControlName,ParentForm)
 Local mVar , i
@@ -1108,7 +1107,7 @@ i := &mVar
 if i == 0
     Return ''
 EndIf
-Return (_HMG_SYSDATA [HMG_CTL_TYPE] [ &mVar ] )
+Return (_HMG_SYSDATA [HMG_CTL_TYPE] [ i ] )
 
 Function GetControlValue (ControlName,ParentForm)
 Local mVar , i
@@ -1117,7 +1116,7 @@ i := &mVar
 if i == 0
     Return Nil
 EndIf
-Return (_HMG_SYSDATA [  HMG_CTL_VALUE ] [ &mVar ] )
+Return (_HMG_SYSDATA [  HMG_CTL_VALUE ] [ i ] )
 
 Function GetControlPageMap (ControlName,ParentForm)
 Local mVar , i
@@ -1126,21 +1125,22 @@ i := &mVar
 if i == 0
     Return {}
 EndIf
-Return (_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ &mVar ] )
+Return (_HMG_SYSDATA [  HMG_CTL_PAGEMAP ] [ i ] )
 
 
 Function _IsControlDefined ( ControlName , FormName )
-Local mVar , i , r
+Local mVar , i , r , cT
    
    ControlName := CharRem ( CHR(34)+CHR(39), ControlName ) 
    FormName    := CharRem ( CHR(34)+CHR(39), FormName )
 
    mVar := '_' + FormName + '_' + ControlName
 
-   if type ( mVar ) = 'U'
+   cT := type ( mVar )   // S2: evaluated once (was twice)
+   if cT = 'U'
       Return (.F.)
    EndIf
-   if type ( mVar ) = 'N'
+   if cT = 'N'
       i := &mVar
       if i == 0
          Return .f.
@@ -2440,10 +2440,10 @@ if i == 0
     Return 0
 EndIf
 
-If _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [ &mVar ] == - 1
-    Return (_HMG_SYSDATA [ HMG_CTL_ROW ] [ &mVar ] )
+If _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [ i ] == - 1
+    Return (_HMG_SYSDATA [ HMG_CTL_ROW ] [ i ] )
 Else
-    Return ( _HMG_SYSDATA [ HMG_CTL_ROW ] [ &mVar ] - _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [ &mVar ] )
+    Return ( _HMG_SYSDATA [ HMG_CTL_ROW ] [ i ] - _HMG_SYSDATA [ HMG_CTL_CONTAINERROW ] [ i ] )
 EndIf
 Return Nil
 
@@ -2457,10 +2457,10 @@ if i == 0
     Return 0
 EndIf
 
-If _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [ &mVar ] == - 1
-    Return (_HMG_SYSDATA [ HMG_CTL_COL ] [ &mVar ] )
+If _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [ i ] == - 1
+    Return (_HMG_SYSDATA [ HMG_CTL_COL ] [ i ] )
 Else
-    Return ( _HMG_SYSDATA [ HMG_CTL_COL ] [ &mVar ] - _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [ &mVar ] )
+    Return ( _HMG_SYSDATA [ HMG_CTL_COL ] [ i ] - _HMG_SYSDATA [ HMG_CTL_CONTAINERCOL ] [ i ] )
 EndIf
 Return Nil
 
@@ -2473,7 +2473,7 @@ i := &mVar
 if i == 0
    Return 0
 EndIf
-Return (_HMG_SYSDATA [ HMG_CTL_WIDTH ] [ &mVar ] )
+Return (_HMG_SYSDATA [ HMG_CTL_WIDTH ] [ i ] )
 
 Function _GetControlHeight (ControlName,ParentForm)
 Local mVar , i
@@ -2484,7 +2484,7 @@ i := &mVar
 if i == 0
    Return 0
 EndIf
-Return (_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [ &mVar ] )
+Return (_HMG_SYSDATA [ HMG_CTL_HEIGHT ] [ i ] )
 
 Function _SetControlCol ( ControlName, ParentForm, Value )
 _SetControlSizePos ( ControlName, ParentForm , _GetControlRow ( ControlName,ParentForm) , Value , _GetControlWidth ( ControlName,ParentForm) , _GetControlHeight ( ControlName,ParentForm) )
@@ -7498,7 +7498,7 @@ i := &mVar
 if i == 0
     Return ''
 EndIf
-Return (_HMG_SYSDATA [HMG_CTL_MISCDATA1] [ &mVar ] )
+Return (_HMG_SYSDATA [HMG_CTL_MISCDATA1] [ i ] )
 
 
 
@@ -7753,19 +7753,21 @@ EndIf
 Return cRetVal
 
 Function SetProperty ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
-Local i, hWnd
+Local i, hWnd, cHookType
 Local cMacro
 Local k
 
-IF _GridEx_SetProperty      ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+cHookType := _HookType ( Arg1 , Arg2 , Arg3 )   // S2: the hooks' guard, evaluated once
+
+IF _HookWants ( cHookType , "GRID" , "MULTIGRID" ) .AND. _GridEx_SetProperty      ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN NIL
 ENDIF
 
-IF _Tree_SetProperty        ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+IF _HookWants ( cHookType , "TREE" ) .AND. _Tree_SetProperty        ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN NIL
 ENDIF
 
-IF _RichEditBox_SetProperty ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_SetProperty ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN NIL
 ENDIF
 
@@ -8333,20 +8335,22 @@ EndIf
 Return Nil
 
 Function GetProperty ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
-Local xData, RetVal
+Local xData, RetVal, cHookType
 Local i, hWnd
 Local cMacro
 Local tRetVal
 
-IF _GridEx_GetProperty     ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+cHookType := _HookType ( Arg1 , Arg2 , Arg3 )   // S2: the hooks' guard, evaluated once
+
+IF _HookWants ( cHookType , "GRID" , "MULTIGRID" ) .AND. _GridEx_GetProperty     ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN xData
 ENDIF
 
-IF _Tree_GetProperty       ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+IF _HookWants ( cHookType , "TREE" ) .AND. _Tree_GetProperty       ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN xData
 ENDIF
 
-IF _RichEditBox_GetProperty ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_GetProperty ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
    RETURN xData
 ENDIF
 
@@ -8938,18 +8942,20 @@ Next r
 Return nRetVal
 
 Function DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 )
-Local i, hWnd
+Local i, hWnd, cHookType
 Local cMacro, cControlType
 
-IF _GridEx_DoMethod      ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
+cHookType := _HookType ( Arg1 , Arg2 , Arg3 )   // S2: the hooks' guard, evaluated once
+
+IF _HookWants ( cHookType , "GRID" , "MULTIGRID" ) .AND. _GridEx_DoMethod      ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
    Return Nil
 ENDIF
 
-IF _Tree_DoMethod        ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
+IF _HookWants ( cHookType , "TREE" ) .AND. _Tree_DoMethod        ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
    Return Nil
 ENDIF
 
-IF _RichEditBox_DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
+IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
    Return Nil
 ENDIF
 
@@ -9564,6 +9570,23 @@ Return cType
 //*********************************************
 // by Dr. Claudio Soto (April 2013)
 //*********************************************
+
+// S2 (PHASE3-DESIGN.md): GetProperty/SetProperty/DoMethod used to call all three type
+// hooks below, and each re-ran the same guard (~5 us each, per property call). The guard
+// is now evaluated once by _HookType(), in the same order and with the same non-exact
+// comparisons, and a hook is called only when its guard would pass. The hooks keep their
+// own guard, so direct calls to them behave as before.
+STATIC FUNCTION _HookType ( Arg1 , Arg2 , Arg3 )
+IF (Valtype(Arg1) <> "C") .OR. (Valtype(Arg2) <> "C") .OR. (Valtype (Arg3) <> "C") .OR. (_IsControlDefined(Arg2 , Arg1) == .F.)
+   RETURN ""
+ENDIF
+RETURN GetControlType(Arg2 , Arg1)
+
+STATIC FUNCTION _HookWants ( cType , cWant1 , cWant2 )
+IF cWant2 == NIL
+   RETURN .NOT. ( cType <> cWant1 )
+ENDIF
+RETURN .NOT. ( ( cType <> cWant1 ) .AND. ( cType <> cWant2 ) )
 
 Function _GridEx_GetProperty (xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
 Local i, RetVal := .F.

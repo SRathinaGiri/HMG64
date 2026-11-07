@@ -3700,7 +3700,7 @@ Local mVar , i
 		Return ''
 	endif
 
-Return ( _HMG_SYSDATA [ HMG_FRM_TYPE  ] [ &mVar ] )
+Return ( _HMG_SYSDATA [ HMG_FRM_TYPE  ] [ i ] )
 *-----------------------------------------------------------------------------*
 Function _IsWindowActive ( FormName )
 *-----------------------------------------------------------------------------*
@@ -3717,7 +3717,7 @@ Else
 	If i == 0
 		Return .f.
 	EndIf
-	Return ( _HMG_SYSDATA [ HMG_FRM_ACTIVE  ]  [ &mVar ] )
+	Return ( _HMG_SYSDATA [ HMG_FRM_ACTIVE  ]  [ i ] )
 EndIf
 
 Return .F.
@@ -3738,7 +3738,7 @@ Else
 	If i == 0
 		Return .f.
 	EndIf
-	Return ( .Not. ( _HMG_SYSDATA [  HMG_FRM_DELETED ]  [ &mVar ] ) )
+	Return ( .Not. ( _HMG_SYSDATA [  HMG_FRM_DELETED ]  [ i ] ) )
 EndIf
 
 Return .F.
@@ -3756,7 +3756,7 @@ Local mVar , i
 		Return ''
 	endif
 
-Return ( _HMG_SYSDATA [  HMG_FRM_NAME ] [ &mVar ] )
+Return ( _HMG_SYSDATA [  HMG_FRM_NAME ] [ i ] )
 *-----------------------------------------------------------------------------*
 Function GetFormToolTipHandle (FormName)
 *-----------------------------------------------------------------------------*
@@ -3769,7 +3769,7 @@ Local mVar , i
 		Return 0
 	endif
 
-Return ( _HMG_SYSDATA [ HMG_FRM_TOOLTIPHANDLE  ] [ &mVar ] )
+Return ( _HMG_SYSDATA [ HMG_FRM_TOOLTIPHANDLE  ] [ i ] )
 
 *-----------------------------------------------------------------------------*
 Function GetMenuToolTipHandle (FormName)
@@ -3783,7 +3783,7 @@ Local mVar , i
 		Return 0
 	endif
 
-Return ( _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP  ] [ &mVar ] )
+Return ( _HMG_SYSDATA [ HMG_FRM_MENUTOOLTIP  ] [ i ] )
 
 *-----------------------------------------------------------------------------*
 Function GetFormHandle (FormName)
@@ -3797,7 +3797,7 @@ Local mVar , i
 		Return 0
 	endif
 
-Return ( _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [ &mVar ] )
+Return ( _HMG_SYSDATA [ HMG_FRM_HANDLE  ] [ i ] )
 
 *-----------------------------------------------------------------------------*
 Function ReleaseAllWindows ()
