@@ -76,9 +76,25 @@ Harbour already resolves memvars through its symbol table, and `AScan` runs in C
 - **Cost:** about 2 µs per call on top of `GetProperty` (≈ 45 µs, mostly Win32 `SendMessage`), i.e. within run-to-run noise.
 - **`GetProperty` / `SetProperty` / `DoMethod` and the `Form.Control.Property` syntax stay** as the main user API. Programs that do not call the new functions are unaffected.
 
-### 4.4 Event dispatch
-- **Per-type handler table:** `Events()` (the giant `DO CASE` in `h_windows.prg`) gets a table keyed by control type for the hot messages: `WM_COMMAND`, `WM_NOTIFY`, `WM_CTLCOLOR*`.
-- **Measured:** behaviour must stay the same, and the GUI smoke tests (section 6) run before and after.
+### 4.4 Event dispatch (re-scoped after measuring) — done
+The plan was a per-type handler table for `WM_COMMAND`, `WM_NOTIFY` and `WM_CTLCOLOR*` in `Events()` (`h_windows.prg`). Measuring first (07-11-2026, `Events()` called directly with real arguments, so Win32 and desktop noise are excluded) showed the table would not pay:
+
+| Path, per message | 312 controls | 1,012 controls |
+|---|---|---|
+| unhandled message: the whole `DO CASE` | ≤ 1 µs | ≤ 1.7 µs |
+| `WM_CTLCOLOREDIT` for a text box / `EN_CHANGE` | 1–7 µs | 1–5 µs |
+| `WM_CTLCOLORSTATIC` for a radio option | **188 µs** | **465 µs** |
+| `WM_CTLCOLOREDIT` from a window that is not a control | 133 µs | 423 µs |
+| `WM_COMMAND` radio click / from an unknown window | 139 / 105 µs | 387 / 357 µs |
+| one `SendMessage` on this PC (Win32 floor) | 12–26 µs | |
+
+Dispatch costs about 1 µs, so a table could save less than that. The time went to PRG loops over every control whenever the message's handle is not a control handle: radio options and the spinner edit (their handles are arrays), combo edit children, and any other child window. A full form repaint sends one `WM_CTLCOLORSTATIC` per radio option and two `WM_CTLCOLOREDIT` per text box.
+
+**Done instead (S4):**
+- `HMG_ScanSubArray()` (`SOURCE/c_scan.c`) finds the next control whose handle array holds a handle, in C. The seven scan loops in `Events()` (radio colour, spinner colour, spinner/radio/combo `WM_COMMAND`, mouse wheel) visit only those controls; each keeps its original checks (type, parent), so behaviour is unchanged. The combo loop uses `AScan` on the combo edit handles.
+- Result: radio option colour 188 → 13 µs (312 controls) and 465 → 17 µs (1,012); unknown-window messages 105–423 → under 6 µs; cost no longer grows with the number of controls.
+- Checked: `tests/unit/events` (16 checks; its 9 `Events()` checks give the same results on the pre-S4 library), matrix green in both modes.
+- **Compatibility:** no slot, name or behaviour change; the `DO CASE` stays.
 
 ### 4.5 Threads
 - **Known gap:** `_HMG_SYSDATA` is one PUBLIC array shared by all threads, with no locking (AUDIT M1).
@@ -94,7 +110,7 @@ Harbour already resolves memvars through its symbol table, and `AScan` runs in C
 | S1 | `hmg_sysdata.ch` + mechanical rename in the library | **Done**: 40 files, 5,334 references (`tools/sysdata-rename.pl`); generated C identical for all 75 `.prg` (`tools/pcode-snapshot.ps1`); matrix green. Not yet renamed: slots 41-64, 109-518, and the 4 files without an `hmg.ch` include |
 | S2 | ~~Hash indexes~~ → one guard evaluation per property call, single macro evaluation in accessors (section 4.2) | **Done**: `tests/unit/props` 24 checks pass on the old and the new library; `GetProperty` 68 → 45 µs; matrix green; accounting project builds and starts |
 | S3 | `HMG_Control` object API + docs + unit tests | **Done**: `SOURCE/h_hmgobject.prg`; `tests/unit/ctlapi` 45 checks (incl. slot reuse after release); additive only, samples untouched; matrix green |
-| S4 | Table-driven `Events()` for the hot messages | GUI smoke tests pass before and after |
+| S4 | Faster `Events()` for the hot messages (re-scoped: C lookup instead of PRG scans, see 4.4) | **Done**: `SOURCE/c_scan.c`; `tests/unit/events` 16 checks, same results as before S4; matrix green |
 | S5 | Optional `SET HMG LEGACY VARS OFF` | default stays ON in HMG5 |
 
 Per-monitor DPI scaling (PerMonitorV2) stays in **Phase 4**, as in AUDIT.md. It needs layout scaling, which is easier on top of S3.

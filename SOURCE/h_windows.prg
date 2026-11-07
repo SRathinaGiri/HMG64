@@ -691,7 +691,8 @@ LOCAL hFont
 	
 		Else
 
-			For i := 1 To HMG_LEN ( _HMG_SYSDATA [HMG_CTL_HANDLE] )
+			i := 0
+			Do While ( i := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , lParam , i + 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 
 				If ValType ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == 'A'
 
@@ -745,7 +746,7 @@ LOCAL hFont
 					
 				EndIf
 
-			Next i
+			EndDo
 
 		EndIf
 
@@ -781,7 +782,8 @@ LOCAL hFont
 	
 		Else
 
-			For i := 1 To HMG_LEN ( _HMG_SYSDATA [HMG_CTL_HANDLE] )
+			i := 0
+			Do While ( i := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , lParam , i + 1 , , 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 
 				If ValType ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == 'A'
 
@@ -811,7 +813,7 @@ LOCAL hFont
 
 				EndIf
 
-			Next i
+			EndDo
 
 		EndIf
 
@@ -873,8 +875,8 @@ LOCAL hFont
 					EndIf
 				EndIf
 			Else				
-				ControlCount := HMG_LEN ( _HMG_SYSDATA [HMG_CTL_HANDLE] )
-				For i := 1 To ControlCount
+				i := 0
+				Do While ( i := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , GetFocus() , i + 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 					if _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'RADIOGROUP'
 						x := ascan ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] , GetFocus() )
 						If x > 0
@@ -887,7 +889,7 @@ LOCAL hFont
 							EndIf
 						EndIf
 					Endif
-				Next i
+				EndDo
 			EndIf
 
 		EndIf
@@ -1755,7 +1757,6 @@ EndIf
 	case nMsg == WM_COMMAND
         ***********************************************************************
 
-		ControlCount := HMG_LEN (_HMG_SYSDATA [HMG_CTL_HANDLE])
 
 		*...............................................
 		* Search Control From Received Id LoWord(wParam)
@@ -1790,14 +1791,15 @@ EndIf
 		* If Handle Not Found, Look For Spinner
 
 		if i == 0
-			For x := 1 To ControlCount
+			x := 0
+			Do While ( x := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , lParam , x + 1 , , 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 			        If ValType (_HMG_SYSDATA [HMG_CTL_HANDLE][x]) == 'A'
 					If _HMG_SYSDATA [HMG_CTL_HANDLE] [x] [1] == lParam .and. _HMG_SYSDATA [HMG_CTL_TYPE][x] == 'SPINNER'
 						i := x
 						Exit
 					EndIf
 				EndIf
-			Next x
+			EndDo
 		EndIf
 
 		*................................
@@ -2124,7 +2126,8 @@ EndIf
 			* Process RadioGrop ...................................
 
 			If HIWORD(wParam) == BN_CLICKED
-				For i := 1 to ControlCount
+				i := 0
+				Do While ( i := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , lParam , i + 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 					if ValType (_HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == "A" .And._HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [i] == hWnd
 						For x := 1 To HMG_LEN ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 							If _HMG_SYSDATA [HMG_CTL_HANDLE] [i] [x] == lParam
@@ -2138,11 +2141,12 @@ EndIf
 							EndIf
 						Next x
 					Endif
-				Next i
+				EndDo
 
 			ElseIf HIWORD(wParam) == BN_SETFOCUS
 
-				For i := 1 to ControlCount
+				i := 0
+				Do While ( i := HMG_ScanSubArray ( _HMG_SYSDATA [HMG_CTL_HANDLE] , lParam , i + 1 ) ) > 0   // S4: visit only controls whose handle array holds the handle (was a PRG loop over all controls)
 					if ValType (_HMG_SYSDATA [HMG_CTL_HANDLE] [i] ) == "A" .And._HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [i] == hWnd
 						For x := 1 To HMG_LEN ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
 							If _HMG_SYSDATA [HMG_CTL_HANDLE] [i] [x] == lParam
@@ -2156,7 +2160,7 @@ EndIf
 							EndIf
 						Next x
 					Endif
-				Next i
+				EndDo
 
 			EndIf
 
@@ -2285,7 +2289,8 @@ EndIf
 
 			* ComboBox (DisplayEdit) ..............................
 
-			For i := 1 To ControlCount
+			i := 0
+			Do While ( i := AScan ( _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] , GetFocus() , i + 1 ) ) > 0   // S4: was a PRG loop over all controls
 
 	                       if _HMG_SYSDATA [HMG_CTL_TYPE] [i] = "COMBO" .and. ( HiWord(wParam) == 0  .And. LoWord(wParam) == 1 )
 					if _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i] == GetFocus()
@@ -2296,7 +2301,7 @@ EndIf
 						Exit
 					EndIf
 				EndIf
-			Next i
+			EndDo
 
 			* ComboBox (Image) ..............................
 	

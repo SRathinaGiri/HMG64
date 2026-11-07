@@ -37,6 +37,7 @@ Sources looked at:
 | L1 | Scintilla code-editor control (`gui_scintilla.ch`) | Workspace | Valuable for the IDE (syntax colouring, folding); large (≈1,800 files of Scintilla source). Belongs with the IDE work. |
 | L2 | Structured build diagnostics: hbmk2/GCC output parsed to file, line, severity; clickable errors | Workspace build service | Idea for the HMG5 IDE and `hmgbuild`; their code is a separate service architecture, so take the design, not the code. |
 | L3 | IDE source documentation (`IDE_SourceCode\Source\*.md`, e.g. `_open.md`) | 3.7 | Explains the legacy IDE's form loader/saver; useful before touching the IDE. Spanish; would need translating. |
+| L4 | **Revamp the HMG IDE** (Roberto Lopez's IDE; source published by Claudio Soto, copy in Workspace `Source`) | Daniel (07-11-2026) | Its `NewForm()` is thousands of IF statements per control and property: a candidate for table-driven code, measured first as in S2/S4. Workspace adds a `.frm` file (container of a project's `.fmg` forms, made by parsing the `.prg` files of an `.hbp`), so a project is `.hbp` + `.hbc` + `.rc` + `.frm`. Planned with the IDE work (test the IDE first). |
 
 ### Not adopted
 

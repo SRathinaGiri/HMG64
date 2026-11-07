@@ -92,6 +92,7 @@ source/c_frame.c
 source/c_rounded.c
 source/c_tooltip.c
 source/c_menuhover.c
+source/c_scan.c
 source/c_grid.c
 source/c_help.c
 source/c_hotkey.c
