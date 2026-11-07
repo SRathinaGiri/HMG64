@@ -245,7 +245,7 @@ extern char *    hmg_FrameWCtoMB    ( const wchar_t * pStrW ); // hb_wctomb, fra
 
 // Plain LoadLibrary("x.dll") searches the current directory and PATH, so a planted DLL
 // with the same name gets loaded (DLL hijacking). Windows components are loaded from
-// System32 only; optional add-on DLLs (e.g. QHTM) from the application folder, then System32.
+// System32 only; optional add-on DLLs from the application folder, then System32.
 // Requires Windows 8+, or Windows 7 with KB2533623.
 #define HMG_LoadSystemLibrary(name)   LoadLibraryEx ((name), NULL, LOAD_LIBRARY_SEARCH_SYSTEM32)
 #define HMG_LoadAppLibrary(name)      LoadLibraryEx ((name), NULL, LOAD_LIBRARY_SEARCH_APPLICATION_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32)

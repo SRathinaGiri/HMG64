@@ -12,7 +12,5 @@ AutoFill.prg
 ComboSearchBox.prg
 GridPrint.prg
 MakeShortcut.prg
-h_qhtm.prg
-c_qhtm.c
 RichEditBoxEx_C.c
 RichEditBoxEx_H.prg

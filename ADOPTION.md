@@ -77,7 +77,7 @@ Also from 3.7: `TOOLTIP_MENUDISPLAY` hides the tooltip on separators and unknown
 
 HB_WebView (A1): see section 6.
 
-## 6. HB_WebView review (for Phase 4: WebView2 control to replace QHTM)
+## 6. HB_WebView review (for Phase 4: WebView2 HTML control; QHTM is removed)
 
 Reviewed: `hb_webview.prg` / `hb_webview.ch` (wrapper 1.1.0, Claudio Soto) and the bundled webview library 0.12.0 (MIT, `webview-master`). **Decision: not added to HMG5 now.** It is a standalone-window library (its own `webview_run` message loop), not an HMG control, and its bridge has security problems that must not ship. It is the right base for Phase 4: use the webview core (MIT) and its built-in WebView2 loader, and write a new HMG control around it, taking the points below.
 

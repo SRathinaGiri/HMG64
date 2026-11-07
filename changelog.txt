@@ -10,6 +10,7 @@
    - SET HMG LEGACY VARS OFF: no PUBLIC variable per form/control (default ON, as before)
    - Faster event handling for radio groups, spinners, combo edits and child windows (no per-message scan of every control)
    - From HMG 3.7, all opt-in: ROUNDED <n> (TextBox/EditBox/RichEditBox/Frame), SET MSGBOXMODERN, SET TOOLTIPROUND/MARGIN/FONT/BORDERCOLOR/GRADIENT/THEME, SET MENUHOVER, TabSetModern()
+   - QHTM removed from HFCL (closed-source third-party qhtm.dll); may return later as an optional add-on
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

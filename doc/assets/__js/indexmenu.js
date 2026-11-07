@@ -427,7 +427,6 @@ c++; item[c]=new Array("HFCL_AutoFill.htm","","AutoFill","","Add auto filling fe
 c++; item[c]=new Array("HFCL_COMBOSEARCHBOX.htm","","ComboSearchBox","","Define a Combined Search Box Control","HFCL");
 c++; item[c]=new Array("HFCL_gridprint.htm","","GridPrint","","Print interface","HFCL");
 c++; item[c]=new Array("HFCL_MakeShortcut.htm","","MakeShortcut","","Make a file, folder or internet shortcut","HFCL");
-c++; item[c]=new Array("HFCL_QHTM.htm","","QHTM","","HTML library","HFCL");
 c++; item[c]=new Array("HMGSQL.htm","","HMG SQL","","SQL Bridge for MySQL, PostgreSQL, SQLite","HFCL");
 c++; item[c]=new Array("Update_HMG_Unicode.htm","","HMG-UNICODE Documentation","","Unicode Commands and Functions","HMG UNICODE");
 c++; item[c]=new Array("HMG_Unicode_Supplemental_Plane.htm","","CESU-8 and Unicode Supplemental Plane Characters in HMG","","Handling Unicode Supplemental Plane Characters in HMG","HMG UNICODE");

@@ -18,7 +18,7 @@ Confidence tags: **[High]** = verified by running code or reading the exact line
 | zlib | 1.2.13 | Outdated (the minizip CVE-2023-45853 was fixed later) |
 | libpng | 1.6.39 | Outdated |
 | libHaru (PDF) | **2.2.1** headers in `INCLUDE/` | 2.2.1 dates from about 2010; 2.4.x exists |
-| QHTM (HFCL) | loaded at runtime as `qhtm.dll` | Closed-source and discontinued; the DLL is not shipped |
+| QHTM (HFCL) | loaded at runtime as `qhtm.dll` | Removed from HMG5 (07-11-2026): closed-source, discontinued third-party DLL. May return as an optional add-on |
 | IDE | `IDE/IDE.exe` (v1.2a) | **Binary only, no source in the tree** |
 
 Size: about 103 K lines of PRG/C/CH in `SOURCE/` + `hfcl/`. The bundled toolchain is 670 MB (646 MB of it MinGW). The MinGW folder also carries gdb + Python 3.9, which the library doesn't need.
@@ -161,7 +161,7 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 3. Keep `DEFINE WINDOW … END WINDOW` / `@ … BUTTON` / `GetProperty/SetProperty` as a compatibility layer, so existing user code compiles unchanged. That is the main value of HMG.
 
 **Phase 4 — Modern features**
-- Dark mode, per-monitor DPI scaling, `IFileDialog`, WebView2 to replace QHTM, a modern PDF and print pipeline.
+- Dark mode, per-monitor DPI scaling, `IFileDialog`, a WebView2 HTML control (QHTM is removed), a modern PDF and print pipeline.
 - An IDE: rebuild it, or replace it with a VS Code extension (syntax + hbmk2 tasks + `.fmg` previewer).
 
 ---
@@ -184,7 +184,7 @@ A font or file name longer than the buffer corrupts the stack. With a font name 
 | C3 NULL crashes | **Fixed, verified at runtime** | `HMG_ISALPHA/ISDIGIT/ISLOWER/ISUPPER/ISALPHANUMERIC` return `.F.` for non-strings; `HMG_GETUNICODEVALUE(NIL)` returns `{}`. The file-dialog filter builder handles a missing filter. The old library dies with ACCESS_VIOLATION on `HMG_ISALPHA()`; the new one passes `tests/unit/strings.prg`. |
 | H1 XOR crypt | **Replaced, tested** (branch `phase1-aes-crypt`) | New `SOURCE/c_crypt_cng.c` + `h_crypt_aes.prg`: `HMG_AESEncrypt/Decrypt`, `HMG_AESEncryptFile/DecryptFile`, `HMG_AESIsBlob`. AES-256-GCM via Windows CNG (`bcrypt`, no new dependency), key = PBKDF2-HMAC-SHA256, 600,000 iterations (OWASP), random 16-byte salt + 12-byte nonce per blob, 16-byte tag. Self-describing blob `"HMGC"` + version + iterations + salt + nonce + ciphertext + tag (53 bytes overhead); the header is authenticated (AAD). Wrong password or any altered byte returns `NIL` / `.F.`, never garbage; bad arguments and I/O errors raise an `HMGCRYPT` RTE that does not carry the arguments, so passwords never reach error.log. Migration: `HMG_AESMigrateString` (`_ENCRYPT`/`DB_CODE` values) and `HMG_AESMigrateFile` (`FI_CODE` files, checks the legacy password, never writes plaintext to disk). The old XOR functions are unchanged and still marked deprecated. `tests/unit/crypt_aes.prg` has 49 checks: a known-answer vector produced independently with Python `cryptography`, round trip, wrong password, single-bit tamper at 11 positions, empty and 1 MB inputs, files, RTEs, and legacy XOR to AES migration. **Limits:** whole-file in memory (single-shot GCM); an AES blob does not fit a fixed-width `DB_CODE` field, so it needs a memo or a wider field; `DB_ENCRYPT` never encrypted records (header only), so DBFs need `DB_UNENCRYPT` + `HMG_AESEncryptFile`. ⚠ The format and parameters need the owner's review before client data is migrated. |
 | H3 file dialog | Fixed | Result buffer moved from the stack (~1 MB) to the heap. Full names are sized per file (the fixed `MAX_PATH` copies overflowed on long paths). No more double backslash for root folders. |
-| H4 DLL hijacking | Fixed (wider than reported) | All 16 `LoadLibrary("x.dll")` calls plus `HMG_DEFINE_DLL_FUNC` now go through `HMG_LoadSystemLibrary` (System32 only). QHTM goes through `HMG_LoadAppLibrary` (app folder, then System32). Needs Win 8+, or Win 7 with KB2533623. |
+| H4 DLL hijacking | Fixed (wider than reported) | All 16 `LoadLibrary("x.dll")` calls plus `HMG_DEFINE_DLL_FUNC` now go through `HMG_LoadSystemLibrary` (System32 only). QHTM has since been removed; `HMG_LoadAppLibrary` (app folder, then System32) stays for add-on DLLs. Needs Win 8+, or Win 7 with KB2533623. |
 | H5 temp file | Fixed | `c_button.c` and `c_image.c` use `GetTempFileName` (unique per call) instead of the shared `_HMG_tmp.BMP`. |
 | -w3 build | Fixed (Phase 2) | The 2 W0001 declaration mismatches are fixed. The 282 W0032 dead stores and 2 W0033 are cleared, and `hmg64.hbp` now builds at `-w3 -es2`. Harbour 3.2's W0032 is a flow-based dead-store check, so it also fires on initialisers that are always overwritten. Rules used: a store with no side effects is removed; a call on the right-hand side is kept and only the assignment is dropped; `SELECT PRINTER ... TO lSuccess` and one division that may hit the error handler are kept and marked with `HB_SYMBOL_UNUSED`. `cPassword` and `FontHandle` are now initialised to NIL explicitly. A few pure query calls were dropped together with their dead store (`Alias()`, `HB_ULEFT`, `hb_ValToExp`/`CharRem`, `HMG_LEN`, `_HMG_HPDF_MM2Pixel`, the `HMG_Debugger():aCurrentLineInfo` accessor, and the C wrappers for `GetDesktopWindow`, `GetDeviceCaps` and `LVM_GETITEMCOUNT`). |
 
