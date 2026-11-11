@@ -283,8 +283,17 @@ static void hmg_BuildFileFilter ( const CHAR *p, TCHAR *Filter, INT nFilterSize 
 }
 
 
+BOOL HMG_FileDlgIsModern( void );   // c_filedlg.c (SET FILEDIALOG MODERN)
+void HMG_FileDlgUsed( int nKind );
+BOOL HMG_ModernGetFile( void );
+BOOL HMG_ModernPutFile( void );
+BOOL HMG_ModernGetFolder( void );
+
 HB_FUNC ( C_GETFILE )
 {
+   HMG_FileDlgUsed( 0 );
+   if ( HMG_FileDlgIsModern() && HMG_ModernGetFile() )
+      return;
    // AUDIT.md H3: the result buffer was ~520 KB on the stack plus a ~520 KB
    // cFullName[1024][MAX_PATH] array; it now lives on the heap, and each full
    // name is sized to fit (the old fixed MAX_PATH copies overflowed on long paths).
@@ -367,6 +376,9 @@ HB_FUNC ( C_GETFILE )
 
 HB_FUNC ( C_PUTFILE )
 {
+ HMG_FileDlgUsed( 0 );
+ if ( HMG_FileDlgIsModern() && HMG_ModernPutFile() )
+    return;
  
  OPENFILENAME ofn;
  TCHAR buffer[1024];
@@ -520,6 +532,9 @@ BFFM_SETSTATUSTEXT  : Sets the status text. Set theBrowseCallbackProc lpData par
 //       c_GetFolder ( [<cTitle>], [<nFlags>], [<nCSIDL_FolderType>], [<cInvalidDataTitle>], [<cInitPath>] )
 HB_FUNC( C_GETFOLDER )
 {
+   HMG_FileDlgUsed( 0 );
+   if ( HMG_FileDlgIsModern() && HMG_ModernGetFolder() )
+      return;
    HWND           hWnd = GetActiveWindow();
    BROWSEINFO     BrowseInfo;
    TCHAR          cBuffer [ MAX_PATH ];

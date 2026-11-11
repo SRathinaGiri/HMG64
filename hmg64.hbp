@@ -100,6 +100,7 @@ source/c_scan.c
 source/c_webview.c
 source/c_dpi.c
 source/c_dark.c
+source/c_filedlg.c
 source/c_grid.c
 source/c_help.c
 source/c_hotkey.c

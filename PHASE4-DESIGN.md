@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)** and **K (dark mode)** implemented and tested (11-11-2026, sections 1.8, 2.6, 3.5); F, P, I not started.
+Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)** and **F (IFileDialog)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4); P, I not started.
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -226,7 +226,7 @@ Only windows inside an HMG form are styled (tooltips: owned by one): message box
 
 - Menu bar stays light (needs undocumented UAH owner-draw messages); popup menus not verified visually (keyboard simulation did not open them).
 - Light outlines remain on group boxes (FRAME), the tab control's border and spinner arrows; DATEPICKER, MONTHCALENDAR, status bar and toolbar stay light.
-- Message boxes, TaskDialog (`SET MSGBOXMODERN`) and file dialogs follow Windows, not the program.
+- Message boxes, TaskDialog (`SET MSGBOXMODERN`) and file dialogs (classic or modern, section 4) follow Windows, not the program.
 - No switching at run time (needs restyling every existing window); AUTO reads the setting once.
 
 ### 3.5 Status (11-11-2026)
@@ -235,7 +235,51 @@ Done as above; matrix green (22 suites per mode).
 
 ---
 
-## 4. Later items (outline only)
+## 4. File dialogs (IFileDialog)
 
-- **F, IFileDialog**: `SET FILEDIALOG MODERN` makes `GetFile/PutFile/GetFolder` use `IFileOpenDialog`/`IFileSaveDialog`, same arguments and return values; long paths without the `MAX_PATH` buffers.
+### 4.1 Decision
+
+`SET FILEDIALOG MODERN` (`HMG_SetFileDialog( "MODERN" | "CLASSIC" | lModern )`, `HMG_IsModernFileDialog()`) makes `GetFile`, `PutFile` and `GetFolder` use `IFileOpenDialog` / `IFileSaveDialog`. Default CLASSIC: nothing changes for existing programs. Unlike DPI and dark mode it can be switched at any time (no window depends on it).
+
+The switch is at the C entry points (`C_GETFILE`, `C_PUTFILE`, `C_GETFOLDER` in `c_dialogs.c`), so the PRG wrappers and programs that call the C functions directly behave the same. `SOURCE/c_filedlg.c` holds the modern code: plain C COM (`COBJMACROS`), local GUIDs (user programs need no `libuuid`), strings converted to UTF-16 at the boundary in both library modes.
+
+Same arguments and return values as the classic dialogs:
+
+| | Classic | Modern |
+|---|---|---|
+| GetFile | `GetOpenFileName`, 1024 × `MAX_PATH` buffer | `IFileOpenDialog`, no buffer; one file → string, several → array (as before) |
+| PutFile | `GetSaveFileName`, 1024-char buffer | `IFileSaveDialog`; default name may contain a folder; `@cExt` and `@nFilterIndex` returned as before |
+| GetFolder | `SHBrowseForFolder` tree, `MAX_PATH` | Explorer folder picker (`FOS_PICKFOLDERS`), search, address bar, typed paths |
+| Current directory | changed to the file's folder unless NOCHANGEDIR | the same, done explicitly (the dialog runs with `FOS_NOCHANGEDIR`) |
+| Filters | `"name\0spec\0…"` | the same string turned into `COMDLG_FILTERSPEC`; index kept |
+
+When the modern dialog cannot serve a call, the classic one runs: COM not usable on the thread (multithreaded apartment), or `GetFolder` asked for files, computers or printers (`BIF_BROWSEINCLUDEFILES`, `BIF_BROWSEFORCOMPUTER`, `BIF_BROWSEFORPRINTER`).
+
+### 4.2 Differences that remain
+
+- `GetFolder`: the picker has no root folder, so `nCSIDL_FolderType` becomes the starting folder when no `cInitPath` is given. The title is the window caption, not a line above the tree. The New Folder button is always there. An invalid typed name is reported by Windows, not with `cInvalidDataMsg`.
+- On Windows 10/11 the classic `GetOpenFileName` without a hook already shows the Explorer-style window. The visible change is mostly in GetFolder; for GetFile/PutFile the gain is no fixed buffers and one code path for later work (custom places, events).
+
+### 4.3 Tests
+
+`tests/unit/filedlg` (28 checks, both modes). A helper thread (C in the test, `#pragma BEGINDUMP`) finds the dialog the process opened, types into the focused file-name box and presses OK or Cancel. If a dialog does not accept the answer it is cancelled, so the test cannot hang. Checked:
+
+- classic and modern give the same result for the same answer;
+- dialog kind (`HMG_FILEDIALOG_LASTKIND()`) and caption;
+- NOCHANGEDIR, and the change of directory without it;
+- multiselect with two files and with one;
+- cancel;
+- PutFile default extension, `@cExt` / `@nFilterIndex`, default name with a folder;
+- GetFolder starting folder and result;
+- fallback to the classic tree for `BIF_BROWSEINCLUDEFILES`;
+- switching back to CLASSIC.
+
+### 4.4 Status (12-11-2026)
+
+Done as above; matrix green (23 suites per mode). Not tested: paths longer than `MAX_PATH` (they need long-path support enabled in Windows) and non-ASCII names typed into the dialog.
+
+---
+
+## 5. Later items (outline only)
+
 - **P, PDF/print** and **I, IDE**: to be designed after W-F; the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.

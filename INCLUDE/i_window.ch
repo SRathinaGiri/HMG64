@@ -759,6 +759,8 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 #xtranslate SET DARKMODE ON                =>   HMG_SetDarkMode ( "ON" )
 #xtranslate SET DARKMODE OFF               =>   HMG_SetDarkMode ( "OFF" )
 #xtranslate SET DARKMODE AUTO              =>   HMG_SetDarkMode ( "AUTO" )
+#xtranslate SET FILEDIALOG MODERN            =>   HMG_SetFileDialog ( "MODERN" )
+#xtranslate SET FILEDIALOG CLASSIC           =>   HMG_SetFileDialog ( "CLASSIC" )
 #xtranslate ToolTipCustomDrawIsActive ()     =>   _HMG_SYSDATA \[ 509 \]
 
 #define TOOLTIPICON_NONE            0
