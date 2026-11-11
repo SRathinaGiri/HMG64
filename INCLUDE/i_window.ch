@@ -750,6 +750,10 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 #xtranslate SET TOOLTIPCUSTOMDRAW ON         =>   SetToolTipCustomDraw ( .T. )
 #xtranslate SET TOOLTIPCUSTOMDRAW OFF        =>   SetToolTipCustomDraw ( .F. )
 #xtranslate SET TOOLTIPCUSTOMDRAW TO <lOn>   =>   SetToolTipCustomDraw ( <lOn> )
+
+// Phase 4: per-monitor DPI (h_dpi.prg); before the first DEFINE WINDOW
+#xtranslate SET DPIAWARE PERMONITOR        =>   HMG_SetPerMonitorDpi ( .T. )
+#xtranslate SET DPIAWARE SYSTEM            =>   HMG_SetPerMonitorDpi ( .F. )
 #xtranslate ToolTipCustomDrawIsActive ()     =>   _HMG_SYSDATA \[ 509 \]
 
 #define TOOLTIPICON_NONE            0

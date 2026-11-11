@@ -26,6 +26,7 @@
 #include "hbvm.h"
 #include "hbapiitm.h"
 #include "hbapi.h"
+#include "hmg_dpi.h"
 
 #include "hbthread.h"
 extern HB_CRITICAL_T _HMG_Mutex;   // global Mutex variable defined into c_Thread.c
@@ -73,6 +74,13 @@ _THREAD_UNLOCK();
 LRESULT CALLBACK WndProc (HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 //-------------------------------------------------------------------------------------//
 {
+
+   // Phase 4 DPI (c_dpi.c): WM_DPICHANGED rescales the form; WM_NCDESTROY drops its DPI property
+   if ( nMsg == 0x02E0 /* WM_DPICHANGED */ || nMsg == WM_NCDESTROY )
+   {  LRESULT DpiResult;
+      if ( HMG_DpiWndProc ( hWnd, nMsg, wParam, lParam, &DpiResult ) )
+         return DpiResult;
+   }
 
 #if _HMG_CREATE_EVENT_
    // by Dr. Claudio Soto, December 2014

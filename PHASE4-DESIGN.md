@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control) implemented and tested** (11-11-2026, section 1.8); D-I not started.
+Status: branch `phase4`. **W (WebView2 control)** and **D (per-monitor DPI)** implemented and tested (11-11-2026, sections 1.8 and 2.6); K-I not started.
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -120,9 +120,73 @@ Dot syntax: `Form.Web.URL := "..."`, `Form.Web.ExecuteScript( "..." )`, `Form.We
 
 ---
 
-## 2. Later items (outline only)
+## 2. Per-monitor DPI
 
-- **D, DPI**: manifest `PerMonitorV2` behind an opt-in (`SET DPIAWARE PERMONITOR`); on `WM_DPICHANGED` scale each control's Row/Col/Width/Height/font from the stored design values (the `HMG_Control` API from S3 makes this one loop). Default stays system-aware, so existing layouts do not move.
+### 2.1 Problem (measured in the code)
+
+- The manifest (`RESOURCES/Windows7.Manifest`) declares `<dpiAware>true</dpiAware>`: **system-DPI aware**.
+- Fonts follow the system DPI (`PrepareFont` multiplies by the desktop's `LOGPIXELSY`), but every Row/Col/Width/Height is used as raw pixels. At 125-150 % text outgrows its controls; on a second monitor with another DPI Windows stretches the bitmap (blurry).
+- HMG stores control positions in `_HMG_SYSDATA` (`HMG_CTL_ROW/COL/WIDTH/HEIGHT`) and reads them back from there; all writes go through `_SetControlSizePos` → `MOVEWINDOW`. Forms are read with `GetWindowRect` and written with `MoveWindow` (`_Get/_SetWindowSizePos`). PRG code mixes stored values with `GetWindowWidth()` and scrollbar metrics (spinner, browse scroll parts).
+
+### 2.2 Decision: one rule, applied at the Win32 boundary
+
+**Programs and the PRG library see design units (pixels at 96 DPI) everywhere; C converts.** Opt-in:
+
+```
+SET DPIAWARE PERMONITOR      // before the first DEFINE WINDOW; HMG_SetPerMonitorDpi( .T. ) -> lActive
+```
+
+Without it nothing changes (every conversion is a no-op; the matrix shows the old behaviour). The manifest is not changed: the GUI thread switches itself to Per-Monitor-V2 with `SetThreadDpiAwarenessContext`, which works on top of the system-aware manifest (Windows 10 1703+; older systems return `.F.`).
+
+| Where (all in C) | Conversion |
+|---|---|
+| thread CBT hook, `HCBT_CREATEWND` | child of an HMG form: x, y, cx, cy × dpi/96; HMG top-level form: cx, cy × monitor dpi/96 (screen positions stay in pixels) |
+| `MOVEWINDOW`, `SETWINDOWPOS` | same scaling (respects `SWP_NOMOVE` / `SWP_NOSIZE`) |
+| `GETWINDOWWIDTH/HEIGHT`, size part of `GETWINDOWRECT`, `GETCLIENTAREAWIDTH/HEIGHT` | ÷ dpi/96 |
+| `GETVSCROLLBARWIDTH`, `GETHSCROLLBARHEIGHT` | the 96-DPI metric (`GetSystemMetricsForDpi`) |
+| `_SETFONT`, `SETFONTNAMESIZE` | font height for the window's DPI instead of the desktop's |
+| list-view columns (`INITLISTVIEWCOLUMNS`, `LISTVIEW_ADDCOLUMN`, `LISTVIEW_SET/GETCOLUMNWIDTH`) | × / ÷ dpi/96 (negative auto-size codes pass through) |
+| panels (`_Get/_SetWindowSizePos`, PRG) | client pixels from `ScreenToClient` ÷ dpi/96 |
+
+"HMG form" = a window whose class uses HMG's `WndProc` (forms, panels, split children): an exact test, no list to maintain. Windows that comctl32 creates inside a control (combo edit, list header) have a control as parent, so they are never touched and size themselves.
+
+Why a creation hook instead of changing each `Init*` function: one place covers all ~40 control types, HFCL and user C code that creates children of a form. The stored values in `_HMG_SYSDATA` stay design units, so `GetProperty`, the `HMG_Control` objects, the IDE's `.fmg` values and every `Form.Control.Row := ...` keep their meaning.
+
+### 2.3 DPI change
+
+`WndProc` (`c_EventCB.c`) passes `WM_DPICHANGED` to `HMG_DpiWndProc` (`c_dpi.c`): the form stores the new DPI (window property), takes Windows' suggested rectangle, then `_HMG_DPIRESCALE( hWnd, nOldDpi )` (`h_dpi.prg`):
+
+- every control of the form: `_SetControlSizePos` with its stored design values (MOVEWINDOW converts for the new DPI; tabs, radio groups, spinners, browse use their existing code paths);
+- grid/browse columns: widths × new/old;
+- font: the control's **current** font (`WM_GETFONT` → `LOGFONT`) created again for the new DPI. This covers controls that store no font name (they use the `SET FONT` default; `HMG_CTL_FONTNAME` is NIL), found by a slot dump. Exact height when the control stores a size;
+- panels: placed again from their pixels at the old DPI, then rescaled recursively.
+
+### 2.4 API
+
+| | |
+|---|---|
+| `SET DPIAWARE PERMONITOR` / `SYSTEM` | `HMG_SetPerMonitorDpi( lOn )` → active state; refused once a window exists |
+| `HMG_GetFormDpi( cForm )` | DPI the form is laid out for (96 when off) |
+| `HMG_DPI_SCALE( hWnd, n )`, `HMG_DPI_UNSCALE( hWnd, n )` | for user code that calls Win32 directly |
+| `HMG_DPI_SIMULATE( hForm, nDpi )` | runs the `WM_DPICHANGED` path (tests; one-monitor machines) |
+
+Dot-syntax note found while testing: `Form.Width := Form.Width` does not compile in HMG (the `<c>` marker swallows it, as with `Title` in 1.6); use `SetProperty/GetProperty`.
+
+### 2.5 Tests
+
+`tests/unit/dpi` (73 checks, both library modes): label, textbox, radio group, spinner, grid (columns), a button in a tab, a panel with a label, the form; at the monitor DPI, then simulated 192, 144 and back: real pixel widths = design × dpi/96, properties unchanged, form size stable over repeated read-modify-write, fonts (explicit and default) at the new height, a control created after a DPI change, the mode cannot be switched off. A visual check at a simulated 144 DPI (text, combo height, grid rows, tab) looked right.
+
+### 2.6 Status and open points (11-11-2026)
+
+- Done: 2.2-2.5. Matrix green (21 suites per mode).
+- Not verified: a real second monitor with another DPI (this PC has one 96-DPI screen; the change path is exercised by simulation only), Windows older than 10 1703.
+- Not scaled yet: toolbar button and image sizes, image lists (grid/tree/tab images), `IMAGE` pictures (scaled only by their control size), SPLITBOX bands, status-bar part widths, MonthCalendar font (`c_monthcal.c` calls `PrepareFont` without a window), `DRAW` / print preview coordinates. Each needs the same rule at its Win32 call.
+- Windows created on other threads are not scaled (the hook is per thread; HMG GUI belongs on the main thread, PHASE3-DESIGN.md 4.5).
+
+---
+
+## 3. Later items (outline only)
+
 - **K, dark mode**: `SET DARKMODE ON` → `DwmSetWindowAttribute(DWMWA_USE_IMMERSIVE_DARK_MODE)` for title bars, `SetWindowTheme(L"DarkMode_Explorer")` for lists/trees/scrollbars, default BackColor/FontColor from a dark palette; controls with explicit colours keep them.
 - **F, IFileDialog**: `SET FILEDIALOG MODERN` makes `GetFile/PutFile/GetFolder` use `IFileOpenDialog`/`IFileSaveDialog`, same arguments and return values; long paths without the `MAX_PATH` buffers.
 - **P, PDF/print** and **I, IDE**: to be designed after W-F; the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.
