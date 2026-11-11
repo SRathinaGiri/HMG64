@@ -1,0 +1,1257 @@
+/*----------------------------------------------------------------------------
+ HMG - Harbour Windows GUI library source code
+
+ Copyright 2002-2016 Roberto Lopez <mail.box.hmg@gmail.com>
+ http://sites.google.com/site/hmgweb/
+
+ This program is free software; you can redistribute it and/or modify it under 
+ the terms of the GNU General Public License as published by the Free Software 
+ Foundation; either version 2 of the License, or (at your option) any later 
+ version. 
+
+ This program is distributed in the hope that it will be useful, but WITHOUT 
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along with 
+ this software; see the file COPYING. If not, write to the Free Software 
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA (or 
+ visit the web site http://www.gnu.org/).
+
+ As a special exception, you have permission for additional uses of the text 
+ contained in this release of HMG.
+
+ The exception is that, if you link the HMG library with other 
+ files to produce an executable, this does not by itself cause the resulting 
+ executable to be covered by the GNU General Public License.
+ Your use of that executable is in no way restricted on account of linking the 
+ HMG library code into it.
+
+ Parts of this project are based upon:
+
+   "Harbour GUI framework for Win32"
+   Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+   Copyright 2001 Antonio Linares <alinares@fivetech.com>
+   www - http://www.harbour-project.org
+
+   "Harbour Project"
+   Copyright 1999-2008, http://www.harbour-project.org/
+
+   "WHAT32"
+   Copyright 2002 AJ Wos <andrwos@aust1.net> 
+
+   "HWGUI"
+   Copyright 2001-2008 Alexander S.Kresin <alex@belacy.belgorod.su>
+
+---------------------------------------------------------------------------*/
+
+#pragma -w2 // -es2 
+
+#pragma DEBUGINFO=OFF   // ADD, march 2017
+
+// PUBLIC vars defined in Main()
+MEMVAR CompilerVersion
+MEMVAR Author
+MEMVAR cFileLanguage
+MEMVAR cFileBuildBat
+
+MEMVAR _HMG_SYSDATA
+MEMVAR _HMG_MainWindowFirst
+
+MEMVAR RESETINCREMENTAL
+MEMVAR ENABLEDEBUGGER
+MEMVAR docpath
+MEMVAR aMsgs
+MEMVAR cSourceBuffer
+MEMVAR nParameterCount
+MEMVAR cParameters
+MEMVAR lForceFullWarning
+MEMVAR nVersion
+MEMVAR _InsertActive
+MEMVAR _REPORTTYPE
+MEMVAR aTables
+MEMVAR cCurrentReportFileName
+MEMVAR _ReportFontName
+MEMVAR _ReportFontSize
+MEMVAR _ReportFontBold
+MEMVAR _ReportFontItalic
+MEMVAR _ReportBuilderActive
+MEMVAR _EAT
+MEMVAR _GCN
+MEMVAR _HLK
+MEMVAR cUserLog
+MEMVAR lVirtualForm
+MEMVAR ResetProjectInfo
+MEMVAR _hmgide_aDropDownMenus
+MEMVAR _hmgide_CurrentNotifyMenu
+MEMVAR _hmgide_CurrentMainMenu
+MEMVAR _hmgide_CurrentContextMenu
+MEMVAR _hmgide_CurrentStatusBar
+MEMVAR _hmgide_CurrentToolBar
+MEMVAR Processing
+MEMVAR StartUpFolder
+MEMVAR DebuggerSupport
+MEMVAR MiniGUIFolder
+MEMVAR ProgramEditor
+MEMVAR Language
+MEMVAR cHmgFolder
+MEMVAR MixedMode
+MEMVAR AddIncPaths
+MEMVAR BccFolder
+MEMVAR AddLibs
+MEMVAR RunAfetrBuild
+MEMVAR SnapToGrid
+MEMVAR ProjectName
+MEMVAR DesignFormModified
+MEMVAR OpenFormName
+MEMVAR _pr
+MEMVAR _pc
+MEMVAR WindowWidth
+MEMVAR WindowHeight
+MEMVAR SelectedControlName
+MEMVAR SelectedControlType
+MEMVAR MoveIndex
+MEMVAR SizeStarted
+MEMVAR MoveStarted
+MEMVAR MoveCol
+MEMVAR MoveRow
+MEMVAR MoveWidth
+MEMVAR MoveHeight
+MEMVAR BrowseCount
+MEMVAR TreeCount
+MEMVAR DesignFormhandle
+MEMVAR DesignForm
+MEMVAR CurrentControl
+MEMVAR ButtonCount
+MEMVAR CheckBoxCount
+MEMVAR ListBoxCount
+MEMVAR ComboBoxCount
+MEMVAR CheckButtonCount
+MEMVAR GridCount
+MEMVAR FrameCount
+MEMVAR TabCount
+MEMVAR ImageCount
+MEMVAR AnimateCount
+MEMVAR DatepickerCount
+MEMVAR TextBoxCount
+MEMVAR EditBoxCount
+MEMVAR LabelCount
+MEMVAR PlayerCount
+MEMVAR ProgressBarCount
+MEMVAR RadioGroupCount
+MEMVAR SliderCount
+MEMVAR SpinnerCount
+MEMVAR HyperLinkCount
+MEMVAR MonthCalendarCount
+MEMVAR RichEditCount
+MEMVAR IpAddressCount
+MEMVAR TimerCount
+MEMVAR ActivexCount
+MEMVAR ChildWindowCount
+MEMVAR SelectedControlIndex
+MEMVAR MainHeight
+MEMVAR ProjectHeight
+
+// PRIVATE vars defined in StatusBarBuilder()
+MEMVAR _StCaptions
+MEMVAR _StActions
+MEMVAR _StWidths
+MEMVAR _StIcons
+MEMVAR _StToolTips
+MEMVAR _StStyles
+MEMVAR _StFont
+MEMVAR _StTop
+
+// PUBLIC vars defined in LoadUserComponents()
+MEMVAR nComponentCount
+MEMVAR aComponentFileNames
+MEMVAR aComponentNames
+MEMVAR aComponentProperties
+MEMVAR aComponentEvents
+MEMVAR aComponentPropValues
+MEMVAR aComponentEvtValues
+
+// PRIVATE vars defined in _Open()
+MEMVAR Name
+MEMVAR MacroVar
+* MEMVAR _hmgide_CurrentMainMenu
+* MEMVAR _hmgide_CurrentContextMenu
+* MEMVAR _hmgide_CurrentNotifyMenu
+* MEMVAR _hmgide_CurrentStatusBar
+* MEMVAR _hmgide_CurrentToolBar
+* MEMVAR _hmgide_CurrentToolBar
+* MEMVAR _hmgide_aDropDownMenus
+MEMVAR _hmgide_CurrentSplitBox
+
+// PRIVATE var defined in AddControl()
+* MEMVAR MacroVar
+
+// PRIVATE vars defined in EditTabOrder()
+MEMVAR aTree
+MEMVAR aTreeTabIndex
+MEMVAR aTreeTabPage
+MEMVAR aTreeTabPos
+MEMVAR aTreeTabPageLength
+
+// PRIVATE vars defined in ContextMenuBuilder()
+MEMVAR _MenuCaptions
+MEMVAR _MenuActions
+MEMVAR _MenuNames
+MEMVAR _MenuImages
+MEMVAR _MenuChecked
+
+// PRIVATE vars defined in MainMenuBuilder()
+* MEMVAR _MenuCaptions
+* MEMVAR _MenuActions
+* MEMVAR _MenuNames
+* MEMVAR _MenuImages
+* MEMVAR _MenuChecked
+
+// PRIVATE vars defined in ToolBarBuilder()
+MEMVAR _TbName
+MEMVAR _TbNames
+MEMVAR _TbCaptions
+MEMVAR _TbPictures
+MEMVAR _TbActions
+MEMVAR _TbToolTips
+MEMVAR _TbSeparators
+MEMVAR _TbChecks
+MEMVAR _TbAutoSizes
+MEMVAR _TbGroups
+MEMVAR _TbDropDowns
+MEMVAR _TbWholeDropDowns
+MEMVAR _TbFontName
+MEMVAR _TbFontSize
+MEMVAR _TbFontBold
+MEMVAR _TbFontItalic
+MEMVAR _TbFontUnderLine
+MEMVAR _TbFontStrikeout
+MEMVAR _TbButtonWidth
+MEMVAR _TbButtonHeight
+MEMVAR _TbButtonImageWidth
+MEMVAR _TbButtonImageHeight
+MEMVAR _TbToolTip
+MEMVAR _TbFlat
+MEMVAR _TbBottom
+MEMVAR _TbRightText
+MEMVAR _TbBorder
+MEMVAR _TbStrictWidth
+
+// PUBLIC vars defined in hmgMake()
+MEMVAR cProjectFile
+MEMVAR cLibraries
+MEMVAR cLinkerLibraries
+MEMVAR lDebuggerSupport
+MEMVAR lFullBuild
+MEMVAR FullBuild
+MEMVAR aParams
+MEMVAR cProjectBaseName
+MEMVAR aModifiedFiles
+MEMVAR aFilesToCompile
+MEMVAR aFormsModified
+MEMVAR aProjectModuleFiles
+MEMVAR cProjectFolder
+MEMVAR cBackupFolder
+MEMVAR aDependences
+MEMVAR nstd
+MEMVAR nstx
+MEMVAR lConsoleMode
+MEMVAR cInclude
+
+// PRIVATE vars defined in _Spx_ToolBarBuilder()
+* MEMVAR _TbName
+* MEMVAR _TbNames
+* MEMVAR _TbCaptions
+* MEMVAR _TbPictures
+* MEMVAR _TbActions
+* MEMVAR _TbToolTips
+* MEMVAR _TbSeparators
+* MEMVAR _TbChecks
+* MEMVAR _TbAutoSizes
+* MEMVAR _TbGroups
+* MEMVAR _TbDropDowns
+* MEMVAR _TbWholeDropDowns
+* MEMVAR _TbFontName
+* MEMVAR _TbFontSize
+* MEMVAR _TbFontBold
+* MEMVAR _TbFontItalic
+* MEMVAR _TbFontUnderLine
+* MEMVAR _TbFontStrikeout
+* MEMVAR _TbButtonWidth
+* MEMVAR _TbButtonHeight
+* MEMVAR _TbButtonImageWidth
+* MEMVAR _TbButtonImageHeight
+* MEMVAR _TbToolTip
+* MEMVAR _TbFlat
+* MEMVAR _TbBottom
+* MEMVAR _TbRightText
+* MEMVAR _TbBorder
+* MEMVAR _TbStrictWidth
+MEMVAR _TbBreak
+
+// PUBLIC var defined in GetErrorProcName()
+MEMVAR cCurrentFixedFile
+
+
+#include "hmg.ch"
+#include "Fileio.ch"
+#include "SET_COMPILE_HMG_UNICODE.ch"
+
+// #xcommand EXECUTE FILE <executable> WAIT HIDE   =>   WaitRun (<executable> , 0)
+
+#define CRLF  CHR(13) + CHR(10)
+#define SB_HORZ         0
+#define SB_VERT         1
+#define WM_VSCROLL      0x0115
+#define SB_LINEUP       0
+#define SB_LINEDOWN     1
+#define SB_TOP          6
+#define SB_PAGEUP       2
+#define SB_PAGELEFT     2
+#define WM_HSCROLL      276
+#define BST_UNCHECKED   0
+#define BST_CHECKED     1
+#define BM_GETCHECK     240
+#define BM_SETCHECK     241
+
+
+DECLARE WINDOW rep_build_step_1
+DECLARE WINDOW rep_build_step_2
+DECLARE WINDOW rep_build_step_3
+DECLARE WINDOW reportsummaryoptions
+DECLARE WINDOW reporttitlesoptions
+DECLARE WINDOW ReportFormatOptions
+DECLARE WINDOW fieldselector
+
+
+#define IDE_NUMBER_VERSION "ver 1.3b" // 'Version: 2011.06.24'
+
+
+*-------------------------------------------------------------------------------------------*
+PROCEDURE CreateScreenSplash (cFileName)
+*-------------------------------------------------------------------------------------------*
+LOCAL Image_Width, Image_Height, Image_BackColor
+
+   IF HMG_GetImageInfo (cFileName, @Image_Width, @Image_Height, @Image_BackColor) == .F.
+      MsgHMGError ("File Opening Error. Program Terminated" )
+   ENDIF
+
+   #define IMAGEZOOM 1.5
+
+   DEFINE WINDOW FormSplash;
+         AT 0,0;  
+         WIDTH Image_Width * IMAGEZOOM;
+         HEIGHT Image_Height * IMAGEZOOM;
+         BACKCOLOR WHITE; 
+         NOSYSMENU;
+         NOSIZE;
+         NOMINIMIZE;
+         NOMAXIMIZE; 
+         NOCAPTION;
+         TOPMOST;
+         CHILD
+         
+         SET WINDOW FormSplash TRANSPARENT TO COLOR WHITE
+         
+         @ 0, 0  IMAGE Image_1 PICTURE cFileName  WIDTH Image_Width * IMAGEZOOM  HEIGHT Image_Height * IMAGEZOOM
+         //@ 0, 0 LABEL Label_1 VALUE "ide" AUTOSIZE FONT "Comic Sans MS" SIZE 24 FONTCOLOR YELLOW TRANSPARENT
+   END WINDOW
+   
+   CENTER WINDOW FormSplash
+   SHOW WINDOW FormSplash
+RETURN
+
+
+
+
+*------------------------------------------------------------------------------*
+FUNCTION  Main ( xProject , cPar )
+*------------------------------------------------------------------------------*
+Local hFactor
+Local nDeltaProp
+LOCAL cTemp, nTemp
+LOCAL lFlagBuildLog := .F.
+LOCAL cFileName, cIconName
+
+PUBLIC cFileBuildBat := 'UseBuildBat.ini'
+PUBLIC cFileLanguage
+
+#ifdef COMPILE_HMG_UNICODE
+
+   IF HMG SUPPORT UNICODE RUN 
+   #define IDE_VERSION  "UNICODE  " + IDE_NUMBER_VERSION
+   cFileName := "HMG-UNICODE"
+   cIconName := "HMG-UNICODE_icon"
+   PUBLIC _GCN := '* HMG-IDE UNICODE Form Designer Generated Code' + CRLF + '* (c) Roberto Lopez - http://sites.google.com/site/hmgweb'  
+   cFileLanguage := "language_UNI.ini"
+
+#else
+
+   IF HMG SUPPORT UNICODE STOP 
+   #define IDE_VERSION  "ANSI  " + IDE_NUMBER_VERSION
+   cFileName := "HMG-ANSI"
+   cIconName := "HMG-ANSI_icon"
+   PUBLIC _GCN := '* HMG-IDE ANSI Form Designer Generated Code' + CRLF + '* (c) Roberto Lopez - http://sites.google.com/site/hmgweb'  
+   cFileLanguage := "language_ANS.ini"
+
+#endif
+
+   SET WINDOW MAIN OFF
+      CreateScreenSplash (cFileName)
+   SET WINDOW MAIN ON
+
+
+   _HMG_SYSDATA [321] := .T.
+
+   PUBLIC RESETINCREMENTAL := .F.
+   PUBLIC ENABLEDEBUGGER   := .F.
+
+   PUBLIC docpath
+   PUBLIC aMsgs [512]
+   PUBLIC cSourceBuffer       := ''
+   PUBLIC nParameterCount     := PCOUNT()
+   PUBLIC cParameters         := {}
+   PUBLIC lForceFullWarning   := .T.
+   PUBLIC nVersion            := WINMAJORVERSIONNUMBER() + (WINMINORVERSIONNUMBER() / 10)
+   PUBLIC _InsertActive       := .F.
+   PUBLIC _REPORTTYPE         := 'NEW'
+   PUBLIC aTables
+   PUBLIC cCurrentReportFileName
+
+   PUBLIC _ReportFontName       := 'Arial'
+   PUBLIC _ReportFontSize       := 9
+   PUBLIC _ReportFontBold       := .F.
+   PUBLIC _ReportFontItalic     := .F.
+   PUBLIC _ReportBuilderActive  := .F.
+
+
+   if (VALTYPE(xProject) == 'C' .and. ALLTRIM(HMG_UPPER(xProject)) == '/C' ) .or. (VALTYPE(cPar) == 'C' .and. ALLTRIM(HMG_UPPER(cPar)) == '/C' )
+       REQUEST DBFCDX , DBFFPT
+       RDDSETDEFAULT( "DBFCDX" )
+       
+       if nParameterCount == 1
+          nParameterCount := 0
+       endif
+   endif
+
+   AADD ( cParameters , xProject )
+
+   SET CENTURY ON
+   SET DATE ANSI
+   SET AUTOSCROLL OFF
+
+
+   PUBLIC _EAT   := "HMG-IDE  "+ IDE_VERSION + "  "
+   PUBLIC Author := '(c) Roberto Lopez - FREEWARE -'
+   PUBLIC _HLK   := 'http://sites.google.com/site/hmgweb'
+
+
+   PUBLIC cUserLog                   := ''
+   PUBLIC lVirtualForm               := .F.
+   PUBLIC ResetProjectInfo           := .F.
+   PUBLIC _hmgide_aDropDownMenus     := {}
+   PUBLIC _hmgide_CurrentNotifyMenu  := ''
+   PUBLIC _hmgide_CurrentMainMenu    := ''
+   PUBLIC _hmgide_CurrentContextMenu := ''
+   PUBLIC _hmgide_CurrentStatusBar   := ''
+   PUBLIC _hmgide_CurrentToolBar     := ''
+   PUBLIC _hmgide_CurrentToolBar     := ''
+   PUBLIC Processing                 := .F.
+   PUBLIC StartUpFolder              := GETMODULEFILENAME()
+   PUBLIC DebuggerSupport            := .F.
+
+
+   StartUpFolder := HB_ULEFT (StartUpFolder, HB_UTF8RAT ('\', StartUpFolder))
+
+   
+   if .not. file (StartUpFolder + 'hmg.ini')
+
+      cTemp := ALLTRIM( StartUpFolder)
+      
+      if HB_URIGHT ( cTemp ,1 ) == '\'
+         cTemp := HB_ULEFT ( cTemp , HMG_LEN(cTemp) - 1)
+      endif
+
+      nTemp := HB_UTF8RAT ( '\' , cTemp )
+      cTemp := HB_ULEFT ( cTemp , nTemp )
+
+      if HB_URIGHT ( cTemp ,1 ) == '\'
+         cTemp := HB_ULEFT ( cTemp , HMG_LEN(cTemp) - 1)
+      endif
+
+      SaveString ( StartUpFolder + 'hmg.ini' , cTemp )
+
+   endif
+
+
+
+   if .not. file (StartUpFolder + 'editor.ini')
+
+      cTemp := ALLTRIM( StartUpFolder)
+
+      if HB_URIGHT ( cTemp ,1 ) == '\'
+         cTemp := HB_ULEFT ( cTemp , HMG_LEN(cTemp) - 1)
+      endif
+
+      nTemp := HB_UTF8RAT ( '\' , cTemp )
+      cTemp := HB_ULEFT ( cTemp , nTemp )
+
+      if HB_URIGHT ( cTemp ,1 ) == '\'
+         cTemp := HB_ULEFT ( cTemp , HMG_LEN(cTemp) - 1)
+      endif
+
+      ProgramEditor := HMG_GetFileAssociatedWithExtension ( ".prg" )
+      IF .NOT. FILE (ProgramEditor)
+         ProgramEditor :=  GetSystemDir()+"\notepad.exe"   // Note Block of Windows
+      ENDIF
+   // SaveString ( StartUpFolder + 'editor.ini' , cTemp + '\notepad++\notepad++.exe' )
+      SaveString ( StartUpFolder + 'editor.ini' , ProgramEditor )
+   endif
+
+   if .not. file (StartUpFolder + cFileLanguage)
+      #ifdef COMPILE_HMG_UNICODE
+          SaveString (StartUpFolder + cFileLanguage , 'english.UNI' )
+      #else
+          SaveString (StartUpFolder + cFileLanguage , 'english.ANS' )
+      #endif
+   endif
+
+
+   PUBLIC MiniGUIFolder  := ALLTRIM (HB_UTF8STRTRAN (HB_MEMOREAD (StartUpFolder + 'hmg.ini'), chr(26), ' '))
+   PUBLIC ProgramEditor  := ALLTRIM (HB_UTF8STRTRAN (HB_MEMOREAD (StartUpFolder + 'editor.ini'), chr(26), ' '))
+   PUBLIC Language             := ALLTRIM (HB_UTF8STRTRAN (HB_MEMOREAD (StartUpFolder + cFileLanguage), chr(26), ' '))
+
+   IF .NOT. FILE (ProgramEditor)
+      ProgramEditor := HMG_GetFileAssociatedWithExtension ( ".prg" )
+      IF .NOT. FILE (ProgramEditor)
+         ProgramEditor :=  GetSystemDir()+"\notepad.exe"   // Note Block of Windows
+      ENDIF
+   ENDIF
+
+   PUBLIC cHmgFolder   := MiniGUIFolder
+
+   PUBLIC CompilerVersion := ""
+
+	PUBLIC MixedMode	:= .F.
+
+	PUBLIC AddIncPaths	:= ''
+	PUBLIC BccFolder 	:= ''
+	PUBLIC AddLibs		:= ''
+
+	PUBLIC RunAfetrBuild 	:= .F.
+
+	PUBLIC SnapToGrid	:= .T.
+
+	PUBLIC ProjectName	:= ''
+	PUBLIC DesignFormModified := .F.
+
+	PUBLIC OpenFormName		:= ''
+	PUBLIC _pr			:= 0
+	PUBLIC _pc			:= 0
+	PUBLIC WindowWidth		:= 550
+	PUBLIC WindowHeight		:= 550
+	PUBLIC SelectedControlName	:= ''
+	PUBLIC SelectedControlType	:= ''
+	PUBLIC MoveIndex		:= 0
+	PUBLIC SizeStarted		:= .F.
+	PUBLIC MoveStarted		:= .F.
+	PUBLIC MoveCol			:= 0
+	PUBLIC MoveRow			:= 0
+	PUBLIC MoveWidth		:= 0
+	PUBLIC MoveHeight		:= 0
+	PUBLIC BrowseCount		:= 0
+	PUBLIC TreeCount		:= 0
+	PUBLIC DesignFormhandle		:= 0
+	PUBLIC DesignForm		:= 'Form_1'
+	PUBLIC CurrentControl 		:= 0
+	PUBLIC ButtonCount		:= 0
+	PUBLIC CheckBoxCount		:= 0
+	PUBLIC ListBoxCount		:= 0
+	PUBLIC ComboBoxCount		:= 0
+	PUBLIC CheckButtonCount		:= 0
+	PUBLIC GridCount		:= 0
+	PUBLIC FrameCount		:= 0
+	PUBLIC TabCount			:= 0
+	PUBLIC ImageCount		:= 0
+	PUBLIC AnimateCount		:= 0
+	PUBLIC DatepickerCount		:= 0
+	PUBLIC TextBoxCount		:= 0
+	PUBLIC EditBoxCount		:= 0
+	PUBLIC LabelCount		:= 0
+	PUBLIC PlayerCount		:= 0
+	PUBLIC ProgressBarCount		:= 0
+	PUBLIC RadioGroupCount		:= 0
+	PUBLIC SliderCount		:= 0
+	PUBLIC SpinnerCount		:= 0
+	PUBLIC HyperLinkCount		:= 0
+	PUBLIC MonthCalendarCount	:= 0
+	PUBLIC RichEditCount		:= 0
+	PUBLIC IpAddressCount		:= 0
+	PUBLIC TimerCount		:= 0
+	PUBLIC ActivexCount		:= 0
+	PUBLIC ChildWindowCount		:= 0
+
+	PUBLIC SelectedControlIndex	:= 0
+
+	PUBLIC MainHeight 		:= 89 + GetTitleHeight() + GetBorderHeight() + GetMenuBarHeight()
+
+   __MVPUBLIC ( DesignForm + 'WindowType' )
+
+   LoadUserComponents()
+
+LOAD_LANGUAGE_MESSAGE ()
+   
+
+	docpath := MiniGUIFolder + '\doc\hmgdoc.htm'
+	HB_UTF8STRTRAN ( docpath , '\\' , '\' )
+
+
+	DEFINE WINDOW Form_Main ;
+		AT 0,0 ;
+		WIDTH GetDeskTopWidth() ;
+		HEIGHT MainHeight ;
+		TITLE _EAT ;
+      ICON cIconName;
+		MAIN ;
+		NOMAXIMIZE ;
+		NOSIZE ;
+		ON RELEASE SaveProject() ;
+		ON INTERACTIVECLOSE MsgYesNo( "¿Está Seguro?" , "Salir" ) ;
+		ON INIT {|| FormSplash.HIDE , AutoBuild()}
+
+		ON KEY F2		OF Form_Main ACTION OpenProject()
+		ON KEY F5		OF Form_Main ACTION RunApplication()
+		ON KEY F8		OF Form_Main ACTION ( ENABLEDEBUGGER := .T. , RunApplication() ) // ACTION ( RunAfetrBuild := .T. , DebuggerSupport := .T. , BuildProjectM() )
+		ON KEY F9		OF Form_Main ACTION NewForm()
+		ON KEY F11		OF Form_Main ACTION NewModule()
+
+      DEFINE TIMER Timer_1 INTERVAL (1000 * 30) ACTION hb_GCall()  // ADD, 1-10-2020
+
+		DEFINE FRAME FRAME_1
+			ROW	33
+			COL	575
+			WIDTH	210
+			HEIGHT	30
+		END FRAME
+
+		DEFINE LABEL label_User 
+			PARENT	Form_Main
+			ROW	41
+			COL	580
+			WIDTH	120
+			VALUE	'User Components:'
+		END LABEL
+
+		DEFINE COMBOBOX User 
+			PARENT		Form_Main
+			ROW		37
+			COL		690
+			WIDTH		90
+			TOOLTIP		'User Components...'
+			DROPPEDWIDTH	150
+		END COMBOBOX
+
+		FillUserComponents()
+
+		Form_main.user.value := 0
+		Form_main.user.enabled := .F.
+
+
+#define STATUSITEM_OFFSET 1
+		DEFINE STATUSBAR 
+         STATUSITEM CompilerVersion // TOOLTIP IF(EMPTY(CompilerVersion),"","HMG Compiler Version")
+			STATUSITEM "Seleccionar: clic / Mover: esquina superior izquierda / Redimensionar: esquina inferior derecha" WIDTH 600
+			STATUSITEM '' WIDTH 170
+			STATUSITEM '' WIDTH 75
+		END STATUSBAR
+
+		@ 003,5 BUTTON New ;
+		PICTURE 'NEW' ;
+		ACTION NewProject() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Nuevo Proyecto" ;
+
+		@ 003,35 BUTTON Open ;
+		PICTURE 'OPEN' ;
+		ACTION OpenProject() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Abrir Proyecto" ;
+
+		@ 003,65 BUTTON Close ;
+		PICTURE 'XCLOSE' ;
+		ACTION CloseProject() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Cerrar Proyecto" ;
+
+		@ 033,5 BUTTON NewForm ;
+		PICTURE 'NEWFORM' ;
+		ACTION  ( lVirtualForm := .F. , NewForm() ) ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Nuevo Formulario"
+
+		@ 033,35 BUTTON NewModule ;
+		PICTURE 'NMODULE' ;
+		ACTION  NewModule() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Nuevo Módulo"
+
+*-*-*-
+
+		@ 033,65 BUTTON NewReport ;
+		PICTURE 'REPORT' ;
+		ACTION  NewReport() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Nuevo Reporte"
+
+*-*-*-
+
+
+		@ 003,105 BUTTON Run ;
+		PICTURE 'RUN' ;
+		ACTION RunApplication() ;
+		WIDTH 29 HEIGHT 29 ;
+		TOOLTIP "Ejecutar" ; 
+
+
+		@ 033,105 CHECKBUTTON Control_01 ;
+			PICTURE 'SELECT' ;
+			VALUE .T. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Seleccionar Objeto" ; 
+			ON CHANGE Control_01_Click()
+
+
+
+
+		// Form Controls ToolBar
+
+		@ 003,145 CHECKBUTTON Control_36 ;
+			PICTURE 'CHILDWINDOW' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Panel Window' ; 
+			ON CHANGE Control_36_Click()
+
+		@ 033,145 CHECKBUTTON Control_35 ;
+			PICTURE 'ACTIVEX' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Activex' ; 
+			ON CHANGE Control_35_Click()
+
+		@ 003,175 CHECKBUTTON Control_02 ;
+			PICTURE 'ZBUTTON' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Button' ;
+			ON CHANGE Control_02_Click()
+
+		@ 003,205 CHECKBUTTON Control_03 ;
+			PICTURE 'XCHECK' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'CheckBox' ;
+			ON CHANGE Control_03_Click()
+
+		@ 003,235 CHECKBUTTON Control_04 ;
+			PICTURE 'XLIST' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'ListBox' ;
+			ON CHANGE Control_04_Click()
+	
+		@ 003,265 CHECKBUTTON Control_05 ;
+			PICTURE 'XCOMBO' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'ComboBox' ;
+			ON CHANGE Control_05_Click()
+
+		@ 003,295 CHECKBUTTON Control_06 ;
+			PICTURE 'CHECKBUTTON' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'CheckButton' ;
+			ON CHANGE Control_06_Click()
+
+		@ 003,325 CHECKBUTTON Control_07 ;
+			PICTURE 'GRID' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Grid' ;
+			ON CHANGE Control_07_Click()
+
+		@ 003,355 CHECKBUTTON Control_08 ;
+			PICTURE 'SLIDER' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Slider' ;
+			ON CHANGE Control_08_Click()
+
+		@ 003,385 CHECKBUTTON Control_09 ;
+			PICTURE 'SPINNER' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Spinner' ;
+			ON CHANGE Control_09_Click()
+
+		@ 003,415 CHECKBUTTON Control_10 ;
+			PICTURE 'IMAGE' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Image' ;
+			ON CHANGE Control_10_Click()
+
+		@ 003,445 CHECKBUTTON Control_11 ;
+			PICTURE 'TREE' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Tree' ;
+			ON CHANGE Control_11_Click()
+
+		@ 003,475 CHECKBUTTON Control_12 ;
+			PICTURE 'DATEPICKER' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'DatePicker' ;
+			ON CHANGE Control_12_Click()
+
+		@ 003,505 CHECKBUTTON Control_13 ;
+			PICTURE 'TEXTBOX' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'TextBox' ;
+			ON CHANGE Control_13_Click()		
+
+		@ 003,535 CHECKBUTTON Control_14 ;
+			PICTURE 'EDITBOX' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'EditBox' ;
+			ON CHANGE Control_14_Click()
+
+		@ 033,175 CHECKBUTTON Control_15 ;
+			PICTURE 'LABEL' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Label' ;
+			ON CHANGE Control_15_Click()
+
+
+		@ 033,235 CHECKBUTTON Control_17 ;
+			PICTURE 'RADIOGROUP' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'RadioGroup' ;
+			ON CHANGE Control_17_Click()
+
+		@ 033,265 CHECKBUTTON Control_18 ;
+			PICTURE 'FRAME' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Frame' ;
+			ON CHANGE Control_18_Click()
+
+		@ 033,295 CHECKBUTTON Control_19 ;
+			PICTURE 'TAB' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Tab' ;
+			ON CHANGE Control_19_Click()
+
+		@ 033,325 CHECKBUTTON Control_20 ;
+			PICTURE 'ANIMATEBOX' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'AnimateBox' ;
+			ON CHANGE Control_20_Click()
+
+		@ 033,355 CHECKBUTTON Control_21 ;
+			PICTURE 'HYPERLINK' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Hyperlink' ;
+			ON CHANGE Control_21_Click()
+
+		@ 033,385 CHECKBUTTON Control_22 ;
+			PICTURE 'MonthCalendar' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'MonthCalendar' ;
+			ON CHANGE Control_22_Click()
+
+		@ 033,415 CHECKBUTTON Control_23 ;
+			PICTURE 'RICHEDIT' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'RichEditBox' ;
+			ON CHANGE Control_23_Click()
+
+		@ 033,445 CHECKBUTTON Control_24 ;
+			PICTURE 'PROGRESSBAR' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'ProgressBar' ;
+			ON CHANGE Control_24_Click()
+
+		@ 033,475 CHECKBUTTON Control_25 ;
+			PICTURE 'PLAYER' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Player' ;
+			ON CHANGE Control_25_Click()
+
+		@ 033,505 CHECKBUTTON Control_26 ;
+			PICTURE 'IPADDRESS' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'IP Address' ;
+			ON CHANGE Control_26_Click()
+
+		@ 033,205 CHECKBUTTON Control_27 ;
+			PICTURE 'TIMER' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Timer' ;
+			ON CHANGE Control_27_Click()
+
+
+		@ 033,535 CHECKBUTTON Control_16 ;
+			PICTURE 'BROWSE' ;
+			VALUE .F. WIDTH 29 HEIGHT 29 ;
+			TOOLTIP 'Browse' ;
+			ON CHANGE Control_16_Click()
+
+
+
+/*
+		@ 003,535 BUTTON DeleteControl ;
+			PICTURE 'DELETE' ;
+			ACTION  DeleteControl() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP aMsgs [ 056 ]
+
+		@ 033,535 BUTTON TabOrder ;
+			PICTURE 'TABORDER' ;
+			ACTION EditTabOrder()  ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP aMsgs [ 057 ]
+
+*/
+
+		//
+
+		@ 003,575 BUTTON Control_28 ;
+			PICTURE 'XMENU' ;
+			ACTION MainMenuBuilder() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente Main Menu"
+
+		@ 003,605 BUTTON Control_31 ;
+			PICTURE 'CONTEXTMENU' ;
+			ACTION ContextMenuBuilder() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente Context Menu"
+
+		@ 003,635 BUTTON Control_30 ;
+			PICTURE 'STATUSBAR' ;
+			ACTION StatusBarBuilder() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente StatusBar"
+
+		@ 003,665 BUTTON Control_29 ;
+			PICTURE 'TLBAR' ;
+			ACTION ToolBarBuilder() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente ToolBar"
+
+		@ 003,695 BUTTON Control_32 ;
+			PICTURE 'NOTIFY' ;
+			ACTION ContextMenuBuilder('N')	 ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP " Asistente Notify Menu"
+
+		@ 003,725 BUTTON Control_33 ;
+			PICTURE 'DROPDOWN' ;
+			ACTION DropDownMenuBuilder()	 ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente Dropdown Menu"
+
+		@ 003,755 BUTTON Control_34 ;
+			PICTURE 'SPLITBOX' ;
+			ACTION SplitBoxBuilder() ;
+			WIDTH 29 HEIGHT 29 ;
+			TOOLTIP "Asistente SplitBox"
+
+		// End
+
+      DECLARE WINDOW FormBuildLog
+
+      @  003, 800 BUTTON Button_BuildLog CAPTION " Build   Log "  WIDTH 59 HEIGHT 59 MULTILINE ;
+         ACTION {|| lFlagBuildLog := .NOT.(lFlagBuildLog), IF (lFlagBuildLog, FormBuildLog.SHOW, FormBuildLog.HIDE)}
+
+      Form_Main.Button_BuildLog.ENABLED := .F.
+
+      @  003, 875 BUTTON Button_Debug PICTURE "_dbgbutton" WIDTH 59 HEIGHT 59 TOOLTIP "Debug" ACTION ( ENABLEDEBUGGER := .T. , RunApplication() )
+
+      Proc_DEFINE_MAIN_MENU ()
+      Form_Main.SnapToGrid.Checked := .T.
+
+   END WINDOW
+
+
+   DEFINE WINDOW FormBuildLog;  
+      AT 0,0;  
+      WIDTH  600;  
+      HEIGHT 400;
+      FONTNAME "Courier New" FONTSIZE 10;
+      TITLE "HMG-IDE: Build.log";
+      NOMINIMIZE NOMAXIMIZE;
+      NOAUTORELEASE;
+      NOSHOW;
+      ON INTERACTIVECLOSE {|| lFlagBuildLog := .F., .T.};
+      ON SIZE     {|| FormBuildLog.EditBox1.WIDTH := (FormBuildLog.WIDTH-30), FormBuildLog.EditBox1.HEIGHT := (FormBuildLog.HEIGHT-60) };
+      ON MAXIMIZE {|| FormBuildLog.EditBox1.WIDTH := (FormBuildLog.WIDTH-30), FormBuildLog.EditBox1.HEIGHT := (FormBuildLog.HEIGHT-60) }
+      @ 10 , 10 EDITBOX EditBox1  WIDTH (FormBuildLog.WIDTH-30)  HEIGHT (FormBuildLog.HEIGHT-60)  VALUE ""
+   END WINDOW
+   FormBuildLog.CENTER
+
+
+	define window loading at 0,0 width 310 height 85 + IF ( ISVISTA()  .And. IsAppThemed() , 5 , 0 ) title '' child noshow nocaption
+
+		define label label_1
+			row 12
+			col 86
+			width 200
+			height 30
+			value "Cargando... Espere Por Favor..."
+		end label
+
+		define progressbar progress_1
+			row		35
+			col		15
+			width		272
+			height		30
+			RangeMin	1
+			RangeMax	100
+			value		1
+			smooth		.t.
+		end progressbar
+
+	end window
+
+	loading.center
+
+	define window building at 0,0 width 310 height 85 + IF ( ISVISTA()  .And. IsAppThemed() , 5 , 0 ) title '' child noshow nocaption
+		define label label_1
+			row 30
+			col 85
+			width 200
+			height 30
+			value "Compilando... Espere Por Favor..."
+		end label
+	end window
+
+	Building.Center
+
+
+	PUBLIC ProjectHeight := 130 + GetTitleHeight() + GetBorderHeight()
+
+
+        hFactor := ( GetDesktopHeight() - 600 ) / 2
+
+	DEFINE WINDOW Project ;
+		AT MainHeight + 1 + IF ( ISVISTA() .And. IsAppThemed() , 10 , 0 ) , 0 ;
+		WIDTH 302 ;
+		HEIGHT ProjectHeight + hFactor ;
+		TITLE aMsgs [ 065 ]  ;
+		CHILD ;
+		NOMAXIMIZE ;
+		NOMINIMIZE ;
+		NOSYSMENU ;
+		NOSIZE
+
+		ON KEY ALT+F4 OF PROJECT ACTION NIL
+
+		ON KEY F2		OF project ACTION OpenProject()
+		ON KEY F5		OF project ACTION RunApplication()
+		ON KEY F8		OF project ACTION ( ENABLEDEBUGGER := .T. , RunApplication() ) // ACTION ( RunAfetrBuild := .T. , DebuggerSupport	:= .T. , BuildProjectM() )
+		ON KEY F9		OF project ACTION NewForm()
+		ON KEY F11		OF project ACTION NewModule()
+
+		DEFINE TAB Tab_1 AT 3,3 WIDTH 290 HEIGHT 123  + hFactor MULTILINE
+
+			PAGE aMsgs [ 066 ]
+
+				DEFINE LISTBOX List_1
+					ROW 47
+					COL 5
+					WIDTH 278
+					HEIGHT 70  + hFactor
+					ON DBLCLICK EditFile()
+					TOOLTIP aMsgs [ 070 ]
+				END LISTBOX
+
+				Project.List_1.DeleteAllItems
+
+			END PAGE
+
+			PAGE aMsgs [ 067 ]
+
+				DEFINE LISTBOX List_2
+					ROW 47
+					COL 5
+					WIDTH 278
+					HEIGHT 70  + hFactor
+					ON DBLCLICK EditFile()
+					TOOLTIP aMsgs [ 070 ]
+				END LISTBOX
+
+				Project.List_2.DeleteAllItems
+
+			END PAGE
+
+			PAGE aMsgs [ 068 ]
+
+				DEFINE EDITBOX Edit_1
+					ROW		47
+					COL		5
+					WIDTH		278
+					HEIGHT		70 + hFactor
+					FONTNAME	"COURIER NEW"
+					FONTSIZE	9
+					TOOLTIP aMsgs [ 072 ]
+				END EDITBOX
+
+			END PAGE
+
+			PAGE aMsgs [ 069 ]
+
+				DEFINE LISTBOX List_3
+					ROW 47
+					COL 5
+					WIDTH 278
+					HEIGHT 70 + hFactor
+					ON DBLCLICK EditFile()
+					TOOLTIP aMsgs [ 070 ]
+				END LISTBOX
+
+			END PAGE
+
+			PAGE aMsgs [ 278 ]
+
+				DEFINE EDITBOX config
+					ROW		47
+					COL		5
+					WIDTH		278
+					HEIGHT		70 + hFactor
+					FONTNAME	"COURIER NEW"
+					FONTSIZE	9
+					TOOLTIP		'.hbc options (they should come in separate lines): libs=[<libname[s]>],hbcs=[<.hbc file[s]>], gt=[gtname], syslibs=[<libname[s]>],frameworks=[<framework[s]>], prgflags=[Harbour flags], cflags=[C compilerflags], resflags=[resource compiler flags], ldflags=[linker flags], pflags=[flags for plugins], libpaths=[paths], sources=[source files],psources=[source files for plugins], incpaths=[paths], requests=[func],instfiles=[files], instpaths=[paths], autohbcs=[<.ch>:<.hbc>],plugins=[plugins],gui|mt|pic|shared|nulrdd|nodefgt|debug|opt|map|strip|hbcppmm|winuni|implib|run|inc=[yes|no], cpp=[yes|no|def], warn=[max|yes|low|no|def],compr=[yes|no|def|min|max], head=[off|full|native|dep], skip=<reason>,stop=<reason>, echo=<text>'
+				END EDITBOX
+
+			END PAGE
+
+			PAGE aMsgs [ 279 ]
+
+				DEFINE LISTBOX List_4
+					ROW 47
+					COL 5
+					WIDTH 278
+					HEIGHT 70 + hFactor
+					ON DBLCLICK EditFile()
+					TOOLTIP aMsgs [ 070 ]
+				END LISTBOX
+
+			END PAGE
+
+			PAGE aMsgs [ 095 ]
+
+				DEFINE LISTBOX tables
+					ROW 47
+					COL 5
+					WIDTH 278
+					HEIGHT 70  + hFactor
+					ON DBLCLICK EditFile()
+					TOOLTIP aMsgs [ 070 ]
+				END LISTBOX
+
+				Project.tables.DeleteAllItems
+
+			END PAGE
+
+		END TAB
+
+	END WINDOW
+
+	If WinMajorVersionNumber() >= 6 .and. WinMinorVersionNumber() >= 1
+
+		nDeltaProp := 25
+
+	Else
+
+		nDeltaProp := 0
+
+	EndIf
+
+	DEFINE WINDOW Properties ;
+		AT mainHeight +  ProjectHeight + 1 + IF ( ISVISTA()  .And. IsAppThemed() , 20 , 0 )  + hFactor , 0 ;
+		WIDTH 302 ;
+		HEIGHT 230 + GetTitleHeight() + GetBorderHeight() + 1 + hFactor - nDeltaProp ;
+		TITLE aMsgs [ 074 ] ;
+		CHILD ;
+		NOMAXIMIZE ;
+		NOMINIMIZE ;
+		NOSYSMENU ;
+		NOSIZE
+
+		ON KEY ALT+F4 OF PROPERTIES ACTION NIL
+
+		ON KEY F2		OF properties ACTION OpenProject()
+		ON KEY F5		OF properties ACTION RunApplication()
+		ON KEY F8		OF properties ACTION ( ENABLEDEBUGGER := .T. , RunApplication() ) // ACTION ( RunAfetrBuild := .T. , DebuggerSupport	:= .T. , BuildProjectM() )
+		ON KEY F9		OF properties ACTION NewForm()
+		ON KEY F11		OF properties ACTION NewModule()
+
+		DEFINE COMBOBOX Combo_1
+			ROW 3
+			COL 3
+			WIDTH	290
+			ITEMS { '' }
+			VALUE 1
+			ONCHANGE if ( Properties.Combo_1.Item ( Properties.Combo_1.Value ) = 'Form' , ( UpdateDesignFormProperties() , SelectControl ('') ) , SelectControl ( Properties.Combo_1.Item ( Properties.Combo_1.Value ) ) )
+		END COMBOBOX
+
+		Properties.Combo_1.DeleteAllItems
+
+		DEFINE TAB Tab_1 AT 29,3 WIDTH 290 HEIGHT 198 + hFactor - nDeltaProp
+
+			PAGE aMsgs [ 075 ]
+
+				DEFINE GRID Grid_1
+					ROW	27
+					COL	5
+					WIDTH	278
+					HEIGHT	164  + hFactor - nDeltaProp
+					HEADERS	{ aMsgs [ 077 ] , aMsgs [ 078 ] }
+					WIDTHS	{125,122}
+					ITEMS	{ {'',''},{'',''},{'',''},{'',''},{'',''} }
+					FONTNAME 'Arial'
+					FONTSIZE 9
+					ON DBLCLICK PropertyEdit()
+					TOOLTIP aMsgs [ 079 ]
+				END GRID
+
+				Properties.Grid_1.DeleteAllItems
+
+			END PAGE
+
+			PAGE aMsgs [ 076 ]
+
+				DEFINE GRID Grid_2
+					ROW	27
+					COL	5
+					WIDTH	278
+					HEIGHT	164  + hFactor - nDeltaProp
+					HEADERS	{ aMsgs [ 080 ] , aMsgs [ 081 ] , '' , '' , '' }
+					WIDTHS	{105,90,20,20,20}
+					ITEMS	{ {'','','','',''},{'','','','',''},{'','','','',''},{'','','','',''},{'','','','',''} }
+					FONTNAME 'Arial'
+					FONTSIZE 9
+					ON DBLCLICK EventEdit()
+					TOOLTIP aMsgs [ 082 ]
+				END GRID
+
+				Properties.Grid_2.DeleteAllItems
+
+			END PAGE
+
+		END TAB
+
+	END WINDOW
+
+
+	LOAD WINDOW rep_build_step_1
+	LOAD WINDOW rep_build_step_2
+	LOAD WINDOW rep_build_step_3
+	LOAD WINDOW reportsummaryoptions
+	LOAD WINDOW reporttitlesoptions
+	LOAD WINDOW ReportFormatOptions
+	LOAD WINDOW groupingOptions
+
+	ACTIVATE WINDOW Building , Loading , Properties , Project , rep_build_step_1 , rep_build_step_2 , rep_build_step_3 , reportsummaryoptions , reporttitlesoptions , ReportFormatOptions , groupingoptions , Form_Main 
+
+
+RETURN Nil
