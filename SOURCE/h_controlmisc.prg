@@ -5537,6 +5537,14 @@ ASIZE ( aFiles , nFiles )
 
 ADIR ( cTempFolder + _HMG_SYSDATA [ 379 ]  + "_hmg_print_preview_*.Emf" , aFiles )
 
+// SET PDFENGINE WINDOWS: vector PDF through the Windows PDF printer (c_pdf.c); raster pages below if that fails
+IF flag_PDF .AND. nFiles > 0 .AND. HMG_PdfEngine() == "WINDOWS"
+   ASort ( aFiles )
+   IF HMG_PDF_FROMEMF ( _HMG_PDF_EMFPATHS ( cTempFolder, aFiles ), cPath + cName + ".PDF" )
+      Return Nil
+   ENDIF
+ENDIF
+
 
 For i := 1 To nFiles
     cFileEMF := cTempFolder + aFiles [i]

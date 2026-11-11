@@ -15,6 +15,7 @@
    - SET DPIAWARE PERMONITOR (opt-in): sharp, correctly sized forms on every monitor; sizes stay in 96-DPI units, controls and fonts rescale when a form moves to a monitor with another DPI
    - SET DARKMODE ON | AUTO (opt-in): dark title bars, forms and controls; explicit BACKCOLOR/FONTCOLOR kept; message boxes and the menu bar stay light
    - SET FILEDIALOG MODERN (opt-in): GetFile, PutFile and GetFolder use the Windows Vista+ file dialogs (IFileDialog): same arguments and results, no fixed path buffers, Explorer-style folder picker
+   - SET PDFENGINE WINDOWS (opt-in): SELECT PRINTER PDF and the preview's Save as PDF go through the Windows PDF printer - the PDF matches the printout (all fonts, Unicode, rotated text, images), text selectable, no page bitmaps; libHaru stays the default and covers custom paper sizes
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

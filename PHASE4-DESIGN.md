@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)** and **F (IFileDialog)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4); P, I not started.
+Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)**, **F (IFileDialog)** and **P (PDF through Windows printing)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4, 5.6); I not started (no IDE sources here).
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -280,6 +280,65 @@ Done as above; matrix green (23 suites per mode). Not tested: paths longer than 
 
 ---
 
-## 5. Later items (outline only)
+## 5. PDF through the Windows print pipeline
 
-- **P, PDF/print** and **I, IDE**: to be designed after W-F; the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.
+### 5.1 Problem (measured in the code)
+
+HMG had two separate ways to make a PDF, and neither matches the printout:
+
+- **`SELECT PRINTER PDF`** sends every `@ … PRINT` to a second drawing engine, libHaru (`h_HMG_HPDF.Prg`, 2,100 lines). It has its own fonts and positioning, its own subset of each command (no `ANGLE`, JPG/PNG images only, no transparency), and limited Unicode, so the PDF differs from print and preview.
+- **The preview's "Save as PDF"** (and `SAVEAS "x.pdf"`) turns each page into a 300-DPI bitmap and saves it as JPEG inside a PDF. The files are large, the text can't be selected or searched, and it is blurred.
+
+### 5.2 Decision: print to the Windows PDF printer
+
+`SET PDFENGINE WINDOWS` (`HMG_SetPdfEngine()`, `HMG_PdfEngine()`); default `HARU`, so nothing changes otherwise. It can be switched at any time.
+
+With WINDOWS:
+
+- **`SELECT PRINTER PDF <file>`** opens the "Microsoft Print to PDF" printer, which is part of Windows 10/11. The printer is found by its driver name, because the queue can be renamed. Setup is the same as `SELECT PRINTER`, without preview; ORIENTATION and PAPERSIZE take the same values as before. `START/END PRINTDOC` and every `@ … PRINT` then run the normal GDI printer code, so the PDF is the printout: any Windows font embedded as TrueType, Unicode, rotated text, every image type, selectable text (`/ToUnicode`).
+- **No Save dialog:** the file name goes to `StartDoc` (`DOCINFO.lpszOutput`), made absolute first because the spooler writes the file. It applies only to the DC that `SELECT PRINTER PDF` created, so a printer selected later is not affected.
+- **`END PRINTDOC` waits** until the job has left the spooler queue and the file is closed, up to 60 s. The program can open or mail the file right after.
+- **Preview "Save as PDF" / `SAVEAS`** sends the preview's EMF pages to the same printer (`HMG_PDF_FROMEMF`). Pages stay vector. The sheet is the standard size that holds the page (A5 to A3, Letter, Legal, Tabloid).
+- **Falls back to libHaru**, as before, when the printer is not installed or when a custom size (`PAPERSIZE 256` / `PAPERLENGTH` / `PAPERWIDTH`) is asked for, which the Windows PDF printer cannot do. The preview save falls back to the raster pages.
+
+C: `SOURCE/c_pdf.c`; hooks in `_HMG_PRINTER_STARTDOC/ENDDOC/ABORTDOC` (`c_controlmisc.c`). PRG: `SOURCE/h_pdf.prg` (`_HMG_PDF_SELECT`, called by both `SELECT PRINTER PDF` commands in `i_print.ch`).
+
+### 5.3 Why not a different way
+
+- **Updating libHaru and mapping each command better** keeps two engines and two sets of bugs; fonts and Unicode in libHaru need font files and encodings that HMG would have to manage.
+- **A new PDF writer (e.g. GDI → PDF in Harbour)** is a large project for what Windows already does.
+- **Direct2D / XPS printing** replaces the GDI drawing that print, preview and every user `OpenPrinterGetDC()` program rely on.
+
+### 5.4 Tests
+
+`tests/unit/pdfwin` (22 checks, both modes) reads the files it produces as PDF:
+
+- default HARU; WINDOWS selects the GDI path;
+- A4 portrait with two pages; the file is complete as soon as `END PRINTDOC` returns;
+- three embedded TrueType fonts (bold, regular, Times New Roman), `/ToUnicode`, no page images, not libHaru;
+- landscape, and a relative file name;
+- `ABORT PRINTDOC` leaves no file;
+- a custom size goes to libHaru;
+- three EMF preview pages give a three-page vector A4 PDF.
+
+The test is skipped, not failed, where the printer is not installed. The existing `hpdf` suite still covers libHaru.
+
+### 5.5 Known gaps
+
+- Size: fonts are embedded as subsets. A 2-page document with three fonts is about 230 KB, against a few KB for libHaru's base-14 fonts, which are not embedded.
+- The PDF printer renames fonts (`CIDFont+F1`) and writes no title or author.
+- No custom sheet sizes; the HARU engine stays for those.
+- Needs the Print Spooler service and the "Microsoft Print to PDF" Windows feature (both on by default).
+- The preview save places each page at the top-left of the sheet, as when the preview is printed on another printer.
+- Not checked by eye in this session: no PDF renderer was available here. The checks are structural.
+
+### 5.6 Status (12-11-2026)
+
+Done as above; matrix green (24 suites per mode).
+
+---
+
+## 6. Later items (outline only)
+
+- **I, IDE**: the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.
+- **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.

@@ -588,6 +588,10 @@ HB_FUNC( GETMODULEFILENAME )
 #include "olectl.h"
 
 
+LPCTSTR HMG_PdfOutput( HDC hdc );        // c_pdf.c (SET PDFENGINE WINDOWS)
+void    HMG_PdfJobStarted( HDC hdc, int nJob );
+void    HMG_PdfJobEnded( HDC hdc, BOOL lAborted );
+
 HB_FUNC ( _HMG_PRINTER_STARTDOC )
 {
    DOCINFO docInfo;
@@ -599,7 +603,10 @@ HB_FUNC ( _HMG_PRINTER_STARTDOC )
       docInfo.cbSize = sizeof (docInfo);
       docInfo.lpszDocName = (TCHAR *) HMG_parc(2);
 
-      hb_retni ( StartDoc(hdcPrint, &docInfo) );
+      docInfo.lpszOutput = HMG_PdfOutput( hdcPrint );   // NULL unless SELECT PRINTER PDF with SET PDFENGINE WINDOWS
+      int nJob = StartDoc(hdcPrint, &docInfo);
+      HMG_PdfJobStarted( hdcPrint, nJob );
+      hb_retni ( nJob );
    }
 }
 
@@ -624,7 +631,9 @@ HB_FUNC ( _HMG_PRINTER_ENDDOC )
 {
    HDC hdcPrint = (HDC) HMG_parnl (1);
    if ( hdcPrint != 0 )
-      hb_retni ( EndDoc(hdcPrint) );
+   {  hb_retni ( EndDoc(hdcPrint) );
+      HMG_PdfJobEnded( hdcPrint, FALSE );   // PDF output: wait until the file is written
+   }
 }
 
 
@@ -632,7 +641,9 @@ HB_FUNC ( _HMG_PRINTER_ABORTDOC )
 {
    HDC hdcPrint = (HDC) HMG_parnl (1);
    if ( hdcPrint != 0 )
-      hb_retni ( AbortDoc(hdcPrint) );
+   {  hb_retni ( AbortDoc(hdcPrint) );
+      HMG_PdfJobEnded( hdcPrint, TRUE );
+   }
 }
 
 
