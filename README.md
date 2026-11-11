@@ -3,6 +3,7 @@
 A revamp of **HMG 3.6 (64-bit)**, the xBase GUI library for Windows built on Harbour and MinGW-w64. Upstream development stopped after the 3.6 release (10-05-2023).
 
 - `AUDIT.md`: code audit of the 3.6 tree, findings and the revamp roadmap
+- `PHASE4-DESIGN.md`: Phase 4 design (WebView2 control first)
 - `TOOLCHAIN.md`: pinned Harbour and GCC versions, and how to get them (not stored in git)
 
 ## Quick start
@@ -45,7 +46,8 @@ iscc dist\HMG5.iss                                                          & re
 | 2a | Toolchain refresh: GCC 16.2 / UCRT, Harbour 3.2.1 from source, current bundled libs; reproducible setup script; ANSI + UNICODE build matrix | done |
 | HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Test" | done (Setup.exe tested: silent install, build, uninstall) |
 | 2b | Windows 10+ target (`_WIN32_WINNT`), long-path manifest, libHaru 2.3 headers (PerMonitorV2 moved to Phase 4; UTF-8 code page dropped: it breaks ANSI mode) | done |
-| 3 | Name, index and wrap `_HMG_SYSDATA` (layout frozen), object API, event dispatch - see PHASE3-DESIGN.md | design for review |
+| 3 | Name, index and wrap `_HMG_SYSDATA` (layout frozen), object API, event dispatch - see PHASE3-DESIGN.md | done (S1-S5) |
+| 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | in progress: WebView2 control (branch `phase4`) |
 
 ## License
 

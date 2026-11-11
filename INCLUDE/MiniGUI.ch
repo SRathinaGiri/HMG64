@@ -104,6 +104,7 @@ REQUEST ERRORSYS
 #include "i_image.ch"
 #include "i_radiogroup.ch"
 #include "i_activex.ch"
+#include "i_webview.ch"
 #include "i_label.ch"
 #include "i_combobox.ch"
 #include "i_datepicker.ch"

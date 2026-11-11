@@ -7771,6 +7771,10 @@ IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_SetProperty ( Arg1 ,
    RETURN NIL
 ENDIF
 
+IF _HookWants ( cHookType , "WEBVIEW" ) .AND. _WebView_SetProperty ( Arg1 , Arg2 , Arg3 , Arg4 ) == .T.   // Phase 4: h_webview.prg
+   RETURN NIL
+ENDIF
+
 if Pcount() == 3 // Window
 
     Arg2 := HMG_UPPER (ALLTRIM (Arg2))
@@ -8359,6 +8363,10 @@ IF _HookWants ( cHookType , "TREE" ) .AND. _Tree_GetProperty       ( @xData, Arg
 ENDIF
 
 IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_GetProperty ( @xData, Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 ) == .T.
+   RETURN xData
+ENDIF
+
+IF _HookWants ( cHookType , "WEBVIEW" ) .AND. _WebView_GetProperty ( @xData, Arg1 , Arg2 , Arg3 ) == .T.   // Phase 4: h_webview.prg
    RETURN xData
 ENDIF
 
@@ -8972,6 +8980,10 @@ IF _HookWants ( cHookType , "TREE" ) .AND. _Tree_DoMethod        ( Arg1 , Arg2 ,
 ENDIF
 
 IF _HookWants ( cHookType , "RICHEDIT" ) .AND. _RichEditBox_DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 , Arg9 ) == .T.
+   Return Nil
+ENDIF
+
+IF _HookWants ( cHookType , "WEBVIEW" ) .AND. _WebView_DoMethod ( Arg1 , Arg2 , Arg3 , Arg4 , Arg5 ) == .T.   // Phase 4: h_webview.prg
    Return Nil
 ENDIF
 

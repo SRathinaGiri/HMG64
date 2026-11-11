@@ -29,6 +29,7 @@ source/h_hmgobject.prg
 source/h_tooltip.prg
 source/h_menuhover.prg
 source/h_hmgvars.prg
+source/h_webview.prg
 
 source/ErrorSys.prg
 source/h_browse.prg
@@ -94,6 +95,7 @@ source/c_rounded.c
 source/c_tooltip.c
 source/c_menuhover.c
 source/c_scan.c
+source/c_webview.c
 source/c_grid.c
 source/c_help.c
 source/c_hotkey.c
