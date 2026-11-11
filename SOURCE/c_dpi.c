@@ -139,6 +139,11 @@ UINT HMG_DpiForFont( HWND h )
    return dpi;
 }
 
+BOOL HMG_IsHmgForm( HWND h )
+{
+   return dpi_isForm( h );
+}
+
 BOOL HMG_DpiIsOn( void )
 {
    return s_bOn;

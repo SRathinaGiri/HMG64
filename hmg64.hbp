@@ -31,6 +31,7 @@ source/h_menuhover.prg
 source/h_hmgvars.prg
 source/h_webview.prg
 source/h_dpi.prg
+source/h_dark.prg
 
 source/ErrorSys.prg
 source/h_browse.prg
@@ -98,6 +99,7 @@ source/c_menuhover.c
 source/c_scan.c
 source/c_webview.c
 source/c_dpi.c
+source/c_dark.c
 source/c_grid.c
 source/c_help.c
 source/c_hotkey.c

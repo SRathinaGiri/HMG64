@@ -84,6 +84,7 @@
 //#include "hbstack.h"
 #include "hbapiitm.h"
 #include "hbapi.h"
+#include "hmg_dpi.h"
 
 
 #include "hbapifs.h"
@@ -491,7 +492,7 @@ HB_FUNC( SETBKCOLOR )
 
 HB_FUNC ( GETSYSCOLOR )
 {
-  hb_retnl( GetSysColor( hb_parni(1) ) ) ;
+  hb_retnl( HMG_SysColor( hb_parni(1) ) ) ;   // Phase 4: dark palette in dark mode (c_dark.c)
 }
 
 

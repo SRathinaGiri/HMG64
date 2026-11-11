@@ -1,4 +1,5 @@
-/* HMG5 per-monitor DPI (Phase 4 D): helpers in SOURCE/c_dpi.c. Include after <windows.h>. */
+/* HMG5 Phase 4 helpers: per-monitor DPI (SOURCE/c_dpi.c) and dark mode (SOURCE/c_dark.c).
+   Include after <windows.h>. */
 #ifndef HMG_DPI_H
 #define HMG_DPI_H
 UINT HMG_DpiForFont      ( HWND h );
@@ -9,4 +10,11 @@ int  HMG_DpiScaleSize    ( HWND h, int v );
 int  HMG_DpiUnscaleSize  ( HWND h, int v );
 int  HMG_DpiUnscaleClient( HWND h, int v );
 int  HMG_DpiSystemMetric ( int nIndex );
+BOOL HMG_IsHmgForm      ( HWND h );
+
+BOOL     HMG_DarkIsOn      ( void );
+COLORREF HMG_SysColor      ( int nIndex );
+HBRUSH   HMG_DarkFormBrush ( void );
+void     HMG_DarkPrepareDC ( UINT nMsg, HDC hDC );
+HBRUSH   HMG_DarkCtlBrush  ( UINT nMsg );
 #endif

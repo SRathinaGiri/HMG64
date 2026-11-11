@@ -565,6 +565,8 @@ HB_FUNC ( REGISTERWINDOW )
 	if ( hb_parvni(3, 1) == -1 )
 	{
 		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+		if ( ( hbrush = HMG_DarkFormBrush () ) != NULL )   // Phase 4 dark mode (c_dark.c)
+			WndClass.hbrBackground = hbrush ;
 	}
 	else
 	{
@@ -1259,6 +1261,8 @@ HB_FUNC ( REGISTERSPLITCHILDWINDOW )
 	if ( hb_parvni(3, 1) == -1 )
 	{
 		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+		if ( ( hbrush = HMG_DarkFormBrush () ) != NULL )   // Phase 4 dark mode (c_dark.c)
+			WndClass.hbrBackground = hbrush ;
 	}
 	else
 	{
@@ -1364,6 +1368,13 @@ HB_FUNC( _GETTABBRUSH )
 //   HMG_retnl ((LONG_PTR) hBrush);
 //   return;
 // ENDIF
+
+	// Phase 4 dark mode: tab pages are drawn in the form colour (c_dark.c, modern tab)
+	if ( HMG_DarkIsOn () )
+	{
+		HMG_retnl ((LONG_PTR) CreateSolidBrush ( HMG_SysColor ( COLOR_3DFACE ) ) );
+		return;
+	}
 
 	GetWindowRect ( (HWND) HMG_parnl (1), &rc ) ;
 	hDC = GetDC( (HWND) HMG_parnl (1) ) ;

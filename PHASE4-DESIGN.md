@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control)** and **D (per-monitor DPI)** implemented and tested (11-11-2026, sections 1.8 and 2.6); K-I not started.
+Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)** and **K (dark mode)** implemented and tested (11-11-2026, sections 1.8, 2.6, 3.5); F, P, I not started.
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -185,8 +185,57 @@ Dot-syntax note found while testing: `Form.Width := Form.Width` does not compile
 
 ---
 
-## 3. Later items (outline only)
+## 3. Dark mode
 
-- **K, dark mode**: `SET DARKMODE ON` → `DwmSetWindowAttribute(DWMWA_USE_IMMERSIVE_DARK_MODE)` for title bars, `SetWindowTheme(L"DarkMode_Explorer")` for lists/trees/scrollbars, default BackColor/FontColor from a dark palette; controls with explicit colours keep them.
+### 3.1 Decision
+
+Opt-in, before the first window (form classes and control themes are set as windows are created):
+
+```
+SET DARKMODE ON | OFF | AUTO      // HMG_SetDarkMode( xMode ) -> lActive; AUTO = Windows' app mode
+HMG_IsDarkMode() -> lOn
+```
+
+The lever is the **system colour**, not `Events()`. Events() (3,000 lines) paints every control that has no BACKCOLOR/FONTCOLOR with `GetSysColor(COLOR_3DFACE / COLOR_WINDOW / COLOR_MENU)` and sets no text colour. So (`c_dark.c`):
+
+| Piece | Effect |
+|---|---|
+| `HMG_SysColor()` behind `GETSYSCOLOR` (and the ROUNDED / modern-tab fallbacks) | dark palette for 3DFACE, WINDOW, MENU, text and gray text; Events(), grids and user code that ask for system colours get dark ones |
+| `WndProc`: on `WM_CTLCOLOR*`, dark text/background on the DC **before** Events() | controls without FONTCOLOR get light text; Events() still overrides with explicit colours |
+| `WndProc`: colour message Events() did not answer | dark brush |
+| `REGISTERWINDOW` | form without BACKCOLOR: dark class brush |
+| thread `WH_CALLWNDPROCRET` hook on `WM_CREATE`, by class | dark title bar (DWM attribute 20, 19 before 20H1); `DarkMode_Explorer` / `DarkMode_CFD` / `DarkMode_ItemsView` themes; list-view and tree colours; tabs switched to the existing modern owner-drawn tab with dark colours; rich edit colours; check boxes, radio buttons and group boxes un-themed (themed ones draw black text whatever `WM_CTLCOLORSTATIC` says) |
+| client-edge controls (text boxes, lists, grids, trees) | the light 3D edge is repainted dark grey after `WM_NCPAINT`; blue while focused |
+| `_GETTABBRUSH` | solid form colour (controls on tab pages) |
+| grid custom draw defaults (`h_GridEx.prg`) | palette instead of hard-coded white/black (only in dark mode) |
+| popup menus | uxtheme `SetPreferredAppMode(ForceDark)` + `FlushMenuThemes` (ordinals 135/136, build ≥ 18362 only) |
+
+Only windows inside an HMG form are styled (tooltips: owned by one): message boxes, TaskDialogs and common dialogs stay as Windows draws them. Palette: background 32,32,32; inputs 45,45,45; text 235,235,235.
+
+### 3.2 Why not a different way
+
+- Patching each colour branch in `Events()`: ~30 places, and members' code that calls `GetSysColor()` for its own drawing would stay light.
+- Changing the manifest / a process-wide theme: Windows has no supported dark mode for classic Win32 controls; the theme names above are what Explorer and Notepad use.
+- Owner-drawing check boxes and radios: possible later; un-theming gives correct colours now with the classic glyph.
+
+### 3.3 Tests
+
+`tests/unit/darkmode` (17 checks, both modes): off by default and light palette untouched; palette values; dark title bar (`DwmGetWindowAttribute`); grid back colour; and **rendered pixels** via `PrintWindow`: form, label, text box, grid row, tab page and a check box on a tab paint dark, while a label and a text box with BACKCOLOR keep their colour; the mode cannot be switched off once windows exist. Visual check of a form with 16 control types (screenshots during development).
+
+### 3.4 Known gaps
+
+- Menu bar stays light (needs undocumented UAH owner-draw messages); popup menus not verified visually (keyboard simulation did not open them).
+- Light outlines remain on group boxes (FRAME), the tab control's border and spinner arrows; DATEPICKER, MONTHCALENDAR, status bar and toolbar stay light.
+- Message boxes, TaskDialog (`SET MSGBOXMODERN`) and file dialogs follow Windows, not the program.
+- No switching at run time (needs restyling every existing window); AUTO reads the setting once.
+
+### 3.5 Status (11-11-2026)
+
+Done as above; matrix green (22 suites per mode).
+
+---
+
+## 4. Later items (outline only)
+
 - **F, IFileDialog**: `SET FILEDIALOG MODERN` makes `GetFile/PutFile/GetFolder` use `IFileOpenDialog`/`IFileSaveDialog`, same arguments and return values; long paths without the `MAX_PATH` buffers.
 - **P, PDF/print** and **I, IDE**: to be designed after W-F; the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.

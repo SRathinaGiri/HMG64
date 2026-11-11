@@ -754,6 +754,11 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 // Phase 4: per-monitor DPI (h_dpi.prg); before the first DEFINE WINDOW
 #xtranslate SET DPIAWARE PERMONITOR        =>   HMG_SetPerMonitorDpi ( .T. )
 #xtranslate SET DPIAWARE SYSTEM            =>   HMG_SetPerMonitorDpi ( .F. )
+
+// Phase 4: dark mode (h_dark.prg); before the first DEFINE WINDOW
+#xtranslate SET DARKMODE ON                =>   HMG_SetDarkMode ( "ON" )
+#xtranslate SET DARKMODE OFF               =>   HMG_SetDarkMode ( "OFF" )
+#xtranslate SET DARKMODE AUTO              =>   HMG_SetDarkMode ( "AUTO" )
 #xtranslate ToolTipCustomDrawIsActive ()     =>   _HMG_SYSDATA \[ 509 \]
 
 #define TOOLTIPICON_NONE            0

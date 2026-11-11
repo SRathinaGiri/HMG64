@@ -13,6 +13,7 @@
    - QHTM removed from HFCL (closed-source third-party qhtm.dll); may return later as an optional add-on
    - New WEBVIEW control (Microsoft Edge WebView2): HTML/JavaScript screens, JS->Harbour calls limited to bound codeblocks, PRIVATE (nothing stored on disk); plain C, no extra DLL
    - SET DPIAWARE PERMONITOR (opt-in): sharp, correctly sized forms on every monitor; sizes stay in 96-DPI units, controls and fonts rescale when a form moves to a monitor with another DPI
+   - SET DARKMODE ON | AUTO (opt-in): dark title bars, forms and controls; explicit BACKCOLOR/FONTCOLOR kept; message boxes and the menu bar stay light
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

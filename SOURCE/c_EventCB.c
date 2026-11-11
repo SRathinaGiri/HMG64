@@ -109,6 +109,10 @@ _THREAD_LOCK();
      
 _THREAD_UNLOCK();
 
+   // Phase 4 dark mode (c_dark.c): dark DC defaults before Events() sets any custom colour
+   if ( nMsg >= WM_CTLCOLORMSGBOX && nMsg <= WM_CTLCOLORSTATIC )
+      HMG_DarkPrepareDC ( nMsg, (HDC) wParam );
+
    hb_vmPushSymbol (hb_dynsymSymbol ( pDynSym ));
    hb_vmPushNil ();   /* places NIL at Self */
 
@@ -120,6 +124,11 @@ _THREAD_UNLOCK();
    hb_vmDo ( 4 );
 
    LRESULT r = HMG_parnl ( -1 );
+
+   // Phase 4 dark mode: a colour message Events() did not answer gets a dark brush
+   if ( nMsg >= WM_CTLCOLORMSGBOX && nMsg <= WM_CTLCOLORSTATIC && HMG_DarkIsOn () &&
+        ( New_Behavior_WndProc ? ( r == -1 ) : ( r == 0 ) ) )
+      return (LRESULT) HMG_DarkCtlBrush ( nMsg );
 
    if (New_Behavior_WndProc == FALSE)
    {  if (r == 0)

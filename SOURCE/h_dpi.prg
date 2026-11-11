@@ -23,7 +23,7 @@ FUNCTION HMG_SetPerMonitorDpi( lOn )
    IF ! HB_ISLOGICAL( lOn ) .OR. lOn == HMG_DPI_ISON()
       RETURN HMG_DPI_ISON()
    ENDIF
-   IF ! lOn .OR. _HMG_DpiAnyForm()
+   IF ! lOn .OR. _HMG_AnyFormDefined()
       RETURN HMG_DPI_ISON()
    ENDIF
 RETURN HMG_DPI_ENABLE()
@@ -35,7 +35,7 @@ FUNCTION HMG_GetFormDpi( cForm )
    ENDIF
 RETURN HMG_DPI_FORMDPI( GetFormHandle( cForm ) )
 
-STATIC FUNCTION _HMG_DpiAnyForm()
+FUNCTION _HMG_AnyFormDefined()   // also used by h_dark.prg
    LOCAL i
    FOR i := 1 TO Len( _HMG_SYSDATA [ HMG_FRM_HANDLE ] )
       IF ! _HMG_SYSDATA [ HMG_FRM_DELETED ] [ i ] .AND. ! Empty( _HMG_SYSDATA [ HMG_FRM_HANDLE ] [ i ] )

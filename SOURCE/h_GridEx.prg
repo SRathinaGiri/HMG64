@@ -661,8 +661,8 @@ RETURN NIL
 *-----------------------------------------------------------------------------*
 Function _GridEx_DoGridCustomDraw ( i, a, lParam )
 *-----------------------------------------------------------------------------*
-Local DefaultBackColor := RGB (255, 255, 255)   // WHITE
-Local DefaultForeColor := RGB (  0,   0,   0)   // BLACK
+Local DefaultBackColor := iif( HMG_IsDarkMode(), GetSysColor( 5 /* COLOR_WINDOW */ ), RGB (255, 255, 255) )   // WHITE (Phase 4: dark palette in dark mode)
+Local DefaultForeColor := iif( HMG_IsDarkMode(), GetSysColor( 8 /* COLOR_WINDOWTEXT */ ), RGB (  0,   0,   0) )   // BLACK
 Local BackColor  := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [28]
 Local FontColor  := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [29]
 Local nRow := a[1]
@@ -807,7 +807,7 @@ Function _GridEx_DoHeaderCustomDraw ( i, lParam, nCol )
 *-----------------------------------------------------------------------------*
 #define COLOR_BTNFACE   15   // ok
 Local DefaultBackColor := GetSysColor ( COLOR_BTNFACE )
-Local DefaultForeColor := RGB (  0,   0,   0)   // BLACK
+Local DefaultForeColor := iif( HMG_IsDarkMode(), GetSysColor( 8 /* COLOR_WINDOWTEXT */ ), RGB (  0,   0,   0) )   // BLACK
 LOCAL aHeaderBackColor := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [ _GRID_COLUMN_HEADERBACKCOLOR_ ]   // Not work
 LOCAL aHeaderForeColor := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [ _GRID_COLUMN_HEADERFORECOLOR_ ]
 LOCAL nRGB_BackColor, nRGB_ForeColor, aRGB
