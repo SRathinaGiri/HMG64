@@ -100,6 +100,8 @@ MEMVAR BccFolder
 MEMVAR AddLibs
 MEMVAR RunAfetrBuild
 MEMVAR SnapToGrid
+MEMVAR nGridSize
+MEMVAR ShowGrid
 MEMVAR ProjectName
 MEMVAR DesignFormModified
 MEMVAR OpenFormName
@@ -539,6 +541,9 @@ PUBLIC cFileLanguage
 	PUBLIC RunAfetrBuild 	:= .F.
 
 	PUBLIC SnapToGrid	:= .T.
+	PUBLIC nGridSize	:= 10    // HMG5: grid step in pixels (grid.ini)
+	PUBLIC ShowGrid		:= .T.   // HMG5: grid dots on the design form (grid.ini)
+	IDE_LoadGridSettings()
 
 	PUBLIC ProjectName	:= ''
 	PUBLIC DesignFormModified := .F.
@@ -965,7 +970,6 @@ LOAD_LANGUAGE_MESSAGE ()
       @  003, 875 BUTTON Button_Debug PICTURE "_dbgbutton" WIDTH 59 HEIGHT 59 TOOLTIP "Debug" ACTION ( ENABLEDEBUGGER := .T. , RunApplication() )
 
       Proc_DEFINE_MAIN_MENU ()
-      Form_Main.SnapToGrid.Checked := .T.
 
    END WINDOW
 
@@ -1359,7 +1363,15 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
             SEPARATOR
             ITEM aMsgs [ 008 ]      ACTION   EditTabOrder()
             SEPARATOR
-            ITEM aMsgs [ 009 ]      ACTION   if ( SnapToGrid == .T. , ( SnapToGrid := .F. , Form_Main.SnapToGrid.Checked := .F. ) , ( SnapToGrid := .T. , Form_Main.SnapToGrid.Checked := .T. ) ) NAME SnapToGrid
+            ITEM aMsgs [ 009 ]      ACTION   IDE_ToggleSnap() NAME SnapToGrid
+            ITEM 'Show Grid'        ACTION   IDE_ToggleShowGrid() NAME mnuShowGrid
+            POPUP 'Grid Size'
+               ITEM '5 pixels'      ACTION   IDE_SetGridSize( 5 )  NAME mnuGrid5
+               ITEM '8 pixels'      ACTION   IDE_SetGridSize( 8 )  NAME mnuGrid8
+               ITEM '10 pixels'     ACTION   IDE_SetGridSize( 10 ) NAME mnuGrid10
+               ITEM '16 pixels'     ACTION   IDE_SetGridSize( 16 ) NAME mnuGrid16
+               ITEM '20 pixels'     ACTION   IDE_SetGridSize( 20 ) NAME mnuGrid20
+            END POPUP
             SEPARATOR
             POPUP aMsgs [ 010 ]
                ITEM aMsgs [ 011 ]   ACTION Proc_DeleteMainMenu()
@@ -1421,6 +1433,7 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
    END MENU
  
    ShowCompilerVersion()
+   IDE_UpdateGridMenu()
 
 RETURN
 
@@ -1430,9 +1443,15 @@ RETURN
 PROCEDURE AutoBuild()
 //---------------------------
    If HMG_UPPER( hb_argv( 1 ) ) == "/ROUNDTRIP" .OR. HMG_UPPER( hb_argv( 1 ) ) == "/ADDALL"
+      // fixed grid settings, whatever grid.ini says (not saved)
+      SnapToGrid := .T.
+      nGridSize  := 10
       // from a timer: _Open() activates the design form, which must happen inside the
       // running message loop (as from the menu), not during Form_Main's ON INIT
       DEFINE TIMER Tmr_RoundTrip OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_RoundTrip.Enabled := .F., IDE_RoundTrip( hb_argv( 2 ), hb_argv( 3 ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/FORM" .AND. ! Empty( hb_argv( 2 ) )
+      // HMG5: IDE.exe /form <file.fmg> opens one form in the designer, without a project
+      DEFINE TIMER Tmr_OpenForm OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_OpenForm.Enabled := .F., _Open( hb_argv( 2 ) ) )
    ElseIf nParameterCount == 1
       OpenProject()
    EndIf
@@ -1484,10 +1503,15 @@ LOCAL aTypes := { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 LOCAL i
    FOR i := 1 TO Len( aTypes )
       Eval( &( "{|| Control_" + StrZero( aTypes [ i ], 2 ) + "_Click() }" ) )
-      _HMG_SYSDATA [ 191 ] := 20 + Int( ( i - 1 ) / 6 ) * 150     // row
-      _HMG_SYSDATA [ 192 ] := 20 + ( ( i - 1 ) % 6 ) * 190        // col
+      _HMG_SYSDATA [ 191 ] := 23 + Int( ( i - 1 ) / 6 ) * 150     // row, off the grid: snaps down to 20 + ...: nearest line
+      _HMG_SYSDATA [ 192 ] := 27 + ( ( i - 1 ) % 6 ) * 190        // col, off the grid: snaps up to 30 + ...
       AddControl()
    NEXT
+   // arrow-key nudging of the selected control: Button_1 20,30 -> 20,31 -> 30,31 -> 30,30
+   SelectControl( 'Button_1' )
+   IDE_Nudge( 0 , 1 , .F. )
+   IDE_Nudge( 1 , 0 , .T. )
+   IDE_Nudge( 0 , -1 , .T. )
 RETURN
 
 PROCEDURE IDE_RoundTripEnd( cOut, xErr )
@@ -2194,6 +2218,15 @@ PROCEDURE New ( Activate )
 			END TEXTBOX
 
 			ON KEY DELETE ACTION DeleteControl()
+			// HMG5: arrow keys move the selected control by 1 pixel, Ctrl+arrow to the next grid line
+			ON KEY LEFT          ACTION IDE_Nudge(  0 , -1 , .F. )
+			ON KEY RIGHT         ACTION IDE_Nudge(  0 ,  1 , .F. )
+			ON KEY UP            ACTION IDE_Nudge( -1 ,  0 , .F. )
+			ON KEY DOWN          ACTION IDE_Nudge(  1 ,  0 , .F. )
+			ON KEY CONTROL+LEFT  ACTION IDE_Nudge(  0 , -1 , .T. )
+			ON KEY CONTROL+RIGHT ACTION IDE_Nudge(  0 ,  1 , .T. )
+			ON KEY CONTROL+UP    ACTION IDE_Nudge( -1 ,  0 , .T. )
+			ON KEY CONTROL+DOWN  ACTION IDE_Nudge(  1 ,  0 , .T. )
 
 			DEFINE TIMER internal_timer_1 INTERVAL 1 ACTION TimerTest()
 
@@ -2240,6 +2273,15 @@ PROCEDURE New ( Activate )
 			END TEXTBOX
 
 			ON KEY DELETE ACTION DeleteControl()
+			// HMG5: arrow keys move the selected control by 1 pixel, Ctrl+arrow to the next grid line
+			ON KEY LEFT          ACTION IDE_Nudge(  0 , -1 , .F. )
+			ON KEY RIGHT         ACTION IDE_Nudge(  0 ,  1 , .F. )
+			ON KEY UP            ACTION IDE_Nudge( -1 ,  0 , .F. )
+			ON KEY DOWN          ACTION IDE_Nudge(  1 ,  0 , .F. )
+			ON KEY CONTROL+LEFT  ACTION IDE_Nudge(  0 , -1 , .T. )
+			ON KEY CONTROL+RIGHT ACTION IDE_Nudge(  0 ,  1 , .T. )
+			ON KEY CONTROL+UP    ACTION IDE_Nudge( -1 ,  0 , .T. )
+			ON KEY CONTROL+DOWN  ACTION IDE_Nudge(  1 ,  0 , .T. )
 
 			DEFINE TIMER internal_timer_1 INTERVAL 1 ACTION TimerTest()
 
@@ -2418,8 +2460,6 @@ Local ControlCol
 Local i
 Local ControlWidth 
 Local ControlHeight 
-Local dr
-Local dc
 Local x
 Local HitTestOk 
 Local SupMin
@@ -2479,11 +2519,8 @@ Private macrovar
 
 		If SnapToGrid == .T.
 
-			dr := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 191 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 191 ] := _HMG_SYSDATA [ 191 ] + dr
-
-			dc := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 192 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 192 ] := _HMG_SYSDATA [ 192 ] + dc
+			_HMG_SYSDATA [ 191 ] := IDE_Snap ( _HMG_SYSDATA [ 191 ] )   // HMG5: nearest grid line (was: always the next one)
+			_HMG_SYSDATA [ 192 ] := IDE_Snap ( _HMG_SYSDATA [ 192 ] )
 
 		EndIf
 
@@ -2604,11 +2641,8 @@ Private macrovar
 
 						If SnapToGrid == .T.
 
-							dr := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 191 ] ) ) , 1 ) )
-							_HMG_SYSDATA [ 191 ] := _HMG_SYSDATA [ 191 ] + dr
-
-							dc := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 192 ] ) ) , 1 ) )
-							_HMG_SYSDATA [ 192 ] := _HMG_SYSDATA [ 192 ] + dc
+							_HMG_SYSDATA [ 191 ] := IDE_Snap ( _HMG_SYSDATA [ 191 ] )   // HMG5: nearest grid line (was: always the next one)
+							_HMG_SYSDATA [ 192 ] := IDE_Snap ( _HMG_SYSDATA [ 192 ] )
 
 						EndIf
 
@@ -4937,7 +4971,7 @@ RETURN
 *------------------------------------------------------------------------------*
 PROCEDURE MoveControl()
 *------------------------------------------------------------------------------*
-Local dr , dc , vdc , vdr
+Local vdc , vdr
 
 	if lVirtualForm
 		VDC := GetScrollPos ( DesignFormhandle , SB_HORZ )  
@@ -4952,11 +4986,8 @@ Local dr , dc , vdc , vdr
 
 		If SnapToGrid == .T.
 
-			dr := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 191 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 191 ] := _HMG_SYSDATA [ 191 ] + dr
-
-			dc := 10 - VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 192 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 192 ] := _HMG_SYSDATA [ 192 ] + dc
+			_HMG_SYSDATA [ 191 ] := IDE_Snap ( _HMG_SYSDATA [ 191 ] )   // HMG5: nearest grid line (was: always the next one)
+			_HMG_SYSDATA [ 192 ] := IDE_Snap ( _HMG_SYSDATA [ 192 ] )
 
 		EndIf
 
@@ -4993,11 +5024,8 @@ Local dr , dc , vdc , vdr
 
 		If SnapToGrid == .T.
 
-			dr := VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 191 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 191 ] := _HMG_SYSDATA [ 191 ] - dr
-
-			dc := VAL ( HB_URIGHT ( ALLTRIM( STR ( _HMG_SYSDATA [ 192 ] ) ) , 1 ) )
-			_HMG_SYSDATA [ 192 ] := _HMG_SYSDATA [ 192 ] - dc
+			_HMG_SYSDATA [ 191 ] := IDE_Snap ( _HMG_SYSDATA [ 191 ] )   // HMG5: nearest grid line (was: rounded down)
+			_HMG_SYSDATA [ 192 ] := IDE_Snap ( _HMG_SYSDATA [ 192 ] )
 
 		EndIf
 
@@ -5261,10 +5289,108 @@ RETURN
 
 
 PROCEDURE DrawGrid()
-
-	DRAWDESIGNGRID( DesignFormHandle , GetWindowHeight(DesignFormhandle) , GetWindowWidth( DesignFormhandle) )
-
+// HMG5: the grid is the design form's background (a dotted pattern brush, IDE_SETGRIDBACKGROUND),
+// so controls cover it and every repaint of the form draws it. The dots used to be drawn on top of
+// everything with GetDC after each change. This call only keeps the brush current (cheap).
+	IF HB_ISNUMERIC( DesignFormHandle ) .AND. DesignFormHandle != 0   // IDE_SETGRIDBACKGROUND checks IsWindow()
+		IDE_SETGRIDBACKGROUND( DesignFormHandle , iif( ShowGrid , nGridSize , 0 ) )
+	ENDIF
 RETURN
+
+
+//------------------------------------------------------------------------------
+// HMG5 grid settings (PHASE4-DESIGN.md 6.3, I5/I9): snap, size, display; grid.ini
+//------------------------------------------------------------------------------
+FUNCTION IDE_Snap( n )
+// nearest grid line (the IDE used to move to the *next* multiple of 10, and resize rounded down)
+	IF SnapToGrid .AND. nGridSize > 1
+		RETURN Round( n / nGridSize , 0 ) * nGridSize
+	ENDIF
+RETURN n
+
+PROCEDURE IDE_LoadGridSettings()
+LOCAL a := hb_ATokens( AllTrim( HB_MEMOREAD( StartUpFolder + 'grid.ini' ) ) , ',' )
+	IF Len( a ) >= 3
+		SnapToGrid := ( AllTrim( a [ 1 ] ) == '1' )
+		nGridSize  := Val( a [ 2 ] )
+		ShowGrid   := ( AllTrim( a [ 3 ] ) == '1' )
+	ENDIF
+	IF AScan( { 5 , 8 , 10 , 16 , 20 } , nGridSize ) == 0
+		nGridSize := 10
+	ENDIF
+RETURN
+
+PROCEDURE IDE_SaveGridSettings()
+	SaveString( StartUpFolder + 'grid.ini' , iif( SnapToGrid , '1' , '0' ) + ',' + hb_ntos( nGridSize ) + ',' + iif( ShowGrid , '1' , '0' ) )
+RETURN
+
+PROCEDURE IDE_UpdateGridMenu()
+LOCAL n
+	Form_Main.SnapToGrid.Checked  := SnapToGrid
+	Form_Main.mnuShowGrid.Checked := ShowGrid
+	FOR EACH n IN { 5 , 8 , 10 , 16 , 20 }
+		SetProperty( 'Form_Main' , 'mnuGrid' + hb_ntos( n ) , 'Checked' , n == nGridSize )
+	NEXT
+RETURN
+
+PROCEDURE IDE_GridChanged()
+	IDE_SaveGridSettings()
+	IDE_UpdateGridMenu()
+	IF ! Empty( DesignForm ) .AND. _IsWindowDefined( DesignForm )
+		DrawGrid()
+	ENDIF
+RETURN
+
+PROCEDURE IDE_ToggleSnap()
+	SnapToGrid := ! SnapToGrid
+	IDE_GridChanged()
+RETURN
+
+PROCEDURE IDE_ToggleShowGrid()
+	ShowGrid := ! ShowGrid
+	IDE_GridChanged()
+RETURN
+
+PROCEDURE IDE_SetGridSize( n )
+	nGridSize := n
+	IDE_GridChanged()
+RETURN
+
+PROCEDURE IDE_Nudge( nDRow , nDCol , lGrid )
+// arrow keys on the design form: move the selected control by 1 pixel; with Ctrl, to the
+// next grid line in that direction (whatever SnapToGrid says)
+LOCAL nRow , nCol
+	IF Empty( SelectedControlName ) .OR. Empty( DesignForm ) .OR. ! _IsControlDefined( SelectedControlName , DesignForm )
+		RETURN
+	ENDIF
+	nRow := GetProperty( DesignForm , SelectedControlName , 'Row' )
+	nCol := GetProperty( DesignForm , SelectedControlName , 'Col' )
+	IF lGrid
+		nRow := IDE_NextGridLine( nRow , nDRow )
+		nCol := IDE_NextGridLine( nCol , nDCol )
+	ELSE
+		nRow += nDRow
+		nCol += nDCol
+	ENDIF
+	IF nRow < 0 .OR. nCol < 0
+		RETURN
+	ENDIF
+	SetProperty( DesignForm , SelectedControlName , 'Row' , nRow )
+	SetProperty( DesignForm , SelectedControlName , 'Col' , nCol )
+	DesignFormModified := .T.
+	RedrawWindow( DesignFormHandle )
+	SelectControl( SelectedControlName )   // selection frame and Object Inspector
+RETURN
+
+FUNCTION IDE_NextGridLine( n , nDir )
+// the next grid line strictly before (nDir < 0) or after (nDir > 0) n; n itself when nDir is 0
+	DO CASE
+	CASE nDir > 0
+		RETURN ( Int( n / nGridSize ) + 1 ) * nGridSize
+	CASE nDir < 0
+		RETURN Max( 0 , ( Int( ( n - 1 ) / nGridSize ) ) * nGridSize )
+	ENDCASE
+RETURN n
 
 
 #pragma BEGINDUMP
@@ -5520,36 +5646,68 @@ HB_FUNC( GETMODULEFILENAME )
 }
 */
 
-HB_FUNC ( DRAWDESIGNGRID )
+/* HMG5: IDE_SETGRIDBACKGROUND( hDesignForm, nGrid )
+   The design grid as the form's class background: a pattern brush of nGrid x nGrid pixels with
+   one dark dot at (0,0), so a dot falls on every multiple of nGrid and child controls cover it.
+   nGrid 0: plain form colour. Changes the class brush and repaints only when something changed
+   (DrawGrid() calls this from ON PAINT). The design form has a class of its own (HMG registers
+   one per form name). Replaces DRAWDESIGNGRID / DRAWDESIGNGRIDRECT, which drew on top. */
+static HBRUSH  s_hGridBrush = NULL;
+static HBITMAP s_hGridBmp   = NULL;
+static int     s_nGridSize  = 0;
+
+HB_FUNC ( IDE_SETGRIDBACKGROUND )
 {
-	int r , c , rto , cto ;
-   HWND hWnd1;
-   HDC hdc1;
-   HGDIOBJ hgdiobj1;
-   HPEN hpen;
-   hWnd1 = (HWND) HMG_parnl(1);
-   hdc1 = GetDC( (HWND) hWnd1 );
-   hpen = CreatePen( (int) PS_SOLID, (int) 1 , (COLORREF) RGB( (int) 0, (int) 0, (int) 0 ) );
-   hgdiobj1 = SelectObject( (HDC) hdc1, hpen );
+   HWND   hWnd  = (HWND) HMG_parnl (1);
+   int    nGrid = hb_parni (2);
+   HBRUSH hWant;
 
+   if ( ! IsWindow (hWnd) )
+      return;
 
-	rto = hb_parni(2);
-	cto = hb_parni(3);
+   if ( nGrid < 2 )
+      hWant = GetSysColorBrush (COLOR_BTNFACE);
+   else
+   {
+      if ( s_hGridBrush == NULL || s_nGridSize != nGrid )
+      {
+         HDC     hScreen = GetDC (NULL);
+         HDC     hMem    = CreateCompatibleDC (hScreen);
+         HBITMAP hBmp    = CreateCompatibleBitmap (hScreen, nGrid, nGrid);
+         HGDIOBJ hOld    = SelectObject (hMem, hBmp);
+         RECT    rc;
+         HBRUSH  hNew, hOldBrush = s_hGridBrush;
+         HBITMAP hOldBmp = s_hGridBmp;
 
-	for ( r=10 ; r<=rto; r+=10 )
-	{
+         SetRect (&rc, 0, 0, nGrid, nGrid);
+         FillRect (hMem, &rc, GetSysColorBrush (COLOR_BTNFACE));
+         SetPixel (hMem, 0, 0, RGB (0, 0, 0));
+         SelectObject (hMem, hOld);
+         DeleteDC (hMem);
+         ReleaseDC (NULL, hScreen);
 
-		for ( c=10 ; c<=cto ; c+=10 )
-		{
-			MoveToEx( (HDC) hdc1, (int) c, (int) r, NULL );
-			LineTo( (HDC) hdc1, (int) c+1, (int) r+1 );
-		}
+         hNew = CreatePatternBrush (hBmp);
+         s_hGridBrush = hNew;
+         s_hGridBmp   = hBmp;
+         s_nGridSize  = nGrid;
 
-	}
+         if ( hOldBrush != NULL )
+         {
+            if ( (HBRUSH) GetClassLongPtr (hWnd, GCLP_HBRBACKGROUND) == hOldBrush )
+               SetClassLongPtr (hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) hNew);
+            DeleteObject (hOldBrush);
+            DeleteObject (hOldBmp);
+         }
+      }
+      hWant = s_hGridBrush;
+   }
 
-   SelectObject( (HDC) hdc1, (HGDIOBJ) hgdiobj1 );
-   DeleteObject( hpen );
-   ReleaseDC( hWnd1, hdc1 );
+   if ( (HBRUSH) GetClassLongPtr (hWnd, GCLP_HBRBACKGROUND) != hWant || nGrid != (int) (INT_PTR) GetProp (hWnd, _TEXT("HMG5_GRID")) )
+   {
+      SetClassLongPtr (hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) hWant);
+      SetProp (hWnd, _TEXT("HMG5_GRID"), (HANDLE) (INT_PTR) nGrid);
+      InvalidateRect (hWnd, NULL, TRUE);
+   }
 }
 
 
@@ -5568,40 +5726,6 @@ HB_FUNC ( REDRAWRECT )
 		NULL,	
 		RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW
 	);
-}
-
-HB_FUNC ( DRAWDESIGNGRIDRECT )
-{
-	int r , c , rto , cto , rfrom , cfrom ;
-	HWND hWnd1;
-	HDC hdc1;
-	HGDIOBJ hgdiobj1;
-	HPEN hpen;
-	hWnd1 = (HWND) HMG_parnl(1);
-	hdc1 = GetDC( (HWND) hWnd1 );
-	hpen = CreatePen( (int) PS_SOLID, (int) 1 , (COLORREF) RGB( (int) 0, (int) 0, (int) 0 ) );
-	hgdiobj1 = SelectObject( (HDC) hdc1, hpen );
-
-	rfrom = hb_parni(2);
-	cfrom = hb_parni(3);
-
-	rto = hb_parni(4);
-	cto = hb_parni(5);
-
-	for ( r=rfrom ; r<=rto; r+=10 )
-	{
-
-		for ( c=cfrom ; c<=cto ; c+=10 )
-		{
-			MoveToEx( (HDC) hdc1, (int) c, (int) r, NULL );
-			LineTo( (HDC) hdc1, (int) c+1, (int) r+1 );
-		}
-
-	}
-
-   SelectObject( (HDC) hdc1, (HGDIOBJ) hgdiobj1 );
-   DeleteObject( hpen );
-   ReleaseDC( hWnd1, hdc1 );
 }
 
 HB_FUNC ( REDRAWALL )

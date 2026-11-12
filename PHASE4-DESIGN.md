@@ -412,6 +412,15 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
   - **Each form must:** load and save without error, give the same text when saved twice (a fixed point), and match the reference.
   - **Found and fixed:** `LOCKCOLUMNS Nil` was read back as 0, so the text of a grid changed on every second save.
   - **Seen, kept as baseline:** Tree and Tab get fractional columns (`AT 180 , 600.00`); one palette entry adds no control on a plain form.
+- **I5 and I9 done** (12-11-2026):
+  - **Snap:** one `IDE_Snap()` rounds to the **nearest** grid line on create, move and resize. It replaces four copies of `10 - last digit` (always the next line) and "round down". It also removes the `.00` columns, which came from that code, not from Tree and Tab.
+  - **Grid behind the controls:** `DrawGrid()` no longer paints dots over the window. `IDE_SETGRIDBACKGROUND` (C) gives the design form's class a pattern brush with one dot per grid cell, so controls cover it, and every repaint, including `RedrawRect` after a move, draws it.
+  - **Edit menu:** Snap to Grid, Show Grid, and Grid Size (5, 8, 10, 16, 20 pixels). The settings are kept in `IDE\grid.ini` ("snap,size,show"); snap used to be switched on at every start.
+  - **Arrow keys** on the design form move the selected control by 1 pixel; Ctrl+arrow moves it to the next grid line.
+  - **`IDE.exe /form <file.fmg>`** opens one form in the designer without a project.
+  - **Tests:** `/addall` now clicks off the grid (row 23 rounds down to 20, column 27 up to 30) and nudges Button_1 (right 1, Ctrl+Down, Ctrl+Left: 30,30). Only `expected/addall.fmg` changed, on purpose; the other 17 forms are byte-identical.
+  - **Checked visually:** 10 and 20 pixel grids behind all 27 control types.
+  - **Not checked:** the arrow keys pressed for real (the function is tested, the key bindings are not), and the grid on a scrolled VIRTUAL form (the dots may shift by the scroll offset).
 
 ---
 

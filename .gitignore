@@ -23,6 +23,7 @@ _hmg_resconfig.h
 
 # IDE per-machine setting: the IDE writes its own HMG path here on first run
 /IDE/hmg.ini
+/IDE/grid.ini
 
 # IDE build outputs (hmgbuild ide copies IDE.exe to IDE\)
 /SOURCE/IDE_SourceCode/*.exe
