@@ -343,6 +343,8 @@ static void lex( const WCHAR * t, LONG n, LONG from, LONG to, LEXEMIT emit, void
 
 /* ------------------------------------------------------------------ data */
 
+typedef struct { const WCHAR * name; const WCHAR * hint; BOOL own; } ACITEM;   /* a completion */
+
 typedef struct _EDHOST
 {
    HWND     hHost, hTab;
@@ -350,7 +352,13 @@ typedef struct _EDHOST
    WCHAR    face[ LF_FACESIZE ];
    int      nSize, nIndent, nTabWidth;
    HFONT    hFont, hTabFont;
-   int      charW, tabH;
+   int      charW, tabH, lineH;
+   HWND     hPop, hList;           /* the completion list (ac_ below) */
+   struct _EDDOC * acDoc;          /* the file it is open for, NULL: closed */
+   LONG     acStart;               /* where the word being completed starts */
+   BOOL     acMember, acForced;
+   ACITEM * ac;                    /* the candidates, sorted */
+   int      acN, acCap;
 } EDHOST;
 
 typedef struct _EDDOC
@@ -960,8 +968,592 @@ static int ed_mods( void )
    return ( GetKeyState( VK_CONTROL ) < 0 ? 0x10000 : 0 ) | ( GetKeyState( VK_SHIFT ) < 0 ? 0x20000 : 0 ) | ( GetKeyState( VK_MENU ) < 0 ? 0x40000 : 0 );
 }
 
+/* ------------------------------------------------------------------ completion
+
+   A list under the word being typed: after 3 letters, the words of the file and the
+   HMG5/Harbour keywords; after "Form." or "Form.Control.", what IDE_ED_MEMBERS( hView,
+   cChain ) returns (ide_complete.prg: the project's controls, properties, methods).
+   Ctrl+Space opens it at once. Up/Down/PgUp/PgDn choose, Enter or Tab inserts,
+   Esc closes. The list never takes the focus: the keys stay with the editor. */
+
+#define AC_MINLEN   3       /* letters before the list opens by itself */
+#define AC_ROWS     10
+#define AC_MAXSHOW  500
+
+static const WCHAR ** s_acKw = NULL;   /* the keywords in their own case, sorted, no duplicates */
+static int s_acKwN = 0;
+static HBRUSH s_acBr[ 2 ] = { NULL, NULL };
+
+static WCHAR ac_up( WCHAR c ) { return ( c >= 'a' && c <= 'z' ) ? ( WCHAR ) ( c - 32 ) : c; }
+
+static int ac_cmp( const WCHAR * a, const WCHAR * b )
+{
+   while( *a && ac_up( *a ) == ac_up( *b ) )
+   {
+      a++;
+      b++;
+   }
+   return ( int ) ac_up( *a ) - ( int ) ac_up( *b );
+}
+
+static BOOL ac_prefix( const WCHAR * w, const WCHAR * p, int n )
+{
+   int i;
+   for( i = 0; i < n; i++ )
+      if( ! w[ i ] || ac_up( w[ i ] ) != ac_up( p[ i ] ) )
+         return FALSE;
+   return TRUE;
+}
+
+static int ac_qcmpw( const void * a, const void * b ) { return ac_cmp( *( const WCHAR * const * ) a, *( const WCHAR * const * ) b ); }
+static int ac_qcmpi( const void * a, const void * b ) { return ac_cmp( ( ( const ACITEM * ) a )->name, ( ( const ACITEM * ) b )->name ); }
+
+static void ac_kwinit( void )
+{
+   const char * p = s_kwText;
+   int n = 0, cap = 4096, i, k;
+   WCHAR ** a;
+   if( s_acKw )
+      return;
+   a = ( WCHAR ** ) malloc( cap * sizeof( WCHAR * ) );
+   while( *p )
+   {
+      const char * e = p;
+      while( *e && *e != '\n' )
+         e++;
+      if( *p >= '1' && *p <= '7' && p[ 1 ] == ' ' )
+      {
+         const char * w = p + 2, * we = e;
+         while( we > w && ( we[ -1 ] == '\r' || we[ -1 ] == ' ' ) )
+            we--;
+         if( we - w >= 2 && lx_idstart( ( WCHAR ) ( unsigned char ) *w ) )
+         {
+            WCHAR * x = ( WCHAR * ) malloc( ( we - w + 1 ) * sizeof( WCHAR ) );
+            for( i = 0; i < we - w; i++ )
+               x[ i ] = ( WCHAR ) ( unsigned char ) w[ i ];
+            x[ we - w ] = 0;
+            if( n == cap )
+               a = ( WCHAR ** ) realloc( a, ( cap *= 2 ) * sizeof( WCHAR * ) );
+            a[ n++ ] = x;
+         }
+      }
+      p = *e ? e + 1 : e;
+   }
+   qsort( a, n, sizeof( WCHAR * ), ac_qcmpw );
+   for( i = 0, k = 0; i < n; i++ )
+   {
+      if( k > 0 && ac_cmp( a[ k - 1 ], a[ i ] ) == 0 )
+         free( a[ i ] );
+      else
+         a[ k++ ] = a[ i ];
+   }
+   s_acKw = ( const WCHAR ** ) a;
+   s_acKwN = k;
+}
+
+static void ac_clear( EDHOST * h )
+{
+   int i;
+   for( i = 0; i < h->acN; i++ )
+      if( h->ac[ i ].own )
+         hb_xfree( ( void * ) h->ac[ i ].name );   /* name and hint are one block */
+   if( h->ac )
+      hb_xfree( h->ac );
+   h->ac = NULL;
+   h->acN = h->acCap = 0;
+}
+
+static void ac_add( EDHOST * h, const WCHAR * name, int nName, const WCHAR * hint, int nHint, BOOL copy )
+{
+   ACITEM * it;
+   if( h->acN == h->acCap )
+   {
+      h->acCap = h->acCap ? h->acCap * 2 : 256;
+      h->ac = ( ACITEM * ) hb_xrealloc( h->ac, h->acCap * sizeof( ACITEM ) );
+   }
+   it = &h->ac[ h->acN++ ];
+   if( copy )
+   {
+      WCHAR * b = ( WCHAR * ) hb_xgrab( ( nName + nHint + 2 ) * sizeof( WCHAR ) );
+      memcpy( b, name, nName * sizeof( WCHAR ) );
+      b[ nName ] = 0;
+      if( nHint > 0 )
+         memcpy( b + nName + 1, hint, nHint * sizeof( WCHAR ) );
+      b[ nName + 1 + nHint ] = 0;
+      it->name = b;
+      it->hint = nHint > 0 ? b + nName + 1 : NULL;
+      it->own = TRUE;
+   }
+   else
+   {
+      it->name = name;
+      it->hint = NULL;
+      it->own = FALSE;
+   }
+}
+
+static void ac_hide( EDHOST * h )
+{
+   if( ! h )
+      return;
+   if( h->hPop && IsWindowVisible( h->hPop ) )
+      ShowWindow( h->hPop, SW_HIDE );
+   if( h->hList )
+      SendMessageW( h->hList, LB_RESETCONTENT, 0, 0 );
+   ac_clear( h );
+   h->acDoc = NULL;
+}
+
+static BOOL ac_visible( EDDOC * d )
+{
+   return d && d->host->acDoc == d && d->host->hPop && IsWindowVisible( d->host->hPop );
+}
+
+static void ac_accept( EDHOST * h )
+{
+   EDDOC * d = h->acDoc;
+   LRESULT i;
+   LONG s, e;
+   const WCHAR * w;
+   if( ! d )
+      return;
+   i = SendMessageW( h->hList, LB_GETCURSEL, 0, 0 );
+   if( i == LB_ERR )
+   {
+      ac_hide( h );
+      return;
+   }
+   i = SendMessageW( h->hList, LB_GETITEMDATA, ( WPARAM ) i, 0 );
+   if( i < 0 || i >= h->acN )
+   {
+      ac_hide( h );
+      return;
+   }
+   w = h->ac[ i ].name;
+   ed_getsel( d, &s, &e );
+   ed_setsel( d, h->acStart, e );
+   SendMessageW( d->hRich, EM_REPLACESEL, TRUE, ( LPARAM ) w );
+   ac_hide( h );
+   ed_checkview( d );
+}
+
+static LRESULT CALLBACK ac_listproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR uId, DWORD_PTR ref )
+{
+   EDHOST * h = ( EDHOST * ) ref;
+   ( void ) uId;
+   switch( msg )
+   {
+      case WM_MOUSEACTIVATE:
+         return MA_NOACTIVATE;
+      case WM_LBUTTONDOWN:
+      {
+         LRESULT r = SendMessageW( hWnd, LB_ITEMFROMPOINT, 0, lParam );
+         if( HIWORD( r ) == 0 )
+            SendMessageW( hWnd, LB_SETCURSEL, LOWORD( r ), 0 );
+         return 0;   /* no focus for the list */
+      }
+      case WM_LBUTTONDBLCLK:
+         ac_accept( h );
+         return 0;
+      case WM_NCDESTROY:
+         RemoveWindowSubclass( hWnd, ac_listproc, 1 );
+         break;
+   }
+   return DefSubclassProc( hWnd, msg, wParam, lParam );
+}
+
+static LRESULT CALLBACK ac_popproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   EDHOST * h = ( EDHOST * ) GetWindowLongPtrW( hWnd, GWLP_USERDATA );
+   switch( msg )
+   {
+      case WM_MOUSEACTIVATE:
+         return MA_NOACTIVATE;
+      case WM_CTLCOLORLISTBOX:
+         if( h )
+            return ( LRESULT ) s_acBr[ h->bDark ? 1 : 0 ];
+         break;
+      case WM_DRAWITEM:
+      {
+         DRAWITEMSTRUCT * di = ( DRAWITEMSTRUCT * ) lParam;
+         LRESULT k;
+         RECT rc;
+         BOOL sel, dark;
+         int pad;
+         if( ! h || di->itemID == ( UINT ) -1 )
+            return TRUE;
+         k = ( LRESULT ) di->itemData;
+         if( k < 0 || k >= h->acN )
+            return TRUE;
+         dark = h->bDark;
+         sel = ( di->itemState & ODS_SELECTED ) != 0;
+         pad = MulDiv( 6, ed_dpi( hWnd ), 96 );
+         SetDCBrushColor( di->hDC, sel ? ( dark ? RGB( 4, 57, 94 ) : RGB( 204, 232, 255 ) ) : ( dark ? RGB( 37, 37, 38 ) : RGB( 255, 255, 255 ) ) );
+         FillRect( di->hDC, &di->rcItem, ( HBRUSH ) GetStockObject( DC_BRUSH ) );
+         SetBkMode( di->hDC, TRANSPARENT );
+         SelectObject( di->hDC, h->hFont );
+         rc = di->rcItem;
+         rc.left += pad;
+         rc.right -= pad;
+         SetTextColor( di->hDC, dark ? RGB( 220, 220, 220 ) : RGB( 0, 0, 0 ) );
+         DrawTextW( di->hDC, h->ac[ k ].name, -1, &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX );
+         if( h->ac[ k ].hint )
+         {
+            SetTextColor( di->hDC, dark ? RGB( 140, 140, 140 ) : RGB( 120, 120, 120 ) );
+            DrawTextW( di->hDC, h->ac[ k ].hint, -1, &rc, DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX );
+         }
+         return TRUE;
+      }
+   }
+   return DefWindowProcW( hWnd, msg, wParam, lParam );
+}
+
+static void ac_create( EDHOST * h )
+{
+   static BOOL reg = FALSE;
+   HWND hOwner = GetAncestor( h->hHost, GA_ROOT );
+   if( h->hPop && IsWindow( h->hPop ) )
+      return;
+   if( ! reg )
+   {
+      WNDCLASSW wc;
+      memset( &wc, 0, sizeof( wc ) );
+      wc.hInstance = GetModuleHandleW( NULL );
+      wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+      wc.lpfnWndProc = ac_popproc;
+      wc.lpszClassName = L"HMGIDEComplete";
+      wc.style = CS_DROPSHADOW;
+      RegisterClassW( &wc );
+      s_acBr[ 0 ] = CreateSolidBrush( RGB( 255, 255, 255 ) );
+      s_acBr[ 1 ] = CreateSolidBrush( RGB( 37, 37, 38 ) );
+      reg = TRUE;
+   }
+   h->hPop = CreateWindowExW( WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, L"HMGIDEComplete", L"", WS_POPUP | WS_CLIPCHILDREN,
+                              0, 0, 100, 100, hOwner, NULL, GetModuleHandleW( NULL ), NULL );
+   SetWindowLongPtrW( h->hPop, GWLP_USERDATA, ( LONG_PTR ) h );
+   h->hList = CreateWindowExW( 0, L"LISTBOX", L"", WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_NOTIFY |
+                               LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT,
+                               0, 0, 100, 100, h->hPop, NULL, GetModuleHandleW( NULL ), NULL );
+   SendMessageW( h->hList, WM_SETFONT, ( WPARAM ) h->hFont, FALSE );
+   SendMessageW( h->hList, LB_SETITEMHEIGHT, 0, h->lineH + MulDiv( 3, ed_dpi( h->hHost ), 96 ) );
+   SetWindowSubclass( h->hList, ac_listproc, 1, ( DWORD_PTR ) h );
+   ed_theme( h->hList, h->bDark );
+}
+
+/* the list for the text typed since acStart; hidden when nothing (more) matches */
+static void ac_filter( EDHOST * h )
+{
+   EDDOC * d = h->acDoc;
+   LONG s, e, n, i;
+   WCHAR pre[ 80 ];
+   TEXTRANGEW tr;
+   int shown = 0, itemH, rows, w, hgt, maxN = 0, maxH = 0, pad, sb;
+   BOOL exact = FALSE;
+   HDC hdc;
+   HFONT hOld;
+   POINTL pt;
+   POINT p;
+   MONITORINFO mi;
+   SIZE sz;
+
+   if( ! d )
+      return;
+   ed_getsel( d, &s, &e );
+   n = s - h->acStart;
+   if( s != e || n < 0 || n >= 79 || ( ! h->acMember && ! h->acForced && n == 0 ) )
+   {
+      ac_hide( h );
+      return;
+   }
+   tr.chrg.cpMin = h->acStart;
+   tr.chrg.cpMax = s;
+   tr.lpstrText = pre;
+   pre[ 0 ] = 0;
+   if( n > 0 )
+      SendMessageW( d->hRich, EM_GETTEXTRANGE, 0, ( LPARAM ) &tr );
+   pre[ n ] = 0;
+   for( i = 0; i < n; i++ )
+      if( ! lx_idchar( pre[ i ] ) )
+      {
+         ac_hide( h );
+         return;
+      }
+
+   ac_create( h );
+   SendMessageW( h->hList, WM_SETREDRAW, FALSE, 0 );
+   SendMessageW( h->hList, LB_RESETCONTENT, 0, 0 );
+   hdc = GetDC( h->hList );
+   hOld = ( HFONT ) SelectObject( hdc, h->hFont );
+   for( i = 0; i < h->acN && shown < AC_MAXSHOW; i++ )
+   {
+      if( ac_prefix( h->ac[ i ].name, pre, ( int ) n ) )
+      {
+         LRESULT k = SendMessageW( h->hList, LB_ADDSTRING, 0, ( LPARAM ) h->ac[ i ].name );
+         SendMessageW( h->hList, LB_SETITEMDATA, ( WPARAM ) k, ( LPARAM ) i );
+         GetTextExtentPoint32W( hdc, h->ac[ i ].name, lstrlenW( h->ac[ i ].name ), &sz );
+         if( sz.cx > maxN )
+            maxN = sz.cx;
+         if( h->ac[ i ].hint )
+         {
+            GetTextExtentPoint32W( hdc, h->ac[ i ].hint, lstrlenW( h->ac[ i ].hint ), &sz );
+            if( sz.cx > maxH )
+               maxH = sz.cx;
+         }
+         shown++;
+         if( lstrlenW( h->ac[ i ].name ) == n )
+            exact = TRUE;
+      }
+   }
+   SelectObject( hdc, hOld );
+   ReleaseDC( h->hList, hdc );
+   SendMessageW( h->hList, WM_SETREDRAW, TRUE, 0 );
+   if( shown == 1 && exact && ! h->acForced )
+      shown = 0;   /* only the word itself: nothing to complete */
+   if( shown <= 0 )
+   {
+      ac_hide( h );
+      h->acDoc = NULL;
+      return;
+   }
+   SendMessageW( h->hList, LB_SETCURSEL, 0, 0 );
+
+   pad = MulDiv( 6, ed_dpi( h->hHost ), 96 );
+   itemH = ( int ) SendMessageW( h->hList, LB_GETITEMHEIGHT, 0, 0 );
+   rows = shown < AC_ROWS ? shown : AC_ROWS;
+   sb = shown > rows ? GetSystemMetrics( SM_CXVSCROLL ) : 0;
+   w = maxN + ( maxH ? maxH + 4 * pad : 0 ) + 2 * pad + sb + 4;
+   if( w < MulDiv( 140, ed_dpi( h->hHost ), 96 ) )
+      w = MulDiv( 140, ed_dpi( h->hHost ), 96 );
+   if( w > MulDiv( 600, ed_dpi( h->hHost ), 96 ) )
+      w = MulDiv( 600, ed_dpi( h->hHost ), 96 );
+   hgt = rows * itemH + 2 * GetSystemMetrics( SM_CYBORDER );
+
+   SendMessageW( d->hRich, EM_POSFROMCHAR, ( WPARAM ) &pt, h->acStart );
+   p.x = pt.x - pad;
+   p.y = pt.y;
+   ClientToScreen( d->hRich, &p );
+   mi.cbSize = sizeof( mi );
+   GetMonitorInfoW( MonitorFromPoint( p, MONITOR_DEFAULTTONEAREST ), &mi );
+   if( p.y + h->lineH + hgt > mi.rcWork.bottom )
+      p.y -= hgt;
+   else
+      p.y += h->lineH;
+   if( p.x + w > mi.rcWork.right )
+      p.x = mi.rcWork.right - w;
+   if( p.x < mi.rcWork.left )
+      p.x = mi.rcWork.left;
+   SetWindowPos( h->hPop, HWND_TOP, p.x, p.y, w, hgt, SWP_NOACTIVATE | SWP_SHOWWINDOW );
+   MoveWindow( h->hList, 0, 0, w, hgt, TRUE );
+}
+
+static void ac_move( EDHOST * h, int nStep )
+{
+   LRESULT n = SendMessageW( h->hList, LB_GETCOUNT, 0, 0 ), i = SendMessageW( h->hList, LB_GETCURSEL, 0, 0 );
+   if( n <= 0 )
+      return;
+   i += nStep;
+   if( i < 0 )
+      i = nStep < -1 ? 0 : n - 1;
+   else if( i >= n )
+      i = nStep > 1 ? n - 1 : 0;
+   SendMessageW( h->hList, LB_SETCURSEL, ( WPARAM ) i, 0 );
+}
+
+typedef struct { LONG pos; int st; } ACSTYLE;
+static void ac_styleemit( void * ctx, LONG s, LONG e, int st )
+{
+   ACSTYLE * c = ( ACSTYLE * ) ctx;
+   if( s <= c->pos && c->pos < e )
+      c->st = st;
+}
+
+/* IDE_ED_MEMBERS( hView, cChain ) -> { "name" | "name" + Chr( 9 ) + "hint", ... } */
+static void ac_members( EDDOC * d, const WCHAR * chain, int nChain )
+{
+   PHB_DYNS s = hb_dynsymFindName( "IDE_ED_MEMBERS" );
+   int m;
+   char * b;
+   if( ! s || ! hb_vmRequestReenter() )
+      return;
+   m = WideCharToMultiByte( s_cp, 0, chain, nChain, NULL, 0, NULL, NULL );
+   b = ( char * ) hb_xgrab( m + 1 );
+   WideCharToMultiByte( s_cp, 0, chain, nChain, b, m, NULL, NULL );
+   b[ m ] = 0;
+   hb_vmPushDynSym( s );
+   hb_vmPushNil();
+   hb_vmPushNumInt( ( HB_PTRUINT ) d->hView );
+   hb_vmPushString( b, m );
+   hb_xfree( b );
+   hb_vmFunction( 2 );
+   {
+      PHB_ITEM a = hb_param( -1, HB_IT_ARRAY );
+      HB_SIZE i, n = a ? hb_arrayLen( a ) : 0;
+      for( i = 1; i <= n; i++ )
+      {
+         const char * c = hb_arrayGetCPtr( a, i );
+         int nc = ( int ) hb_arrayGetCLen( a, i ), k;
+         WCHAR * w;
+         int nw;
+         if( nc == 0 )
+            continue;
+         w = ed_towide( c, nc, s_cp, &nw );
+         for( k = 0; k < nw && w[ k ] != '\t'; k++ )
+            ;
+         ac_add( d->host, w, k, w + k + 1, k < nw ? nw - k - 1 : 0, TRUE );
+         hb_xfree( w );
+      }
+   }
+   hb_vmRequestRestore();
+}
+
+/* the words of the file (3 letters or more, not the one at nSkip) and the keywords */
+static void ac_words( EDDOC * d, LONG nSkip )
+{
+   EDHOST * h = d->host;
+   unsigned cap = 1024, mask, k;
+   const WCHAR ** set;
+   LONG p = 0;
+   int i;
+
+   while( cap < ( unsigned ) d->len / 2 && cap < ( 1u << 22 ) )
+      cap <<= 1;
+   mask = cap - 1;
+   set = ( const WCHAR ** ) hb_xgrabz( cap * sizeof( WCHAR * ) );
+   while( p < d->len )
+   {
+      if( lx_idstart( d->text[ p ] ) && ( p == 0 || ! lx_idchar( d->text[ p - 1 ] ) ) )
+      {
+         LONG q = p;
+         while( q < d->len && lx_idchar( d->text[ q ] ) )
+            q++;
+         if( q - p >= AC_MINLEN && q - p < 64 && p != nSkip && ( unsigned ) h->acN < cap / 2 )
+         {
+            unsigned hh = 2166136261u;
+            LONG j;
+            for( j = p; j < q; j++ )
+               hh = ( hh ^ ac_up( d->text[ j ] ) ) * 16777619u;
+            k = hh & mask;
+            while( set[ k ] )
+            {
+               if( lstrlenW( set[ k ] ) == q - p && ac_prefix( set[ k ], d->text + p, ( int ) ( q - p ) ) )
+                  break;
+               k = ( k + 1 ) & mask;
+            }
+            if( ! set[ k ] )
+            {
+               ac_add( h, d->text + p, ( int ) ( q - p ), NULL, 0, TRUE );
+               set[ k ] = h->ac[ h->acN - 1 ].name;
+            }
+         }
+         p = q;
+      }
+      else
+         p++;
+   }
+   ac_kwinit();
+   for( i = 0; i < s_acKwN; i++ )
+   {
+      const WCHAR * w = s_acKw[ i ];
+      int n = lstrlenW( w );
+      unsigned hh = 2166136261u;
+      int j;
+      BOOL found = FALSE;
+      for( j = 0; j < n; j++ )
+         hh = ( hh ^ ac_up( w[ j ] ) ) * 16777619u;
+      k = hh & mask;
+      while( set[ k ] )
+      {
+         if( lstrlenW( set[ k ] ) == n && ac_prefix( set[ k ], w, n ) )
+         {
+            found = TRUE;   /* the file's own spelling wins */
+            break;
+         }
+         k = ( k + 1 ) & mask;
+      }
+      if( ! found )
+         ac_add( h, w, n, NULL, 0, FALSE );
+   }
+   hb_xfree( ( void * ) set );
+   qsort( h->ac, h->acN, sizeof( ACITEM ), ac_qcmpi );
+}
+
+/* opens the list at the caret: bForced (Ctrl+Space) also with fewer letters; after a dot,
+   the members of the chain before it. -> TRUE if it is shown */
+static BOOL ac_open( EDDOC * d, BOOL bForced )
+{
+   EDHOST * h = d->host;
+   LONG s, e, start, p;
+   ACSTYLE cs;
+
+   ac_hide( h );
+   ed_getsel( d, &s, &e );
+   if( s != e )
+      return FALSE;
+   d->textVer = -1;
+   ed_fetch( d );
+   if( s > d->len )
+      return FALSE;
+   start = s;
+   while( start > 0 && lx_idchar( d->text[ start - 1 ] ) )
+      start--;
+   if( start < s && d->text[ start ] >= '0' && d->text[ start ] <= '9' )
+      return FALSE;
+   if( start > 0 )
+   {
+      cs.pos = start - 1;
+      cs.st = ST_DEF;
+      lex( d->text, d->len, start - 1, start, ac_styleemit, &cs, d->bC );
+      if( cs.st == ST_STR || cs.st == ST_COMMENT )
+         return FALSE;
+   }
+
+   if( start > 0 && d->text[ start - 1 ] == '.' )
+   {
+      /* Form. / Form.Control. : the chain of names before the dot, each one a name */
+      LONG cEnd = start - 1, cBeg = cEnd;
+      for( ;; )
+      {
+         p = cBeg;
+         while( p > 0 && lx_idchar( d->text[ p - 1 ] ) )
+            p--;
+         if( p == cBeg || ! lx_idstart( d->text[ p ] ) )
+            return FALSE;
+         cBeg = p;
+         if( p > 0 && d->text[ p - 1 ] == '.' )
+            cBeg = p - 1;
+         else
+            break;
+      }
+      if( cBeg > 0 && ( d->text[ cBeg - 1 ] == ':' || d->text[ cBeg - 1 ] == '>' ) )
+         return FALSE;   /* oObj:x.y, p->x */
+      if( ! bForced && start != s )
+         return FALSE;   /* only right after the dot, or with Ctrl+Space */
+      h->acDoc = d;      /* for ac_add's owner; the list itself comes below */
+      ac_members( d, d->text + cBeg, ( int ) ( cEnd - cBeg ) );
+      if( h->acN == 0 )
+      {
+         h->acDoc = NULL;
+         return FALSE;
+      }
+      h->acMember = TRUE;   /* in IDE_ED_MEMBERS' order: the controls, then properties and methods */
+   }
+   else
+   {
+      if( ! bForced && s - start < AC_MINLEN )
+         return FALSE;
+      ac_words( d, start );
+      h->acMember = FALSE;
+   }
+   h->acDoc = d;
+   h->acStart = start;
+   h->acForced = bForced;
+   ac_filter( h );
+   return ac_visible( d );
+}
+
 /* test hook: IDEED_TYPE sends keys with these modifiers instead of the keyboard's */
 static int s_fakeMods = -1;
+static BOOL s_acEat = FALSE;   /* the WM_CHAR of a key the completion list used */
 static int ed_curmods( void ) { return s_fakeMods >= 0 ? s_fakeMods : ed_mods(); }
 
 static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR uId, DWORD_PTR ref )
@@ -979,6 +1571,35 @@ static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
       {
          int mods = ed_curmods();
          BOOL ctrl = ( mods & 0x10000 ) != 0, shift = ( mods & 0x20000 ) != 0;
+         if( ac_visible( d ) )
+         {
+            switch( wParam )
+            {
+               case VK_UP:     ac_move( d->host, -1 ); return 0;
+               case VK_DOWN:   ac_move( d->host, 1 ); return 0;
+               case VK_PRIOR:  ac_move( d->host, -( AC_ROWS - 1 ) ); return 0;
+               case VK_NEXT:   ac_move( d->host, AC_ROWS - 1 ); return 0;
+               case VK_ESCAPE: ac_hide( d->host ); return 0;
+               case VK_RETURN: case VK_TAB:
+                  if( ! ctrl && ! shift )
+                  {
+                     ac_accept( d->host );
+                     s_acEat = TRUE;   /* its WM_CHAR */
+                     return 0;
+                  }
+                  ac_hide( d->host );
+                  break;
+               case VK_LEFT: case VK_RIGHT: case VK_HOME: case VK_END: case VK_DELETE:
+                  ac_hide( d->host );
+                  break;
+            }
+         }
+         if( wParam == VK_SPACE && ctrl && ! shift && ! ( mods & 0x40000 ) )
+         {
+            ac_open( d, TRUE );   /* Ctrl+Space */
+            s_acEat = TRUE;
+            return 0;
+         }
          if( wParam == VK_TAB && ! ctrl )
          {
             LONG s, e;
@@ -1038,6 +1659,12 @@ static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
          break;
 
       case WM_CHAR:
+         if( s_acEat )
+         {
+            s_acEat = FALSE;
+            if( wParam == ' ' || wParam == '\t' || wParam == '\r' )
+               return 0;
+         }
          if( wParam == '\t' || wParam == '\r' || wParam == '\n' || wParam == 0x1B || wParam == 0x7F )
             return 0;
          if( wParam < 32 && wParam != 8 )
@@ -1046,7 +1673,18 @@ static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             return 0;   /* Ctrl+H */
          break;
 
+      case WM_KILLFOCUS:
+      case WM_LBUTTONDOWN: case WM_RBUTTONDOWN: case WM_MBUTTONDOWN:
+         if( d->host->acDoc == d )
+            ac_hide( d->host );
+         break;
+
       case WM_MOUSEWHEEL:
+         if( ac_visible( d ) )
+         {
+            SendMessageW( d->host->hList, WM_MOUSEWHEEL, wParam, lParam );   /* scrolls the list */
+            return 0;
+         }
          if( GET_KEYSTATE_WPARAM( wParam ) & MK_CONTROL )
             return 0;   /* no zoom: the gutter would not match */
          break;
@@ -1065,6 +1703,30 @@ static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
    }
 
    r = DefSubclassProc( hWnd, msg, wParam, lParam );
+
+   /* a character went in: the completion list follows it */
+   if( msg == WM_CHAR && IsWindow( hWnd ) )
+   {
+      if( wParam < 128 && lx_idchar( ( WCHAR ) wParam ) )
+      {
+         if( ac_visible( d ) )
+            ac_filter( d->host );
+         else
+            ac_open( d, FALSE );
+      }
+      else if( wParam == 8 )
+      {
+         if( ac_visible( d ) )
+            ac_filter( d->host );
+      }
+      else
+      {
+         if( d->host->acDoc == d )
+            ac_hide( d->host );
+         if( wParam == '.' )
+            ac_open( d, FALSE );
+      }
+   }
 
    /* what the user does that can scroll, move the caret or change the text (the EM_
       messages this file sends are below WM_USER too: never from here) */
@@ -1151,6 +1813,8 @@ static LRESULT CALLBACK ed_viewproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
       case WM_NCDESTROY:
          if( d )
          {
+            if( d->host && d->host->acDoc == d )
+               ac_hide( d->host );
             if( d->pDoc )
                ITextDocument_Release( d->pDoc );
             if( d->text )
@@ -1262,6 +1926,7 @@ static void ed_hostlayout( EDHOST * h )
 static void ed_showcurrent( EDHOST * h, BOOL bFocus )
 {
    int i, n = ed_tabcount( h ), cur = ( int ) SendMessageW( h->hTab, TCM_GETCURSEL, 0, 0 );
+   ac_hide( h );
    for( i = 0; i < n; i++ )
       if( i != cur )
          ShowWindow( ed_tabview( h, i ), SW_HIDE );
@@ -1340,6 +2005,9 @@ static LRESULT CALLBACK ed_hostproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
       case WM_NCDESTROY:
          if( h )
          {
+            ac_hide( h );
+            if( h->hPop && IsWindow( h->hPop ) )
+               DestroyWindow( h->hPop );
             if( h->hFont )
                DeleteObject( h->hFont );
             if( h->hTabFont )
@@ -1386,6 +2054,7 @@ static void ed_hostfonts( EDHOST * h )
    hdc = GetDC( h->hHost );
    hOld = ( HFONT ) SelectObject( hdc, h->hFont );
    GetTextExtentPoint32W( hdc, L"0000000000", 10, &sz );
+   h->lineH = sz.cy > 0 ? sz.cy : 16;
    SelectObject( hdc, hOld );
    ReleaseDC( h->hHost, hdc );
    h->charW = sz.cx / 10 > 0 ? sz.cx / 10 : 8;
@@ -2222,4 +2891,118 @@ HB_FUNC( IDEED_SETLANG )
       d->hlVer = -1;
       ed_highlight( d, TRUE );
    }
+}
+
+/* IDEED_SETFONT( hHost, cFont, nSize, nIndent ) : the font, its size in points and the indent
+   (spaces a Tab inserts) of every open file and of the files opened later */
+HB_FUNC( IDEED_SETFONT )
+{
+   EDHOST * h = ed_host( PARHWND( 1 ) );
+   int i, n;
+   if( ! h )
+      return;
+   if( HB_ISCHAR( 2 ) && hb_parclen( 2 ) )
+   {
+      WCHAR * w = ed_towide( hb_parc( 2 ), hb_parclen( 2 ), s_cp, NULL );
+      lstrcpynW( h->face, w, LF_FACESIZE );
+      hb_xfree( w );
+   }
+   if( hb_parni( 3 ) >= 6 && hb_parni( 3 ) <= 48 )
+      h->nSize = hb_parni( 3 );
+   if( hb_parni( 4 ) >= 1 && hb_parni( 4 ) <= 16 )
+      h->nIndent = hb_parni( 4 );
+   ac_hide( h );
+   if( h->hPop && IsWindow( h->hPop ) )
+      DestroyWindow( h->hPop );   /* made again with the new font */
+   h->hPop = h->hList = NULL;
+   ed_hostfonts( h );
+   n = ed_tabcount( h );
+   for( i = 0; i < n; i++ )
+   {
+      EDDOC * d = ed_doc( ed_tabview( h, i ) );
+      if( d )
+      {
+         ed_applyformat( d );
+         ed_layout( d );
+         ed_highlight( d, TRUE );
+      }
+   }
+   ed_hostlayout( h );
+}
+
+static int CALLBACK ed_fontproc( const LOGFONTW * lf, const TEXTMETRICW * tm, DWORD type, LPARAM lp )
+{
+   PHB_ITEM a = ( PHB_ITEM ) lp;
+   HB_SIZE i, n = hb_arrayLen( a );
+   char b[ LF_FACESIZE * 4 ];
+   int m;
+   ( void ) tm;
+   ( void ) type;
+   if( ( lf->lfPitchAndFamily & 3 ) != FIXED_PITCH || lf->lfFaceName[ 0 ] == '@' )
+      return 1;
+   m = WideCharToMultiByte( s_cp, 0, lf->lfFaceName, -1, b, ( int ) sizeof( b ), NULL, NULL );
+   if( m <= 1 )
+      return 1;
+   for( i = 1; i <= n; i++ )
+      if( strcmp( hb_arrayGetCPtr( a, i ), b ) == 0 )
+         return 1;
+   {
+      PHB_ITEM it = hb_itemPutC( NULL, b );
+      hb_arrayAddForward( a, it );
+      hb_itemRelease( it );
+   }
+   return 1;
+}
+
+/* IDEED_FIXEDFONTS() -> { cFace, ... } the installed fixed-pitch (monospaced) fonts */
+HB_FUNC( IDEED_FIXEDFONTS )
+{
+   PHB_ITEM a = hb_itemArrayNew( 0 );
+   LOGFONTW lf;
+   HDC hdc = GetDC( NULL );
+   memset( &lf, 0, sizeof( lf ) );
+   lf.lfCharSet = DEFAULT_CHARSET;
+   EnumFontFamiliesExW( hdc, &lf, ( FONTENUMPROCW ) ed_fontproc, ( LPARAM ) a, 0 );
+   ReleaseDC( NULL, hdc );
+   hb_itemReturnRelease( a );
+}
+
+/* IDEED_COMPLETE( hView [, nAction] ) -> { cItem, ... } shown by the completion list (empty:
+   closed); nAction 1 opens it as Ctrl+Space does, 2 inserts the selected item, 3 closes it,
+   4 selects the next item (tests) */
+HB_FUNC( IDEED_COMPLETE )
+{
+   EDDOC * d = ed_doc( PARHWND( 1 ) );
+   PHB_ITEM a = hb_itemArrayNew( 0 );
+   if( d )
+   {
+      switch( hb_parni( 2 ) )
+      {
+         case 1: ac_open( d, TRUE ); break;
+         case 2: if( ac_visible( d ) ) ac_accept( d->host ); break;
+         case 3: ac_hide( d->host ); break;
+         case 4: if( ac_visible( d ) ) ac_move( d->host, 1 ); break;
+      }
+      if( ac_visible( d ) )
+      {
+         LRESULT i, n = SendMessageW( d->host->hList, LB_GETCOUNT, 0, 0 );
+         for( i = 0; i < n; i++ )
+         {
+            LRESULT k = SendMessageW( d->host->hList, LB_GETITEMDATA, ( WPARAM ) i, 0 );
+            if( k >= 0 && k < d->host->acN )
+            {
+               const WCHAR * w = d->host->ac[ k ].name;
+               int m = WideCharToMultiByte( s_cp, 0, w, -1, NULL, 0, NULL, NULL );
+               char * b = ( char * ) hb_xgrab( m + 1 );
+               PHB_ITEM it;
+               WideCharToMultiByte( s_cp, 0, w, -1, b, m, NULL, NULL );
+               it = hb_itemPutC( NULL, b );
+               hb_arrayAddForward( a, it );
+               hb_itemRelease( it );
+               hb_xfree( b );
+            }
+         }
+      }
+   }
+   hb_itemReturnRelease( a );
 }

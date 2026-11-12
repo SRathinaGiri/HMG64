@@ -103,6 +103,7 @@ RETURN
 
 /* View > Code Editor */
 PROCEDURE IDE_EdShow()
+   LOCAL aFont := IDE_EdFontSettings()   // ide.ini: edfont=, edsize=, edindent=
    IF IsWindowDefined( IDE_Ed )
       IDE_Ed.Restore
       IDE_EdPlace()
@@ -143,6 +144,8 @@ PROCEDURE IDE_EdShow()
             MENUITEM "&Indent Lines" + Chr( 9 ) + "Tab"        ACTION IDE_EdCmd( CMD_INDENT )
             MENUITEM "&Outdent Lines" + Chr( 9 ) + "Shift+Tab" ACTION IDE_EdCmd( CMD_OUTDENT )
             MENUITEM "Co&mment / Uncomment" + Chr( 9 ) + "Ctrl+Q" ACTION IDE_EdCmd( CMD_COMMENT )
+            SEPARATOR
+            MENUITEM "Complete &Word" + Chr( 9 ) + "Ctrl+Space" ACTION iif( Empty( IDE_EdCurView() ), NIL, IDEED_COMPLETE( IDE_EdCurView(), 1 ) )
          END POPUP
          DEFINE POPUP "&Search"
             MENUITEM "&Find..." + Chr( 9 ) + "Ctrl+F"          ACTION IDE_EdFindWindow( .F. )
@@ -151,6 +154,9 @@ PROCEDURE IDE_EdShow()
             MENUITEM "Find &Previous" + Chr( 9 ) + "Shift+F3"  ACTION IDE_EdFindNext( .T. )
             SEPARATOR
             MENUITEM "&Go to Line..." + Chr( 9 ) + "Ctrl+G"    ACTION IDE_EdGoto()
+         END POPUP
+         DEFINE POPUP "&View"
+            MENUITEM "&Font and Indent..."                     ACTION IDE_EdFontDialog()
          END POPUP
          DEFINE POPUP "&Build"
             MENUITEM "Save All, &Build and Run" + Chr( 9 ) + "F5" ACTION IDE_EdBuildRun()
@@ -165,7 +171,7 @@ PROCEDURE IDE_EdShow()
       END STATUSBAR
    END WINDOW
 
-   s_hHost := IDEED_CREATE( GetFormHandle( "IDE_Ed" ), 0, 0, 800, 600, HMG_IsDarkMode(), "Consolas", 10, 3, 4, HMG_SupportUnicode() )
+   s_hHost := IDEED_CREATE( GetFormHandle( "IDE_Ed" ), 0, 0, 800, 600, HMG_IsDarkMode(), aFont[ 1 ], aFont[ 2 ], aFont[ 3 ], 4, HMG_SupportUnicode() )
    IDE_EdPlace()
    IDEED_FIT( s_hHost )
    _ActivateWindow( { "IDE_Ed" }, .F. )
@@ -239,6 +245,11 @@ RETURN hView
 
 STATIC FUNCTION IDE_EdDocIndex( hView )
 RETURN AScan( s_aDocs, {| a | a[ D_VIEW ] == hView } )
+
+/* the file of an editor view ("" if none): ide_complete.prg */
+FUNCTION IDE_EdViewFile( hView )
+   LOCAL n := IDE_EdDocIndex( hView )
+RETURN iif( n > 0, s_aDocs[ n ][ D_FILE ], "" )
 
 STATIC FUNCTION IDE_EdCurView()
 RETURN iif( Empty( s_hHost ), 0, IDEED_CURRENT( s_hHost ) )
@@ -600,6 +611,59 @@ STATIC PROCEDURE IDE_EdFindWindow( lReplace )
    IDE_EdFind.Txt_What.SetFocus
 RETURN
 
+/* View > Font and Indent: the editor's font (monospaced fonts only), its size and the indent,
+   kept in ide.ini; OK applies them to the open files */
+STATIC PROCEDURE IDE_EdFontDialog()
+   LOCAL aSet := IDE_EdFontSettings(), aFonts := IDEED_FIXEDFONTS(), n
+   IF AScan( aFonts, {| c | Lower( c ) == Lower( aSet[ 1 ] ) } ) == 0
+      AAdd( aFonts, aSet[ 1 ] )
+   ENDIF
+   ASort( aFonts,,, {| a, b | Lower( a ) < Lower( b ) } )
+   n := AScan( aFonts, {| c | Lower( c ) == Lower( aSet[ 1 ] ) } )
+
+   DEFINE WINDOW IDE_EdFontWin AT 0, 0 WIDTH 440 HEIGHT 330 ;
+      TITLE "Editor Font and Indent" MODAL NOSIZE
+
+      @ 18, 15 LABEL Lbl_Font VALUE "Font (monospaced):" WIDTH 130 HEIGHT 20
+      @ 14, 150 COMBOBOX Cmb_Font ITEMS aFonts VALUE n WIDTH 260 HEIGHT 300 ;
+         ON CHANGE IDE_EdFontPreview()
+      @ 52, 15 LABEL Lbl_Size VALUE "Size (points):" WIDTH 130 HEIGHT 20
+      @ 48, 150 SPINNER Spn_Size RANGE 6, 48 VALUE aSet[ 2 ] WIDTH 70 HEIGHT 24 ON CHANGE IDE_EdFontPreview()
+      @ 86, 15 LABEL Lbl_Indent VALUE "Indent (spaces):" WIDTH 130 HEIGHT 20
+      @ 82, 150 SPINNER Spn_Indent RANGE 1, 16 VALUE aSet[ 3 ] WIDTH 70 HEIGHT 24
+      @ 86, 230 LABEL Lbl_Hint VALUE "Tab inserts spaces" WIDTH 180 HEIGHT 20 FONTCOLOR { 96, 96, 96 }
+      @ 120, 15 LABEL Lbl_Prev VALUE "FUNCTION Main()" + CRLF + "   LOCAL x := 0O1lI" + CRLF + "RETURN NIL" ;
+         WIDTH 395 HEIGHT 120 BORDER
+      @ 255, 210 BUTTON Btn_Ok CAPTION "OK" WIDTH 95 HEIGHT 28 ACTION IDE_EdFontApply()
+      @ 255, 315 BUTTON Btn_Cancel CAPTION "Cancel" WIDTH 95 HEIGHT 28 ACTION IDE_EdFontWin.Release
+      ON KEY ESCAPE ACTION IDE_EdFontWin.Release
+   END WINDOW
+   IDE_EdFontPreview()
+   IDE_EdFontWin.Center
+   IDE_EdFontWin.Activate
+RETURN
+
+STATIC PROCEDURE IDE_EdFontPreview()
+   LOCAL n := IDE_EdFontWin.Cmb_Font.Value
+   IF n > 0
+      IDE_EdFontWin.Lbl_Prev.FontName := IDE_EdFontWin.Cmb_Font.Item( n )
+   ENDIF
+   IDE_EdFontWin.Lbl_Prev.FontSize := IDE_EdFontWin.Spn_Size.Value
+RETURN
+
+STATIC PROCEDURE IDE_EdFontApply()
+   LOCAL n := IDE_EdFontWin.Cmb_Font.Value
+   LOCAL aSet := IDE_EdFontSettings()
+   IF n > 0
+      aSet[ 1 ] := IDE_EdFontWin.Cmb_Font.Item( n )
+   ENDIF
+   aSet[ 2 ] := IDE_EdFontWin.Spn_Size.Value
+   aSet[ 3 ] := IDE_EdFontWin.Spn_Indent.Value
+   IDE_EdFontSettings( aSet )
+   IDEED_SETFONT( s_hHost, aSet[ 1 ], aSet[ 2 ], aSet[ 3 ] )
+   IDE_EdFontWin.Release
+RETURN
+
 /* the find window's fields into the statics */
 STATIC PROCEDURE IDE_EdFindSave()
    IF IsWindowDefined( IDE_EdFind )
@@ -665,13 +729,14 @@ PROCEDURE IDE_EdSelfTest( cOut )
       { "ascii.prg",  "? 1" + Chr( 13 ) + Chr( 10 ) + Chr( 13 ) + Chr( 10 ), IDE_EdDefaultEnc(), .F., .T. }, ;
       { "rtf.prg",    "{\rtf1 not rich}" + Chr( 13 ) + Chr( 10 ), ENC_UTF8, .F., .T. } }
 
-   BEGIN SEQUENCE WITH {| e | Break( e ) }
+   BEGIN SEQUENCE WITH {| e | e:Cargo := EdStack(), Break( e ) }
       cDir := hb_FNameDir( IDE_EdFullPath( cOut ) ) + "edtest" + hb_ps()
       hb_DirCreate( cDir )
       s_cTrace := cOut + ".log"
       hb_MemoWrit( s_cTrace, "" )
       TL( "show" )
       IDE_EdShow()
+      IDEED_SETFONT( s_hHost, "Consolas", 10, 3 )   // the defaults, whatever ide.ini says
       TL( "shown" )
 
       // 1. files come back byte for byte, in their encoding and line endings
@@ -745,6 +810,70 @@ PROCEDURE IDE_EdSelfTest( cOut )
       IDEED_TYPE( hView, Chr( 9 ), K_SHIFT )
       T( aRes, "shift+tab", IDEED_GETTEXT( hView ) == "ab c", IDEED_GETTEXT( hView ) )
 
+      // 4b. View > Font and Indent: the monospaced fonts, another font and indent on open files
+      a := IDEED_FIXEDFONTS()
+      T( aRes, "fixed fonts", AScan( a, "Courier New" ) > 0 .AND. AScan( a, "Consolas" ) > 0 .AND. AScan( a, "Arial" ) == 0, hb_ValToExp( a ) )
+      IDEED_SETFONT( s_hHost, "Courier New", 12, 4 )
+      IDEED_SETSEL( hView, 4, 4 )
+      IDEED_TYPE( hView, Chr( 9 ) + "d" )
+      T( aRes, "indent setting", IDEED_GETTEXT( hView ) == "ab c    d", IDEED_GETTEXT( hView ) )
+      IDEED_SETFONT( s_hHost, "Consolas", 10, 3 )
+
+      // 4c. completion: the file's words and the keywords after 3 letters, Form. and Form.Control.
+      hView := TestDoc( cDir + "complete.prg", "LOCAL nCounter := 1" + CRLF )
+      IDEED_SETSEL( hView, 21, 21 )
+      IDEED_TYPE( hView, "nCo" )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete word", AScan( a, {| x | x == "nCounter" } ) > 0, hb_ValToExp( a ) )
+      IDEED_COMPLETE( hView, 2 )
+      T( aRes, "complete insert", IDEED_GETTEXT( hView ) == "LOCAL nCounter := 1" + CRLF + "nCounter" .AND. Empty( IDEED_COMPLETE( hView ) ), IDEED_GETTEXT( hView ) )
+      IDEED_TYPE( hView, CRLF + "MsgInf" )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete keyword", Len( a ) > 0 .AND. a[ 1 ] == "MsgInfo", hb_ValToExp( a ) )
+      IDEED_TYPE( hView, Chr( 9 ) )
+      T( aRes, "complete tab", hb_RAt( "MsgInfo", IDEED_GETTEXT( hView ) ) > 0 .AND. Right( IDEED_GETTEXT( hView ), 7 ) == "MsgInfo", IDEED_GETTEXT( hView ) )
+      IDEED_TYPE( hView, " // abcd" )
+      T( aRes, "no list in a comment", Empty( IDEED_COMPLETE( hView ) ), hb_ValToExp( IDEED_COMPLETE( hView ) ) )
+
+      cText := "DEFINE WINDOW Win_T AT 0, 0 WIDTH 300 HEIGHT 200" + CRLF + ;
+               "   @ 10, 10 BUTTON Btn_Ok CAPTION 'OK'" + CRLF + ;
+               "   @ 40, 10 GRID Grd_List WIDTH 200 HEIGHT 100" + CRLF + ;
+               "END WINDOW" + CRLF
+      hView := TestDoc( cDir + "members.prg", cText )
+      n := Len( StrTran( cText, CRLF, Chr( 13 ) ) )
+      IDEED_SETSEL( hView, n, n )
+      IDEED_TYPE( hView, "Win_T." )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete form", Len( a ) > 2 .AND. a[ 1 ] == "Btn_Ok" .AND. a[ 2 ] == "Grd_List" .AND. AScan( a, "Grd_List" ) > 0 .AND. AScan( a, "Title" ) > 0 .AND. AScan( a, "Activate" ) > 0, hb_ValToExp( a ) )
+      IDEED_TYPE( hView, "Btn" )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete filter", Len( a ) == 1 .AND. a[ 1 ] == "Btn_Ok", hb_ValToExp( a ) )
+      IDEED_TYPE( hView, Chr( 13 ) )
+      IDEED_TYPE( hView, "." )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete button", AScan( a, "Caption" ) > 0 .AND. AScan( a, "SetFocus" ) > 0 .AND. AScan( a, "AddItem" ) == 0, hb_ValToExp( a ) )
+      IDEED_COMPLETE( hView, 3 )
+      T( aRes, "complete close", Empty( IDEED_COMPLETE( hView ) ), "still open" )
+      IDEED_TYPE( hView, "Caption := 'Go'" + CRLF + "Win_T.Grd_List." )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete grid", AScan( a, "AddItem" ) > 0 .AND. AScan( a, "ItemCount" ) > 0 .AND. AScan( a, "Caption" ) == 0, hb_ValToExp( a ) )
+      IDEED_COMPLETE( hView, 3 )
+      IDEED_TYPE( hView, CRLF + "x := " + Chr( 34 ) + "Win_T." )
+      T( aRes, "no list in a string", Empty( IDEED_COMPLETE( hView ) ), hb_ValToExp( IDEED_COMPLETE( hView ) ) )
+      IDEED_TYPE( hView, Chr( 34 ) + CRLF + "Win_X." )
+      T( aRes, "unknown form", Empty( IDEED_COMPLETE( hView ) ), hb_ValToExp( IDEED_COMPLETE( hView ) ) )
+      IDEED_MODIFIED( hView, .F. )
+
+      // every property and method offered is one HMG5's GetProperty / SetProperty / DoMethod know
+      c := hb_FNameDir( hb_ProgName() ) + ".." + hb_ps() + "SOURCE" + hb_ps()
+      IF hb_FileExists( c + "h_controlmisc.prg" )
+         cR := Upper( hb_MemoRead( c + "h_controlmisc.prg" ) + hb_MemoRead( c + "h_webview.prg" ) )
+         cR := StrTran( cR, "'", Chr( 34 ) )
+         a := {}
+         AEval( IDE_MemberAllNames(), {| x | iif( Chr( 34 ) + Upper( x[ 1 ] ) + Chr( 34 ) $ cR, NIL, AAdd( a, x[ 1 ] ) ) } )
+         T( aRes, "member names known to HMG5", Empty( a ), hb_ValToExp( a ) )
+      ENDIF
+
       // 5. whole lines: indent, outdent, comment
       cText := "a" + CRLF + "" + CRLF + "   b" + CRLF + "c"
       hView := TestDoc( cDir + "block.prg", cText )
@@ -789,7 +918,7 @@ PROCEDURE IDE_EdSelfTest( cOut )
       // 7. external choice still works through IDE_EditFile (not run: it starts a program)
       T( aRes, "setting", HB_ISLOGICAL( IDE_UseBuiltinEditor() ), "no setting" )
    RECOVER USING oErr
-      AAdd( aRes, "FAIL runtime error: " + iif( HB_ISOBJECT( oErr ), oErr:Description + " " + hb_ValToStr( oErr:Operation ) + " " + ProcName( 2 ) + "(" + hb_ntos( ProcLine( 2 ) ) + ")", hb_ValToStr( oErr ) ) )
+      AAdd( aRes, "FAIL runtime error: " + iif( HB_ISOBJECT( oErr ), oErr:Description + " " + hb_ValToStr( oErr:Operation ) + " " + hb_ValToStr( oErr:Args ) + " at " + hb_ValToStr( oErr:Cargo ), hb_ValToStr( oErr ) ) )
    END SEQUENCE
 
    n := 0
@@ -800,6 +929,14 @@ PROCEDURE IDE_EdSelfTest( cOut )
    hb_MemoWrit( cOut, c )
    ExitProcess( 0 )
 RETURN
+
+STATIC FUNCTION EdStack()
+   LOCAL c := "", n := 1
+   DO WHILE ! Empty( ProcName( n ) ) .AND. n < 25
+      c += ProcName( n ) + "(" + hb_ntos( ProcLine( n ) ) + ") "
+      n++
+   ENDDO
+RETURN c
 
 STATIC FUNCTION TestDoc( cFile, cText )
    hb_MemoWrit( cFile, cText )

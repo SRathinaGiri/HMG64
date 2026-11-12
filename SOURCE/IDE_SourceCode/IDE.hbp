@@ -5,4 +5,5 @@ Source/prjindex.prg
 Source/ide_formsctl.prg
 Source/ide_project.prg
 Source/ide_editor.prg
+Source/ide_complete.prg
 Source/ide_editw.c

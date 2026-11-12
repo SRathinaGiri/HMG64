@@ -137,17 +137,18 @@ STATIC FUNCTION IsControlWord( h, cWord )
    cWord := "," + Upper( cWord ) + ","
 RETURN cWord $ s_cControls .OR. cWord $ h[ "custom" ]
 
-/* one source file (.prg, or .fmg via LOAD WINDOW: cFormName names its TEMPLATE window) */
-FUNCTION HMGIdx_File( h, cFile, cFormName )
+/* one source file (.prg, or .fmg via LOAD WINDOW: cFormName names its TEMPLATE window);
+   cText: the file's text when it is not the one on disk (the IDE's editor) */
+FUNCTION HMGIdx_File( h, cFile, cFormName, cText )
    LOCAL aLines, aL, aT, nLine, cW, cW2, aStack := {}, xCtl := NIL, cBlock := NIL, n, cName, cForm
    LOCAL cTab := "", cPage := "", nPage := 0, lToolbar := .F., lMenu := .F.
 
-   IF ! hb_FileExists( cFile )
+   IF ! HB_ISCHAR( cText ) .AND. ! hb_FileExists( cFile )
       AAdd( h[ "problems" ], { cFile, 0, "W", "file not found" } )
       RETURN NIL
    ENDIF
    AAdd( h[ "files" ], cFile )
-   aLines := HMGIdx_Logical( hb_MemoRead( cFile ) )
+   aLines := HMGIdx_Logical( iif( HB_ISCHAR( cText ), cText, hb_MemoRead( cFile ) ) )
 
    FOR EACH aL IN aLines
       nLine := aL[ 1 ]

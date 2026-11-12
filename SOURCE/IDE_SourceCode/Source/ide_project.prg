@@ -17,7 +17,8 @@
  .fmg still works: the designer windows come back while that form is open.
  File > Code Only New Project: <name>.prg is the only (main) module, the main window written
  in code, no .fmg (New Project itself is unchanged).
- Settings: ide.ini ("designer=0|1", "editor=builtin|external"); recent projects: recent.ini
+ Settings: ide.ini ("designer=0|1", "editor=builtin|external", the code editor's
+ "edfont=", "edsize=" and "edindent="); recent projects: recent.ini
  (one path a line).
 ---------------------------------------------------------------------------*/
 
@@ -35,6 +36,7 @@ MEMVAR cParameters
 MEMVAR nParameterCount
 
 STATIC s_lBuiltinEditor := .T.   // the IDE's own code editor (ide_editor.prg) instead of editor.ini's program
+STATIC s_aEdFont := { "Consolas", 10, 3 }   // the code editor's font, size in points, indent (spaces a Tab inserts)
 
 PROCEDURE IDE_LoadIdeSettings()
    LOCAL cLine
@@ -43,6 +45,12 @@ PROCEDURE IDE_LoadIdeSettings()
          lDesignerOn := .F.
       ELSEIF Lower( AllTrim( cLine ) ) == "editor=external"
          s_lBuiltinEditor := .F.
+      ELSEIF Lower( Left( AllTrim( cLine ), 7 ) ) == "edfont=" .AND. ! Empty( SubStr( AllTrim( cLine ), 8 ) )
+         s_aEdFont[ 1 ] := SubStr( AllTrim( cLine ), 8 )
+      ELSEIF Lower( Left( AllTrim( cLine ), 7 ) ) == "edsize=" .AND. Val( SubStr( AllTrim( cLine ), 8 ) ) >= 6 .AND. Val( SubStr( AllTrim( cLine ), 8 ) ) <= 48
+         s_aEdFont[ 2 ] := Int( Val( SubStr( AllTrim( cLine ), 8 ) ) )
+      ELSEIF Lower( Left( AllTrim( cLine ), 9 ) ) == "edindent=" .AND. Val( SubStr( AllTrim( cLine ), 10 ) ) >= 1 .AND. Val( SubStr( AllTrim( cLine ), 10 ) ) <= 16
+         s_aEdFont[ 3 ] := Int( Val( SubStr( AllTrim( cLine ), 10 ) ) )
       ENDIF
    NEXT
    aRecentProjects := {}
@@ -57,7 +65,10 @@ RETURN
 STATIC PROCEDURE IDE_SaveIdeSettings()
    LOCAL c := "", x
    hb_MemoWrit( StartUpFolder + "ide.ini", "designer=" + iif( lDesignerOn, "1", "0" ) + hb_eol() + ;
-                                            "editor=" + iif( s_lBuiltinEditor, "builtin", "external" ) + hb_eol() )
+                                            "editor=" + iif( s_lBuiltinEditor, "builtin", "external" ) + hb_eol() + ;
+                                            iif( s_aEdFont[ 1 ] == "Consolas", "", "edfont=" + s_aEdFont[ 1 ] + hb_eol() ) + ;
+                                            iif( s_aEdFont[ 2 ] == 10, "", "edsize=" + hb_ntos( s_aEdFont[ 2 ] ) + hb_eol() ) + ;
+                                            iif( s_aEdFont[ 3 ] == 3, "", "edindent=" + hb_ntos( s_aEdFont[ 3 ] ) + hb_eol() ) )
    FOR EACH x IN aRecentProjects
       c += x + hb_eol()
    NEXT
@@ -71,6 +82,14 @@ FUNCTION IDE_UseBuiltinEditor( lSet )
       IDE_SaveIdeSettings()
    ENDIF
 RETURN s_lBuiltinEditor
+
+/* the code editor's { cFont, nSize, nIndent }; with aSet, sets and saves them first */
+FUNCTION IDE_EdFontSettings( aSet )
+   IF HB_ISARRAY( aSet ) .AND. ( aSet[ 1 ] != s_aEdFont[ 1 ] .OR. aSet[ 2 ] != s_aEdFont[ 2 ] .OR. aSet[ 3 ] != s_aEdFont[ 3 ] )
+      s_aEdFont := AClone( aSet )
+      IDE_SaveIdeSettings()
+   ENDIF
+RETURN AClone( s_aEdFont )
 
 /* View > Form Designer */
 PROCEDURE IDE_ToggleDesigner()

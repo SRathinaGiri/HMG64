@@ -25,6 +25,8 @@
    - IDE: built-in code editor (View > Code Editor, and wherever the IDE opens a source file): tabs, line numbers, HMG5/Harbour colouring, auto-indent, block indent and comment, find/replace, go to line, files kept in their encoding (UTF-8, ANSI, UTF-16) and line endings, unsaved files saved before a build, build errors open at the line; on the Windows RichEdit control, nothing to download; Tools > Preferences switches back to an external editor; IDE.exe /edit <file> [line]
    - IDE: the code editor opens below the toolbars, right of the Project Browser, filling the free space; a design form reopened after a build has its grid again; Spanish texts left in the IDE (exit question, status bar hint, toolbar tooltips, loading and building windows) are now English
    - IDE: File > Code Only New Project (<name>.prg is the only, main module, the main window in code, no .fmg); New Project accepts a folder with a dot in its name
+   - IDE: code editor View > Font and Indent (monospaced font, size, indent spaces; kept in ide.ini)
+   - IDE: code editor completion: words of the file and keywords, Form. (controls, window properties and methods), Form.Control. (properties and methods of its type); Ctrl+Space
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

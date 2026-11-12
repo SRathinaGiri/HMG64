@@ -491,7 +491,9 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 - **Window:** View > Code Editor, and every place that used to start the external editor (project browser, new module or include, snippets, Forms and Controls, build errors). One window with a tab for each open file, a status bar (line, column, encoding, line endings) and File / Edit / Search / Build menus.
 - **Placement:** the window opens in the free space of the IDE: below the menu and toolbars, right of the Project Browser, down to the bottom of the work area of that monitor (`IDEED_PLACE`, in physical pixels, without the invisible Windows 10/11 borders, so it lines up when Windows scales the DPI-unaware IDE).
 - **Editing:**
-  - Line numbers, no word wrap, Consolas.
+  - Line numbers, no word wrap, Consolas 10 by default. **View > Font and Indent** (12-11-2026) picks any installed monospaced font (Courier New, Lucida Console, …), its size (6–48 points) and the indent (1–16 spaces); they apply to the open files at once and are kept in `IDE\ide.ini` (`edfont=`, `edsize=`, `edindent=`, written only when not the default).
+  - Tab inserts spaces up to the next indent column (3 by default), never a tab character; a tab already in a file is shown 4 columns wide and kept when saved.
+  - **Completion** (12-11-2026): a list under the word being typed, which never takes the focus. After 3 letters it offers the words of the file and the HMG5/Harbour keywords (the file's own spelling wins). After `Form.` it offers the form's controls (with their type), then the window's properties and methods; after `Form.Control.`, the properties and methods of that control's type (`ThisWindow.` and `This.` too). Ctrl+Space opens it at once; Up/Down/PgUp/PgDn choose, Enter or Tab inserts, Esc closes; typing goes on filtering it. Not inside strings or comments. The forms and controls come from the project index (`prjindex.prg`, rebuilt when a project file changes on disk) plus the text being edited; the names per control type are a table in `ide_complete.prg`, and `/edtest` checks that each one is a name HMG5's GetProperty / SetProperty / DoMethod know.
   - Auto-indent on Enter; Tab and Shift+Tab indent and outdent the selected lines; Ctrl+Q comments or uncomments them.
   - Multi-level undo and redo. Paste is always plain text, and RichEdit's formatting shortcuts (Ctrl+E, Ctrl+L, Ctrl+1 ...) are blocked.
 - **Colouring:** a C lexer for Harbour, for the visible lines (and one screen above and below):
@@ -521,7 +523,7 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
   `tests/ide/run.ps1` runs it with the form round trip.
 
 **Status (12-11-2026): done.**
-- `tests/ide`: 22 checks, the 18 form round trips, `/edtest` with its 61 checks, `/gridtest`, and `/newproject` for both kinds, all passing.
+- `tests/ide`: 22 checks, the 18 form round trips, `/edtest` with its 76 checks, `/gridtest`, and `/newproject` for both kinds, all passing.
 - **Checked in screenshots** (`IDE.exe /edit`): the colours, the line numbers, the tab, the status bar, and go to line placing the line a third of the way down.
 - **Found and fixed while testing:**
   - the view check listened to the edit messages that it sends itself (`EM_*` are below `WM_USER`), an endless loop; it now runs only after keys, mouse, scrolling and size;
@@ -537,7 +539,7 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
   - the dark palette on screen;
   - the "changed by another program" question;
   - the build-error window's button with a real failing build.
-- **Limits:** the Find window is not docked; there is no bracket matching, folding or autocomplete yet; zoom (Ctrl+wheel) is off so the line numbers stay aligned.
+- **Limits:** the Find window is not docked; there is no bracket matching or folding yet; completion does not know objects (`oObj:`), the parameters of a function, or controls whose names are built at run time; zoom (Ctrl+wheel) is off so the line numbers stay aligned.
 
 ---
 
