@@ -392,6 +392,7 @@ Done as above; matrix green (24 suites per mode).
 | I8 | **Project-only mode:** many members write their forms in code and use the IDE only to manage `.hbp` projects and build them from a GUI. An option (View or Preferences) hides the toolbars, the Object Inspector and the default form, so the IDE becomes a project builder; one tool for both kinds of user | The pieces exist: project browser, `OpenProject`, `NewBuild`/`build64.bat`, the build log. Needs: a remembered mode, a list of recent projects (I7), and starting without creating a form. Could also manage a *collection* of projects (a workspace list of `.hbp` files) |
 | I9 | **Grid behind the controls:** the dots are drawn with `GetDC` on top of everything after each move (`DRAWDESIGNGRID`) | Paint the grid as the design form's background, a dotted pattern brush of the grid size, so child controls cover it and nothing redraws it by hand; fits with I5 |
 | I10 | **Object tree:** a window listing the form's controls (by tab page, frame, split box) to select the one being edited | `_HMG_SYSDATA` already holds parent and container per control; selecting calls the existing `SelectControl()` |
+| I12 | **Forms and Controls of a hand-coded project** (owner, 12-11-2026): members write big forms in code (`DEFINE`/`@`) rather than in the designer, then lose track of control names across many forms and `.prg` files | **Done**, see 6.5 |
 | I11 | **One main window** instead of three floating ones (main/toolbar, Project Browser, Object Inspector) | Largest change: dock the browser and inspector as panels of one resizable window (HMG `PANEL` windows or split boxes); the design form stays a separate window. After I3 (modules), so it touches small files |
 
 The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` builds `IDE\IDE.exe` in the mode LIB-64 was built in, and `hmgbuild idetest` also runs the round trip. `hmgbuild matrix` builds the IDE in ANSI (build check) and in UNICODE (build + round trip).
@@ -421,6 +422,48 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
   - **Tests:** `/addall` now clicks off the grid (row 23 rounds down to 20, column 27 up to 30) and nudges Button_1 (right 1, Ctrl+Down, Ctrl+Left: 30,30). Only `expected/addall.fmg` changed, on purpose; the other 17 forms are byte-identical.
   - **Checked visually:** 10 and 20 pixel grids behind all 27 control types.
   - **Not checked:** the arrow keys pressed for real (the function is tested, the key bindings are not), and the grid on a scrolled VIRTUAL form (the dots may shift by the scroll offset).
+
+### 6.5 Forms and Controls (I12)
+
+**Why.** Members who build large forms by hand do so because the designer's generated `.fmg` makes names hard to follow once one `.prg` handles several forms. In code, though, nothing lists the names: a misspelt `Form.Control.Value` shows up only when that line runs ("control not defined"), possibly in front of a user.
+
+**What.** A project index, `SOURCE/IDE_SourceCode/Source/prjindex.prg`. It is pure Harbour, reads the source text and never runs it.
+- **Defined:**
+  - windows: `DEFINE WINDOW … END WINDOW`, nested (panels, child windows);
+  - controls: `DEFINE <control> name … END <control>`, and `@ r, c <control> name` with any expressions for row and column;
+  - `OF` / `PARENT` clauses, also as a `PARENT` line in the alternate syntax;
+  - tab pages (recorded as `Tab / page`), toolbar buttons, menu items with `NAME`;
+  - `LOAD WINDOW` (reads the `.fmg`; the TEMPLATE takes the form name);
+  - custom controls declared by the project's own `#xcommand` (for example `@ … SEARCHBOX`, `DEFINE SEARCHBOX`).
+- **Used:**
+  - dot syntax: `Form.Control.Property`, `Form.Property`;
+  - `GetProperty`, `SetProperty` and `DoMethod` with literal names;
+  - `IsControlDefined`, `GetControlHandle`, `IsWindowDefined`, `GetFormHandle`;
+  - `ACTIVATE` / `RELEASE` / `CENTER` / … `WINDOW` lists.
+- **Problems:**
+  - a control the form doesn't have (error, with "did you mean …?" for a near miss);
+  - a form the project never defines (warning);
+  - the same control twice in one window (error).
+- **Skipped, not reported:** names built at run time (`&cName`, variables), comments, strings, `x.and.y`, `This.…`, a UTF-8 BOM.
+- **Two layouts:** a window defined twice, as two layouts of which only one exists at a time (login / change password), is noted, and its controls are merged.
+
+**Where.**
+- **IDE:** View > Forms and Controls (F6), or `IDE.exe /index <project.hbp>`, without opening the designer. The window has:
+  - a forms list and a grid of controls (name, type, form, file:line, uses, tab/page);
+  - Find, which filters as you type;
+  - Copy `Form.Control`, Copy name, and Open in editor (double-click as well). The editor opens at the line for Notepad++ (`-n`), Notepad2/3 (`/g`) and VS Code (`--goto`); other editors open the file;
+  - the problems list, where a double-click also opens the line.
+- **Console:** `tools/hmgindex/hmgindex.exe <project.hbp | folder> [/problems]` prints the same index. Exit code 1 means errors, so it can run before a build.
+
+**Checked.**
+- `tests/unit/projindex`: 25 checks on synthetic sources covering each form above.
+- The owner's MySQL project (22 files, about 15,000 lines), read-only: 12 forms, 172 controls and 564 references in 0.5 s. One real problem was found: `gridpdf.prg:1621` sets `pdfgrid.size.value`, and `pdfgrid` has no control `size`, so that line stops with a runtime error when it runs.
+- The window was checked in screenshots, at the default size and enlarged.
+
+**Not yet.**
+- Event procedures named in `ACTION` / `ON …` are not checked against the project's functions.
+- No insertion into a built-in editor (I6 b).
+- The index isn't refreshed automatically when files change (use Refresh).
 
 ---
 

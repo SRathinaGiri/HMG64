@@ -1,3 +1,5 @@
 # HMG IDE - built by "hmgbuild ide" (64-bit, library mode as LIB-64 was built)
 -iForms
 Source/IDE_SourceCode.prg
+Source/prjindex.prg
+Source/ide_formsctl.prg

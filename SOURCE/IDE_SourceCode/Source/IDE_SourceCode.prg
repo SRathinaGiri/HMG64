@@ -624,6 +624,7 @@ LOAD_LANGUAGE_MESSAGE ()
 
 		ON KEY F2		OF Form_Main ACTION OpenProject()
 		ON KEY F5		OF Form_Main ACTION RunApplication()
+		ON KEY F6		OF Form_Main ACTION IDE_FormsAndControls()   // HMG5
 		ON KEY F8		OF Form_Main ACTION ( ENABLEDEBUGGER := .T. , RunApplication() ) // ACTION ( RunAfetrBuild := .T. , DebuggerSupport := .T. , BuildProjectM() )
 		ON KEY F9		OF Form_Main ACTION NewForm()
 		ON KEY F11		OF Form_Main ACTION NewModule()
@@ -1385,6 +1386,7 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
          
          POPUP aMsgs [ 017 ]
             ITEM aMsgs [ 018 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XVIEW' , 'VIEW' )    ACTION ViewCode()
+            ITEM 'Forms and Controls' + chr(8) + 'F6'  ACTION IDE_FormsAndControls()
          END POPUP
          
          POPUP aMsgs [ 019 ]
@@ -1449,6 +1451,9 @@ PROCEDURE AutoBuild()
       // from a timer: _Open() activates the design form, which must happen inside the
       // running message loop (as from the menu), not during Form_Main's ON INIT
       DEFINE TIMER Tmr_RoundTrip OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_RoundTrip.Enabled := .F., IDE_RoundTrip( hb_argv( 2 ), hb_argv( 3 ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/INDEX" .AND. ! Empty( hb_argv( 2 ) )
+      // HMG5: IDE.exe /index <project.hbp> opens the Forms and Controls window of that project
+      DEFINE TIMER Tmr_Index OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_Index.Enabled := .F., IDE_FormsAndControls( hb_argv( 2 ) ) )
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/FORM" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5: IDE.exe /form <file.fmg> opens one form in the designer, without a project
       DEFINE TIMER Tmr_OpenForm OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_OpenForm.Enabled := .F., _Open( hb_argv( 2 ) ) )
