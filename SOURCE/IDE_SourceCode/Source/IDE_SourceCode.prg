@@ -624,7 +624,7 @@ LOAD_LANGUAGE_MESSAGE ()
 		NOMAXIMIZE ;
 		NOSIZE ;
 		ON RELEASE SaveProject() ;
-		ON INTERACTIVECLOSE MsgYesNo( "¿Está Seguro?" , "Salir" ) ;
+		ON INTERACTIVECLOSE MsgYesNo( "Are you sure you want to exit?" , "Exit" ) ;
 		ON INIT {|| FormSplash.HIDE , AutoBuild()}
 
 		ON KEY F2		OF Form_Main ACTION OpenProject()
@@ -669,7 +669,7 @@ LOAD_LANGUAGE_MESSAGE ()
 #define STATUSITEM_OFFSET 1
 		DEFINE STATUSBAR 
          STATUSITEM CompilerVersion // TOOLTIP IF(EMPTY(CompilerVersion),"","HMG Compiler Version")
-			STATUSITEM "Seleccionar: clic / Mover: esquina superior izquierda / Redimensionar: esquina inferior derecha" WIDTH 600
+			STATUSITEM "Select: click / Move: top-left corner / Resize: bottom-right corner" WIDTH 600
 			STATUSITEM '' WIDTH 170
 			STATUSITEM '' WIDTH 75
 		END STATUSBAR
@@ -678,31 +678,31 @@ LOAD_LANGUAGE_MESSAGE ()
 		PICTURE 'NEW' ;
 		ACTION NewProject() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Nuevo Proyecto" ;
+		TOOLTIP "New Project" ;
 
 		@ 003,35 BUTTON Open ;
 		PICTURE 'OPEN' ;
 		ACTION OpenProject() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Abrir Proyecto" ;
+		TOOLTIP "Open Project" ;
 
 		@ 003,65 BUTTON Close ;
 		PICTURE 'XCLOSE' ;
 		ACTION CloseProject() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Cerrar Proyecto" ;
+		TOOLTIP "Close Project" ;
 
 		@ 033,5 BUTTON NewForm ;
 		PICTURE 'NEWFORM' ;
 		ACTION  ( lVirtualForm := .F. , NewForm() ) ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Nuevo Formulario"
+		TOOLTIP "New Form"
 
 		@ 033,35 BUTTON NewModule ;
 		PICTURE 'NMODULE' ;
 		ACTION  NewModule() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Nuevo Módulo"
+		TOOLTIP "New Module"
 
 *-*-*-
 
@@ -710,7 +710,7 @@ LOAD_LANGUAGE_MESSAGE ()
 		PICTURE 'REPORT' ;
 		ACTION  NewReport() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Nuevo Reporte"
+		TOOLTIP "New Report"
 
 *-*-*-
 
@@ -719,13 +719,13 @@ LOAD_LANGUAGE_MESSAGE ()
 		PICTURE 'RUN' ;
 		ACTION RunApplication() ;
 		WIDTH 29 HEIGHT 29 ;
-		TOOLTIP "Ejecutar" ; 
+		TOOLTIP "Run" ; 
 
 
 		@ 033,105 CHECKBUTTON Control_01 ;
 			PICTURE 'SELECT' ;
 			VALUE .T. WIDTH 29 HEIGHT 29 ;
-			TOOLTIP "Seleccionar Objeto" ; 
+			TOOLTIP "Select Object" ; 
 			ON CHANGE Control_01_Click()
 
 
@@ -1010,7 +1010,7 @@ LOAD_LANGUAGE_MESSAGE ()
 			col 86
 			width 200
 			height 30
-			value "Cargando... Espere Por Favor..."
+			value "Loading... Please wait..."
 		end label
 
 		define progressbar progress_1
@@ -1034,7 +1034,7 @@ LOAD_LANGUAGE_MESSAGE ()
 			col 85
 			width 200
 			height 30
-			value "Compilando... Espere Por Favor..."
+			value "Building... Please wait..."
 		end label
 	end window
 
@@ -1364,6 +1364,7 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
 
          POPUP aMsgs [ 045 ]
             ITEM aMsgs [ 001 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'MNEW' , 'NEW' )         ACTION NewProject() 
+            ITEM 'Code Only New Project'        ACTION NewProject( NIL , 1 )   // HMG5: <name>.prg main module, no form
             ITEM aMsgs [ 002 ] + chr(8) + 'F2'  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'MOPEN' , 'OPEN' )       ACTION OpenProject()
             ITEM aMsgs [ 003 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'MXCLOSE' , 'XCLOSE' )   ACTION CloseProject()
             SEPARATOR
@@ -1481,12 +1482,70 @@ PROCEDURE AutoBuild()
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/EDTEST" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5 test mode (tests/ide): IDE.exe /edtest <out.txt> checks the built-in editor
       DEFINE TIMER Tmr_EdTest OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_EdTest.Enabled := .F., IDE_EdSelfTest( hb_argv( 2 ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/NEWPROJECT" .AND. ! Empty( hb_argv( 3 ) )
+      // HMG5 test mode (tests/ide): IDE.exe /newproject <new.hbp> code|form|menu creates the project as
+      // File > Code Only New Project (code), New Project with a form (form) or New Project as set (menu),
+      // then ends the process
+      DEFINE TIMER Tmr_NewProject OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_NewProject.Enabled := .F., ;
+         NewProject( hb_argv( 2 ), iif( Lower( hb_argv( 3 ) ) == "code", 1, iif( Lower( hb_argv( 3 ) ) == "form", 2, NIL ) ) ), SaveProject(), ExitProcess( 0 ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/GRIDTEST" .AND. ! Empty( hb_argv( 3 ) )
+      // HMG5 test mode (tests/ide): IDE.exe /gridtest <in.fmg> <out.txt> opens the form twice
+      // and checks the grid background each time (a reopened form used to lose its grid)
+      ShowGrid  := .T.
+      nGridSize := 10
+      DEFINE TIMER Tmr_GridTest OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_GridTest.Enabled := .F., IDE_GridTest( hb_argv( 2 ), hb_argv( 3 ) ) )
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/FORM" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5: IDE.exe /form <file.fmg> opens one form in the designer, without a project
       DEFINE TIMER Tmr_OpenForm OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_OpenForm.Enabled := .F., _Open( hb_argv( 2 ) ) )
    ElseIf nParameterCount == 1
       OpenProject()
    EndIf
+RETURN
+
+
+//--------------------------------------------------------------------------
+PROCEDURE IDE_GridTest( cIn, cOut )
+//--------------------------------------------------------------------------
+// /gridtest: open, check, close; twice. One PASS/FAIL line each time in <out.txt>.
+LOCAL i, oErr
+PUBLIC _IDE_GridTestOut := ""
+   FOR i := 1 TO 2
+      DEFINE TIMER Tmr_GridCheck OF Form_Main INTERVAL 200 ACTION IDE_GridTestCheck( i )
+      BEGIN SEQUENCE WITH {| e | e:Cargo := IDE_GridTestStack(), Break( e ) }
+         _Open( cIn )
+      RECOVER USING oErr
+         _IDE_GridTestOut += "FAIL  open " + hb_ntos( i ) + ": " + iif( HB_ISOBJECT( oErr ), oErr:Description + " " + hb_CStr( oErr:Operation ) + " @ " + hb_CStr( oErr:Cargo ), "error" ) + CRLF
+      END SEQUENCE
+      IF IsControlDefined( Tmr_GridCheck, Form_Main )
+         Form_Main.Tmr_GridCheck.Release
+      ENDIF
+   NEXT
+   HB_MEMOWRIT( cOut, _IDE_GridTestOut )
+   ExitProcess( 0 )
+RETURN
+
+STATIC FUNCTION IDE_GridTestStack()
+LOCAL n := 1, c := ""
+   DO WHILE ! Empty( ProcName( n ) ) .AND. n < 12
+      c += ProcName( n ) + "(" + hb_ntos( ProcLine( n ) ) + ") "
+      n++
+   ENDDO
+RETURN c
+
+PROCEDURE IDE_GridTestCheck( i )
+MEMVAR _IDE_GridTestOut
+   IF Empty( OpenFormName ) .OR. Empty( DesignForm ) .OR. ! _IsWindowDefined( DesignForm ) .OR. ;
+      IsWindowVisible( GetFormHandle( 'loading' ) )
+      RETURN   // not loaded yet
+   ENDIF
+   IF ! ( "open " + hb_ntos( i ) + CRLF ) $ _IDE_GridTestOut   // first tick (may be inside the form's ON INIT): check
+      DrawGrid()
+      _IDE_GridTestOut += iif( IDE_GRIDCHECK( GetFormHandle( DesignForm ) ), "PASS", "FAIL" ) + "  grid on open " + hb_ntos( i ) + CRLF
+      RETURN
+   ENDIF
+   Form_Main.Tmr_GridCheck.Enabled := .F.   // next tick: close it, as the user would
+   DesignFormModified := .F.
+   DoMethod( DesignForm , 'Release' )
 RETURN
 
 
@@ -5699,6 +5758,20 @@ HB_FUNC ( IDE_SETGRIDBACKGROUND )
    if ( ! IsWindow (hWnd) )
       return;
 
+   /* A released design form unregisters its class (UNREGISTERWINDOW), and Windows deletes a class's
+      background brush with it, so the cached brush may be gone. A new design form (no HMG5_GRID
+      property yet) whose class does not hold the cached brush: forget it (it is not ours to delete). */
+   if ( s_hGridBrush != NULL &&
+        ( GetObjectType (s_hGridBrush) != OBJ_BRUSH ||
+          ( GetProp (hWnd, _TEXT("HMG5_GRID")) == NULL && (HBRUSH) GetClassLongPtr (hWnd, GCLP_HBRBACKGROUND) != s_hGridBrush ) ) )
+   {
+      s_hGridBrush = NULL;
+      if ( s_hGridBmp != NULL )
+         DeleteObject (s_hGridBmp);
+      s_hGridBmp  = NULL;
+      s_nGridSize = 0;
+   }
+
    if ( nGrid < 2 )
       hWant = GetSysColorBrush (COLOR_BTNFACE);
    else
@@ -5742,6 +5815,15 @@ HB_FUNC ( IDE_SETGRIDBACKGROUND )
       SetProp (hWnd, _TEXT("HMG5_GRID"), (HANDLE) (INT_PTR) nGrid);
       InvalidateRect (hWnd, NULL, TRUE);
    }
+}
+
+
+/* IDE_GRIDCHECK( hWnd ) -> .T. when the form's class background is the live grid brush (tests) */
+HB_FUNC ( IDE_GRIDCHECK )
+{
+   HWND   hWnd = (HWND) HMG_parnl (1);
+   HBRUSH hBr  = IsWindow (hWnd) ? (HBRUSH) GetClassLongPtr (hWnd, GCLP_HBRBACKGROUND) : NULL;
+   hb_retl ( hBr != NULL && hBr == s_hGridBrush && GetObjectType (hBr) == OBJ_BRUSH );
 }
 
 
@@ -30341,13 +30423,17 @@ RETURN
 
 
 *------------------------------------------------------------------------------*
-PROCEDURE NewProject
+PROCEDURE NewProject ( cFile , nKind )
 *------------------------------------------------------------------------------*
-Local xName
+// HMG5: nKind 1 = File > Code Only New Project: <name>.prg is the only (main) module, the main
+// window in code, no .fmg. NIL = File > New Project as before (Main.prg, and Main.fmg when the
+// Form Designer is on); 2 = always with Main.fmg. cFile is for the /newproject test mode.
+Local xName, cMain, cOldProject := ProjectName
 
-	ProjectName := Putfile ( { {'HMG Projects','*.hbp'} } , 'New Project' , , .f.  )
+	ProjectName := iif( HB_ISCHAR( cFile ) , cFile , Putfile ( { {'HMG Projects','*.hbp'} } , 'New Project' , , .f.  ) )
 
 	If Empty ( ProjectName)
+		ProjectName := cOldProject   // HMG5: cancelled: the open project stays open
 		RETURN
 	Endif
 
@@ -30357,32 +30443,33 @@ Local xName
 		Projectname := HB_ULEFT ( ProjectName , HMG_LEN(ProjectName) - 4 )
 	EndIf
 
+	// HMG5: a space anywhere in the path (as before); the others in the file name only (a folder may have a dot)
 	if HB_UAT ( ' ' , ProjectName ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
 
-	if HB_UAT ( '.' , ProjectName ) > 0
+	if HB_UAT ( '.' , hb_FNameName( ProjectName ) + hb_FNameExt( ProjectName ) ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
 
-	if HB_UAT ( ',' , ProjectName ) > 0
+	if HB_UAT ( ',' , hb_FNameName( ProjectName ) + hb_FNameExt( ProjectName ) ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
 
-	if HB_UAT ( '/' , ProjectName ) > 0
+	if HB_UAT ( '/' , hb_FNameName( ProjectName ) + hb_FNameExt( ProjectName ) ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
 		
-	if HB_UAT ( '*' , ProjectName ) > 0
+	if HB_UAT ( '*' , hb_FNameName( ProjectName ) + hb_FNameExt( ProjectName ) ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
 
-	if HB_UAT ( '?' , ProjectName ) > 0
+	if HB_UAT ( '?' , hb_FNameName( ProjectName ) + hb_FNameExt( ProjectName ) ) > 0
 		MsgStop (aMsgs [ 222 ],'HMG IDE')
 		RETURN
 	endif
@@ -30397,6 +30484,10 @@ Local xName
 			RETURN
 		EndIf
 	endif
+
+	If ! Empty( hb_FNameDir( ProjectName ) )
+		hb_cwd( hb_FNameDir( ProjectName ) )   // the new files go next to the .hbp
+	EndIf
 
 	If _IsWindowDefined ( DesignForm )
 		DoMethod ( DesignForm , 'Release' )
@@ -30499,11 +30590,24 @@ Local xName
 	SaveString ( xName , Project.config.value , .F. )
 
 	lVirtualForm := .F.
-	NewModule( 'Main' , .T. )
-	IF lDesignerOn   // HMG5: project mode writes the main window in code (NewModule), no .fmg
+	IF nKind == 1   // HMG5: code only: <project>.prg is the main module, the main window in code, no .fmg
+		cMain := hb_FNameName( ProjectName ) + '.prg'
+		NewModule( cMain , .T. , .T. )
+	ELSEIF nKind == 2   // test mode: Main.prg loads Main.fmg
+		NewModule( 'Main' , .T. , .F. )
 		NewForm( 'Main' , .T. )
+	ELSE                // New Project as before
+		NewModule( 'Main' , .T. )
+		IF lDesignerOn   // project mode writes the main window in code (NewModule), no .fmg
+			NewForm( 'Main' , .T. )
+		ENDIF
 	ENDIF
-	IDE_AddRecent( ProjectName )
+	IF ! HB_ISCHAR( cFile )   // not the test mode's projects
+		IDE_AddRecent( ProjectName )
+	ENDIF
+	IF nKind == 1 .AND. File( cMain )
+		IDE_EditFile( cMain )
+	ENDIF
 
 RETURN
 *------------------------------------------------------------------------------*
@@ -31443,7 +31547,7 @@ Local lRetVal := .T.
 RETURN lRetVal
 
 *------------------------------------------------------------------------------*
-PROCEDURE NewModule ( cNewModule , lSkipEditor )
+PROCEDURE NewModule ( cNewModule , lSkipEditor , lHandCoded )
 *------------------------------------------------------------------------------*
 Local Result
 Local i
@@ -31465,7 +31569,7 @@ Local cProgram := ''
 		Result := cNewModule
 
 		cProgram := '#include <hmg.ch>' + CRLF + CRLF + 'FUNCTION Main' + CRLF  + CRLF + Space(8) + 'Load Window Main' + CRLF + Space(8) + 'Main.Center' + CRLF + Space(8) + 'Main.Activate' + CRLF + CRLF + 'RETURN' + CRLF 
-		IF ! lDesignerOn   // HMG5: project mode: the main window written in code
+		IF iif( HB_ISLOGICAL( lHandCoded ) , lHandCoded , ! lDesignerOn )   // HMG5: the main window written in code
 			cProgram := IDE_HandCodedMain( ProjectName )
 		ENDIF
 

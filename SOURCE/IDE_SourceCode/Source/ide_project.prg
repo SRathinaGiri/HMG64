@@ -15,6 +15,8 @@
  palette, no Object Inspector, new projects get their main window in code instead
  of a .fmg; a "Forms and Controls" button takes the palette's place. Opening a
  .fmg still works: the designer windows come back while that form is open.
+ File > Code Only New Project: <name>.prg is the only (main) module, the main window written
+ in code, no .fmg (New Project itself is unchanged).
  Settings: ide.ini ("designer=0|1", "editor=builtin|external"); recent projects: recent.ini
  (one path a line).
 ---------------------------------------------------------------------------*/

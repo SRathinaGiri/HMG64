@@ -105,6 +105,7 @@ RETURN
 PROCEDURE IDE_EdShow()
    IF IsWindowDefined( IDE_Ed )
       IDE_Ed.Restore
+      IDE_EdPlace()
       IDE_Ed.SetFocus
       RETURN
    ENDIF
@@ -165,9 +166,20 @@ PROCEDURE IDE_EdShow()
    END WINDOW
 
    s_hHost := IDEED_CREATE( GetFormHandle( "IDE_Ed" ), 0, 0, 800, 600, HMG_IsDarkMode(), "Consolas", 10, 3, 4, HMG_SupportUnicode() )
+   IDE_EdPlace()
    IDEED_FIT( s_hHost )
    _ActivateWindow( { "IDE_Ed" }, .F. )
+   IDE_EdPlace()          // again, now that the window has a visible frame (exact borders)
    IDEED_FIT( s_hHost )   // the status bar's height is known once the window is shown
+RETURN
+
+/* below the IDE's menu and toolbars, right of the Project Browser, to the bottom of the work area */
+STATIC PROCEDURE IDE_EdPlace()
+   IF IsWindowDefined( Form_Main ) .AND. IsWindowVisible( GetFormHandle( "Form_Main" ) )
+      IDEED_PLACE( GetFormHandle( "IDE_Ed" ), GetFormHandle( "Form_Main" ), ;
+                   iif( IsWindowDefined( Project ), GetFormHandle( "Project" ), 0 ) )
+      IDEED_FIT( s_hHost )
+   ENDIF
 RETURN
 
 /* opens a file (or selects its tab) and goes to nLine */

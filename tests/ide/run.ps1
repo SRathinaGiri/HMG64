@@ -1,5 +1,5 @@
 # IDE form round-trip test (PHASE4-DESIGN.md section 6, step I2) and the built-in
-# editor's self-test (IDE.exe /edtest, section 6.7).
+# editor's self-test (IDE.exe /edtest, section 6.7) and the design-form grid check (/gridtest).
 #
 # For every form in tests\ide\corpus:
 #   1. IDE.exe /roundtrip corpus\X  out\X.1   (open in the designer, generate as File > Save)
@@ -14,7 +14,7 @@ param([switch]$Update, [string]$Ide = "$PSScriptRoot\..\..\IDE\IDE.exe", [int]$T
 $ErrorActionPreference = 'Stop'
 $corpus   = Join-Path $PSScriptRoot 'corpus'
 $expected = Join-Path $PSScriptRoot 'expected'
-$out      = Join-Path $PSScriptRoot '..\out\ide'
+$out      = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\out\ide'))
 New-Item -ItemType Directory -Force $out, $expected | Out-Null
 $Ide = (Resolve-Path $Ide).Path
 
@@ -73,6 +73,46 @@ else {
    if ($bad.Count -gt 0 -or -not ($lines | Where-Object { $_ -like 'edtest: PASS=*' })) { $err = ($bad -join '; ') }
 }
 if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL edtest: $err" } else { $pass++ }
+
+# design-form grid after closing and reopening a form: IDE.exe /gridtest <in.fmg> <out.txt>
+$og = Join-Path $out 'gridtest.txt'
+if (Test-Path $og) { Remove-Item $og }
+$p = Start-Process $Ide -ArgumentList "/gridtest `"$PSScriptRoot\addall_base.fmg`" `"$og`"" -WorkingDirectory (Split-Path $Ide) -PassThru
+$err = $null
+if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open)" }
+elseif (-not (Test-Path $og)) { $err = "no output" }
+else {
+   $lines = @(Get-Content $og)
+   $bad = @($lines | Where-Object { $_ -notlike 'PASS*' })
+   if ($bad.Count -gt 0 -or $lines.Count -ne 2) { $err = ($lines -join '; ') }
+}
+if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL gridtest: $err" } else { $pass++ }
+
+# New Project, both kinds: IDE.exe /newproject <dir\sample.hbp> code|form
+#   code: sample.prg is the only module (the main window in code), no .fmg
+#   form: Main.Prg loads Main.Fmg
+foreach ($kind in 'code', 'form') {
+   $dn = Join-Path $out "newproject_$kind"
+   if (Test-Path $dn) { Remove-Item $dn -Recurse -Force }
+   New-Item -ItemType Directory $dn | Out-Null
+   $p = Start-Process $Ide -ArgumentList "/newproject `"$dn\sample.hbp`" $kind" -WorkingDirectory (Split-Path $Ide) -PassThru
+   $err = $null
+   if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open)" }
+   elseif (-not (Test-Path "$dn\sample.hbp")) { $err = "no sample.hbp" }
+   else {
+      $mods  = @(Get-Content "$dn\sample.hbp" | Where-Object { $_ -match '\.prg$' })
+      $fmgs  = @(Get-ChildItem $dn -Filter *.fmg)
+      $files = (Get-ChildItem $dn | ForEach-Object Name) -join ' '
+      if ($kind -eq 'code') {
+         if ($mods.Count -ne 1 -or $mods[0] -ne 'sample.prg' -or $fmgs.Count -ne 0) { $err = "files: $files; modules: $($mods -join ' ')" }
+         elseif ((Get-Content "$dn\sample.prg" -Raw) -notmatch 'DEFINE WINDOW Win_Main') { $err = "sample.prg has no main window in code" }
+      } else {
+         if ($mods.Count -ne 1 -or $mods[0] -ne 'Main.Prg' -or $fmgs.Count -ne 1) { $err = "files: $files; modules: $($mods -join ' ')" }
+         elseif ((Get-Content "$dn\Main.Prg" -Raw) -notmatch 'Load Window Main') { $err = "Main.Prg does not load Main.fmg" }
+      }
+   }
+   if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL newproject $kind`: $err" } else { $pass++ }
+}
 
 $secs = [int]((Get-Date) - $t0).TotalSeconds
 Write-Output ("ide-roundtrip: PASS={0} FAIL={1} ({2} s){3}" -f $pass, $fail, $secs, $(if ($Update) { ' - references updated' } else { '' }))

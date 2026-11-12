@@ -472,12 +472,15 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 **View > Form Designer** switches the designer windows off. The setting is kept in `IDE\ide.ini` (`designer=0|1`); the default is on, as before.
 
 - **Hidden:** the control palette (`Control_01` … `Control_36`, builders, delete, tab order), the user-components box and the Object Inspector. A **Forms and Controls (F6)** button takes the palette's place, so the IDE is a project builder: project browser, build/run, build log, forms and controls.
-- **New Project** writes `main.prg` with the main window in code (`DEFINE WINDOW Win_Main … END WINDOW`, a Close button, `Center`/`Activate`) and creates no `.fmg`. Checked: the generated program compiles with `build64.bat` and runs.
+- **File > Code Only New Project** (12-11-2026), next to New Project, which is unchanged:
+  - `<name>.prg` (from `<name>.hbp`) is the only module and the main one, with the main window in code (`DEFINE WINDOW Win_Main … END WINDOW`, a Close button, `Center`/`Activate`). No `.fmg` is created, and the module opens in the editor. For programs whose windows are written in code.
+  - Cancel in either keeps the open project.
+  - `IDE.exe /newproject <file.hbp> code|form|menu` is the test mode (`tests/ide`: code and form). Checked: both generated projects compile with `build64.bat`, and the code-only one runs.
 - **The designer is still there:** opening an `.fmg` (from the project browser or `IDE.exe /form`) shows the palette and the Object Inspector while that form is open (`IDE_DesignerForForm()` around the design form's message loop), and hides them when it closes.
 - **File > Recent Projects:** the last 8 projects (`IDE\recent.ini`, full paths), updated when a project is opened (menu, F2, command line) or created. A missing file is removed with a message. The menu is rebuilt with the IDE's existing `Proc_DEFINE_MAIN_MENU()`; HMG menu items cannot be renamed.
 - **Code:** `SOURCE/IDE_SourceCode/Source/ide_project.prg`, the second module split out. The test modes always run with the designer on.
 - **Checked in screenshots:** project mode with no form, and with a form open. The recent list was checked with a throwaway project; a member's real project was not opened in the IDE, because the IDE saves the project on exit.
-- **Not checked:** clicking the menu items (no simulated input); the hard-coded Spanish status-bar hint and exit question remain (I7).
+- **Not checked:** clicking the menu items (no simulated input).
 
 ---
 
@@ -486,6 +489,7 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 **Decision (12-11-2026):** the editor is built from what Windows and HMG already have: the RichEdit control (`Msftedit.dll`, as HMG's RICHEDITBOX) and its Text Object Model (TOM). No Scintilla download, nothing new to ship.
 
 - **Window:** View > Code Editor, and every place that used to start the external editor (project browser, new module or include, snippets, Forms and Controls, build errors). One window with a tab for each open file, a status bar (line, column, encoding, line endings) and File / Edit / Search / Build menus.
+- **Placement:** the window opens in the free space of the IDE: below the menu and toolbars, right of the Project Browser, down to the bottom of the work area of that monitor (`IDEED_PLACE`, in physical pixels, without the invisible Windows 10/11 borders, so it lines up when Windows scales the DPI-unaware IDE).
 - **Editing:**
   - Line numbers, no word wrap, Consolas.
   - Auto-indent on Enter; Tab and Shift+Tab indent and outdent the selected lines; Ctrl+Q comments or uncomments them.
@@ -517,11 +521,16 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
   `tests/ide/run.ps1` runs it with the form round trip.
 
 **Status (12-11-2026): done.**
-- `tests/ide`: 19 checks, the 18 form round trips and `/edtest` with its 61 checks, all passing.
+- `tests/ide`: 22 checks, the 18 form round trips, `/edtest` with its 61 checks, `/gridtest`, and `/newproject` for both kinds, all passing.
 - **Checked in screenshots** (`IDE.exe /edit`): the colours, the line numbers, the tab, the status bar, and go to line placing the line a third of the way down.
 - **Found and fixed while testing:**
   - the view check listened to the edit messages that it sends itself (`EM_*` are below `WM_USER`), an endless loop; it now runs only after keys, mouse, scrolling and size;
   - the status bar was covered when the window was laid out before it was shown.
+- **Found and fixed after release testing (12-11-2026):**
+  - a design form opened a second time (after a build) had no grid: releasing a form unregisters its window class, and Windows deletes the class's background brush, which was the IDE's cached grid brush. The IDE now makes a new brush for a new form whose class doesn't hold the cached one. `IDE.exe /gridtest <in.fmg> <out>` opens, checks and closes a form twice (it fails without the fix);
+  - the editor window covered the toolbars (it now uses the free space, above);
+  - hard-coded Spanish text from IDE 1.3b is now English: the exit question, the status bar hint, eight toolbar tooltips, and the "Loading…" and "Building…" progress windows. The IDE's own messages come from `IDE\English.UNI` (`language_UNI.ini`), which is the default;
+  - New Project refused any folder with a dot in its name (it checked the whole path for `.`, `,`, `*` and `?`). It now checks the file name only; a space anywhere in the path is still refused.
 - **Not checked:**
   - real typing (the test sends the keys with `SendMessage`) and clicking the menus and the Find window;
   - paste, which was not tested so as not to touch the clipboard;

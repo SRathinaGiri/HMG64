@@ -2095,6 +2095,87 @@ HB_FUNC( IDEED_SETSEL )
    }
 }
 
+/* the visible frame of a window (Windows 10/11 add invisible resize borders to GetWindowRect) */
+typedef HRESULT ( WINAPI * ED_PFN_DWMGETATTR )( HWND, DWORD, PVOID, DWORD );
+
+static void ed_frame( HWND hWnd, RECT * rc )
+{
+   static HMODULE hDwm = NULL;
+   if( hDwm == NULL )
+      hDwm = LoadLibraryExW( L"dwmapi.dll", NULL, 0x00000800 /* LOAD_LIBRARY_SEARCH_SYSTEM32 */ );
+   ED_PFN_DWMGETATTR pGet = hDwm ? ( ED_PFN_DWMGETATTR ) ( void * ) GetProcAddress( hDwm, "DwmGetWindowAttribute" ) : NULL;
+
+   GetWindowRect( hWnd, rc );
+   if( pGet )
+   {
+      RECT r;
+      if( SUCCEEDED( pGet( hWnd, 9 /* DWMWA_EXTENDED_FRAME_BOUNDS */, &r, sizeof( r ) ) ) && r.right > r.left )
+         *rc = r;
+   }
+}
+
+/* IDEED_PLACE( hWnd, hMain, hLeft ) : puts the editor window in the free space of the IDE:
+   below the main window (menu and toolbars), right of hLeft (the Project Browser; 0: none),
+   down to the bottom of the work area of the monitor the main window is on. Physical pixels, so
+   it is right at any DPI. Returns .T. when it moved the window. */
+typedef HANDLE ( WINAPI * ED_PFN_SETTHREADDPICTX )( HANDLE );
+
+static HB_BOOL ed_place( HWND hWnd, HWND hMain, HWND hLeft );
+
+HB_FUNC( IDEED_PLACE )
+{
+   /* physical pixels whatever the IDE's DPI awareness: a DPI-unaware IDE is scaled by Windows, and
+      the visible frame (DWM) is reported in physical pixels; Windows 10 1607+ */
+   ED_PFN_SETTHREADDPICTX pSet = ( ED_PFN_SETTHREADDPICTX ) ( void * ) GetProcAddress( GetModuleHandleW( L"user32.dll" ), "SetThreadDpiAwarenessContext" );
+   HANDLE hOld = pSet ? pSet( ( HANDLE ) -4 /* DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 */ ) : NULL;
+   HB_BOOL lOk = ed_place( PARHWND( 1 ), PARHWND( 2 ), PARHWND( 3 ) );
+   if( hOld )
+      pSet( hOld );
+   hb_retl( lOk );
+}
+
+static HB_BOOL ed_place( HWND hWnd, HWND hMain, HWND hLeft )
+{
+   MONITORINFO mi;
+   RECT rMain, rLeft, rWin, rVis, rc;
+
+   if( ! IsWindow( hWnd ) || ! IsWindow( hMain ) )
+   {
+      return HB_FALSE;
+   }
+   mi.cbSize = sizeof( mi );
+   GetMonitorInfoW( MonitorFromWindow( hMain, MONITOR_DEFAULTTONEAREST ), &mi );
+   ed_frame( hMain, &rMain );
+
+   rc        = mi.rcWork;
+   rc.top    = rMain.bottom;
+   if( hLeft && IsWindow( hLeft ) && IsWindowVisible( hLeft ) )
+   {
+      ed_frame( hLeft, &rLeft );
+      if( rLeft.right > rc.left && rLeft.right < rc.right - 300 )
+         rc.left = rLeft.right;
+   }
+   if( rc.bottom - rc.top < 200 || rc.right - rc.left < 300 )   /* no room: leave it where it is */
+   {
+      return HB_FALSE;
+   }
+
+   /* the editor's own invisible borders: GetWindowRect minus its visible frame */
+   GetWindowRect( hWnd, &rWin );
+   ed_frame( hWnd, &rVis );
+   if( ! IsWindowVisible( hWnd ) )   /* DWM has frame bounds only for a shown window: called again after showing */
+      rVis = rWin;
+   rc.left   -= rVis.left - rWin.left;
+   rc.top    -= rVis.top - rWin.top;
+   rc.right  += rWin.right - rVis.right;
+   rc.bottom += rWin.bottom - rVis.bottom;
+
+   if( IsZoomed( hWnd ) )
+      ShowWindow( hWnd, SW_RESTORE );
+   SetWindowPos( hWnd, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOACTIVATE );
+   return HB_TRUE;
+}
+
 /* IDEED_FIT( hHost ) : fills the parent's client area above its status bar */
 HB_FUNC( IDEED_FIT )
 {
