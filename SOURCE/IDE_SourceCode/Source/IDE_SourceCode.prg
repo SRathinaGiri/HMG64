@@ -102,6 +102,8 @@ MEMVAR RunAfetrBuild
 MEMVAR SnapToGrid
 MEMVAR nGridSize
 MEMVAR ShowGrid
+MEMVAR lDesignerOn
+MEMVAR aRecentProjects
 MEMVAR ProjectName
 MEMVAR DesignFormModified
 MEMVAR OpenFormName
@@ -543,6 +545,9 @@ PUBLIC cFileLanguage
 	PUBLIC SnapToGrid	:= .T.
 	PUBLIC nGridSize	:= 10    // HMG5: grid step in pixels (grid.ini)
 	PUBLIC ShowGrid		:= .T.   // HMG5: grid dots on the design form (grid.ini)
+	PUBLIC lDesignerOn	:= .T.   // HMG5: View > Form Designer (ide.ini); off = project builder
+	PUBLIC aRecentProjects	:= {}  // HMG5: File > Recent Projects (recent.ini)
+	IDE_LoadIdeSettings()
 	IDE_LoadGridSettings()
 
 	PUBLIC ProjectName	:= ''
@@ -963,6 +968,12 @@ LOAD_LANGUAGE_MESSAGE ()
 
       DECLARE WINDOW FormBuildLog
 
+      // HMG5: shown instead of the control palette when the form designer is off
+      @  003, 145 BUTTON Btn_FormsControls CAPTION "Forms and Controls (F6)" WIDTH 180 HEIGHT 59 MULTILINE ;
+         TOOLTIP "Every form and control of the project, where it is defined and used" ;
+         ACTION IDE_FormsAndControls()
+      Form_Main.Btn_FormsControls.Visible := .F.
+
       @  003, 800 BUTTON Button_BuildLog CAPTION " Build   Log "  WIDTH 59 HEIGHT 59 MULTILINE ;
          ACTION {|| lFlagBuildLog := .NOT.(lFlagBuildLog), IF (lFlagBuildLog, FormBuildLog.SHOW, FormBuildLog.HIDE)}
 
@@ -1356,6 +1367,8 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
             ITEM aMsgs [ 002 ] + chr(8) + 'F2'  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'MOPEN' , 'OPEN' )       ACTION OpenProject()
             ITEM aMsgs [ 003 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'MXCLOSE' , 'XCLOSE' )   ACTION CloseProject()
             SEPARATOR
+            IDE_DefineRecentMenu()   // HMG5: POPUP 'Recent Projects'
+            SEPARATOR
             ITEM aMsgs [ 006 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XEXIT' , 'EXIT' )       ACTION Exit()
          END POPUP
          
@@ -1387,6 +1400,8 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
          POPUP aMsgs [ 017 ]
             ITEM aMsgs [ 018 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XVIEW' , 'VIEW' )    ACTION ViewCode()
             ITEM 'Forms and Controls' + chr(8) + 'F6'  ACTION IDE_FormsAndControls()
+            SEPARATOR
+            ITEM 'Form Designer'    ACTION IDE_ToggleDesigner() NAME mnuDesigner
          END POPUP
          
          POPUP aMsgs [ 019 ]
@@ -1436,6 +1451,7 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
  
    ShowCompilerVersion()
    IDE_UpdateGridMenu()
+   Form_Main.mnuDesigner.Checked := lDesignerOn
 
 RETURN
 
@@ -1444,6 +1460,10 @@ RETURN
 //--------------------------
 PROCEDURE AutoBuild()
 //---------------------------
+   If HMG_UPPER( hb_argv( 1 ) ) == "/ROUNDTRIP" .OR. HMG_UPPER( hb_argv( 1 ) ) == "/ADDALL"
+      lDesignerOn := .T.
+   EndIf
+   IDE_ApplyDesignerMode( lDesignerOn )
    If HMG_UPPER( hb_argv( 1 ) ) == "/ROUNDTRIP" .OR. HMG_UPPER( hb_argv( 1 ) ) == "/ADDALL"
       // fixed grid settings, whatever grid.ini says (not saved)
       SnapToGrid := .T.
@@ -2309,7 +2329,9 @@ PROCEDURE New ( Activate )
 	UpdateDesignFormProperties()
 
 	If Activate
+		IDE_DesignerForForm( .T. )   // HMG5: project mode shows the designer while a form is open
 		DoMethod (DesignForm , 'Activate')
+		IDE_DesignerForForm( .F. )
 		lVirtualForm := .F.
 	EndIf
 
@@ -26485,7 +26507,9 @@ _hmgide_CurrentSplitBox := ''
 		Form_main.user.enabled := .T.
 	EndIf
 
+	IDE_DesignerForForm( .T. )   // HMG5: project mode shows the designer while a form is open
 	DoMethod (DesignForm , 'Activate')
+	IDE_DesignerForForm( .F. )
 
 	If nComponentCount > 0
 		Form_main.user.enabled := .F.
@@ -30204,6 +30228,7 @@ Local nTables := 0
 	EndIf
 
 	ProjectName := FileName
+	IDE_AddRecent( FileName )   // HMG5
 
 	Project := HB_MEMOREAD ( FileName )
 
@@ -30456,7 +30481,10 @@ Local xName
 
 	lVirtualForm := .F.
 	NewModule( 'Main' , .T. )
-	NewForm( 'Main' , .T. )
+	IF lDesignerOn   // HMG5: project mode writes the main window in code (NewModule), no .fmg
+		NewForm( 'Main' , .T. )
+	ENDIF
+	IDE_AddRecent( ProjectName )
 
 RETURN
 *------------------------------------------------------------------------------*
@@ -31418,6 +31446,9 @@ Local cProgram := ''
 		Result := cNewModule
 
 		cProgram := '#include <hmg.ch>' + CRLF + CRLF + 'FUNCTION Main' + CRLF  + CRLF + Space(8) + 'Load Window Main' + CRLF + Space(8) + 'Main.Center' + CRLF + Space(8) + 'Main.Activate' + CRLF + CRLF + 'RETURN' + CRLF 
+		IF ! lDesignerOn   // HMG5: project mode: the main window written in code
+			cProgram := IDE_HandCodedMain( ProjectName )
+		ENDIF
 
 	EndIf
 

@@ -389,7 +389,7 @@ Done as above; matrix green (24 suites per mode).
 
 | # | Idea | First thoughts |
 |---|---|---|
-| I8 | **Project-only mode:** many members write their forms in code and use the IDE only to manage `.hbp` projects and build them from a GUI. An option (View or Preferences) hides the toolbars, the Object Inspector and the default form, so the IDE becomes a project builder; one tool for both kinds of user | The pieces exist: project browser, `OpenProject`, `NewBuild`/`build64.bat`, the build log. Needs: a remembered mode, a list of recent projects (I7), and starting without creating a form. Could also manage a *collection* of projects (a workspace list of `.hbp` files) |
+| I8 | **Project-only mode:** many members write their forms in code and use the IDE only to manage `.hbp` projects and build them from a GUI. An option (View or Preferences) hides the toolbars, the Object Inspector and the default form, so the IDE becomes a project builder; one tool for both kinds of user | **Done**, see 6.6 |
 | I9 | **Grid behind the controls:** the dots are drawn with `GetDC` on top of everything after each move (`DRAWDESIGNGRID`) | Paint the grid as the design form's background, a dotted pattern brush of the grid size, so child controls cover it and nothing redraws it by hand; fits with I5 |
 | I10 | **Object tree:** a window listing the form's controls (by tab page, frame, split box) to select the one being edited | `_HMG_SYSDATA` already holds parent and container per control; selecting calls the existing `SelectControl()` |
 | I12 | **Forms and Controls of a hand-coded project** (owner, 12-11-2026): members write big forms in code (`DEFINE`/`@`) rather than in the designer, then lose track of control names across many forms and `.prg` files | **Done**, see 6.5 |
@@ -467,6 +467,28 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 
 ---
 
+### 6.6 Project builder mode (I8)
+
+**View > Form Designer** switches the designer windows off. The setting is kept in `IDE\ide.ini` (`designer=0|1`); the default is on, as before.
+
+- **Hidden:** the control palette (`Control_01` … `Control_36`, builders, delete, tab order), the user-components box and the Object Inspector. A **Forms and Controls (F6)** button takes the palette's place, so the IDE is a project builder: project browser, build/run, build log, forms and controls.
+- **New Project** writes `main.prg` with the main window in code (`DEFINE WINDOW Win_Main … END WINDOW`, a Close button, `Center`/`Activate`) and creates no `.fmg`. Checked: the generated program compiles with `build64.bat` and runs.
+- **The designer is still there:** opening an `.fmg` (from the project browser or `IDE.exe /form`) shows the palette and the Object Inspector while that form is open (`IDE_DesignerForForm()` around the design form's message loop), and hides them when it closes.
+- **File > Recent Projects:** the last 8 projects (`IDE\recent.ini`, full paths), updated when a project is opened (menu, F2, command line) or created. A missing file is removed with a message. The menu is rebuilt with the IDE's existing `Proc_DEFINE_MAIN_MENU()`; HMG menu items cannot be renamed.
+- **Code:** `SOURCE/IDE_SourceCode/Source/ide_project.prg`, the second module split out. The test modes always run with the designer on.
+- **Checked in screenshots:** project mode with no form, and with a form open. The recent list was checked with a throwaway project; a member's real project was not opened in the IDE, because the IDE saves the project on exit.
+- **Not checked:** clicking the menu items (no simulated input); the hard-coded Spanish status-bar hint and exit question remain (I7).
+
+---
+
 ## 7. Later items (outline only)
+
+- **Charts: GraphPlus on Apache ECharts** (owner's idea, 12-11-2026). GraphPlus is the owner's chart class for HMG.
+  - **Today:** `GraphPlus():New()`; properties `GraphData`, `Legends`, `GraphType`, `Title`, `LegendPos`, colour themes; `:Draw()` and `:Bitmap()` into an IMAGE control; 15 types (columns, bar, line, points, pie, doughnut, funnel, stacked, area, scatter XY, sunburst, treemap, waterfall, bubbles).
+  - **Idea:** keep that API and draw with ECharts in a WEBVIEW control, giving tooltips, zoom, animation and crisp output at any DPI. Every GraphPlus type has an ECharts series (bar, line, scatter, pie with radius, funnel, sunburst, treemap, stack, waterfall as a stacked bar).
+  - **For printing and PDF:** ECharts `getDataURL()` returns PNG or SVG, so `:Bitmap()` and `SET PDFENGINE WINDOWS` keep working.
+  - **HMG-style syntax** on top: `@ r, c CHART name OF form TYPE … DATA … LEGENDS …` / `DEFINE CHART … END CHART`.
+  - **Needs:** ECharts (Apache-2.0, `echarts.min.js` about 1 MB) bundled and served from memory like WebView HTML, which is a download to approve; the WebView2 runtime (present on Windows 10/11).
+  - **First step:** a chart control over WEBVIEW plus a GraphPlus-compatible class, checked against the GraphPlus demo.
 
 - **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.

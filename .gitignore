@@ -32,3 +32,5 @@ _hmg_resconfig.h
 /SOURCE/IDE_SourceCode/ErrorLog.htm
 /tools/editor/make_npp_udl.exe
 /tools/hmgindex/hmgindex.exe
+/IDE/ide.ini
+/IDE/recent.ini
