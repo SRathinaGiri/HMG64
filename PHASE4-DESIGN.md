@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)**, **F (IFileDialog)** and **P (PDF through Windows printing)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4, 5.6); I (IDE) planned in section 6, source imported.
+Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)**, **F (IFileDialog)** and **P (PDF through Windows printing)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4, 5.6); CHART control (ECharts) done (section 7); I (IDE) planned in section 6, source imported.
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -483,12 +483,36 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 
 ## 7. Later items (outline only)
 
-- **Charts: GraphPlus on Apache ECharts** (owner's idea, 12-11-2026). GraphPlus is the owner's chart class for HMG.
-  - **Today:** `GraphPlus():New()`; properties `GraphData`, `Legends`, `GraphType`, `Title`, `LegendPos`, colour themes; `:Draw()` and `:Bitmap()` into an IMAGE control; 15 types (columns, bar, line, points, pie, doughnut, funnel, stacked, area, scatter XY, sunburst, treemap, waterfall, bubbles).
-  - **Idea:** keep that API and draw with ECharts in a WEBVIEW control, giving tooltips, zoom, animation and crisp output at any DPI. Every GraphPlus type has an ECharts series (bar, line, scatter, pie with radius, funnel, sunburst, treemap, stack, waterfall as a stacked bar).
-  - **For printing and PDF:** ECharts `getDataURL()` returns PNG or SVG, so `:Bitmap()` and `SET PDFENGINE WINDOWS` keep working.
-  - **HMG-style syntax** on top: `@ r, c CHART name OF form TYPE … DATA … LEGENDS …` / `DEFINE CHART … END CHART`.
-  - **Needs:** ECharts (Apache-2.0, `echarts.min.js` about 1 MB) bundled and served from memory like WebView HTML, which is a download to approve; the WebView2 runtime (present on Windows 10/11).
-  - **First step:** a chart control over WEBVIEW plus a GraphPlus-compatible class, checked against the GraphPlus demo.
-
+- **CHART control: done (12-11-2026).** The first step of "GraphPlus on Apache ECharts" (owner's idea). GraphPlus is the owner's own chart class: an object API (`GraphData`, `Legends`, `GraphType`, themes, `:Draw()` / `:Bitmap()`), 15 types, drawn as a bitmap.
+  - **Syntax:** `@ r, c CHART name [OF form] WIDTH w HEIGHT h [TYPE COLUMN | BAR | LINE | AREA | POINTS | PIE | DOUGHNUT | FUNNEL] [TITLE] [CATEGORIES] [SERIES] [LEGEND | NOLEGEND] [LABELS] [STACKED] [THEME] [COLORS] [OPTION <json>] [ON CLICK]`. Types follow GraphPlus: COLUMN is vertical, BAR horizontal.
+  - **OPTION:** raw ECharts JSON, applied over the generated option, so every ECharts chart is reachable (the sample's gauge uses it).
+  - **Properties** (dot syntax): ChartType, ChartTitle, Categories, Series, ChartOption (setting one redraws), Loaded. **Methods:** Refresh, SaveImage( cPng [, nScale] ). `HMG_ChartClicked()` inside ON CLICK gives `{series, category, value, index}`; `HMG_ChartSaveImage()` saves a PNG.
+  - **Theme:** follows `SET DARKMODE` unless THEME is given.
+  - **How:**
+    - A CHART is a WEBVIEW whose state carries the chart. The WebView hooks call the chart through a codeblock in that state, so ECharts is linked only into programs that define a chart: the test exe is 1.46 MB bigger, other programs unchanged.
+    - ECharts 6.1.0 (Apache-2.0; `SOURCE/echarts/` holds LICENSE and NOTICE; checked against jsDelivr's SHA-256 hashes) is compiled in with C23 `#embed` (`c_echarts.c`). `c_webview.c` serves library files from memory at `https://html.hmg.example/lib/<name>`, so charts work offline.
+    - The page reports "ready" through `hmg.post()` and only then receives the option, so changes made before the page loads are not lost.
+  - **Tests:** `tests/unit/chart` (18 checks; skipped without the WebView2 runtime). They cover the drawn option read back from ECharts, the dot-syntax changes, a raw OPTION, a PNG file, the click event, and that ECharts is served from memory. Sample: `SAMPLES/Controls/Chart`, six charts, checked in screenshots.
+  - **Next (GraphPlus):**
+    - a GraphPlus-compatible class over the CHART control (same property names and GT_ constants, `:Draw()` into a CHART, `:Bitmap()` from SaveImage), checked against the GraphPlus demo;
+    - the remaining types: stacked bar, scatter XY, sunburst, treemap, waterfall, bubbles (all native in ECharts);
+    - `DEFINE CHART … END CHART` syntax;
+    - printing through `SET PDFENGINE WINDOWS` from the PNG.
 - **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.
+
+---
+
+## 8. Vision: HMG for modern visual, secure, networked applications (owner, 12-11-2026)
+
+> "My dream is to make HMG a modern visualization tool also, where people can have the proper security by logging into an application. We should also think about a way to host in a network (local), in a browser, any page that can be created by HMG code."
+
+The pieces built in Phase 4 point that way: WEBVIEW (HTML pages from memory, a safe page-to-Harbour bridge), CHART (ECharts), dark mode, DPI. Proposed as a Phase 5, to be designed before any code:
+
+| # | Piece | First thoughts |
+|---|---|---|
+| V1 | **Login and roles** | An `HMG_Auth` module: users and roles in the program's own database (SQLite/MySQL); passwords hashed with PBKDF2 or bcrypt through Windows CNG (`bcrypt.lib` is already linked); lockout after failed attempts; session timeout; an audit log. A ready login form. Roles checked by name (`HMG_UserCan( "receipts.edit" )`) to enable menus and controls. Optional Windows sign-in (SSPI) for office networks. |
+| V2 | **Pages in a browser on the LAN** | An embedded HTTP server in the HMG program, through Windows' own HTTP Server API (`http.sys`): no extra install, HTTPS with a certificate bound once, many connections. The same HTML that a WEBVIEW or CHART shows on the desktop (with `/lib/echarts.min.js` from memory) is served to browsers. The bridge `hmg.call()` becomes `fetch( "/api/<name>" )` to the same allow-listed Harbour codeblocks: one page, two places. |
+| V3 | **Security for V2** | Login from V1 with session cookies (HttpOnly, SameSite), CSRF tokens on every call, HTTPS only, only bound functions callable (as in WEBVIEW), limits on request size and rate, LAN-only binding by default, a log of every call. The first run needs a URL reservation (`netsh http add urlacl`) and a firewall rule, so it needs an admin once. |
+| V4 | **Dashboards in HMG code** | A small layer so that a page with charts, tables (grid data as JSON) and filters is written in Harbour, then shown in a WEBVIEW on the desktop and served by V2 to browsers. |
+
+**Order:** V1 first (useful on its own, needed by V2), then V2 + V3 together (a server without login and HTTPS should not exist), then V4. **Risk:** a network server inside a desktop program is a security surface. It must be opt-in, off by default, and reviewed like the WebView bridge was.

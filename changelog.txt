@@ -16,6 +16,7 @@
    - SET DARKMODE ON | AUTO (opt-in): dark title bars, forms and controls; explicit BACKCOLOR/FONTCOLOR kept; message boxes and the menu bar stay light
    - SET FILEDIALOG MODERN (opt-in): GetFile, PutFile and GetFolder use the Windows Vista+ file dialogs (IFileDialog): same arguments and results, no fixed path buffers, Explorer-style folder picker
    - SET PDFENGINE WINDOWS (opt-in): SELECT PRINTER PDF and the preview's Save as PDF go through the Windows PDF printer - the PDF matches the printout (all fonts, Unicode, rotated text, images), text selectable, no page bitmaps; libHaru stays the default and covers custom paper sizes
+   - New CHART control: @ r,c CHART ... TYPE COLUMN|BAR|LINE|AREA|POINTS|PIE|DOUGHNUT|FUNNEL, CATEGORIES, SERIES, STACKED, LABELS, THEME, COLORS, ON CLICK, OPTION (any Apache ECharts option); interactive, sharp at any DPI, SaveImage to PNG; Apache ECharts 6.1.0 built in (works offline, linked only into programs that use a chart)
    - IDE: built from source (hmgbuild ide), 64-bit only; snap to grid fixed (nearest line; was always the next), grid drawn behind the controls, grid size 5-20 px and show/hide in the Edit menu, arrow keys move the selected control (Ctrl: to the next grid line), IDE.exe /form <file.fmg>; form round-trip test (tests\ide)
    - Notepad++ syntax file for HMG5 (tools\editor)
    - IDE: View > Forms and Controls (F6) / IDE.exe /index <project.hbp>: every form and control of a project defined in code or .fmg, where defined and used, misspelt control names reported; same as tools\hmgindex (console)

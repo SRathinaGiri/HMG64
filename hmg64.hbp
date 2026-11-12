@@ -30,6 +30,7 @@ source/h_tooltip.prg
 source/h_menuhover.prg
 source/h_hmgvars.prg
 source/h_webview.prg
+source/h_chart.prg
 source/h_dpi.prg
 source/h_dark.prg
 source/h_pdf.prg
@@ -103,6 +104,7 @@ source/c_dpi.c
 source/c_dark.c
 source/c_filedlg.c
 source/c_pdf.c
+source/c_echarts.c
 source/c_grid.c
 source/c_help.c
 source/c_hotkey.c

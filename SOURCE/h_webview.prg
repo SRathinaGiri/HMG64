@@ -135,7 +135,7 @@ FUNCTION _DefineWebView( cName, cParent, nRow, nCol, nWidth, nHeight, ;
    _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ k ]      := hState
    _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ k ]      := { NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL }
 
-   RETURN NIL
+   RETURN k   // control index (used by _DefineChart)
 
 STATIC FUNCTION _WV_DefaultUserData()
    LOCAL cBase := GetEnv( "LOCALAPPDATA" )
@@ -364,6 +364,9 @@ FUNCTION _WebView_GetProperty( xData, cForm, cControl, cProp )
    h      := _HMG_SYSDATA [ HMG_CTL_HANDLE ] [ i ]
    hState := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ]
 
+   IF _WV_ChartHook( hState, "GET", i, cProp, NIL, NIL, @xData )   // CHART properties (h_chart.prg)
+      RETURN .T.
+   ENDIF
    SWITCH Upper( AllTrim( cProp ) )
    CASE "URL"
       xData := iif( hState[ "ready" ], HMG_WEBVIEW_GETSTR( h, 1 ), hState[ "url" ] )
@@ -397,6 +400,10 @@ FUNCTION _WebView_GetProperty( xData, cForm, cControl, cProp )
 FUNCTION _WebView_SetProperty( cForm, cControl, cProp, xValue )
    LOCAL i := GetControlIndex( cControl, cForm )
 
+   IF _WV_ChartHook( _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ], "SET", i, cProp, xValue )
+      RETURN .T.
+   ENDIF
+
    SWITCH Upper( AllTrim( cProp ) )
    CASE "URL"
       IF HB_ISSTRING( xValue )
@@ -423,6 +430,9 @@ FUNCTION _WebView_DoMethod( cForm, cControl, cMethod, xArg1, xArg2 )
    LOCAL hState := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ]
    LOCAL nId
 
+   IF _WV_ChartHook( hState, "DO", i, cMethod, xArg1, xArg2 )
+      RETURN .T.
+   ENDIF
    SWITCH Upper( AllTrim( cMethod ) )
    CASE "NAVIGATE"
       IF HB_ISSTRING( xArg1 )
@@ -476,3 +486,12 @@ FUNCTION _WebView_DoMethod( cForm, cControl, cMethod, xArg1, xArg2 )
       RETURN .F.
    ENDSWITCH
    RETURN .T.
+
+/* a CHART is a WEBVIEW whose state carries "chart" (h_chart.prg); its hook block handles
+   the chart properties and methods. Called through the block so that h_chart.prg (and
+   ECharts) are linked only into programs that define a chart. */
+STATIC FUNCTION _WV_ChartHook( hState, cOp, i, cName, xArg1, xArg2, xData )
+   IF HB_ISHASH( hState ) .AND. hb_HHasKey( hState, "chart" ) .AND. HB_ISBLOCK( hState[ "chart" ][ "hook" ] )
+      RETURN Eval( hState[ "chart" ][ "hook" ], cOp, i, Upper( AllTrim( cName ) ), xArg1, xArg2, @xData )
+   ENDIF
+   RETURN .F.

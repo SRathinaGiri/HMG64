@@ -47,6 +47,80 @@
    request to it is answered here). Keep in sync with h_webview.prg. */
 #define HMG_WV_HTMLHOST    L"https://html.hmg.example/"
 
+/* Library files (scripts, styles) served from memory to every WebView at
+   HMG_WV_HTMLHOST "lib/<name>": e.g. Apache ECharts for the CHART control
+   (c_echarts.c). Registered once per program, never freed; the data is not copied. */
+#define HMG_WV_LIBMAX      16
+typedef struct
+{
+   WCHAR          name[ 64 ];
+   const void *   data;
+   size_t         len;
+   WCHAR          mime[ 64 ];
+} WVLIB;
+static WVLIB s_aLib[ HMG_WV_LIBMAX ];
+static int   s_nLib = 0;
+
+/* name: "echarts.min.js"; data stays valid for the life of the program */
+BOOL HMG_WebViewAddLibrary( const WCHAR * name, const void * data, size_t len, const WCHAR * mime )
+{
+   int i;
+   for( i = 0; i < s_nLib; i++ )
+      if( _wcsicmp( s_aLib[ i ].name, name ) == 0 )
+         return TRUE;                          /* already there */
+   if( s_nLib >= HMG_WV_LIBMAX || wcslen( name ) >= 64 || wcslen( mime ) >= 64 )
+      return FALSE;
+   wcscpy( s_aLib[ s_nLib ].name, name );
+   wcscpy( s_aLib[ s_nLib ].mime, mime );
+   s_aLib[ s_nLib ].data = data;
+   s_aLib[ s_nLib ].len  = len;
+   s_nLib++;
+   return TRUE;
+}
+
+static const WVLIB * wv_findLib( LPCWSTR uri )
+{
+   static const WCHAR szLib[] = HMG_WV_HTMLHOST L"lib/";
+   size_t n = HB_SIZEOFARRAY( szLib ) - 1;
+   int i;
+   if( _wcsnicmp( uri, szLib, n ) != 0 )
+      return NULL;
+   for( i = 0; i < s_nLib; i++ )
+   {
+      size_t k = wcslen( s_aLib[ i ].name );
+      if( _wcsnicmp( uri + n, s_aLib[ i ].name, k ) == 0 && ( uri[ n + k ] == 0 || uri[ n + k ] == L'?' ) )
+         return &s_aLib[ i ];
+   }
+   return NULL;
+}
+
+static IStream * wv_memStream( const void * data, size_t len )
+{
+   IStream * stm = NULL;
+   HGLOBAL hg = GlobalAlloc( GMEM_MOVEABLE, len ? len : 1 );
+   if( hg )
+   {
+      void * p = GlobalLock( hg );
+      if( p )
+      {
+         memcpy( p, data, len );
+         GlobalUnlock( hg );
+      }
+      if( FAILED( CreateStreamOnHGlobal( hg, TRUE, &stm ) ) )
+      {
+         GlobalFree( hg );
+         stm = NULL;
+      }
+      else
+      {
+         ULARGE_INTEGER sz;
+         sz.QuadPart = len;
+         IStream_SetSize( stm, sz );
+      }
+   }
+   return stm;
+}
+
 /* event kinds, keep in sync with h_webview.prg */
 #define WVE_READY          1
 #define WVE_ERROR          2
@@ -400,6 +474,7 @@ static HRESULT STDMETHODCALLTYPE res_Invoke( ICoreWebView2WebResourceRequestedEv
    ICoreWebView2WebResourceResponse * resp = NULL;
    IStream *                          stm  = NULL;
    LPWSTR                             uri  = NULL;
+   const WVLIB *                      lib;
 
    HB_SYMBOL_UNUSED( sender );
    if( c->closed || args == NULL || c->env == NULL )
@@ -409,6 +484,27 @@ static HRESULT STDMETHODCALLTYPE res_Invoke( ICoreWebView2WebResourceRequestedEv
    {
       ICoreWebView2WebResourceRequest_get_Uri( req, &uri );
       ICoreWebView2WebResourceRequest_Release( req );
+   }
+
+   if( uri && ( lib = wv_findLib( uri ) ) != NULL )
+   {
+      WCHAR hdr[ 160 ];
+      stm = wv_memStream( lib->data, lib->len );
+      _snwprintf( hdr, HB_SIZEOFARRAY( hdr ), L"Content-Type: %ls\r\nCache-Control: max-age=86400", lib->mime );
+      hdr[ HB_SIZEOFARRAY( hdr ) - 1 ] = 0;
+      if( stm )
+         ICoreWebView2Environment_CreateWebResourceResponse( c->env, stm, 200, L"OK", hdr, &resp );
+      else
+         ICoreWebView2Environment_CreateWebResourceResponse( c->env, NULL, 404, L"Not Found", L"", &resp );
+      if( resp )
+      {
+         ICoreWebView2WebResourceRequestedEventArgs_put_Response( args, resp );
+         ICoreWebView2WebResourceResponse_Release( resp );
+      }
+      if( stm )
+         IStream_Release( stm );
+      CoTaskMemFree( uri );
+      return S_OK;
    }
 
    if( uri && c->html && _wcsnicmp( uri, szPage, HB_SIZEOFARRAY( szPage ) - 1 ) == 0 )

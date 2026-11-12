@@ -47,7 +47,7 @@ iscc dist\HMG5.iss                                                          & re
 | HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Test" | done (Setup.exe tested: silent install, build, uninstall) |
 | 2b | Windows 10+ target (`_WIN32_WINNT`), long-path manifest, libHaru 2.3 headers (PerMonitorV2 moved to Phase 4; UTF-8 code page dropped: it breaks ANSI mode) | done |
 | 3 | Name, index and wrap `_HMG_SYSDATA` (layout frozen), object API, event dispatch - see PHASE3-DESIGN.md | done (S1-S5) |
-| 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | in progress (branch `phase4`): WebView2 control, per-monitor DPI, dark mode, IFileDialog and PDF engine done |
+| 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | in progress (branch `phase4`): WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF engine and CHART control (ECharts) done; IDE revamp in progress |
 
 ## License
 
