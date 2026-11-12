@@ -93,7 +93,7 @@ STATIC FUNCTION _Chart_Page( hSpec )
    c += 'var chart=echarts.init(el,' + iif( hSpec[ "theme" ] == "dark", '"dark"', 'null' ) + ');'
    c += 'window.hmgChart={chart:chart,'
    c +=   'set:function(o,x){chart.setOption(o,true);if(x){chart.setOption(x);}return true;},'
-   c +=   'png:function(s){return chart.getDataURL({type:"png",pixelRatio:s||2,backgroundColor:"' + cBg + '"});},'
+   c +=   'png:function(s,bg){return chart.getDataURL({type:"png",pixelRatio:s||2,backgroundColor:bg||"' + cBg + '"});},'
    c +=   'emit:function(d){hmg.post({chart:"click",data:d});}};'
    c += 'chart.on("click",function(p){window.hmgChart.emit({series:p.seriesName||"",category:p.name||"",'
    c +=   'value:(p.value===undefined?null:p.value),index:(p.dataIndex===undefined?-1:p.dataIndex)});});'
@@ -113,7 +113,7 @@ STATIC FUNCTION _Chart_Type( cType )
    CASE "scatter" ; RETURN "points"
    CASE "donut"   ; RETURN "doughnut"
    ENDSWITCH
-   RETURN iif( ! Empty( c ) .AND. ( "," + c + "," ) $ ",column,bar,line,area,points,pie,doughnut,funnel,", c, "column" )
+   RETURN iif( ! Empty( c ) .AND. ( "," + c + "," ) $ ",column,bar,line,area,points,pie,doughnut,funnel,custom,", c, "column" )
 
 /* { { cName, aValues }, ... } ; a plain array of numbers is one unnamed series */
 STATIC FUNCTION _Chart_Series( aSeries )
@@ -142,6 +142,9 @@ STATIC FUNCTION _Chart_Option( hSpec )
    LOCAL aS := {}, s, hS, aData, i, lLegend, aCat := hSpec[ "categories" ], lHoriz := ( cType == "bar" )
 
    o[ "backgroundColor" ] := "transparent"
+   IF cType == "custom"          // CUSTOM: the OPTION is the whole chart
+      RETURN o
+   ENDIF
    o[ "animation" ] := .T.
    IF ! Empty( hSpec[ "title" ] )
       o[ "title" ] := { "text" => hSpec[ "title" ], "left" => "center" }
@@ -320,3 +323,61 @@ STATIC FUNCTION _Chart_SaveImage( i, cFile, nScale )
       RETURN hb_MemoWrit( cFile, hb_base64Decode( SubStr( cData, nPos + 7 ) ) )
    ENDIF
    RETURN .F.
+
+/* ---- off-screen rendering (GraphPlus:Draw, h_graphplus.prg) ---------------------------
+
+   HMG_ChartRenderPng( cOptionJson, nWidth, nHeight [, cBackColor ] ) -> cPngBytes ("" on failure)
+   Draws an ECharts option (animation should be off) at exactly nWidth x nHeight pixels in a
+   hidden CHART and returns the PNG. Needs a window to exist (the hidden one is a CHILD). The
+   first call waits for the page (about a second); later calls take a few milliseconds. */
+FUNCTION HMG_ChartRenderPng( cJson, nWidth, nHeight, cBack )
+   LOCAL i, hState, nId, lDone := .F., cData := NIL, nStart := hb_MilliSeconds(), nPos, cJs, nWait
+
+   IF ! _IsWindowDefined( "_HMG_ChartRender" )
+      IF ! _HMG_AnyFormDefined()
+         RETURN ""
+      ENDIF
+      DEFINE WINDOW _HMG_ChartRender AT 0, 0 WIDTH 320 HEIGHT 240 CHILD NOSHOW
+         @ 0, 0 CHART Ch_Render OF _HMG_ChartRender WIDTH 300 HEIGHT 200 CHARTTYPE "custom" THEME "light"
+      END WINDOW
+      _ActivateWindow( { "_HMG_ChartRender" }, .F. )
+      HMG_CHART_PARKWINDOW( GetFormHandle( "_HMG_ChartRender" ) )   // shown (frames run), never seen
+   ENDIF
+   i := GetControlIndex( "Ch_Render", "_HMG_ChartRender" )
+   hState := _HMG_SYSDATA [ HMG_CTL_MISCDATA1 ] [ i ]
+   DO WHILE ! hState[ "chart" ][ "loaded" ] .AND. hb_MilliSeconds() - nStart < 20000
+      DO EVENTS
+      hb_idleSleep( 0.01 )
+   ENDDO
+   IF ! hState[ "chart" ][ "loaded" ]
+      RETURN ""
+   ENDIF
+   // explicit size: the canvas does not depend on the hidden window's size. Two steps: some
+   // series (treemap labels) are laid out after the first frame, so the PNG is taken a moment
+   // after the option is set, not in the same script.
+   cJs := "(function(){var c=hmgChart.chart;c.resize({width:" + hb_ntos( Int( nWidth ) ) + ",height:" + hb_ntos( Int( nHeight ) ) + ;
+          "});hmgChart.set(" + cJson + ",null);return true;})()"
+   nId := ++hState[ "seq" ]
+   hState[ "scripts" ][ nId ] := {|| lDone := .T. }
+   HMG_WEBVIEW_EXECSCRIPT( _HMG_SYSDATA [ HMG_CTL_HANDLE ] [ i ], cJs, nId )
+   DO WHILE ! lDone .AND. hb_MilliSeconds() - nStart < 20000
+      DO EVENTS
+      hb_idleSleep( 0.005 )
+   ENDDO
+   nWait := hb_MilliSeconds()
+   DO WHILE hb_MilliSeconds() - nWait < 150
+      DO EVENTS
+      hb_idleSleep( 0.01 )
+   ENDDO
+   lDone := .F.
+   nId := ++hState[ "seq" ]
+   hState[ "scripts" ][ nId ] := {| x, lOk | cData := iif( lOk, x, NIL ), lDone := .T. }
+   HMG_WEBVIEW_EXECSCRIPT( _HMG_SYSDATA [ HMG_CTL_HANDLE ] [ i ], "hmgChart.png(1," + iif( Empty( cBack ), "null", hb_jsonEncode( cBack ) ) + ")", nId )
+   DO WHILE ! lDone .AND. hb_MilliSeconds() - nStart < 20000
+      DO EVENTS
+      hb_idleSleep( 0.005 )
+   ENDDO
+   IF HB_ISSTRING( cData ) .AND. ( nPos := At( "base64,", cData ) ) > 0
+      RETURN hb_base64Decode( SubStr( cData, nPos + 7 ) )
+   ENDIF
+   RETURN ""

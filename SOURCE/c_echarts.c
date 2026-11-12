@@ -37,3 +37,26 @@ HB_FUNC( HMG_ECHARTS_VERSION )
 {
    hb_retc_const( "6.1.0" );
 }
+
+/* HMG_CHART_PARKWINDOW( hWnd ): the hidden helper of HMG_ChartRenderPng() must be shown for
+   Chromium to produce frames (some series, e.g. treemap labels, are drawn in later frames), but
+   never seen: it is placed outside the whole virtual desktop (all monitors), shown without
+   activation and kept out of the taskbar and Alt+Tab. */
+HB_FUNC( HMG_CHART_PARKWINDOW )
+{
+   HWND hWnd = ( HWND ) ( HB_PTRUINT ) hb_parnint( 1 );
+   if( IsWindow( hWnd ) )
+   {
+      RECT rc;
+      int  x, y;
+      LONG_PTR ex = GetWindowLongPtr( hWnd, GWL_EXSTYLE );
+      GetWindowRect( hWnd, &rc );
+      x = GetSystemMetrics( SM_XVIRTUALSCREEN ) - ( rc.right - rc.left ) - 400;
+      y = GetSystemMetrics( SM_YVIRTUALSCREEN ) - ( rc.bottom - rc.top ) - 400;
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ex | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE ) & ~WS_EX_APPWINDOW );
+      SetWindowPos( hWnd, HWND_BOTTOM, x, y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED );
+      hb_retl( TRUE );
+   }
+   else
+      hb_retl( FALSE );
+}

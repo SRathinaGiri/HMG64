@@ -493,11 +493,21 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
     - ECharts 6.1.0 (Apache-2.0; `SOURCE/echarts/` holds LICENSE and NOTICE; checked against jsDelivr's SHA-256 hashes) is compiled in with C23 `#embed` (`c_echarts.c`). `c_webview.c` serves library files from memory at `https://html.hmg.example/lib/<name>`, so charts work offline.
     - The page reports "ready" through `hmg.post()` and only then receives the option, so changes made before the page loads are not lost.
   - **Tests:** `tests/unit/chart` (18 checks; skipped without the WebView2 runtime). They cover the drawn option read back from ECharts, the dot-syntax changes, a raw OPTION, a PNG file, the click event, and that ECharts is served from memory. Sample: `SAMPLES/Controls/Chart`, six charts, checked in screenshots.
-  - **Next (GraphPlus):**
-    - a GraphPlus-compatible class over the CHART control (same property names and GT_ constants, `:Draw()` into a CHART, `:Bitmap()` from SaveImage), checked against the GraphPlus demo;
-    - the remaining types: stacked bar, scatter XY, sunburst, treemap, waterfall, bubbles (all native in ECharts);
-    - `DEFINE CHART … END CHART` syntax;
-    - printing through `SET PDFENGINE WINDOWS` from the PNG.
+- **GraphPlus class on ECharts: done (12-11-2026).** `SOURCE/h_graphplus.prg` + `INCLUDE/GraphPlus.ch`. The programming interface of the owner's GraphPlus library (read from GraphPlus_Bubbles.zip on hmgforum.com, downloaded with the owner's approval) is written anew for HMG5; none of its drawing code is copied.
+  - **Same interface:** the same class, DATA names (programs also use `:cXTitle` directly), SETGET methods, `GridData`, `SwitchRowsToColumns`, `InitColors` themes, constants and colour values, so GraphPlus programs run unchanged.
+  - **`:Draw()` / `:Bitmap( [w, h] )` / `:Save()`** work as before. The bitmap is rendered by ECharts off screen (`HMG_ChartRenderPng`) at exactly Width × Height: anti-aliased, the same look as the interactive chart.
+  - **New:**
+    - `:Show( cForm, cChart )` draws the same chart interactively in a CHART control (type CUSTOM, which takes its whole picture from OPTION);
+    - `:Option()` returns the ECharts JSON.
+  - **All 15 types:** columns, bar, line, points, pie, funnel, stacked column and bar, area, scatter XY, doughnut (one ring per category, hole from `BarGapRatio`), sunburst and treemap (trees from the level rows), waterfall (floating bars from a candlestick series, `TotalItems` drawn from zero, as GraphPlus did), bubbles (one series per point, size by the square root).
+  - **Off-screen rendering, found by testing:** Chromium produces no frames for a WebView in a hidden window, and some series (treemap labels) are drawn in a later frame. So the helper window is shown, but outside the whole virtual desktop, without activation, as a tool window (not in the taskbar or Alt+Tab). The option is set, the page runs about 150 ms, then the PNG is taken. Animation durations are 0 there, since labels otherwise fade in.
+  - **Tests:** `tests/unit/graphplus` (28 checks) covers:
+    - the interface (SETGET, 1D data, GridData from a GRID, SwitchRowsToColumns);
+    - the ECharts option of every type, including the sunburst tree, the waterfall boxes, bubble sizes, legend position, themes and GraphColors;
+    - `Draw` giving a 640×360 bitmap, `Bitmap( 320, 180 )`, `Save` to PNG, and `Show` drawn in a CHART.
+    Sample: `SAMPLES/Controls/GraphPlus`, 15 thumbnails and the clicked one live, checked in screenshots.
+  - **Compatibility note:** a program that still links its own `GraphPlus.prg` keeps using it; HMG5's module is then not pulled in.
+  - **Not done:** `DEFINE CHART … END CHART` syntax; `Picture` formats only the data labels (axis numbers use ECharts' own format); the IMAGE control does not stretch a bitmap given through HBITMAP (use `:Bitmap( w, h )`, as the GraphPlus demo does).
 - **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.
 
 ---

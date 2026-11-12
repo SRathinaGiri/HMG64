@@ -13,7 +13,7 @@
       [ <dummy1: OF, PARENT> <parent> ] ;
       WIDTH <w> ;
       HEIGHT <h> ;
-      [ TYPE <type: COLUMN, BAR, LINE, AREA, POINTS, PIE, DOUGHNUT, FUNNEL> ] ;
+      [ TYPE <type: COLUMN, BAR, LINE, AREA, POINTS, PIE, DOUGHNUT, FUNNEL, CUSTOM> ] ;
       [ CHARTTYPE <ctype> ] ;
       [ TITLE <title> ] ;
       [ CATEGORIES <cats> ] ;
