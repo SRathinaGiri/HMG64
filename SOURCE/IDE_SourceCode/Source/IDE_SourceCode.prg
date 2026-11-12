@@ -1400,6 +1400,7 @@ PROCEDURE Proc_DEFINE_MAIN_MENU()
          POPUP aMsgs [ 017 ]
             ITEM aMsgs [ 018 ]                  IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XVIEW' , 'VIEW' )    ACTION ViewCode()
             ITEM 'Forms and Controls' + chr(8) + 'F6'  ACTION IDE_FormsAndControls()
+            ITEM 'Code Editor'      ACTION IDE_EdShow()   // HMG5
             SEPARATOR
             ITEM 'Form Designer'    ACTION IDE_ToggleDesigner() NAME mnuDesigner
          END POPUP
@@ -1474,6 +1475,12 @@ PROCEDURE AutoBuild()
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/INDEX" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5: IDE.exe /index <project.hbp> opens the Forms and Controls window of that project
       DEFINE TIMER Tmr_Index OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_Index.Enabled := .F., IDE_FormsAndControls( hb_argv( 2 ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/EDIT" .AND. ! Empty( hb_argv( 2 ) )
+      // HMG5: IDE.exe /edit <file> [line] opens a file in the built-in editor
+      DEFINE TIMER Tmr_Edit OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_Edit.Enabled := .F., IDE_EdOpen( hb_argv( 2 ), Val( hb_argv( 3 ) ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/EDTEST" .AND. ! Empty( hb_argv( 2 ) )
+      // HMG5 test mode (tests/ide): IDE.exe /edtest <out.txt> checks the built-in editor
+      DEFINE TIMER Tmr_EdTest OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_EdTest.Enabled := .F., IDE_EdSelfTest( hb_argv( 2 ) ) )
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/FORM" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5: IDE.exe /form <file.fmg> opens one form in the designer, without a project
       DEFINE TIMER Tmr_OpenForm OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_OpenForm.Enabled := .F., _Open( hb_argv( 2 ) ) )
@@ -29994,6 +30001,16 @@ local cCurrLang := ""
 			action	seteditor()
 		end button
 
+		DEFINE CHECKBOX Chk_Builtin   // HMG5
+			ROW    86
+			COL    140
+			WIDTH  390
+			HEIGHT 22
+			CAPTION "Use the built-in editor (the program above: File > Open in External Editor)"
+			FONTNAME "Arial"
+			FONTSIZE 9
+		END CHECKBOX
+
 		DEFINE COMBOBOX Combo_1
 			ROW    155
 			COL    180
@@ -30085,6 +30102,7 @@ local cCurrLang := ""
 	endif
 
 	PrefM.Text_1.Value := ProgramEditor
+	PrefM.Chk_Builtin.Value := IDE_UseBuiltinEditor()
 
 
 	CENTER WINDOW PrefM
@@ -30145,6 +30163,7 @@ PROCEDURE PrefOk (cCurrLang)
 //----------------------------------
 
    ProgramEditor  := ALLTRIM (PrefM.Text_1.Value) 
+   IDE_UseBuiltinEditor( PrefM.Chk_Builtin.Value )   // HMG5
    Language       := ALLTRIM (PrefM.Combo_1.DisplayValue)
 
    
@@ -30551,7 +30570,7 @@ Local FileName
 
 		If HMG_UPPER ( HB_URIGHT ( FileName , 4 ) ) == '.PRG'
 
-			EXECUTE FILE ProgramEditor PARAMETERS FileName
+			IDE_EditFile( FileName )   // HMG5: built-in or external editor
 
 		EndIf
 
@@ -30610,7 +30629,7 @@ Local FileName
 
 		If HMG_UPPER ( HB_URIGHT ( FileName , 3 ) ) == '.CH'
 
-			EXECUTE FILE ProgramEditor PARAMETERS FileName
+			IDE_EditFile( FileName )   // HMG5: built-in or external editor
 
 		EndIf
 
@@ -31508,7 +31527,7 @@ Local cProgram := ''
 	endif
 
 	If VALTYPE ( lSkipEditor ) != 'L' .Or. lSkipEditor == .F.
-		EXECUTE FILE ProgramEditor PARAMETERS Result
+		IDE_EditFile( Result )   // HMG5: built-in or external editor
 	EndIf
 
 	SaveProject()
@@ -31976,6 +31995,10 @@ local i
 		endif
 
 	Next i
+
+	If .Not. IDE_EdSaveAll()   // HMG5: the built-in editor's unsaved files first
+		RETURN
+	EndIf
 
 	RunAfetrBuild := .T. 
 	DebuggerSupport	:= .F. 
@@ -43353,6 +43376,7 @@ local i
 			items		{{''}}
 			headers		{ aMsgs [091] }
 			onchange	geterrorprocname(this.value)
+			ondblclick	IDE_LogOpenInEditor()   // HMG5
 			lines		.f.
 			widths		{ 730 }
 
@@ -43383,6 +43407,13 @@ local i
 			columnvalid	{ NIL , { || SaveFixedModule() } }
 
 		end grid
+
+		define button openineditor   // HMG5
+			row	510
+			col	455
+			caption	'Open in editor'
+			action	IDE_LogOpenInEditor()
+		end button
 
 		define button rebuild
 			row	510
@@ -43511,6 +43542,8 @@ local i
 	showlog.center
 
 	showlog.activate
+
+	IDE_EdOpenPending()   // HMG5: "Open in editor" was clicked
 
 *	_HMG_SYSDATA [ 347 ] :=  NIL
 
@@ -43811,7 +43844,7 @@ Local cProgram := ''
 
 	SortIncludeList()
 
-	EXECUTE FILE ProgramEditor PARAMETERS Result
+	IDE_EditFile( Result )   // HMG5: built-in or external editor
 
 	SaveProject()
 
@@ -44080,7 +44113,7 @@ Local i , aRow , EventName ,st , cSnippetName , x , cDefaultValue , cWindowName 
 
 		if file (cSnippetName)
 
-			EXECUTE FILE ProgramEditor PARAMETERS cSnippetName
+			IDE_EditFile( cSnippetName )   // HMG5: built-in or external editor
 
 			RETURN
 
@@ -44553,7 +44586,7 @@ Local i, item
 
 	SortModuleList()
 
-	EXECUTE FILE ProgramEditor PARAMETERS ALLTRIM(cArg)+'.prg'
+	IDE_EditFile( ALLTRIM(cArg)+'.prg' )   // HMG5: built-in or external editor
 
 RETURN .t.
 

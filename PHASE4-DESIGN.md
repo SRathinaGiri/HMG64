@@ -382,7 +382,7 @@ Done as above; matrix green (24 suites per mode).
 | I3 | **Modules, then table-driven core:** split the 45K-line file into modules by responsibility (main/menus, designer, `.fmg` loader, `.fmg` writer, property inspector, builders, report designer, project/build, C helpers); then one table per control type (properties, events, defaults, `.fmg` keywords) used by `_Open`, `Save`, `AddControl`, `PropertyEdit`, `UpdateControlProperties`; the per-type counters become one hash | I2 green after each move; line count and load/save time measured before and after |
 | I4 | **HMG5 features in the designer:** WEBVIEW control; project options for `SET DPIAWARE`, `DARKMODE`, `FILEDIALOG`, `PDFENGINE`; the IDE itself DPI-aware with modern file dialogs | new controls round-trip in I2 |
 | I5 | **Designer: snap to grid** (owner's request, 12-11-2026). It exists but is wrong: on create and move it adds `10 - last digit`, so 40 becomes 50 and 41 becomes 50 (always the *next* multiple); resize rounds down; the size is fixed at 10 in PRG and C. Fix: round to the **nearest** grid line on create, move and resize; grid size in Preferences (5, 8, 10, 16, 20); grid display on/off; arrow keys move the selection by 1 px (Ctrl: one grid step) | positions land on the grid (unit test on the rounding; `/addall` reference updated on purpose) |
-| I6 | **Code editor** (owner's request). (a) **Done:** Notepad++ language file generated from HMG5's own headers (`tools/editor`, 3,185 words, folding of all `DEFINE … END` blocks). (b) **Built-in editor:** Scintilla + Lexilla (BSD-style licence) as an HMG control with an HMG5 lexer list from the same generator; needs the Scintilla sources downloaded (owner to approve) | (b) opens, colours and saves `.prg`/`.fmg`; external editor stays selectable |
+| I6 | **Code editor** (owner's request). (a) **Done:** Notepad++ language file generated from HMG5's own headers (`tools/editor`, 3,185 words, folding of all `DEFINE … END` blocks). (b) **Done:** built-in editor on the Windows RichEdit control (no Scintilla download), see 6.7 | (b) opens, colours and saves `.prg`/`.fmg`/`.ch`; external editor stays selectable |
 | I7 | **Friendlier, light touch:** clickable build errors (file, line) from the build log (ADOPTION L2); recent projects; English hint texts from the language files | each item small, no forced change |
 
 **Ideas from the owner (12-11-2026), to be designed; not committed to yet:**
@@ -462,7 +462,7 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 
 **Not yet.**
 - Event procedures named in `ACTION` / `ON …` are not checked against the project's functions.
-- No insertion into a built-in editor (I6 b).
+- Opens files in the built-in editor (I6 b) when that is chosen, at the line.
 - The index isn't refreshed automatically when files change (use Refresh).
 
 ---
@@ -478,6 +478,57 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
 - **Code:** `SOURCE/IDE_SourceCode/Source/ide_project.prg`, the second module split out. The test modes always run with the designer on.
 - **Checked in screenshots:** project mode with no form, and with a form open. The recent list was checked with a throwaway project; a member's real project was not opened in the IDE, because the IDE saves the project on exit.
 - **Not checked:** clicking the menu items (no simulated input); the hard-coded Spanish status-bar hint and exit question remain (I7).
+
+---
+
+### 6.7 Built-in code editor (I6 b)
+
+**Decision (12-11-2026):** the editor is built from what Windows and HMG already have: the RichEdit control (`Msftedit.dll`, as HMG's RICHEDITBOX) and its Text Object Model (TOM). No Scintilla download, nothing new to ship.
+
+- **Window:** View > Code Editor, and every place that used to start the external editor (project browser, new module or include, snippets, Forms and Controls, build errors). One window with a tab for each open file, a status bar (line, column, encoding, line endings) and File / Edit / Search / Build menus.
+- **Editing:**
+  - Line numbers, no word wrap, Consolas.
+  - Auto-indent on Enter; Tab and Shift+Tab indent and outdent the selected lines; Ctrl+Q comments or uncomments them.
+  - Multi-level undo and redo. Paste is always plain text, and RichEdit's formatting shortcuts (Ctrl+E, Ctrl+L, Ctrl+1 ...) are blocked.
+- **Colouring:** a C lexer for Harbour, for the visible lines (and one screen above and below):
+  - comments `//`, `&&`, `/* */`, `*` and `NOTE` at the start of a line;
+  - C rules (no `&&` or `*` comments, backslash escapes) in `.c`/`.h` files and between `#pragma BEGINDUMP` and `#pragma ENDDUMP`;
+  - strings, numbers, `.T.`/`.F.`, and preprocessor lines;
+  - the keyword groups of the Notepad++ file. The same generator writes `tools/editor/hmg5_keywords.txt`, which is embedded into the IDE at compile time with `#embed`.
+  - Colouring is kept out of the undo list (`ITextDocument::Undo(tomSuspend)`) and doesn't mark the file as changed. Light and dark palettes follow `HMG_IsDarkMode()`.
+- **Search:** Find (Ctrl+F) and Replace (Ctrl+H) window: match case, whole word, up or down with wrap-around. Find next is F3, Find previous Shift+F3, Go to line Ctrl+G. Replace All is one undo step.
+- **Files:** the encoding is kept on save:
+  - UTF-8 with or without BOM, ANSI, or UTF-16 LE;
+  - a file without a BOM is UTF-8 if it decodes as UTF-8, otherwise ANSI;
+  - a pure-ASCII file follows the library mode: UTF-8 for UNICODE, ANSI for ANSI.
+  - Line endings (CRLF or LF) and a missing final line break are also kept.
+  - When the editor gets the focus, a file changed by another program is reloaded, or asked about if it has unsaved changes.
+  - Unsaved files are asked about on close; Build saves them first. Ctrl+S saves, Ctrl+W closes a tab.
+- **Build errors:** the build-error window gets an "Open in editor" button (and double-click), which opens the file at the error line.
+- **Setting:** Tools > Preferences > "Use the built-in editor" (`ide.ini`, `editor=builtin|external`). The default is the built-in editor; the external editor (`editor.ini`) works as before, File > Open in External Editor is in the built-in one, and `IDE.exe /edit <file> [line]` opens a file directly.
+- **Code:** `Source/ide_editw.c` (window, gutter, lexer, search, encodings) and `Source/ide_editor.prg` (window, menus, files).
+- **Tests:** `IDE.exe /edtest <out>` checks:
+  - the byte-exact round trip of each encoding and line ending;
+  - the colours of each token kind;
+  - that colouring adds no undo step and no modified flag;
+  - auto-indent, block indent and comment;
+  - find, replace and replace all, and go to line.
+
+  `tests/ide/run.ps1` runs it with the form round trip.
+
+**Status (12-11-2026): done.**
+- `tests/ide`: 19 checks, the 18 form round trips and `/edtest` with its 61 checks, all passing.
+- **Checked in screenshots** (`IDE.exe /edit`): the colours, the line numbers, the tab, the status bar, and go to line placing the line a third of the way down.
+- **Found and fixed while testing:**
+  - the view check listened to the edit messages that it sends itself (`EM_*` are below `WM_USER`), an endless loop; it now runs only after keys, mouse, scrolling and size;
+  - the status bar was covered when the window was laid out before it was shown.
+- **Not checked:**
+  - real typing (the test sends the keys with `SendMessage`) and clicking the menus and the Find window;
+  - paste, which was not tested so as not to touch the clipboard;
+  - the dark palette on screen;
+  - the "changed by another program" question;
+  - the build-error window's button with a real failing build.
+- **Limits:** the Find window is not docked; there is no bracket matching, folding or autocomplete yet; zoom (Ctrl+wheel) is off so the line numbers stay aligned.
 
 ---
 

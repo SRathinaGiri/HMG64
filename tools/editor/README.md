@@ -8,7 +8,7 @@
 2. Choose `tools\editor\HMG5_Notepad++.xml` and restart Notepad++.
 3. `.prg`, `.ch` and `.fmg` files open as **HMG5**. Any other file can be switched from the **Language** menu.
 
-To set Notepad++ as the IDE's code editor: in the HMG IDE, open **Tools > Preferences** and enter the path to `notepad++.exe` as the program editor.
+The HMG5 IDE has its own code editor, which uses the same word lists (`hmg5_keywords.txt`, written by the same generator and built into the IDE). To use Notepad++ instead: in the IDE, open **Tools > Preferences**, enter the path to `notepad++.exe` as the program editor, and clear **Use the built-in editor**.
 
 ## What is coloured
 
@@ -44,4 +44,4 @@ hbmk2 tools\editor\make_npp_udl.prg -otools\editor\make_npp_udl
 tools\editor\make_npp_udl.exe
 ```
 
-Run both commands from the HMG5 folder. The generator reads the headers and sources and rewrites the XML.
+Run both commands from the HMG5 folder. The generator reads the headers and sources and rewrites the XML and `hmg5_keywords.txt`. Rebuild the IDE (`hmgbuild ide`) afterwards, so that its editor gets the new words.

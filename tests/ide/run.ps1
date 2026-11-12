@@ -1,4 +1,5 @@
-# IDE form round-trip test (PHASE4-DESIGN.md section 6, step I2).
+# IDE form round-trip test (PHASE4-DESIGN.md section 6, step I2) and the built-in
+# editor's self-test (IDE.exe /edtest, section 6.7).
 #
 # For every form in tests\ide\corpus:
 #   1. IDE.exe /roundtrip corpus\X  out\X.1   (open in the designer, generate as File > Save)
@@ -58,6 +59,20 @@ elseif ($Update) { Copy-Item $oa $refa -Force }
 elseif (-not (Test-Path $refa)) { $err = "no reference in expected\ (run with -Update after review)" }
 elseif ([Convert]::ToBase64String([IO.File]::ReadAllBytes($refa)) -ne [Convert]::ToBase64String([IO.File]::ReadAllBytes($oa))) { $err = "differs from the reference: fc `"$refa`" `"$oa`"" }
 if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL addall: $err" } else { $pass++ }
+
+# built-in code editor (PHASE4-DESIGN.md 6.7): IDE.exe /edtest writes one PASS/FAIL line a check
+$oe = Join-Path $out 'edtest.txt'
+if (Test-Path $oe) { Remove-Item $oe }
+$p = Start-Process $Ide -ArgumentList "/edtest `"$oe`"" -WorkingDirectory (Split-Path $Ide) -PassThru
+$err = $null
+if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open)" }
+elseif (-not (Test-Path $oe)) { $err = "no output" }
+else {
+   $lines = Get-Content $oe
+   $bad = @($lines | Where-Object { $_ -like 'FAIL*' })
+   if ($bad.Count -gt 0 -or -not ($lines | Where-Object { $_ -like 'edtest: PASS=*' })) { $err = ($bad -join '; ') }
+}
+if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL edtest: $err" } else { $pass++ }
 
 $secs = [int]((Get-Date) - $t0).TotalSeconds
 Write-Output ("ide-roundtrip: PASS={0} FAIL={1} ({2} s){3}" -f $pass, $fail, $secs, $(if ($Update) { ' - references updated' } else { '' }))

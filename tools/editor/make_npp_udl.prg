@@ -1,6 +1,7 @@
 /*
  * make_npp_udl.prg - writes the Notepad++ "User Defined Language" file for HMG5
- * (tools\editor\HMG5_Notepad++.xml) from HMG's own headers and sources, so the
+ * (tools\editor\HMG5_Notepad++.xml) and the keyword list of the IDE's built-in editor
+ * (tools\editor\hmg5_keywords.txt) from HMG's own headers and sources, so the
  * highlighting knows exactly HMG5's commands, controls, clauses and functions.
  *
  * Build and run from the HMG5 folder:
@@ -153,6 +154,13 @@ FUNCTION Main( cHmg )
 
    cOut := Udl( aLists, aFoldOpen )
    hb_MemoWrit( cHmg + "tools" + hb_ps() + "editor" + hb_ps() + "HMG5_Notepad++.xml", cOut )
+   // the same words for the IDE's built-in editor (embedded into IDE.exe): "<group> <word>" a line
+   cOut := "; HMG5 keywords for the IDE's built-in editor, written by tools\editor\make_npp_udl.prg" + Chr( 10 ) + ;
+           "; groups: 1 language, 2 commands, 3 clauses, 4 HMG functions, 5 Harbour functions, 6 preprocessor, 7 constants" + Chr( 10 )
+   FOR n := 1 TO 7
+      AEval( aLists[ n ], {| c | cOut += hb_ntos( n ) + " " + c + Chr( 10 ) } )
+   NEXT
+   hb_MemoWrit( cHmg + "tools" + hb_ps() + "editor" + hb_ps() + "hmg5_keywords.txt", cOut )
    OutStd( "make_npp_udl: " + hb_ntos( Len( hb_HKeys( aK ) ) ) + " words (" + ;
            "language " + hb_ntos( Len( aLists[ K_LANG ] ) ) + ", commands " + hb_ntos( Len( aLists[ K_CMD ] ) ) + ;
            ", clauses " + hb_ntos( Len( aLists[ K_CLAUSE ] ) ) + ", HMG functions " + hb_ntos( Len( aLists[ K_HMGFUNC ] ) ) + ;

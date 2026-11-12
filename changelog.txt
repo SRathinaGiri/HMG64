@@ -22,6 +22,7 @@
    - Notepad++ syntax file for HMG5 (tools\editor)
    - IDE: View > Forms and Controls (F6) / IDE.exe /index <project.hbp>: every form and control of a project defined in code or .fmg, where defined and used, misspelt control names reported; same as tools\hmgindex (console)
    - IDE: View > Form Designer off = project builder (no palette or Object Inspector, new projects get the main window in code; a .fmg still opens the designer); File > Recent Projects
+   - IDE: built-in code editor (View > Code Editor, and wherever the IDE opens a source file): tabs, line numbers, HMG5/Harbour colouring, auto-indent, block indent and comment, find/replace, go to line, files kept in their encoding (UTF-8, ANSI, UTF-16) and line endings, unsaved files saved before a build, build errors open at the line; on the Windows RichEdit control, nothing to download; Tools > Preferences switches back to an external editor; IDE.exe /edit <file> [line]
 -HMG 3.6 2023/05/10
    - Default 64 Bit version
    - Latest MingW Compiler (13.1)

@@ -187,10 +187,15 @@ STATIC PROCEDURE IDE_FC_OpenProblem()
    ENDIF
 RETURN
 
-/* the program editor (Tools > Preferences) at a line: Notepad++ (-n), Notepad2/3 and
+/* a file at a line: the built-in editor (ide_editor.prg), or with lExternal or when
+   Tools > Preferences says so the program editor: Notepad++ (-n), Notepad2/3 and
    Scintilla-based editors (/g), VS Code (--goto file:line); other editors open the file */
-PROCEDURE IDE_OpenAtLine( cFile, nLine )
+PROCEDURE IDE_OpenAtLine( cFile, nLine, lExternal )
    LOCAL cEd := Lower( hb_FNameName( ProgramEditor ) ), cArgs
+   IF ! hb_defaultValue( lExternal, .F. ) .AND. IDE_UseBuiltinEditor()
+      IDE_EdOpen( cFile, nLine )
+      RETURN
+   ENDIF
    DO CASE
    CASE "notepad++" $ cEd
       cArgs := "-n" + hb_ntos( nLine ) + ' "' + cFile + '"'

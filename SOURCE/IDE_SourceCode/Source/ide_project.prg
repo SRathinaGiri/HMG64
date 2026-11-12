@@ -15,7 +15,8 @@
  palette, no Object Inspector, new projects get their main window in code instead
  of a .fmg; a "Forms and Controls" button takes the palette's place. Opening a
  .fmg still works: the designer windows come back while that form is open.
- Settings: ide.ini ("designer=0|1"); recent projects: recent.ini (one path a line).
+ Settings: ide.ini ("designer=0|1", "editor=builtin|external"); recent projects: recent.ini
+ (one path a line).
 ---------------------------------------------------------------------------*/
 
 #include "hmg.ch"
@@ -31,11 +32,15 @@ MEMVAR ProjectName
 MEMVAR cParameters
 MEMVAR nParameterCount
 
+STATIC s_lBuiltinEditor := .T.   // the IDE's own code editor (ide_editor.prg) instead of editor.ini's program
+
 PROCEDURE IDE_LoadIdeSettings()
    LOCAL cLine
    FOR EACH cLine IN hb_ATokens( StrTran( hb_MemoRead( StartUpFolder + "ide.ini" ), Chr( 13 ) ), Chr( 10 ) )
       IF Lower( AllTrim( cLine ) ) == "designer=0"
          lDesignerOn := .F.
+      ELSEIF Lower( AllTrim( cLine ) ) == "editor=external"
+         s_lBuiltinEditor := .F.
       ENDIF
    NEXT
    aRecentProjects := {}
@@ -49,12 +54,21 @@ RETURN
 
 STATIC PROCEDURE IDE_SaveIdeSettings()
    LOCAL c := "", x
-   hb_MemoWrit( StartUpFolder + "ide.ini", "designer=" + iif( lDesignerOn, "1", "0" ) + hb_eol() )
+   hb_MemoWrit( StartUpFolder + "ide.ini", "designer=" + iif( lDesignerOn, "1", "0" ) + hb_eol() + ;
+                                            "editor=" + iif( s_lBuiltinEditor, "builtin", "external" ) + hb_eol() )
    FOR EACH x IN aRecentProjects
       c += x + hb_eol()
    NEXT
    hb_MemoWrit( StartUpFolder + "recent.ini", c )
 RETURN
+
+/* Tools > Preferences > Use the built-in editor */
+FUNCTION IDE_UseBuiltinEditor( lSet )
+   IF HB_ISLOGICAL( lSet ) .AND. lSet != s_lBuiltinEditor
+      s_lBuiltinEditor := lSet
+      IDE_SaveIdeSettings()
+   ENDIF
+RETURN s_lBuiltinEditor
 
 /* View > Form Designer */
 PROCEDURE IDE_ToggleDesigner()
