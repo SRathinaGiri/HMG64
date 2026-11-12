@@ -508,21 +508,21 @@ The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` build
     Sample: `SAMPLES/Controls/GraphPlus`, 15 thumbnails and the clicked one live, checked in screenshots.
   - **Compatibility note:** a program that still links its own `GraphPlus.prg` keeps using it; HMG5's module is then not pulled in.
   - **Not done:** `DEFINE CHART … END CHART` syntax; `Picture` formats only the data labels (axis numbers use ECharts' own format); the IMAGE control does not stretch a bitmap given through HBITMAP (use `:Bitmap( w, h )`, as the GraphPlus demo does).
+- **More ECharts types for CHART** (owner, 12-11-2026: "we can think about adding other echarts also"). Today any ECharts chart works through `OPTION` (the sample's gauge). Candidates for their own `TYPE` keyword with HMG-style data:
+  - GAUGE: a value and a range;
+  - RADAR: categories as axes, series as polygons;
+  - HEATMAP: a grid of values, or a calendar;
+  - SCATTER and BUBBLE: value axes;
+  - CANDLESTICK: open, close, low, high;
+  - BOXPLOT;
+  - SANKEY and GRAPH: flows and networks;
+  - SUNBURST, TREEMAP, WATERFALL: as in GraphPlus.
+
+  Each keyword would come with tests and the sample; the `OPTION` route stays for everything else.
 - **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.
 
 ---
 
-## 8. Vision: HMG for modern visual, secure, networked applications (owner, 12-11-2026)
+## 8. Not in HMG5: HMG Web
 
-> "My dream is to make HMG a modern visualization tool also, where people can have the proper security by logging into an application. We should also think about a way to host in a network (local), in a browser, any page that can be created by HMG code."
-
-The pieces built in Phase 4 point that way: WEBVIEW (HTML pages from memory, a safe page-to-Harbour bridge), CHART (ECharts), dark mode, DPI. Proposed as a Phase 5, to be designed before any code:
-
-| # | Piece | First thoughts |
-|---|---|---|
-| V1 | **Login and roles** | An `HMG_Auth` module: users and roles in the program's own database (SQLite/MySQL); passwords hashed with PBKDF2 or bcrypt through Windows CNG (`bcrypt.lib` is already linked); lockout after failed attempts; session timeout; an audit log. A ready login form. Roles checked by name (`HMG_UserCan( "receipts.edit" )`) to enable menus and controls. Optional Windows sign-in (SSPI) for office networks. |
-| V2 | **Pages in a browser on the LAN** | An embedded HTTP server in the HMG program, through Windows' own HTTP Server API (`http.sys`): no extra install, HTTPS with a certificate bound once, many connections. The same HTML that a WEBVIEW or CHART shows on the desktop (with `/lib/echarts.min.js` from memory) is served to browsers. The bridge `hmg.call()` becomes `fetch( "/api/<name>" )` to the same allow-listed Harbour codeblocks: one page, two places. |
-| V3 | **Security for V2** | Login from V1 with session cookies (HttpOnly, SameSite), CSRF tokens on every call, HTTPS only, only bound functions callable (as in WEBVIEW), limits on request size and rate, LAN-only binding by default, a log of every call. The first run needs a URL reservation (`netsh http add urlacl`) and a firewall rule, so it needs an admin once. |
-| V4 | **Dashboards in HMG code** | A small layer so that a page with charts, tables (grid data as JSON) and filters is written in Harbour, then shown in a WEBVIEW on the desktop and served by V2 to browsers. |
-
-**Order:** V1 first (useful on its own, needed by V2), then V2 + V3 together (a server without login and HTTPS should not exist), then V4. **Risk:** a network server inside a desktop program is a security surface. It must be opt-in, off by default, and reviewed like the WebView bridge was.
+Running HMG forms in a browser (the owner's "HMG Web" vision) will be a **separate product**, designed for the web: responsive layout, browser-side and server-side events, pure Harbour so that it also runs on Linux. HMG5 stays a Windows desktop library. Early notes: `HMGWEB-DESIGN.md`.

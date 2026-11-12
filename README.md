@@ -4,6 +4,7 @@ A revamp of **HMG 3.6 (64-bit)**, the xBase GUI library for Windows built on Har
 
 - `AUDIT.md`: code audit of the 3.6 tree, findings and the revamp roadmap
 - `PHASE4-DESIGN.md`: Phase 4 design (WebView2 control first)
+- `HMGWEB-DESIGN.md`: early notes for HMG Web, a separate future product (HMG forms in the browser, Windows and Linux); not part of HMG5
 - `TOOLCHAIN.md`: pinned Harbour and GCC versions, and how to get them (not stored in git)
 
 ## Quick start
