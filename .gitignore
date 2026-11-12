@@ -23,3 +23,10 @@ _hmg_resconfig.h
 
 # IDE per-machine setting: the IDE writes its own HMG path here on first run
 /IDE/hmg.ini
+
+# IDE build outputs (hmgbuild ide copies IDE.exe to IDE\)
+/SOURCE/IDE_SourceCode/*.exe
+/SOURCE/IDE_SourceCode/*.log
+/SOURCE/IDE_SourceCode/_temp.*
+/SOURCE/IDE_SourceCode/ErrorLog.htm
+/tools/editor/make_npp_udl.exe

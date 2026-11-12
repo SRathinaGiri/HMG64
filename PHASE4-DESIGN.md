@@ -1,6 +1,6 @@
 # Phase 4 design note: modern features
 
-Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)**, **F (IFileDialog)** and **P (PDF through Windows printing)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4, 5.6); I not started (no IDE sources here).
+Status: branch `phase4`. **W (WebView2 control)**, **D (per-monitor DPI)**, **K (dark mode)**, **F (IFileDialog)** and **P (PDF through Windows printing)** implemented and tested (11/12-11-2026, sections 1.8, 2.6, 3.5, 4.4, 5.6); I (IDE) planned in section 6, source imported.
 
 Phase 4 scope, from AUDIT.md §4 and PHASE3-DESIGN.md §5:
 
@@ -338,7 +338,83 @@ Done as above; matrix green (24 suites per mode).
 
 ---
 
-## 6. Later items (outline only)
+## 6. IDE revamp (plan)
 
-- **I, IDE**: the IDE plan (ADOPTION.md L1-L4) needs the IDE sources, which are not on this machine.
+### 6.1 Starting point (measured, 12-11-2026)
+
+- **Source:** HMG IDE 1.3b (Roberto Lopez, GPL v2+ with the HMG exception), from the HMG 3.7 tree (`danielmaximiliano/HMG.3.7`, commit `7563ff9`, `source/IDE_SourceCode`). Imported unchanged to `SOURCE/IDE_SourceCode` (163 files).
+- **Builds and starts** with the HMG5 toolchain and library without source changes: a UNICODE build of 6.1 MB. The only change needed was the resource paths in the `.rc`, which name files in `Resource\` without the folder.
+- **One file is built:** `Source/IDE_SourceCode.prg`, 45,400 lines, with `#pragma -w2`. The other 15 `.prg`/`.txt` files in `Source` are copies of procedures from it, extracted for study (with Spanish notes, `*.md`); they are not built and would drift.
+- **Size is in a few procedures:**
+
+  | Procedure | Lines |
+  |---|---|
+  | `_Open` (`.fmg` loader) | 11,537 |
+  | `PropertyEdit` | 8,398 |
+  | `AddControl` | 2,291 |
+  | `GenCode` | 1,260 |
+  | `UpdateControlProperties` | 918 |
+
+- **Style:**
+  - 2,413 `IF` lines against 30 `CASE`; one branch per control type and property.
+  - 125 `PUBLIC` and 83 `PRIVATE` variables, among them one counter per control type (`ButtonCount`, `GridCount` …).
+  - 254 lines with `&` macros.
+- **Defects seen in the first run:**
+  - the status bar says "HMG 5.0 Test (32 bits)": `HMG_GetCompileVersion64()` in the library (`h_error.prg`) passes `.F.` as "is 64-bit";
+  - a status-bar hint is hard-coded in Spanish, whatever the language;
+  - `hmg.ini` / `editor.ini` in the source folder hold paths from another machine (`c:\hmg.3.7`). Without them the IDE takes the parent of its own folder as the HMG root, which is correct for `<HMG>\IDE\IDE.exe`.
+
+### 6.2 Rules
+
+- **No feature removed.** Every menu, builder, report designer and option keeps working.
+- **The `.fmg` format does not change.** A form saved by HMG 3.x opens in the new IDE, and a form saved by the new IDE opens in HMG 3.x. Generated `.prg`/`.fmg` text stays the same unless a change is intended and documented.
+- **A safety net before any rewrite** (step I2). Changes are measured as in Phase 3.
+- **64-bit only** (owner's decision, 12-11-2026): no 32-bit build option, `build.bat` path or "32 bits" text.
+- **Small HMG5 conveniences only**, no new IDE architecture.
+
+### 6.3 Steps
+
+| # | Step | Done when |
+|---|---|---|
+| I0 | **Baseline:** commit the import as-is; then a project file that builds `IDE\IDE.exe` (UNICODE and ANSI), resource paths fixed; extracted copies (`*.txt`, split `*.prg`) and the foreign `*.ini` removed; Spanish notes moved to `SOURCE/IDE_SourceCode/notes/` | `hmgbuild` builds the IDE; the IDE starts |
+| I1 | **64-bit only:** Build menu (32/64) and `BuildIn64bits` removed, always `build64.bat`; library fix for "(32 bits)" | no 32-bit reference left; status bar right |
+| I2 | **Safety net:** a test switch (`IDE.exe /roundtrip in.fmg out.fmg`) that opens a form in the designer and saves it; a test runs it over a corpus (samples, `Forms\`, synthetic forms with every control type and property) and compares | corpus round-trips unchanged, in `hmgbuild matrix` |
+| I3 | **Modules, then table-driven core:** split the 45K-line file into modules by responsibility (main/menus, designer, `.fmg` loader, `.fmg` writer, property inspector, builders, report designer, project/build, C helpers); then one table per control type (properties, events, defaults, `.fmg` keywords) used by `_Open`, `Save`, `AddControl`, `PropertyEdit`, `UpdateControlProperties`; the per-type counters become one hash | I2 green after each move; line count and load/save time measured before and after |
+| I4 | **HMG5 features in the designer:** WEBVIEW control; project options for `SET DPIAWARE`, `DARKMODE`, `FILEDIALOG`, `PDFENGINE`; the IDE itself DPI-aware with modern file dialogs | new controls round-trip in I2 |
+| I5 | **Designer: snap to grid** (owner's request, 12-11-2026). It exists but is wrong: on create and move it adds `10 - last digit`, so 40 becomes 50 and 41 becomes 50 (always the *next* multiple); resize rounds down; the size is fixed at 10 in PRG and C. Fix: round to the **nearest** grid line on create, move and resize; grid size in Preferences (5, 8, 10, 16, 20); grid display on/off; arrow keys move the selection by 1 px (Ctrl: one grid step) | positions land on the grid (unit test on the rounding; `/addall` reference updated on purpose) |
+| I6 | **Code editor** (owner's request). (a) **Done:** Notepad++ language file generated from HMG5's own headers (`tools/editor`, 3,185 words, folding of all `DEFINE … END` blocks). (b) **Built-in editor:** Scintilla + Lexilla (BSD-style licence) as an HMG control with an HMG5 lexer list from the same generator; needs the Scintilla sources downloaded (owner to approve) | (b) opens, colours and saves `.prg`/`.fmg`; external editor stays selectable |
+| I7 | **Friendlier, light touch:** clickable build errors (file, line) from the build log (ADOPTION L2); recent projects; English hint texts from the language files | each item small, no forced change |
+
+**Ideas from the owner (12-11-2026), to be designed; not committed to yet:**
+
+| # | Idea | First thoughts |
+|---|---|---|
+| I8 | **Project-only mode:** many members write their forms in code and use the IDE only to manage `.hbp` projects and build them from a GUI. An option (View or Preferences) hides the toolbars, the Object Inspector and the default form, so the IDE becomes a project builder; one tool for both kinds of user | The pieces exist: project browser, `OpenProject`, `NewBuild`/`build64.bat`, the build log. Needs: a remembered mode, a list of recent projects (I7), and starting without creating a form. Could also manage a *collection* of projects (a workspace list of `.hbp` files) |
+| I9 | **Grid behind the controls:** the dots are drawn with `GetDC` on top of everything after each move (`DRAWDESIGNGRID`) | Paint the grid as the design form's background, a dotted pattern brush of the grid size, so child controls cover it and nothing redraws it by hand; fits with I5 |
+| I10 | **Object tree:** a window listing the form's controls (by tab page, frame, split box) to select the one being edited | `_HMG_SYSDATA` already holds parent and container per control; selecting calls the existing `SelectControl()` |
+| I11 | **One main window** instead of three floating ones (main/toolbar, Project Browser, Object Inspector) | Largest change: dock the browser and inspector as panels of one resizable window (HMG `PANEL` windows or split boxes); the design form stays a separate window. After I3 (modules), so it touches small files |
+
+The IDE is not in the library, so `hmg64.hbp` is unchanged. `hmgbuild ide` builds `IDE\IDE.exe` in the mode LIB-64 was built in, and `hmgbuild idetest` also runs the round trip. `hmgbuild matrix` builds the IDE in ANSI (build check) and in UNICODE (build + round trip).
+
+### 6.4 Status (12-11-2026)
+
+- **I0 done.**
+  - The as-is import is commit `cc6c21e`.
+  - `SOURCE/IDE_SourceCode/IDE.hbp` + `IDE.rc` (resource paths fixed, both mode bitmaps) replace the per-mode files that wrote to `c:\hmg.3.7`.
+  - Removed: 22 extracted copies and the foreign `*.ini`.
+  - The Spanish notes are in `notes/`.
+- **I1 done.**
+  - The Build menu, `BuildIn64bits` and `UseBuildBat.ini` are gone; `build64.bat` is always used.
+  - Library: `HMG_GetCompileVersion64()` said "(32 bits)".
+- **I2 done:** `tests/ide` (18 checks).
+  - **Test modes:** `IDE.exe /roundtrip <in> <out>` opens a form in the designer and saves it; `IDE.exe /addall <in> <out>` first places one control of every palette type, as a click would. Both work from timers: the designer runs a nested message loop (`ACTIVATE WINDOW` without NOWAIT), as it does when used from the menu.
+  - **Corpus (17 forms):** the IDE's 12 forms, 4 sample forms, and a synthetic form with all 27 control types.
+  - **Each form must:** load and save without error, give the same text when saved twice (a fixed point), and match the reference.
+  - **Found and fixed:** `LOCKCOLUMNS Nil` was read back as 0, so the text of a grid changed on every second save.
+  - **Seen, kept as baseline:** Tree and Tab get fractional columns (`AT 180 , 600.00`); one palette entry adds no control on a plain form.
+
+---
+
+## 7. Later items (outline only)
+
 - **Print preview window**: still the HMG 3 window (no DPI or dark styling of its own drawing, EMF files in the temp folder); a candidate for after the benchmark.

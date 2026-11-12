@@ -9,6 +9,9 @@ rem    hmgbuild app <prg|hbp>    build an application (no run), via build64.bat
 rem    hmgbuild test             run the smoke + regression tests in tests\
 rem    hmgbuild all              check + lib + test (UNICODE)
 rem    hmgbuild matrix           lib ansi + test, then lib unicode + test; ends UNICODE
+rem    hmgbuild ide              build the IDE (SOURCE\IDE_SourceCode) into IDE\IDE.exe, in the
+rem                              library mode LIB-64 was built in (hmglib64.txt)
+rem    hmgbuild idetest          ide + form round-trip test (tests\ide, PHASE4-DESIGN.md 6)
 rem
 rem  The library mode is chosen when LIB-64 is built: INCLUDE\SET_COMPILE_HMG_UNICODE.ch
 rem  is overwritten from _ANSI.ch or _UNICODE.ch and hmglib64.txt records the mode
@@ -38,7 +41,9 @@ if /I "%~1"=="app"   goto APP
 if /I "%~1"=="test"  goto TEST
 if /I "%~1"=="all"   goto ALL
 if /I "%~1"=="matrix" goto MATRIX
-echo Usage: hmgbuild check ^| lib [ansi] ^| app ^<file.prg^|file.hbp^> ^| test ^| all ^| matrix
+if /I "%~1"=="ide"   goto IDE
+if /I "%~1"=="idetest" goto IDETEST
+echo Usage: hmgbuild check ^| lib [ansi] ^| app ^<file.prg^|file.hbp^> ^| test ^| all ^| matrix ^| ide ^| idetest
 exit /b 2
 
 rem ----------------------------------------------------------------------------
@@ -55,9 +60,13 @@ set "MRC=0"
 echo ===== ANSI =====
 call :DO_LIB ANSI || exit /b 1
 call "%HMGPATH%\tests\run.bat" || set "MRC=1"
+call :IDE nocopy || set "MRC=1"
 echo ===== UNICODE =====
 call :DO_LIB UNICODE || exit /b 1
 call "%HMGPATH%\tests\run.bat" || set "MRC=1"
+echo ===== IDE (UNICODE) =====
+call :IDE || set "MRC=1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%HMGPATH%\tests\ide\run.ps1" || set "MRC=1"
 if "%MRC%"=="0" ( echo MATRIX: both modes green ) else ( echo MATRIX: FAILED - see output above )
 exit /b %MRC%
 
@@ -90,6 +99,35 @@ if exist error.log ( type error.log & set "RC=1" )
 if not exist "%~n2.exe" set "RC=1"
 if "%RC%"=="0" ( echo OK: %~dpn2.exe ) else ( echo FAILED: %~2 )
 popd
+exit /b %RC%
+
+:IDETEST
+call :IDE || exit /b 1
+powershell -NoProfile -ExecutionPolicy Bypass -File "%HMGPATH%\tests\ide\run.ps1"
+exit /b %ERRORLEVEL%
+
+:IDE
+rem "call :IDE nocopy" only checks that the IDE builds (matrix, ANSI phase)
+call :DO_CHECK || exit /b 1
+set "IDECOPY=1"
+if /I "%~1"=="nocopy" set "IDECOPY=0"
+set "IDEMODE=UNICODE"
+if exist "%HMGPATH%\hmglib64.txt" findstr /i /c:"ANSI" "%HMGPATH%\hmglib64.txt" >nul && set "IDEMODE=ANSI"
+echo IDE, library mode %IDEMODE%
+pushd "%HMGPATH%\SOURCE\IDE_SourceCode"
+if exist error.log del error.log
+if exist IDE.exe del IDE.exe
+call "%HMGPATH%\build64.bat" /n IDE.hbp
+set "RC=0"
+if exist error.log ( type error.log & set "RC=1" )
+if not exist IDE.exe set "RC=1"
+if "%IDECOPY%"=="0" ( popd & if "%RC%"=="0" ( echo OK: IDE builds ^(%IDEMODE%^) ) else ( echo FAILED: IDE ^(%IDEMODE%^) ) )
+if "%IDECOPY%"=="0" exit /b %RC%
+if "%RC%"=="0" copy /y IDE.exe "%HMGPATH%\IDE\IDE.exe" >nul || ( echo ERROR: cannot write IDE\IDE.exe - is the IDE running? & set "RC=1" )
+if "%RC%"=="0" if "%IDEMODE%"=="ANSI" copy /y Lang\*.ANS "%HMGPATH%\IDE\" >nul
+if "%RC%"=="0" if "%IDEMODE%"=="UNICODE" copy /y Lang\*.UNI "%HMGPATH%\IDE\" >nul
+popd
+if "%RC%"=="0" ( echo OK: %HMGPATH%\IDE\IDE.exe ) else ( echo FAILED: IDE )
 exit /b %RC%
 
 rem ----------------------------------------------------------------------------

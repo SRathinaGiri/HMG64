@@ -53,7 +53,6 @@
 MEMVAR CompilerVersion
 MEMVAR Author
 MEMVAR cFileLanguage
-MEMVAR cFileBuildBat
 
 MEMVAR _HMG_SYSDATA
 MEMVAR _HMG_MainWindowFirst
@@ -373,7 +372,6 @@ LOCAL cTemp, nTemp
 LOCAL lFlagBuildLog := .F.
 LOCAL cFileName, cIconName
 
-PUBLIC cFileBuildBat := 'UseBuildBat.ini'
 PUBLIC cFileLanguage
 
 #ifdef COMPILE_HMG_UNICODE
@@ -1258,31 +1256,10 @@ RETURN Nil
 
 
 //------------------------------------------------
-PROCEDURE BuildIn64bits ( lBuild64 )
+PROCEDURE ShowCompilerVersion()
 //------------------------------------------------
-   IF lBuild64 == .T.
-      Form_Main.IsBuild32.CHECKED := .F.
-      Form_Main.IsBuild64.CHECKED := .T.
-      SaveString (StartUpFolder + cFileBuildBat, '64-bits')
-      CompilerVersion := HMG_GetCompileVersion64 ( cHmgFolder )
-      
-      //CompilerVersion := " Compiler: HMG (64 bits)  " 
-      //IF FILE (cHmgFolder + '\version64.txt')
-      //   CompilerVersion := CompilerVersion + ALLTRIM (HB_UTF8STRTRAN (HB_MEMOREAD (cHmgFolder + '\version64.txt'), chr(26), ' '))
-      //ENDIF
-      
-   ELSE
-      Form_Main.IsBuild32.CHECKED := .T.
-      Form_Main.IsBuild64.CHECKED := .F.
-      SaveString (StartUpFolder + cFileBuildBat, '32-bits')
-      CompilerVersion := HMG_GetCompileVersion32 ( cHmgFolder )
-      
-      //CompilerVersion := " Compiler: HMG (32 bits)  "
-      //IF FILE (cHmgFolder + '\version.txt')
-      //   CompilerVersion := CompilerVersion + ALLTRIM (HB_UTF8STRTRAN (HB_MEMOREAD (cHmgFolder + '\version.txt'), chr(26), ' '))
-      //ENDIF
-      
-   ENDIF
+// HMG5: 64-bit only (build64.bat); the 32/64-bit choice and UseBuildBat.ini are gone
+   CompilerVersion := HMG_GetCompileVersion64 ( cHmgFolder )
    Form_Main.StatusBar.Item (0 + STATUSITEM_OFFSET) := CompilerVersion
 RETURN
 
@@ -1363,18 +1340,8 @@ RETURN
 //---------------------------------------------
 PROCEDURE Proc_DEFINE_MAIN_MENU()
 //---------------------------------------------
-LOCAL cMsgs, lBuild64Bits
-
    IF IsMainMenuDefined ("Form_Main") == .T.
-      lBuild64Bits := Form_Main.IsBuild64.CHECKED
       RELEASE MAIN MENU OF Form_Main
-   ELSE
-      cMsgs := HB_USUBSTR (ALLTRIM (HB_MEMOREAD (StartUpFolder + cFileBuildBat)), 1 ,7)
-      IF HMG_UPPER (cMsgs) == HMG_UPPER ("32-bits")
-         lBuild64Bits := .F.
-      ELSE
-         lBuild64Bits := .T.  // set default 64-bits
-      ENDIF
    ENDIF
   
    DEFINE MAIN MENU OF Form_Main
@@ -1446,11 +1413,6 @@ LOCAL cMsgs, lBuild64Bits
             ITEM aMsgs [ 042 ]      IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XPREFERENCES' , 'PREFERENCES' )  ACTION Preferences()
          END POPUP
 
-         POPUP "Build"
-            ITEM "32-bits"   ACTION BuildIn64bits(.F.) NAME IsBuild32 CHECKED
-            ITEM "64-bits"   ACTION BuildIn64bits(.T.) NAME IsBuild64 CHECKED
-         END POPUP
-         
          POPUP aMsgs [ 043 ]
             ITEM aMsgs [ 020 ]      ACTION {||ShellExecute(0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + docpath , ,1)}
             ITEM aMsgs [ 044 ]      IMAGE If ( nVersion < 6.0 .Or. .Not. IsAppThemed() , 'XXHELP' , 'XHELP' )  ACTION   msginfo ( Author + CRLF + _HLK , 'HMG-IDE' )
@@ -1458,7 +1420,7 @@ LOCAL cMsgs, lBuild64Bits
          
    END MENU
  
-   BuildIn64bits ( lBuild64Bits )
+   ShowCompilerVersion()
 
 RETURN
 
@@ -1467,9 +1429,70 @@ RETURN
 //--------------------------
 PROCEDURE AutoBuild()
 //---------------------------
-   If nParameterCount == 1
+   If HMG_UPPER( hb_argv( 1 ) ) == "/ROUNDTRIP" .OR. HMG_UPPER( hb_argv( 1 ) ) == "/ADDALL"
+      // from a timer: _Open() activates the design form, which must happen inside the
+      // running message loop (as from the menu), not during Form_Main's ON INIT
+      DEFINE TIMER Tmr_RoundTrip OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_RoundTrip.Enabled := .F., IDE_RoundTrip( hb_argv( 2 ), hb_argv( 3 ) ) )
+   ElseIf nParameterCount == 1
       OpenProject()
    EndIf
+RETURN
+
+
+//--------------------------------------------------------------------------
+PROCEDURE IDE_RoundTrip( cIn, cOut )
+//--------------------------------------------------------------------------
+// HMG5 test mode (tests/ide): IDE.exe /roundtrip <in.fmg> <out.fmg>
+//                 IDE.exe /addall <in.fmg> <out.fmg>  (adds one control of each type first)
+// Opens the form in the designer, generates its code as File > Save would, writes it
+// to <out.fmg> (or "ERROR: ..." on a runtime error) and ends the process.
+// _Open() activates the design form and stays in its message loop (as from the menu), so
+// the save runs from a second timer inside that loop.
+LOCAL oErr
+   DEFINE TIMER Tmr_RoundTripSave OF Form_Main INTERVAL 200 ACTION IDE_RoundTripSave( cOut )
+   BEGIN SEQUENCE WITH {| e | Break( e ) }
+      _Open( cIn )
+   RECOVER USING oErr
+      IDE_RoundTripEnd( cOut, oErr )
+   END SEQUENCE
+   IDE_RoundTripEnd( cOut, "design form closed before it was saved" )
+RETURN
+
+PROCEDURE IDE_RoundTripSave( cOut )
+LOCAL cCode, oErr
+   IF Empty( OpenFormName ) .OR. Empty( DesignForm ) .OR. ! _IsWindowDefined( DesignForm ) .OR. ;
+      IsWindowVisible( GetFormHandle( 'loading' ) )
+      RETURN   // not loaded yet
+   ENDIF
+   Form_Main.Tmr_RoundTripSave.Enabled := .F.
+   BEGIN SEQUENCE WITH {| e | Break( e ) }
+      IF HMG_UPPER( hb_argv( 1 ) ) == "/ADDALL"
+         IDE_AddAllControls()
+      ENDIF
+      cCode := Save( .T. )
+   RECOVER USING oErr
+      IDE_RoundTripEnd( cOut, oErr )
+   END SEQUENCE
+   HB_MEMOWRIT( cOut, iif( HB_ISCHAR( cCode ), cCode, "ERROR: no code" ) )
+   ExitProcess( 0 )
+RETURN
+
+// /addall: one control of every palette type, placed as a click on the design form would
+// (tests/ide: the IDE's own defaults for each control, as a reference form)
+PROCEDURE IDE_AddAllControls()
+LOCAL aTypes := { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 35, 36 }
+LOCAL i
+   FOR i := 1 TO Len( aTypes )
+      Eval( &( "{|| Control_" + StrZero( aTypes [ i ], 2 ) + "_Click() }" ) )
+      _HMG_SYSDATA [ 191 ] := 20 + Int( ( i - 1 ) / 6 ) * 150     // row
+      _HMG_SYSDATA [ 192 ] := 20 + ( ( i - 1 ) % 6 ) * 190        // col
+      AddControl()
+   NEXT
+RETURN
+
+PROCEDURE IDE_RoundTripEnd( cOut, xErr )
+   HB_MEMOWRIT( cOut, "ERROR: " + iif( HB_ISOBJECT( xErr ), xErr:description + " " + hb_ValToStr( xErr:operation ), hb_ValToStr( xErr ) ) )
+   ExitProcess( 1 )
 RETURN
 
 
@@ -18822,15 +18845,20 @@ _hmgide_CurrentSplitBox := ''
 
 		ElseIf	HMG_UPPER (Line) = 'LOCKCOLUMNS '
 
-			CurrentLockColumns := VAL ( HB_USUBSTR ( Line , 13 , HMG_LEN (Line) - 12 ) )
+			// HMG5: "LOCKCOLUMNS Nil" (what Save writes for a grid without the property) stays Nil;
+			// VAL() made it 0, so the form text changed on every second save (tests/ide)
+			CurrentLockColumns := ALLTRIM ( HB_USUBSTR ( Line , 13 , HMG_LEN (Line) - 12 ) )
+			IF .NOT. ( HMG_UPPER ( CurrentLockColumns ) == 'NIL' )
+				CurrentLockColumns := ALLTRIM ( STR ( VAL ( CurrentLockColumns ) ) )
+			ENDIF
 
 			if _hmgide_SplitBoxProcessing == .T.
 
-				_hmgide_CurrentSplitBox := _hmgide_CurrentSplitBox + Space(12) + 'LOCKCOLUMNS ' + ALLTRIM ( STR ( CurrentLockColumns ) ) + CRLF
+				_hmgide_CurrentSplitBox := _hmgide_CurrentSplitBox + Space(12) + 'LOCKCOLUMNS ' + CurrentLockColumns + CRLF
 
 			endif
 
-			__MVPUT ( Name + 'LockColumns' , ALLTRIM ( STR ( CurrentLockColumns ) ) )
+			__MVPUT ( Name + 'LockColumns' , CurrentLockColumns )
 
 
 		///////////////////////////////////////////////////////////////
@@ -39613,7 +39641,7 @@ PUBLIC cInclude			:= ''
 
 	EndIf	
 
-	* Execute Build.bat
+	* Execute build64.bat
 
 	DEFINE WINDOW newbuild ;
 		AT 0 , 0 ;
@@ -39629,7 +39657,7 @@ PUBLIC cInclude			:= ''
 			COL 130 // 160
 			WIDTH 200
 			HEIGHT 100
-			VALUE 'Building in '+ IF (Form_Main.IsBuild64.CHECKED == .T., "64-bits", "32-bits") +' ...'
+			VALUE 'Building ...'
 			FONTBOLD .T.
 		END LABEL
 
@@ -39687,19 +39715,11 @@ disablewindow (getformhandle('properties'))
 		newbuild.l.value := 'Cleanning...'
 	ENDIF
 
-IF Form_Main.IsBuild64.CHECKED == .T. // HMG_IS64BITS() == .T.
 	if file ( cHmgFolder + "\BUILD64.BAT" )
 		EXECUTE FILE cHmgFolder + "\BUILD64.BAT " + cOption + cProjectBaseName + '.hbp ' + cProjectBaseName + '.hbc' WAIT HIDE
 	else
 		msgstop (cHmgFolder + "\BUILD64.BAT " + 'Not Found!','HMG-IDE')
 	endif
-ELSE
-	if file ( cHmgFolder + "\BUILD.BAT" )
-		EXECUTE FILE cHmgFolder + "\BUILD.BAT " + cOption + cProjectBaseName + '.hbp ' + cProjectBaseName + '.hbc' WAIT HIDE
-	else
-		msgstop (cHmgFolder + "\BUILD.BAT " + 'Not Found!','HMG-IDE')
-	endif
-ENDIF
 
 
 /*
@@ -42411,11 +42431,7 @@ Local c
 
 	c+='@ECHO OFF' + CR
 
-IF Form_Main.IsBuild64.CHECKED == .T.   // HMG_IS64BITS() == .T.
 	c+='call ' + cHmgFolder + '\build64.bat %1 %2' + CR
-ELSE
-	c+='call ' + cHmgFolder + '\build.bat %1 %2' + CR
-ENDIF
 
 	SaveString ( '_CompileReport.Bat' , c )
 
