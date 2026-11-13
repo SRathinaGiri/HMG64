@@ -1684,7 +1684,9 @@ FUNCTION pdfeditcoldetails
 LOCAL lineno := pdfgrid.columns.value
 LOCAL columnsize := 0
 IF lineno > 0
-   pdfgrid.size.value := columnarr[lineno,3] 
+   // HMG5: was pdfgrid.size.value, a control the window does not have; the size is
+   // the second column of the grid
+   pdfgrid.columns.cell( lineno, 2 ) := columnarr[lineno,3]
    if ajustify[lineno] == 0 .or. ajustify[lineno] == 2
       return .t.
    else

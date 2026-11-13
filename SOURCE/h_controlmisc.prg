@@ -2987,6 +2987,10 @@ Local i , h , t , m
 i := GetControlIndex ( ControlName, ParentForm )
 h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
 t := GetControlType ( ControlName, ParentForm )
+IF t == 'MONTHCAL'   // HMG5 (from HMG 3.5): a date
+   _SetMonthCalendarRange( i, Value, _HMG_MonthCalData( i ) [ "rangemax" ] )
+   Return Nil
+ENDIF
 m := _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i]
 
 DO CASE
@@ -3013,6 +3017,10 @@ Local i , h , t , m
 i := GetControlIndex ( ControlName, ParentForm )
 h := _HMG_SYSDATA [HMG_CTL_HANDLE] [i]
 t := GetControlType ( ControlName, ParentForm )
+IF t == 'MONTHCAL'   // HMG5 (from HMG 3.5): a date
+   _SetMonthCalendarRange( i, _HMG_MonthCalData( i ) [ "rangemin" ], Value )
+   Return Nil
+ENDIF
 m := _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i]
 
 DO CASE
@@ -3037,6 +3045,9 @@ i := GetControlIndex ( ControlName, ParentForm )
 if i == 0
     Return 0
 EndIf
+if _HMG_SYSDATA [ HMG_CTL_TYPE ] [i] == 'MONTHCAL'
+    Return _HMG_MonthCalData( i ) [ "rangemin" ]
+EndIf
 Return  ( _HMG_SYSDATA [ HMG_CTL_RANGEMIN ] [i] )
 
 Function _GetRangeMax ( ControlName, ParentForm )
@@ -3046,6 +3057,9 @@ i := GetControlIndex ( ControlName, ParentForm )
 
 if i == 0
     Return 0
+EndIf
+if _HMG_SYSDATA [ HMG_CTL_TYPE ] [i] == 'MONTHCAL'
+    Return _HMG_MonthCalData( i ) [ "rangemax" ]
 EndIf
 Return  ( _HMG_SYSDATA [ HMG_CTL_RANGEMAX ] [i] )
 
@@ -4626,6 +4640,9 @@ ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'PROGRESSBAR'
     _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] := Value
     SetProgressBarBarColor(_HMG_SYSDATA [HMG_CTL_HANDLE] [i],value[1],value[2],value[3])
 
+ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MONTHCAL'
+    SetMonthCalendarColor ( ControlName, ParentForm, MCSC_TEXT, Value )
+
 Else
     _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] := Value
     RedrawWindow ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )
@@ -4666,6 +4683,9 @@ ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'PROGRESSBAR'
     _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] := Value
     SetProgressBarBkColor(_HMG_SYSDATA [HMG_CTL_HANDLE] [i],value[1],value[2],value[3])
 
+ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MONTHCAL'
+    SetMonthCalendarColor ( ControlName, ParentForm, MCSC_MONTHBK, Value )
+
 Else
 
     _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] := Value
@@ -4691,8 +4711,10 @@ If  _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'GRID' .or. _HMG_SYSDATA [HMG_CTL_TYPE] [
     RetVal [1] := GetRed (Tmp)
     RetVal [2] := GetGreen (Tmp)
     RetVal [3] := GetBlue (Tmp)
+ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MONTHCAL'
+    RetVal := GetMonthCalendarColor ( ControlName, ParentForm, MCSC_TEXT )
 Else
-    RetVal := _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i] 
+    RetVal := _HMG_SYSDATA [ HMG_CTL_FONTCOLOR ] [i]
 EndIf
 Return RetVal
 
@@ -4706,8 +4728,10 @@ If  _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'GRID' .or. _HMG_SYSDATA [HMG_CTL_TYPE] [
     RetVal [1] := GetRed (Tmp)
     RetVal [2] := GetGreen (Tmp)
     RetVal [3] := GetBlue (Tmp)
+ElseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MONTHCAL'
+    RetVal := GetMonthCalendarColor ( ControlName, ParentForm, MCSC_MONTHBK )
 Else
-    RetVal := _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] 
+    RetVal := _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i]
 EndIf
 Return RetVal
 
@@ -8101,6 +8125,26 @@ ElseIf Pcount() == 4 // CONTROL
             _SetPlayerPositionEnd ( Arg2 , Arg1 ) 
         EndIf
 
+    ElseIf Arg3 == 'OUTERFONTCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        SetMonthCalendarColor ( Arg2, Arg1, MCSC_TRAILINGTEXT, Arg4 )
+
+    ElseIf Arg3 == 'BORDERCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        SetMonthCalendarColor ( Arg2, Arg1, MCSC_BACKGROUND, Arg4 )
+
+    ElseIf Arg3 == 'TITLEFONTCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        SetMonthCalendarColor ( Arg2, Arg1, MCSC_TITLETEXT, Arg4 )
+
+    ElseIf Arg3 == 'TITLEBACKCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        SetMonthCalendarColor ( Arg2, Arg1, MCSC_TITLEBK, Arg4 )
+
+    ElseIf Arg3 == 'VIEW' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        SetMonthCalendarView ( Arg2, Arg1, Arg4 )
+
     ElseIf Arg3 == 'CARETPOS'
 
         _SetCaretPos ( Arg2 , Arg1 , Arg4 )
@@ -8687,6 +8731,34 @@ ElseIf Pcount() == 3 // CONTROL
 
    ElseIf Arg3 == 'VOLUME'        // ADD
          RetVal := _GetPlayerVolume ( Arg2 , Arg1 )   // ADD
+
+   ElseIf Arg3 == 'OUTERFONTCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarColor ( Arg2, Arg1, MCSC_TRAILINGTEXT )
+
+   ElseIf Arg3 == 'BORDERCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarColor ( Arg2, Arg1, MCSC_BACKGROUND )
+
+   ElseIf Arg3 == 'TITLEFONTCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarColor ( Arg2, Arg1, MCSC_TITLETEXT )
+
+   ElseIf Arg3 == 'TITLEBACKCOLOR' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarColor ( Arg2, Arg1, MCSC_TITLEBK )
+
+   ElseIf Arg3 == 'VIEW' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarView ( Arg2, Arg1 )
+
+   ElseIf Arg3 == 'VISIBLEMIN' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarVisibleMin ( Arg2, Arg1 )
+
+   ElseIf Arg3 == 'VISIBLEMAX' .AND. GetControlType ( Arg2 , Arg1 ) == 'MONTHCAL'
+
+        RetVal := GetMonthCalendarVisibleMax ( Arg2, Arg1 )
 
    ElseIf Arg3 == 'CARETPOS'
 
@@ -9737,6 +9809,10 @@ DO CASE
    CASE Arg3 == HMG_UPPER ('EditOption')
         xData := _HMG_SYSDATA [HMG_CTL_MISCDATA2] [i] [38]
         RetVal := .T.
+
+   CASE Arg3 == HMG_UPPER ('RowsPerPage')   // HMG5 (from HMG 3.5): rows that fit in the visible area
+       xData := ListViewGetCountPerPage ( GetControlHandle(Arg2,Arg1) )
+       RetVal := .T.
 
    CASE Arg3 == HMG_UPPER ('ImageList')
        xData := ListView_GetImageList ( GetControlHandle(Arg2,Arg1) , LVSIL_SMALL ) 

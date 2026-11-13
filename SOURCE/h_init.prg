@@ -727,10 +727,12 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    *                 --> { nRadius, nMarginX, nMarginY, cFontName, nFontSize, aBorderColor, aBackColor, aForeColor, nGradient, nVisualStyle }
    * _HMG_SYSDATA [ HMG_SYS_TOOLTIPFONT ]  -> cached tooltip default HFONT ( 0 = not created yet )
    * _HMG_SYSDATA [ HMG_SYS_ROUNDED ]      -> ROUNDED <n> of the control being defined ( NIL = native look )
+   * Slot 522 was added by HMG5 (append-only):
+   * _HMG_SYSDATA [ HMG_SYS_ALTCLAUSES ]   -> DEFINE ... END clauses without a slot of their own (a hash)
 
 	* Create Public Array and Give it Initial Values
 
-	Public _HMG_SYSDATA [ 521 ]
+	Public _HMG_SYSDATA [ 522 ]
 
    
 	For i := 1 to 108
@@ -842,6 +844,7 @@ PUBLIC _HMG_InitCodepage := SET (_SET_CODEPAGE)
    _HMG_SYSDATA [ HMG_SYS_TOOLTIPSTYLE ] := { 8, 8, 4, "Segoe UI", 9, { 154, 180, 215 }, { 255, 255, 255 }, { 38, 44, 54 }, 1, 0 }
    _HMG_SYSDATA [ HMG_SYS_TOOLTIPFONT ]  := 0
    _HMG_SYSDATA [ HMG_SYS_ROUNDED ]      := NIL
+   _HMG_SYSDATA [ HMG_SYS_ALTCLAUSES ]   := { => }
    _HMG_SYSDATA [ 517 ] := HMG_TStringNew()
 
 

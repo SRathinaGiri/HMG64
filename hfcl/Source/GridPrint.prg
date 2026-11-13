@@ -1715,7 +1715,9 @@ FUNCTION editcoldetails
 LOCAL lineno := printgrid.columns.value
 LOCAL columnsize := 0
 IF lineno > 0
-   printgrid.size.value := columnarr[lineno,3] 
+   // HMG5: was printgrid.size.value, a control the window does not have; the size is
+   // the second column of the grid
+   printgrid.columns.cell( lineno, 2 ) := columnarr[lineno,3]
    if ajustify[lineno] == 0 .or. ajustify[lineno] == 2
       return .t.
    else

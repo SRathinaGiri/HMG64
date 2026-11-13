@@ -58,6 +58,8 @@ extern char *    hmg_FrameU16Decode ( const wchar_t * pStrW ); // UTF-16    -> U
 extern wchar_t * hmg_FrameMBtoWC    ( const char * pStr );     // hb_mbtowc, frame-owned
 extern char *    hmg_FrameWCtoMB    ( const wchar_t * pStrW ); // hb_wctomb, frame-owned
 
+#include "hbapi.h"   // HMG5: the macros below call hb_parc() & co. (GCC 14+: an undeclared function is an error)
+
 #define HMG_MBtoWC(c)   hmg_FrameMBtoWC (c)  // MultiByteToWideChar( CHAR  ) --> return WCHAR (NULL-safe)
 #define HMG_WCtoMB(c)   hmg_FrameWCtoMB (c)  // WideCharToMultiByte( WCHAR ) --> return CHAR  (NULL-safe)
 

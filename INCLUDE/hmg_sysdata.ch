@@ -1,7 +1,7 @@
 /*
  * hmg_sysdata.ch - names for the _HMG_SYSDATA slots (HMG5, PHASE3-DESIGN.md step S1)
  *
- * _HMG_SYSDATA is HMG's internal state: one PUBLIC array of 521 slots. Its layout is
+ * _HMG_SYSDATA is HMG's internal state: one PUBLIC array of 522 slots. Its layout is
  * FROZEN for HMG5 (append-only): user and contrib code may read _HMG_SYSDATA[ n ] by number, and
  * the commands in INCLUDE\*.ch expand to slot numbers inside compiled programs.
  * These names are aliases for the same numbers - _HMG_SYSDATA[ HMG_CTL_HANDLE ] and
@@ -112,5 +112,10 @@
 #define HMG_SYS_TOOLTIPSTYLE    519    // { nRadius, nMarginX, nMarginY, cFontName, nFontSize, aBorder, aBack, aFore, nGradient, nVisualStyle }
 #define HMG_SYS_TOOLTIPFONT     520    // cached HFONT of the tooltip default font (0 = not created)
 #define HMG_SYS_ROUNDED         521    // ROUNDED <n> clause of the control being defined (NIL = native look)
+
+/* ---- Added by HMG5 (append-only) --------------------------------------------------- */
+#define HMG_SYS_ALTCLAUSES      522    // hash: clauses of DEFINE <control> ... END <control> that have no slot of
+                                       // their own (DEFINE MONTHCALENDAR: OUTERFONTCOLOR, BORDERCOLOR, TITLEFONTCOLOR,
+                                       // TITLEBACKCOLOR, ON GETBOLDDAYS); emptied by each DEFINE that uses it
 
 #endif
