@@ -1,4 +1,9 @@
 -HMG 5.0.1 (not released)
+   - New sample SAMPLES\Controls\ChartGallery: every Apache ECharts chart type, one tab each (line, bar, pie,
+     scatter, radar, candlestick, boxplot, heatmap and calendar, tree, treemap, sunburst, graph, sankey,
+     chord, funnel, gauge, pictorialBar, themeRiver, parallel, map with lines, custom series)
+   - New sample SAMPLES\Controls\WebBrowser: a WEBVIEW browser (toolbar, address or search, zoom,
+     favourites with the HMG Forum, a start page that calls Harbour, PRIVATE browsing)
    - HFCL GridPDF.prg / GridPrint.prg: pdfeditcoldetails() and editcoldetails() set pdfgrid.size /
      printgrid.size, controls those windows do not have (runtime error); they now set the size cell
      of the column grid. Unreachable from the windows themselves (their "edit details" button is
