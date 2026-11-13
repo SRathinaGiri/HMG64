@@ -379,3 +379,17 @@ LOCAL i, nProcessID, aWin
       NEXT
 //   ENDIF
 RETURN hWnd
+
+
+/* HMG5 Phase 4 F (PHASE4-DESIGN.md section 4, SOURCE/c_filedlg.c)
+   HMG_SetFileDialog( "MODERN" | "CLASSIC" | lModern ) -> lWasModern
+   SET FILEDIALOG MODERN / CLASSIC. GetFile, PutFile and GetFolder use IFileOpenDialog /
+   IFileSaveDialog: same arguments and return values. May be switched at any time. */
+FUNCTION HMG_SetFileDialog( xMode )
+   IF HB_ISCHAR( xMode )
+      xMode := ( Upper( AllTrim( xMode ) ) == "MODERN" )
+   ENDIF
+RETURN HMG_FILEDIALOG_MODERN( iif( HB_ISLOGICAL( xMode ), xMode, NIL ) )
+
+FUNCTION HMG_IsModernFileDialog()
+RETURN HMG_FILEDIALOG_MODERN()

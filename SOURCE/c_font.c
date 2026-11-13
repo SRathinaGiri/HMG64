@@ -86,6 +86,10 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
+#include "hmg_dpi.h"
+
+// Phase 4 DPI: when set, fonts are sized for this DPI instead of the desktop (system) DPI
+static __TLS__ UINT s_uFontDpi = 0;
 
 HFONT PrepareFont (TCHAR *Fontname, int FontSize, int Weight, int Italic, int Underline, int StrikeOut )
 {
@@ -94,7 +98,7 @@ HFONT PrepareFont (TCHAR *Fontname, int FontSize, int Weight, int Italic, int Un
 
 	hDC = GetDC ( HWND_DESKTOP ) ;
 
-	cyp = GetDeviceCaps ( hDC, LOGPIXELSY ) ;
+	cyp = s_uFontDpi ? (int) s_uFontDpi : GetDeviceCaps ( hDC, LOGPIXELSY ) ;
 
 	ReleaseDC ( HWND_DESKTOP, hDC ) ;
 
@@ -133,7 +137,9 @@ HB_FUNC ( _SETFONT )
 		strikeout = 1;
 	}
 
+	s_uFontDpi = HMG_DpiForFont ( (HWND) HMG_parnl (1) ) ;
 	font = PrepareFont ( (TCHAR*) HMG_parc(2), hb_parni(3), bold, italic, underline, strikeout ) ;
+	s_uFontDpi = 0 ;
  
 	SendMessage( (HWND) HMG_parnl (1), (UINT) WM_SETFONT, (WPARAM) font, (LPARAM) TRUE ) ;
 
@@ -169,7 +175,9 @@ HB_FUNC ( SETFONTNAMESIZE )
 		strikeout = 1;
 	}
 
+	s_uFontDpi = HMG_DpiForFont ( (HWND) HMG_parnl (1) ) ;
 	SendMessage( (HWND) HMG_parnl(1), (UINT) WM_SETFONT , (WPARAM) PrepareFont ((TCHAR*)HMG_parc(2), hb_parni(3),bold,italic,underline,strikeout) , (LPARAM) TRUE );
+	s_uFontDpi = 0 ;
 }
 
 

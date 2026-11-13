@@ -1,4 +1,4 @@
-HMG 5 (test) - xBase Development System for Windows, 64-bit
+HMG 5.0 - xBase Development System for Windows, 64-bit
 ============================================================
 
 HMG 5 continues the HMG 3 line (HMG 3.6). Your HMG 3 programs should compile
@@ -44,6 +44,17 @@ What changed compared with HMG 3.6
  - The XOR "crypt" functions are marked deprecated: they are not encryption.
  - Programs need Windows 10 or later (they use the Universal C Runtime that is part
    of Windows). Windows 7/8 are no longer supported.
+ - New controls: WEBVIEW (Microsoft Edge WebView2: HTML/JavaScript screens) and CHART
+   (Apache ECharts); GraphPlus charts drawn by ECharts.
+ - Opt-in, off unless your program asks: SET DPIAWARE PERMONITOR (sharp on every
+   monitor), SET DARKMODE ON|AUTO, SET FILEDIALOG MODERN, SET PDFENGINE WINDOWS.
+ - Faster GetProperty/SetProperty/DoMethod and event handling; an optional object API
+   (HMG_GetControl / HMG_GetForm) and SET HMG LEGACY VARS OFF.
+ - The IDE: built-in code editor (colouring, completion of keywords, forms, controls
+   and properties, font and indent settings), View > Forms and Controls (every form
+   and control of a project, misspelt names found before the build), a project
+   builder mode for code-only programs (File > Code Only New Project), English texts.
+ - Full list: changelog.txt.
 
 
 Licence

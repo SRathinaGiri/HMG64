@@ -26,6 +26,7 @@
 #include "hbvm.h"
 #include "hbapiitm.h"
 #include "hbapi.h"
+#include "hmg_dpi.h"
 
 #include "hbthread.h"
 extern HB_CRITICAL_T _HMG_Mutex;   // global Mutex variable defined into c_Thread.c
@@ -74,6 +75,13 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 //-------------------------------------------------------------------------------------//
 {
 
+   // Phase 4 DPI (c_dpi.c): WM_DPICHANGED rescales the form; WM_NCDESTROY drops its DPI property
+   if ( nMsg == 0x02E0 /* WM_DPICHANGED */ || nMsg == WM_NCDESTROY )
+   {  LRESULT DpiResult;
+      if ( HMG_DpiWndProc ( hWnd, nMsg, wParam, lParam, &DpiResult ) )
+         return DpiResult;
+   }
+
 #if _HMG_CREATE_EVENT_
    // by Dr. Claudio Soto, December 2014
    if ( ProcessHMGWindowsMessage == TRUE && IsCreateEventProcess == TRUE ) 
@@ -101,6 +109,10 @@ _THREAD_LOCK();
      
 _THREAD_UNLOCK();
 
+   // Phase 4 dark mode (c_dark.c): dark DC defaults before Events() sets any custom colour
+   if ( nMsg >= WM_CTLCOLORMSGBOX && nMsg <= WM_CTLCOLORSTATIC )
+      HMG_DarkPrepareDC ( nMsg, (HDC) wParam );
+
    hb_vmPushSymbol (hb_dynsymSymbol ( pDynSym ));
    hb_vmPushNil ();   /* places NIL at Self */
 
@@ -112,6 +124,11 @@ _THREAD_UNLOCK();
    hb_vmDo ( 4 );
 
    LRESULT r = HMG_parnl ( -1 );
+
+   // Phase 4 dark mode: a colour message Events() did not answer gets a dark brush
+   if ( nMsg >= WM_CTLCOLORMSGBOX && nMsg <= WM_CTLCOLORSTATIC && HMG_DarkIsOn () &&
+        ( New_Behavior_WndProc ? ( r == -1 ) : ( r == 0 ) ) )
+      return (LRESULT) HMG_DarkCtlBrush ( nMsg );
 
    if (New_Behavior_WndProc == FALSE)
    {  if (r == 0)

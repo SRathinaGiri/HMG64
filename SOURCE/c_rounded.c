@@ -29,6 +29,7 @@
 #include <tchar.h>
 #include <math.h>
 #include "hbapi.h"
+#include "hmg_dpi.h"   /* HMG_SysColor: Phase 4 dark palette */
 
 #define HMG_ROUND_MAX       20
 #define HMG_ROUND_TEXTPEN   RGB( 100, 100, 100 )   /* native edit border grey, measured by 3.7 */
@@ -153,7 +154,7 @@ static COLORREF RingBrushColor( HBRUSH hbr, COLORREF cDefault )
    if( hbr == NULL || hbr == ( HBRUSH ) GetStockObject( NULL_BRUSH ) )
       return cDefault;
    if( ( ULONG_PTR ) hbr <= ( ULONG_PTR ) ( COLOR_MENUBAR + 1 ) )
-      return GetSysColor( ( int ) ( ( ULONG_PTR ) hbr - 1 ) );
+      return HMG_SysColor( ( int ) ( ( ULONG_PTR ) hbr - 1 ) );
    if( GetObject( hbr, sizeof( lb ), &lb ) == 0 || lb.lbStyle != BS_SOLID )
       return cDefault;
    return lb.lbColor;
@@ -205,7 +206,7 @@ static COLORREF TextBack( HWND hWnd )
    if( TextIsRich( hWnd ) )
    {
       COLORREF c = ( COLORREF ) SendMessage( hWnd, HMG_EM_GETBKCOLOR, 0, 0 );
-      return ( c != 0 && c != CLR_DEFAULT ) ? c : GetSysColor( COLOR_WINDOW );
+      return ( c != 0 && c != CLR_DEFAULT ) ? c : HMG_SysColor( COLOR_WINDOW );
    }
    if( hParent != NULL && ( hdc = GetDC( hWnd ) ) != NULL )
    {
@@ -213,7 +214,7 @@ static COLORREF TextBack( HWND hWnd )
       hbr = ( HBRUSH ) SendMessage( hParent, lStatic ? WM_CTLCOLORSTATIC : WM_CTLCOLOREDIT, ( WPARAM ) hdc, ( LPARAM ) hWnd );
       ReleaseDC( hWnd, hdc );
    }
-   return RingBrushColor( hbr, GetSysColor( COLOR_WINDOW ) );
+   return RingBrushColor( hbr, HMG_SysColor( COLOR_WINDOW ) );
 }
 
 static int TextRadius( HWND hWnd, HMG_RINGDATA * p )
@@ -275,13 +276,13 @@ static void TextPaintRing( HWND hWnd, HMG_RINGDATA * p, BOOL lNonClient )
       return;
    if( lNonClient )
       RingPaint( hdc, 0, 0, w, h, w, h, r, HMG_ROUND_TEXTPEN, TextBack( hWnd ),
-                 RingBrushColor( RingParentBrush( hWnd ), GetSysColor( COLOR_3DFACE ) ) );
+                 RingBrushColor( RingParentBrush( hWnd ), HMG_SysColor( COLOR_3DFACE ) ) );
    else
    {
       RECT cr;
       GetClientRect( hWnd, &cr );
       RingPaint( hdc, ix, iy, cr.right, cr.bottom, w, h, r, HMG_ROUND_TEXTPEN, TextBack( hWnd ),
-                 RingBrushColor( RingParentBrush( hWnd ), GetSysColor( COLOR_3DFACE ) ) );
+                 RingBrushColor( RingParentBrush( hWnd ), HMG_SysColor( COLOR_3DFACE ) ) );
    }
    ReleaseDC( hWnd, hdc );
 }
@@ -411,7 +412,7 @@ static void FramePaint( HWND hWnd, HMG_RINGDATA * p, HDC hdc )
    HFONT      hFont = ( HFONT ) SendMessage( hWnd, WM_GETFONT, 0, 0 );
    HFONT      hOld  = hFont ? ( HFONT ) SelectObject( hdc, hFont ) : NULL;
    HBRUSH     hbrBack = RingParentBrush( hWnd );
-   COLORREF   cBack = RingBrushColor( hbrBack, GetSysColor( COLOR_BTNFACE ) );
+   COLORREF   cBack = RingBrushColor( hbrBack, HMG_SysColor( COLOR_BTNFACE ) );
    int        w, h, nTop, nBoxH, r, nLen;
 
    GetClientRect( hWnd, &rc );
@@ -466,7 +467,7 @@ static void FramePaint( HWND hWnd, HMG_RINGDATA * p, HDC hdc )
          if( hParent != NULL )
             hbrCap = ( HBRUSH ) SendMessage( hParent, WM_CTLCOLORSTATIC, ( WPARAM ) hdc, ( LPARAM ) hWnd );
          if( hbrCap == NULL || hbrCap == ( HBRUSH ) GetStockObject( NULL_BRUSH ) ||
-             ( GetObject( hbrCap, sizeof( lb ), &lb ) != 0 && lb.lbStyle == BS_SOLID && lb.lbColor == GetSysColor( COLOR_3DFACE ) ) )
+             ( GetObject( hbrCap, sizeof( lb ), &lb ) != 0 && lb.lbStyle == BS_SOLID && lb.lbColor == HMG_SysColor( COLOR_3DFACE ) ) )
             hbrCap = hbrBack;
 
          SetRect( &rcGap, nX - 4, nTop, rc.right + 4, nTop + 1 );

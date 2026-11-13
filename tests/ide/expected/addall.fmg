@@ -1,0 +1,603 @@
+* HMG-IDE UNICODE Form Designer Generated Code
+* (c) Roberto Lopez - http://sites.google.com/site/hmgweb
+
+DEFINE WINDOW TEMPLATE AT 0 , 0 WIDTH 1200 HEIGHT 820 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "All controls" ICON NIL MAIN CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE BUTTON Button_1
+        ROW    30
+        COL    30
+        WIDTH  100
+        HEIGHT 28
+        ACTION Nil
+        CAPTION "Button_1"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .F.
+        PICTURE Nil
+        PICTALIGNMENT TOP
+    END BUTTON
+
+    DEFINE CHECKBOX Check_1
+        ROW    20
+        COL    220
+        WIDTH  100
+        HEIGHT 28
+        CAPTION "Check_1"
+        VALUE .F.
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+    END CHECKBOX
+
+    DEFINE LISTBOX List_1
+        ROW    20
+        COL    410
+        WIDTH  100
+        HEIGHT 100
+        ITEMS {""}
+        VALUE 0
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        ONDBLCLICK Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SORT .F.
+        MULTISELECT .F.
+        DRAGITEMS .F.
+    END LISTBOX
+
+    DEFINE COMBOBOX Combo_1
+        ROW    20
+        COL    600
+        WIDTH  100
+        HEIGHT 100
+        ITEMS {""}
+        VALUE 0
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SORT .F.
+        ONENTER Nil
+        ONDISPLAYCHANGE Nil
+        DISPLAYEDIT .F.
+        IMAGE Nil
+        DROPPEDWIDTH Nil
+        ONDROPDOWN Nil
+        ONCLOSEUP Nil
+    END COMBOBOX
+
+    DEFINE CHECKBUTTON CheckBtn_1
+        ROW    20
+        COL    790
+        WIDTH  100
+        HEIGHT 28
+        CAPTION "CheckBtn_1"
+        VALUE .F.
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        PICTURE Nil
+    END CHECKBUTTON
+
+    DEFINE GRID Grid_1
+        ROW    20
+        COL    980
+        WIDTH  120
+        HEIGHT 120
+        ITEMS { {""} }
+        VALUE Nil
+        WIDTHS { 0 }
+        HEADERS {''}
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONDBLCLICK Nil
+        ONHEADCLICK Nil
+        ONQUERYDATA Nil
+        MULTISELECT .F.
+        ALLOWEDIT .F.
+        VIRTUAL .F.
+        DYNAMICBACKCOLOR Nil
+        DYNAMICFORECOLOR Nil
+        COLUMNWHEN Nil
+        COLUMNVALID Nil
+        COLUMNCONTROLS Nil
+        SHOWHEADERS .T.
+        CELLNAVIGATION .F.
+        NOLINES .F.
+        HELPID Nil
+        IMAGE Nil
+        JUSTIFY Nil
+        ITEMCOUNT Nil
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        HEADERIMAGES Nil
+        ROWSOURCE Nil
+        COLUMNFIELDS Nil
+        ALLOWAPPEND .F.
+        ALLOWDELETE .F.
+        BUFFERED .F.
+        DYNAMICDISPLAY Nil
+        ONSAVE Nil
+        LOCKCOLUMNS Nil
+    END GRID
+
+    DEFINE SLIDER Slider_1
+        ROW    170
+        COL    30
+        WIDTH  120
+        HEIGHT 35
+        RANGEMIN 1
+        RANGEMAX 10
+        VALUE 0
+        TOOLTIP ""
+        ONCHANGE Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        BACKCOLOR Nil
+    END SLIDER
+
+    DEFINE SPINNER Spinner_1
+        ROW    170
+        COL    220
+        WIDTH  120
+        HEIGHT 24
+        RANGEMIN 1
+        RANGEMAX 10
+        VALUE 0
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        WRAP .F.
+        READONLY .F.
+        INCREMENT 1
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+    END SPINNER
+
+    DEFINE IMAGE Image_1
+        ROW    170
+        COL    410
+        WIDTH  123
+        HEIGHT 123
+        PICTURE ""
+        HELPID Nil
+        VISIBLE .T.
+        STRETCH .F.
+        ACTION Nil
+    END IMAGE
+
+    DEFINE TREE Tree_1 AT 170 , 600 WIDTH 120 HEIGHT 120 VALUE 0 FONT "Arial" SIZE 9 TOOLTIP "" ON GOTFOCUS Nil ON CHANGE Nil ON LOSTFOCUS Nil ON DBLCLICK Nil NODEIMAGES Nil ITEMIMAGES Nil HELPID Nil
+    END TREE
+
+    DEFINE DATEPICKER DatePicker_1
+        ROW    170
+        COL    790
+        WIDTH  120
+        HEIGHT 24
+        VALUE CTOD("  /  /  ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SHOWNONE .F.
+        UPDOWN .F.
+        RIGHTALIGN .F.
+    END DATEPICKER
+
+    DEFINE TEXTBOX Text_1
+        ROW    170
+        COL    980
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE ""
+    END TEXTBOX
+
+    DEFINE EDITBOX Edit_1
+        ROW    320
+        COL    30
+        WIDTH  120
+        HEIGHT 120
+        VALUE ""
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        HSCROLLBAR .T.
+        VSCROLLBAR .T.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+    END EDITBOX
+
+    DEFINE LABEL Label_1
+        ROW    320
+        COL    220
+        WIDTH  120
+        HEIGHT 24
+        VALUE "Label_1"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+    END LABEL
+
+    DEFINE BROWSE Browse_1
+        ROW    320
+        COL    410
+        WIDTH  120
+        HEIGHT 120
+        VALUE 0
+        WIDTHS {0}
+        HEADERS {''}
+        WORKAREA Nil
+        FIELDS {''}
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONDBLCLICK Nil
+        ALLOWEDIT .F.
+        ALLOWAPPEND .F.
+        ONHEADCLICK Nil
+        ALLOWDELETE .F.
+        HELPID Nil
+        VALID Nil
+        VALIDMESSAGES Nil
+        LOCK .F.
+        VSCROLLBAR .T.
+        DYNAMICBACKCOLOR Nil
+        DYNAMICFORECOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        WHEN Nil
+        INPUTITEMS Nil
+        DISPLAYITEMS Nil
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        IMAGE Nil
+        JUSTIFY Nil
+        NOLINES .F.
+        READONLYFIELDS Nil
+        HEADERIMAGES Nil
+    END BROWSE
+
+    DEFINE RADIOGROUP RadioGroup_1
+        ROW    320
+        COL    600
+        WIDTH  120
+        HEIGHT 50
+        OPTIONS { 'Option 1','Option 2'}
+        VALUE 1
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        SPACING 25
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        READONLY Nil
+        HORIZONTAL .F. 
+    END RADIOGROUP
+
+    DEFINE FRAME Frame_1
+        ROW    320
+        COL    790
+        WIDTH  140
+        HEIGHT 140
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Frame_1"
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE TAB Tab_1 AT 320 , 980 WIDTH 150 HEIGHT 120 VALUE 1 FONT "Arial" SIZE 9 TOOLTIP "" ON CHANGE Nil
+
+        PAGE "Page 1"
+
+        END PAGE 
+
+        PAGE "Page 2"
+
+        END PAGE 
+
+    END TAB 
+
+    DEFINE ANIMATEBOX Animate_1
+        ROW    470
+        COL    30
+        WIDTH  210
+        HEIGHT 60
+        FILE ""
+        HELPID Nil
+        TRANSPARENT .F.
+        AUTOPLAY .F.
+        CENTER .F.
+    END ANIMATEBOX
+
+    DEFINE HYPERLINK HyperLink_1
+        ROW    470
+        COL    220
+        WIDTH  230
+        HEIGHT 28
+        VALUE "http://sites.google.com/site/hmgweb"
+        ADDRESS "http://sites.google.com/site/hmgweb"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        AUTOSIZE .F.
+        HELPID Nil
+        VISIBLE .T.
+        HANDCURSOR .F.
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+    END HYPERLINK
+
+    DEFINE MONTHCALENDAR MonthCal_1
+        ROW    470
+        COL    410
+        WIDTH  514
+        HEIGHT 162
+        VALUE CTOD("  /  /  ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        NOTODAY .F.
+        NOTODAYCIRCLE .F.
+        WEEKNUMBERS .F.
+    END MONTHCALENDAR
+
+    DEFINE RICHEDITBOX RichEdit_1
+        ROW    470
+        COL    600
+        WIDTH  120
+        HEIGHT 120
+        VALUE ""
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        BACKCOLOR Nil
+    END RICHEDITBOX
+
+    DEFINE PROGRESSBAR ProgressBar_1
+        ROW    470
+        COL    790
+        WIDTH  150
+        HEIGHT 30
+        RANGEMIN 1
+        RANGEMAX 10
+        VALUE 0
+        TOOLTIP ""
+        HELPID Nil
+        VISIBLE .T.
+        SMOOTH .F.
+        VERTICAL .F. 
+        BACKCOLOR Nil
+        FORECOLOR Nil
+    END PROGRESSBAR
+
+    DEFINE PLAYER Player_1
+        ROW    470
+        COL    980
+        WIDTH  120
+        HEIGHT 120
+        FILE ""
+        HELPID Nil
+        NOAUTOSIZEWINDOW .F.
+        NOAUTOSIZEMOVIE .F.
+        NOERRORDLG .F.
+        NOMENU .F.
+        NOOPEN .F.
+        NOPLAYBAR .F.
+        SHOWALL .F.
+        SHOWMODE .F.
+        SHOWNAME .F.
+        SHOWPOSITION .F.
+    END PLAYER
+
+    DEFINE IPADDRESS IpAddress_1
+        ROW    620
+        COL    30
+        WIDTH  120
+        HEIGHT 24
+        VALUE { 0 , 0 , 0 , 0 }
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+    END IPADDRESS
+
+    DEFINE TIMER Timer_1 INTERVAL 0 ACTION Nil
+
+    DEFINE ACTIVEX Activex_1
+        ROW    623
+        COL    407.00
+        WIDTH  150
+        HEIGHT 150
+        PROGID ""
+    END ACTIVEX
+
+    LOAD WINDOW PanelWindow_1 AT 623 , 597.00 WIDTH 150 HEIGHT 150
+
+END WINDOW
+

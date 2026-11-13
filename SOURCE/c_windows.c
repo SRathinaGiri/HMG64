@@ -81,6 +81,7 @@
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "hbapi.h"
+#include "hmg_dpi.h"
 
 extern HB_CRITICAL_T _HMG_Mutex;   // global Mutex variable defined into c_Thread.c
 
@@ -514,12 +515,15 @@ HB_FUNC ( GETFOCUS )
 
 HB_FUNC ( MOVEWINDOW )
 {
+   HWND h = (HWND) HMG_parnl(1);
+   int  x = hb_parni(2), y = hb_parni(3), w = hb_parni(4), ht = hb_parni(5);
+   HMG_DpiScaleRect ( h, &x, &y, &w, &ht, TRUE, TRUE );   // Phase 4 DPI: design units -> pixels (c_dpi.c)
    hb_retl((BOOL) MoveWindow(
-                       (HWND) HMG_parnl(1),
-                       hb_parni(2),
-                       hb_parni(3),
-                       hb_parni(4),
-                       hb_parni(5),
+                       h,
+                       x,
+                       y,
+                       w,
+                       ht,
                        (HB_ISNIL(6) ? TRUE : hb_parl(6))
                       ));
 }
@@ -528,6 +532,8 @@ HB_FUNC ( GETWINDOWRECT )
 {
   RECT rect;
   hb_retl( GetWindowRect( (HWND) HMG_parnl (1), &rect));
+  rect.right  = rect.left + HMG_DpiUnscaleSize ( (HWND) HMG_parnl (1), rect.right - rect.left );   // Phase 4 DPI
+  rect.bottom = rect.top  + HMG_DpiUnscaleSize ( (HWND) HMG_parnl (1), rect.bottom - rect.top );
   hb_storvnl(rect.left,2,1);
   hb_storvnl(rect.top,2,2);
   hb_storvnl(rect.right,2,3);
@@ -559,6 +565,8 @@ HB_FUNC ( REGISTERWINDOW )
 	if ( hb_parvni(3, 1) == -1 )
 	{
 		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+		if ( ( hbrush = HMG_DarkFormBrush () ) != NULL )   // Phase 4 dark mode (c_dark.c)
+			WndClass.hbrBackground = hbrush ;
 	}
 	else
 	{
@@ -589,12 +597,12 @@ HB_FUNC (GETDESKTOPWIDTH)
 
 HB_FUNC (GETVSCROLLBARWIDTH) 
 {
-   hb_retni (GetSystemMetrics (SM_CXVSCROLL));
+   hb_retni (HMG_DpiSystemMetric (SM_CXVSCROLL));
 }
 
 HB_FUNC (GETHSCROLLBARHEIGHT) 
 {
-   hb_retni (GetSystemMetrics (SM_CYHSCROLL));
+   hb_retni (HMG_DpiSystemMetric (SM_CYHSCROLL));
 }
 
 HB_FUNC (GETDESKTOPHEIGHT)
@@ -626,6 +634,7 @@ HB_FUNC (GETWINDOWWIDTH)
 	int w ;
 	GetWindowRect( (HWND) HMG_parnl (1), &rect) ;
 	w = rect.right - rect.left ;
+	w = HMG_DpiUnscaleSize ( (HWND) HMG_parnl (1), w ) ;   // Phase 4 DPI
 	hb_retni(w);
 }
 
@@ -635,6 +644,7 @@ HB_FUNC (GETWINDOWHEIGHT)
 	int h ;
 	GetWindowRect( (HWND) HMG_parnl (1), &rect) ;
 	h = rect.bottom - rect.top ;
+	h = HMG_DpiUnscaleSize ( (HWND) HMG_parnl (1), h ) ;   // Phase 4 DPI
 	hb_retni(h);
 }
 
@@ -677,7 +687,7 @@ HB_FUNC ( GETCLIENTAREAWIDTH )
    HWND hWnd = (HWND) HMG_parnl (1);
    RECT Rect;
    GetClientRect ( hWnd, &Rect );
-   hb_retnl ( Rect.right );
+   hb_retnl ( HMG_DpiUnscaleClient ( hWnd, Rect.right ) );
 }
 
 
@@ -687,7 +697,7 @@ HB_FUNC ( GETCLIENTAREAHEIGHT )
    HWND hWnd = (HWND) HMG_parnl (1);
    RECT Rect;
    GetClientRect ( hWnd, &Rect );
-   hb_retnl ( Rect.bottom );
+   hb_retnl ( HMG_DpiUnscaleClient ( hWnd, Rect.bottom ) );
 }
 
 
@@ -1251,6 +1261,8 @@ HB_FUNC ( REGISTERSPLITCHILDWINDOW )
 	if ( hb_parvni(3, 1) == -1 )
 	{
 		WndClass.hbrBackground = (HBRUSH)( COLOR_BTNFACE + 1 );
+		if ( ( hbrush = HMG_DarkFormBrush () ) != NULL )   // Phase 4 dark mode (c_dark.c)
+			WndClass.hbrBackground = hbrush ;
 	}
 	else
 	{
@@ -1356,6 +1368,13 @@ HB_FUNC( _GETTABBRUSH )
 //   HMG_retnl ((LONG_PTR) hBrush);
 //   return;
 // ENDIF
+
+	// Phase 4 dark mode: tab pages are drawn in the form colour (c_dark.c, modern tab)
+	if ( HMG_DarkIsOn () )
+	{
+		HMG_retnl ((LONG_PTR) CreateSolidBrush ( HMG_SysColor ( COLOR_3DFACE ) ) );
+		return;
+	}
 
 	GetWindowRect ( (HWND) HMG_parnl (1), &rc ) ;
 	hDC = GetDC( (HWND) HMG_parnl (1) ) ;
@@ -1640,6 +1659,7 @@ HB_FUNC (SETWINDOWPOS)
    INT  cx               = (INT)  hb_parnl  (5);
    INT  cy               = (INT)  hb_parnl  (6);
    UINT uFlags           = (UINT) hb_parnl  (7);
+   HMG_DpiScaleRect ( hWnd, &x, &y, &cx, &cy, ! ( uFlags & SWP_NOMOVE ), ! ( uFlags & SWP_NOSIZE ) );   // Phase 4 DPI
    hb_retl((BOOL) SetWindowPos (hWnd, hWndInsertAfter, x, y, cx, cy, uFlags));
 }
 

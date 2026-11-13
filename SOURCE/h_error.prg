@@ -160,7 +160,7 @@ RETURN cVersion
 FUNCTION HMG_GetCompileVersion64 ( HMG_cPath )
 LOCAL cVersion := "", aVersion := HMG_GetCompileVersionRaw  ( HMG_cPath )
    IF .NOT. EMPTY (aVersion [3] [2])   // _HMG_VERSION_WIN64_STABLE_
-      cVersion := HMG_MakeVersion ( aVersion [1] [2], aVersion [2] [2], aVersion [3] [2], aVersion [4] [2], .F. )
+      cVersion := HMG_MakeVersion ( aVersion [1] [2], aVersion [2] [2], aVersion [3] [2], aVersion [4] [2], .T. )   // 64-bit (was .F.: "(32 bits)")
    ENDIF
    IF EMPTY (cVersion)
       cVersion := AllTrim (HB_MEMOREAD (HMG_cPath + "\Version64.txt"))

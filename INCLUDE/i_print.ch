@@ -305,8 +305,7 @@ _HMG_SYSDATA \[ 379 \] := strzero( Seconds() * 100 , 8 )
 	[ <lPaperWidth		: PAPERWIDTH>		<nPaperWidth> ] ;
    [ <lLog            : LOG> ] ;
 => ;
-   _HMG_SYSDATA \[ 513 \] := .t. ;;
-	_HMG_HPDF_INIT ( <cPDFFile>, if ( <.lOrientation.>	, <nOrientation>	, 1 ) , if ( <.lPaperSize.>	, <nPaperSize>		, 1 ) , if ( <.lPaperLength.>	, <nPaperLength>	, -999 ) , if ( <.lPaperWidth.>	, <nPaperWidth>		, -999 ), <.lLog.> ) 
+	_HMG_PDF_SELECT ( <cPDFFile>, if ( <.lOrientation.>	, <nOrientation>	, 1 ) , if ( <.lPaperSize.>	, <nPaperSize>		, 1 ) , if ( <.lPaperLength.>	, <nPaperLength>	, -999 ) , if ( <.lPaperWidth.>	, <nPaperWidth>		, -999 ), <.lLog.> ) 
 
 #xcommand SELECT PRINTER PDF <cPDFFile> TO <lSuccess> ;
 	[ <lOrientation 	: ORIENTATION>		<nOrientation> ] ;
@@ -315,8 +314,7 @@ _HMG_SYSDATA \[ 379 \] := strzero( Seconds() * 100 , 8 )
 	[ <lPaperWidth		: PAPERWIDTH>		<nPaperWidth> ] ;
    [ <lLog            : LOG> ] ;
 => ;
-   _HMG_SYSDATA \[ 513 \] := .t. ;;
-	<lSuccess> := _HMG_HPDF_INIT ( <cPDFFile>, if ( <.lOrientation.>	, <nOrientation>	, 1 ) , if ( <.lPaperSize.>	, <nPaperSize>		, 1 ) , if ( <.lPaperLength.>	, <nPaperLength>	, -999 ) , if ( <.lPaperWidth.>	, <nPaperWidth>		, -999 ), <.lLog.> ) 
+	<lSuccess> := _HMG_PDF_SELECT ( <cPDFFile>, if ( <.lOrientation.>	, <nOrientation>	, 1 ) , if ( <.lPaperSize.>	, <nPaperSize>		, 1 ) , if ( <.lPaperLength.>	, <nPaperLength>	, -999 ) , if ( <.lPaperWidth.>	, <nPaperWidth>		, -999 ), <.lLog.> ) 
 
 
 

@@ -86,6 +86,15 @@
    #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Name,Length,Volume\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom,Seek\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:URL,Ready,Error,CanGoBack,CanGoForward,ZoomFactor,UserDataFolder\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:URL,HTML,ZoomFactor\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Reload,GoBack,GoForward\> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Navigate,SetHtml,ExecuteScript,Unbind,PostMessage,AllowOrigin\> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:ExecuteScript,Bind\> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:ChartType,ChartTitle,Categories,Series,ChartOption,Loaded\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:ChartType,ChartTitle,Categories,Series,ChartOption\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:SaveImage\> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:SaveImage\> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
    #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled,Value> => GetProperty ( <"w"> , \<"x"\> , \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled,Value> := \<n\> => SetProperty ( <"w"> , \<"x"\> , \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => GetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> ) ;;
@@ -745,6 +754,19 @@ SetProperty ( <"Arg1"> , <"Arg2"> , <Arg3> )
 #xtranslate SET TOOLTIPCUSTOMDRAW ON         =>   SetToolTipCustomDraw ( .T. )
 #xtranslate SET TOOLTIPCUSTOMDRAW OFF        =>   SetToolTipCustomDraw ( .F. )
 #xtranslate SET TOOLTIPCUSTOMDRAW TO <lOn>   =>   SetToolTipCustomDraw ( <lOn> )
+
+// Phase 4: per-monitor DPI (h_dpi.prg); before the first DEFINE WINDOW
+#xtranslate SET DPIAWARE PERMONITOR        =>   HMG_SetPerMonitorDpi ( .T. )
+#xtranslate SET DPIAWARE SYSTEM            =>   HMG_SetPerMonitorDpi ( .F. )
+
+// Phase 4: dark mode (h_dark.prg); before the first DEFINE WINDOW
+#xtranslate SET DARKMODE ON                =>   HMG_SetDarkMode ( "ON" )
+#xtranslate SET DARKMODE OFF               =>   HMG_SetDarkMode ( "OFF" )
+#xtranslate SET DARKMODE AUTO              =>   HMG_SetDarkMode ( "AUTO" )
+#xtranslate SET FILEDIALOG MODERN            =>   HMG_SetFileDialog ( "MODERN" )
+#xtranslate SET FILEDIALOG CLASSIC           =>   HMG_SetFileDialog ( "CLASSIC" )
+#xtranslate SET PDFENGINE WINDOWS             =>   HMG_SetPdfEngine ( "WINDOWS" )
+#xtranslate SET PDFENGINE HARU                =>   HMG_SetPdfEngine ( "HARU" )
 #xtranslate ToolTipCustomDrawIsActive ()     =>   _HMG_SYSDATA \[ 509 \]
 
 #define TOOLTIPICON_NONE            0

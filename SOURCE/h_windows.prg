@@ -5187,6 +5187,8 @@ local hWnd, hParent, nIndex, actpos:={0,0,0,0}
    IF nIndex > 0 .AND. GetFormTypeByIndex ( nIndex ) == "P"   // Panel Window,   ADD (May 2015, Fixed January 2016)
       hParent := _HMG_SYSDATA [ HMG_FRM_PARENTHANDLE ] [ nIndex ]
       ScreenToClient (hParent, @col, @row)
+      col := HMG_DPI_UNSCALE ( hParent, col )   // Phase 4 DPI: client pixels -> design units (no-op when off)
+      row := HMG_DPI_UNSCALE ( hParent, row )
    ENDIF
 
    MoveWindow (hWnd, col, row, width, height, .T.)
@@ -5215,6 +5217,8 @@ local row, col, width, height
    IF GetFormTypeByIndex ( nIndex ) == "P"   // Panel Window
       hParent := _HMG_SYSDATA [ HMG_FRM_PARENTHANDLE ] [ nIndex ]
       ScreenToClient (hParent, @col, @row)
+      col := HMG_DPI_UNSCALE ( hParent, col )   // Phase 4 DPI: client pixels -> design units (no-op when off)
+      row := HMG_DPI_UNSCALE ( hParent, row )
    ENDIF
 
 Return {row, col, width, height}

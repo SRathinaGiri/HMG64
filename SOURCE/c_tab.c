@@ -76,6 +76,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hmg_dpi.h"
 //#include "hbvm.h"
 //#include "hbstack.h"
 //#include "hbapiitm.h"
@@ -470,20 +471,40 @@ static COLORREF HMG_ModernTabColor ( int nParam, int nSysColor )
 	if( HB_ISNUM( nParam ) && HB_ISNUM( nParam + 1 ) && HB_ISNUM( nParam + 2 ) )
 		return RGB( hb_parni( nParam ), hb_parni( nParam + 1 ), hb_parni( nParam + 2 ) );
 
-	return GetSysColor( nSysColor );
+	return HMG_SysColor( nSysColor );   /* Phase 4: dark palette in dark mode */
+}
+
+/* Phase 4 (c_dark.c): the same as TabSetModern, callable from C */
+static BOOL HMG_TabModernApply ( HWND hWnd, COLORREF cStrip, COLORREF cPill, COLORREF cText, COLORREF cTextSel, int nMinWidth );
+
+BOOL HMG_TabApplyModern ( HWND hTab, COLORREF cStrip, COLORREF cPill, COLORREF cText, COLORREF cTextSel )
+{
+	return HMG_IsTabControl( hTab ) && HMG_TabModernApply( hTab, cStrip, cPill, cText, cTextSel, -1 );
 }
 
 HB_FUNC( TABSETMODERN )
 {
-	HWND             hWnd = (HWND) HMG_parnl( 1 );
-	HMG_MODERN_TAB * p;
-	LONG_PTR         lStyle;
+	HWND hWnd = (HWND) HMG_parnl( 1 );
 
 	if( ! HMG_IsTabControl( hWnd ) )
 	{
 		hb_retl( FALSE );
 		return;
 	}
+
+	/* colours: each RGB triple is optional; missing -> system colour */
+	hb_retl( HMG_TabModernApply( hWnd,
+	                             HMG_ModernTabColor(  2, COLOR_HIGHLIGHT ),
+	                             HMG_ModernTabColor(  5, COLOR_WINDOW ),
+	                             HMG_ModernTabColor(  8, COLOR_HIGHLIGHTTEXT ),
+	                             HMG_ModernTabColor( 11, COLOR_WINDOWTEXT ),
+	                             HB_ISNUM( 14 ) ? hb_parni( 14 ) : -1 ) );
+}
+
+static BOOL HMG_TabModernApply ( HWND hWnd, COLORREF cStrip, COLORREF cPill, COLORREF cText, COLORREF cTextSel, int nMinWidth )
+{
+	HMG_MODERN_TAB * p;
+	LONG_PTR         lStyle;
 
 	p = HMG_ModernTabGet( hWnd );
 	if( p == NULL )
@@ -493,23 +514,21 @@ HB_FUNC( TABSETMODERN )
 		{
 			if( p != NULL )
 				LocalFree( (HLOCAL) p );
-			hb_retl( FALSE );
-			return;
+			return FALSE;
 		}
 	}
 
-	/* colours: each RGB triple is optional; missing -> system colour */
-	p->cStrip   = HMG_ModernTabColor(  2, COLOR_HIGHLIGHT );
-	p->cPill    = HMG_ModernTabColor(  5, COLOR_WINDOW );
-	p->cText    = HMG_ModernTabColor(  8, COLOR_HIGHLIGHTTEXT );
-	p->cTextSel = HMG_ModernTabColor( 11, COLOR_WINDOWTEXT );
+	p->cStrip   = cStrip;
+	p->cPill    = cPill;
+	p->cText    = cText;
+	p->cTextSel = cTextSel;
 
 	HMG_ModernTabFreeBrushes( p );
 	p->hStrip = CreateSolidBrush( p->cStrip );
 	p->hPill  = CreateSolidBrush( p->cPill );
 
-	if( HB_ISNUM( 14 ) )
-		SendMessage( hWnd, TCM_SETMINTABWIDTH, 0, (LPARAM) hb_parni( 14 ) );
+	if( nMinWidth >= 0 )
+		SendMessage( hWnd, TCM_SETMINTABWIDTH, 0, (LPARAM) nMinWidth );
 
 	lStyle = GetWindowLongPtr( hWnd, GWL_STYLE );
 	if( ! ( lStyle & TCS_OWNERDRAWFIXED ) )
@@ -520,7 +539,7 @@ HB_FUNC( TABSETMODERN )
 
 	HMG_RepaintModernTab( hWnd );
 
-	hb_retl( TRUE );
+	return TRUE;
 }
 
 HB_FUNC( TABCLEARMODERN )

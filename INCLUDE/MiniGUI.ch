@@ -56,8 +56,8 @@
 
 #ifndef _HMG_VERSION_NUMBER_
    #define _HMG_VERSION_NUMBER_         "HMG 5.0"   
-   #define _HMG_VERSION_WIN32_STABLE_   "Test"     // "Stable", "Test" or ""
-   #define _HMG_VERSION_WIN64_STABLE_   "Test"     // "Stable", "Test" or ""
+   #define _HMG_VERSION_WIN32_STABLE_   "Stable"     // "Stable", "Test" or ""
+   #define _HMG_VERSION_WIN64_STABLE_   "Stable"     // "Stable", "Test" or ""
    #define _HMG_VERSION_PATCH_          ""         // if "" --> not exist patch in this version
 #endif
 
@@ -104,6 +104,8 @@ REQUEST ERRORSYS
 #include "i_image.ch"
 #include "i_radiogroup.ch"
 #include "i_activex.ch"
+#include "i_webview.ch"
+#include "i_chart.ch"
 #include "i_label.ch"
 #include "i_combobox.ch"
 #include "i_datepicker.ch"

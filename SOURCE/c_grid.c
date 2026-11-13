@@ -75,6 +75,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hmg_dpi.h"
 //#include "hbvm.h"
 //#include "hbstack.h"
 //#include "hbapiitm.h"
@@ -561,7 +562,7 @@ HB_FUNC ( LISTVIEW_ADDCOLUMN )
    LV_COLUMN COL;
 
    COL.mask= LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM ;
-   COL.cx= hb_parni(3);
+   COL.cx= HMG_DpiScaleSize ( (HWND) HMG_parnl (1), hb_parni(3) );   // Phase 4 DPI: design units -> pixels
    COL.pszText = (TCHAR*) HMG_parc(4);
    COL.iSubItem=hb_parni(2)-1;
    COL.fmt = hb_parni(5) ;
@@ -641,12 +642,12 @@ HB_FUNC ( LISTVIEW_GETSELECTEDITEM )
 
 HB_FUNC ( LISTVIEW_SETCOLUMNWIDTH )
 {
-	ListView_SetColumnWidth ( (HWND) HMG_parnl (1), hb_parni(2) , hb_parni(3) ) ;
+	ListView_SetColumnWidth ( (HWND) HMG_parnl (1), hb_parni(2) , HMG_DpiScaleSize ( (HWND) HMG_parnl (1), hb_parni(3) ) ) ;   // Phase 4 DPI
 }
 
 HB_FUNC ( LISTVIEW_GETCOLUMNWIDTH )
 {
-	hb_retni ( ListView_GetColumnWidth ( (HWND) HMG_parnl (1), hb_parni(2) ) ) ;
+	hb_retni ( HMG_DpiUnscaleSize ( (HWND) HMG_parnl (1), ListView_GetColumnWidth ( (HWND) HMG_parnl (1), hb_parni(2) ) ) ) ;   // Phase 4 DPI
 }
 
 
@@ -675,7 +676,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    for( s = 0; s <= iLen; s++ )
    {
       COL.fmt = hb_arrayGetNI( jArray, s + 1 );
-      COL.cx = hb_arrayGetNI( wArray, s + 1 );
+      COL.cx = HMG_DpiScaleSize( hc, hb_arrayGetNI( wArray, s + 1 ) );   // Phase 4 DPI
       COL.pszText = (TCHAR *) HMG_arrayGetCPtr( hArray, s + 1 );
       COL.iSubItem = iColumn;
       ListView_InsertColumn( hc, iColumn, &COL );
