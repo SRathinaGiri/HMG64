@@ -93,6 +93,8 @@ STATIC FUNCTION IDE_MemberTable()
          { "ANIMATEBOX",    "", "Open Play Seek Stop Close", .T. }, ;
          { "PLAYER",        "Volume Position Repeat Speed Zoom Length", "Play PlayReverse Stop Pause Resume Close Eject Open OpenDialog", .T. }, ;
          { "ACTIVEX",       "Object", "", .T. }, ;
+         { "CHART",         "ChartType ChartTitle Categories Series ChartOption Loaded", ;
+                            "Refresh SaveImage ExecuteScript", .T. }, ;
          { "WEBVIEW",       "Url Html CanGoBack CanGoForward Ready Error ZoomFactor UserDataFolder", ;
                             "Navigate SetHtml ExecuteScript PostMessage GoBack GoForward Reload Stop", .T. }, ;
          { "TIMER",         "Value Enabled Name", "Release", .F. }, ;

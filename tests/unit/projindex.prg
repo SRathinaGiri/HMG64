@@ -100,6 +100,7 @@ PROCEDURE Main()
       '      END LABEL' + CRLF + ;
       '   END WINDOW' + CRLF + ;
       '   @ 10, 10 GRID Grd_Late OF Win_Pass WIDTH 100 HEIGHT 100' + CRLF + ;
+      '   @ 10, 120 CHART Ch_Late OF Win_Pass WIDTH 100 HEIGHT 100 TYPE PIE' + CRLF + ;
       '   @ Row, Col HPDFPRINT "not a control" FONT "Arial"' + CRLF + ;
       'RETURN' + CRLF )
 
@@ -141,6 +142,7 @@ PROCEDURE Main()
    hF := h[ "forms" ][ "Win_Pass" ]
    Check( "alternative layout",   Len( hF[ "also" ] ) == 1 .AND. Ctl( hF, "Pwd" ) == "TEXTBOX" )
    Check( "OF another form",      Ctl( hF, "Grd_Late" ) == "GRID" .AND. hF[ "controls" ][ "Grd_Late" ][ "uses" ] == 1 )
+   Check( "CHART control",        Ctl( hF, "Ch_Late" ) == "CHART" )
    Check( "dynamic window skipped", ! hb_HHasKey( h[ "forms" ], "InDynamic" ) .AND. Ctl( hF, "InDynamic" ) == "" )
 
    // problems: exactly these
@@ -154,7 +156,7 @@ PROCEDURE Main()
          OutStd( "   " + hb_FNameNameExt( aP[ 1 ] ) + ":" + hb_ntos( aP[ 2 ] ) + " " + aP[ 3 ] + " " + aP[ 4 ] + hb_eol() )
       NEXT
    ENDIF
-   Check( "report",               "Files 4, forms 3, controls 13" $ cP .AND. "Problems" $ cP )   // controls: 9 + 3 + 1
+   Check( "report",               "Files 4, forms 3, controls 14" $ cP .AND. "Problems" $ cP )   // controls: 9 + 4 + 1
 
    AEval( Directory( cDir + "*.*" ), {| a | FErase( cDir + a[ 1 ] ) } )
    DirRemove( cDir )

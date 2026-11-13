@@ -1,4 +1,7 @@
--HMG 5.0 2026/11/13
+-HMG 5.0 2026/11/14
+   - IDE: CHART controls are in the project index, so View > Forms and Controls and the code
+     editor's completion list them (Form. -> Ch_Sales, Form.Ch_Sales. -> ChartType, Series, SaveImage...);
+     tools\hmgindex too
    - All the samples of HMG 3.5 are back in SAMPLES (Advanced, Applications, BosTaurus, Controls, Events,
      Functions, HFCL, HPDF, Miscellaneous, MultiThread, PrintSystem, UNICODE and the rest of Basics; HMG 3.6
      shipped only Basics); their build.bat call build64.bat. Not included: HFCL\QHTM (qhtm.dll, removed)
