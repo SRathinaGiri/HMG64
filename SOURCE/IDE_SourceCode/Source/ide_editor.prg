@@ -838,13 +838,14 @@ PROCEDURE IDE_EdSelfTest( cOut )
       cText := "DEFINE WINDOW Win_T AT 0, 0 WIDTH 300 HEIGHT 200" + CRLF + ;
                "   @ 10, 10 BUTTON Btn_Ok CAPTION 'OK'" + CRLF + ;
                "   @ 40, 10 GRID Grd_List WIDTH 200 HEIGHT 100" + CRLF + ;
+               "   @ 10, 220 CHART Ch_Pie WIDTH 100 HEIGHT 100 TYPE PIE" + CRLF + ;
                "END WINDOW" + CRLF
       hView := TestDoc( cDir + "members.prg", cText )
       n := Len( StrTran( cText, CRLF, Chr( 13 ) ) )
       IDEED_SETSEL( hView, n, n )
       IDEED_TYPE( hView, "Win_T." )
       a := IDEED_COMPLETE( hView )
-      T( aRes, "complete form", Len( a ) > 2 .AND. a[ 1 ] == "Btn_Ok" .AND. a[ 2 ] == "Grd_List" .AND. AScan( a, "Grd_List" ) > 0 .AND. AScan( a, "Title" ) > 0 .AND. AScan( a, "Activate" ) > 0, hb_ValToExp( a ) )
+      T( aRes, "complete form", Len( a ) > 2 .AND. a[ 1 ] == "Btn_Ok" .AND. a[ 2 ] == "Ch_Pie" .AND. a[ 3 ] == "Grd_List" .AND. AScan( a, "Grd_List" ) > 0 .AND. AScan( a, "Title" ) > 0 .AND. AScan( a, "Activate" ) > 0, hb_ValToExp( a ) )
       IDEED_TYPE( hView, "Btn" )
       a := IDEED_COMPLETE( hView )
       T( aRes, "complete filter", Len( a ) == 1 .AND. a[ 1 ] == "Btn_Ok", hb_ValToExp( a ) )
@@ -858,6 +859,10 @@ PROCEDURE IDE_EdSelfTest( cOut )
       a := IDEED_COMPLETE( hView )
       T( aRes, "complete grid", AScan( a, "AddItem" ) > 0 .AND. AScan( a, "ItemCount" ) > 0 .AND. AScan( a, "Caption" ) == 0, hb_ValToExp( a ) )
       IDEED_COMPLETE( hView, 3 )
+      IDEED_TYPE( hView, CRLF + "Win_T.Ch_Pie." )
+      a := IDEED_COMPLETE( hView )
+      T( aRes, "complete chart", AScan( a, "ChartType" ) > 0 .AND. AScan( a, "SaveImage" ) > 0 .AND. AScan( a, "AddItem" ) == 0, hb_ValToExp( a ) )
+      IDEED_COMPLETE( hView, 3 )
       IDEED_TYPE( hView, CRLF + "x := " + Chr( 34 ) + "Win_T." )
       T( aRes, "no list in a string", Empty( IDEED_COMPLETE( hView ) ), hb_ValToExp( IDEED_COMPLETE( hView ) ) )
       IDEED_TYPE( hView, Chr( 34 ) + CRLF + "Win_X." )
@@ -867,7 +872,7 @@ PROCEDURE IDE_EdSelfTest( cOut )
       // every property and method offered is one HMG5's GetProperty / SetProperty / DoMethod know
       c := hb_FNameDir( hb_ProgName() ) + ".." + hb_ps() + "SOURCE" + hb_ps()
       IF hb_FileExists( c + "h_controlmisc.prg" )
-         cR := Upper( hb_MemoRead( c + "h_controlmisc.prg" ) + hb_MemoRead( c + "h_webview.prg" ) )
+         cR := Upper( hb_MemoRead( c + "h_controlmisc.prg" ) + hb_MemoRead( c + "h_webview.prg" ) + hb_MemoRead( c + "h_chart.prg" ) )
          cR := StrTran( cR, "'", Chr( 34 ) )
          a := {}
          AEval( IDE_MemberAllNames(), {| x | iif( Chr( 34 ) + Upper( x[ 1 ] ) + Chr( 34 ) $ cR, NIL, AAdd( a, x[ 1 ] ) ) } )
