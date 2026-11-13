@@ -1,3 +1,10 @@
+-HMG 5.0.1 (not released)
+   - HFCL GridPDF.prg / GridPrint.prg: pdfeditcoldetails() and editcoldetails() set pdfgrid.size /
+     printgrid.size, controls those windows do not have (runtime error); they now set the size cell
+     of the column grid. Unreachable from the windows themselves (their "edit details" button is
+     commented out), found by tools\hmgindex; tests\unit\gridtools opens both windows and runs them
+   - tests\run.bat: a unit test passes only with exit code 0 and its "PASS=" line; HMG's fatal
+     errors (MsgHMGError, "Program terminated") exit with code 0 and were counted as passes
 -HMG 5.0 2026/11/13
    - HMG5 logos (logo\: HMG5 and HMG5 IDE, SVG/PNG/ICO); new IDE icon and splash; Setup icon
    - New name for the revamped HMG 3 line (HMG4/Qt is not continued)

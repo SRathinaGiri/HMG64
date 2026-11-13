@@ -54,7 +54,8 @@ popd
 call :RESULT leak !R!
 
 rem --- unit: every tests\unit\*.hbp is built as a console app and run ---------
-rem     exit code 0 = pass; the program prints its own per-check details
+rem     pass = exit code 0 and its "PASS=" summary line printed: HMG's fatal errors
+rem     (MsgHMGError: "... Program terminated") end the program with exit code 0
 for %%P in ("%TESTS%unit\*.hbp") do (
    pushd "%TESTS%unit"
    if exist error.log del error.log
@@ -63,7 +64,9 @@ for %%P in ("%TESTS%unit\*.hbp") do (
    set "R=1"
    if exist "%%~nP.exe" (
       ".\%%~nP.exe" >"%OUT%\unit-%%~nP.log" 2>&1
-      if !ERRORLEVEL! EQU 0 set "R=0"
+      if !ERRORLEVEL! EQU 0 (
+         findstr /C:"PASS=" "%OUT%\unit-%%~nP.log" >nul && set "R=0"
+      )
       type "%OUT%\unit-%%~nP.log"
    ) else (
       if exist error.log copy /y error.log "%OUT%\unit-%%~nP-build.log" >nul
