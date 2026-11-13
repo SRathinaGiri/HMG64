@@ -1,4 +1,4 @@
--HMG 5.0.1 (not released)
+-HMG 5.0 2026/11/13
    - New sample SAMPLES\Controls\ChartGallery: every Apache ECharts chart type, one tab each (line, bar, pie,
      scatter, radar, candlestick, boxplot, heatmap and calendar, tree, treemap, sunburst, graph, sankey,
      chord, funnel, gauge, pictorialBar, themeRiver, parallel, map with lines, custom series)
@@ -10,7 +10,6 @@
      commented out), found by tools\hmgindex; tests\unit\gridtools opens both windows and runs them
    - tests\run.bat: a unit test passes only with exit code 0 and its "PASS=" line; HMG's fatal
      errors (MsgHMGError, "Program terminated") exit with code 0 and were counted as passes
--HMG 5.0 2026/11/13
    - HMG5 logos (logo\: HMG5 and HMG5 IDE, SVG/PNG/ICO); new IDE icon and splash; Setup icon
    - New name for the revamped HMG 3 line (HMG4/Qt is not continued)
    - One-folder setup: trimmed MinGW-w64 GCC 16.2.0 (UCRT) + Harbour 3.2.1dev (r2610242111) bundled

@@ -54,6 +54,8 @@ What changed compared with HMG 3.6
    and properties, font and indent settings), View > Forms and Controls (every form
    and control of a project, misspelt names found before the build), a project
    builder mode for code-only programs (File > Code Only New Project), English texts.
+ - New samples in SAMPLES\Controls: ChartGallery (every Apache ECharts chart type, one
+   tab each) and WebBrowser (a small browser with the HMG Forum among its favourites).
  - Full list: changelog.txt.
 
 
