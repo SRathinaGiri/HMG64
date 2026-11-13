@@ -226,6 +226,7 @@ MEMVAR _HMG_This_TreeItem_Value
 #define MCN_LAST            -759  // ok
 #define MCN_SELCHANGE       (MCN_FIRST + 1) // ok
 #define MCN_SELECT          (MCN_FIRST + 4) // ok
+#define MCN_GETDAYSTATE     (MCN_FIRST + 3) // -747: ON GETBOLDDAYS (HMG5, from HMG 3.5)
 // #define MCN_SELCHANGE  (-749)  // ok (MinGW)
 // #define MCN_SELECT     (-746)  // ok (MinGW)
 
@@ -2731,6 +2732,10 @@ EndIf
 			* MonthCalendar Selection Change ......................
 
 			if _HMG_SYSDATA [HMG_CTL_TYPE] [i] = "MONTHCAL"
+				If GetNotifyCode ( lParam ) = MCN_GETDAYSTATE
+					SetMonthCalendarBoldDays ( i, lParam )
+					Return 0
+				EndIf
 				If GetNotifyCode ( lParam ) = MCN_SELECT
 					_DoControlEventProcedure ( _HMG_SYSDATA [ HMG_CTL_CHANGE ] [i] , i )
 					Return 0

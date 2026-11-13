@@ -309,6 +309,25 @@ Function Main
 
 			END PAGE
 
+			// HMG5: a WEBVIEW (Microsoft Edge WebView2) - HTML whose buttons call Harbour
+			// (more in SAMPLES\Controls\WebView and SAMPLES\Controls\WebBrowser)
+			DEFINE PAGE '&WebView'
+
+				@ 30, 10 WEBVIEW Web_Demo WIDTH 410 HEIGHT 140 HTML DemoHtml() PRIVATE
+
+			END PAGE
+
+			// HMG5: a CHART (Apache ECharts) - click it to change its type
+			// (more in SAMPLES\Controls\Chart and SAMPLES\Controls\ChartGallery)
+			DEFINE PAGE 'C&hart'
+
+				@ 30, 10 CHART Chart_Demo WIDTH 410 HEIGHT 140 TYPE COLUMN ;
+					CATEGORIES { 'Q1', 'Q2', 'Q3', 'Q4' } ;
+					SERIES { { '2025', { 120, 132, 101, 134 } }, { '2026', { 220, 182, 191, 234 } } } ;
+					ON CLICK NextChartType()
+
+			END PAGE
+
 		END TAB
 
 		DEFINE DATEPICKER Date_1
@@ -535,11 +554,39 @@ Function Main
 		
 	END WINDOW
 
+	// what the WebView page may call (nothing else is reachable from JavaScript)
+	Form_1.Web_Demo.Bind( 'hello', { | cName | MsgInfo( 'Hello ' + cName + ', from Harbour!', 'WebView' ) } )
+	Form_1.Web_Demo.Bind( 'time', { || Time() } )
+
 	CENTER WINDOW Form_1
 
 	ACTIVATE WINDOW Form_1
 
 Return Nil
+
+*-----------------------------------------------------------------------------*
+Static Function DemoHtml()
+*-----------------------------------------------------------------------------*
+Return '<!doctype html><html><head><meta charset="utf-8"><style>' + ;
+	'body{font:13px "Segoe UI",sans-serif;margin:10px;color:#0e1a3a}' + ;
+	'h3{margin:0 0 8px;background:linear-gradient(90deg,#14d8a5,#1e9bff,#5a4dff);-webkit-background-clip:text;color:transparent}' + ;
+	'button{margin-right:6px;padding:4px 10px}</style></head><body>' + ;
+	'<h3>HTML inside an HMG window</h3>' + ;
+	'<input id="n" value="HMG" size="10"> <button id="h">Say hello</button> <button id="t">Harbour time</button>' + ;
+	'<p id="o"></p><script>' + ;
+	'document.getElementById("h").onclick=()=>hmg.call("hello",document.getElementById("n").value);' + ;
+	'document.getElementById("t").onclick=async()=>{document.getElementById("o").textContent="Time() in Harbour: "+await hmg.call("time")};' + ;
+	'</script></body></html>'
+
+*-----------------------------------------------------------------------------*
+Procedure NextChartType()
+*-----------------------------------------------------------------------------*
+Local aTypes := { 'column', 'bar', 'line', 'area', 'points' }
+Local n := AScan( aTypes, Form_1.Chart_Demo.ChartType )
+
+	Form_1.Chart_Demo.ChartType := aTypes[ iif( n >= Len( aTypes ), 1, n + 1 ) ]
+
+Return
 
 *-----------------------------------------------------------------------------*
 Procedure SetPict()

@@ -128,6 +128,91 @@ HB_UTF8STUFF()          <=>   STUFF()
    HB_FUNC (HMG_ISALPHANUMERIC)
 */
 
+   /* HMG5 (from HMG 3.5): characters above U+FFFF and CESU-8
+      HMG_CHR( nCode [, lCesu8 ] ) -> the character (UTF-8; with lCesu8 a code above U+FFFF is
+                                      written as a surrogate pair, as CESU-8)
+      HMG_ASC( cStr )              -> the code of the first character (surrogate pairs joined)
+      HMG_CESU8( cStr )            -> cStr with every character above U+FFFF as a surrogate pair:
+                                      what Windows controls (UTF-16) show correctly
+      HMG_UNCESU8( cStr )          -> back to plain UTF-8 */
+   FUNCTION HMG_CHR( nCode, lCesu8 )
+      IF ! HB_ISNUMERIC( nCode ) .OR. nCode < 0
+         RETURN ""
+      ENDIF
+      IF nCode < 0x10000
+         RETURN hb_UTF8Chr( nCode )
+      ENDIF
+      IF Empty( lCesu8 )
+         RETURN Chr( 0xF0 + Int( nCode / 0x40000 ) ) + Chr( 0x80 + Int( nCode / 0x1000 ) % 0x40 ) + ;
+                Chr( 0x80 + Int( nCode / 0x40 ) % 0x40 ) + Chr( 0x80 + nCode % 0x40 )
+      ENDIF
+      nCode -= 0x10000
+   RETURN hb_UTF8Chr( 0xD800 + Int( nCode / 0x400 ) ) + hb_UTF8Chr( 0xDC00 + nCode % 0x400 )
+
+   FUNCTION HMG_ASC( cStr )
+      LOCAL nCode := 0, nCode2 := 0, nNext
+      IF HB_ISSTRING( cStr ) .AND. ! Empty( cStr )
+         nNext := _HMG_U8Next( cStr, 1, @nCode )
+         IF nCode >= 0xD800 .AND. nCode <= 0xDBFF .AND. nNext <= Len( cStr )
+            _HMG_U8Next( cStr, nNext, @nCode2 )
+            IF nCode2 >= 0xDC00 .AND. nCode2 <= 0xDFFF
+               nCode := 0x10000 + ( nCode - 0xD800 ) * 0x400 + ( nCode2 - 0xDC00 )
+            ENDIF
+         ENDIF
+      ENDIF
+   RETURN nCode
+
+   FUNCTION HMG_CESU8( cStr )
+      LOCAL cOut := "", n := 1, nNext, nCode := 0
+      IF ! HB_ISSTRING( cStr )
+         RETURN cStr
+      ENDIF
+      DO WHILE n <= Len( cStr )
+         nNext := _HMG_U8Next( cStr, n, @nCode )
+         cOut += iif( nCode >= 0x10000, HMG_CHR( nCode, .T. ), SubStr( cStr, n, nNext - n ) )
+         n := nNext
+      ENDDO
+   RETURN cOut
+
+   FUNCTION HMG_UNCESU8( cStr )
+      LOCAL cOut := "", n := 1, nNext, nNext2, nCode := 0, nCode2 := 0
+      IF ! HB_ISSTRING( cStr )
+         RETURN cStr
+      ENDIF
+      DO WHILE n <= Len( cStr )
+         nNext := _HMG_U8Next( cStr, n, @nCode )
+         IF nCode >= 0xD800 .AND. nCode <= 0xDBFF .AND. nNext <= Len( cStr )
+            nNext2 := _HMG_U8Next( cStr, nNext, @nCode2 )
+            IF nCode2 >= 0xDC00 .AND. nCode2 <= 0xDFFF
+               cOut += HMG_CHR( 0x10000 + ( nCode - 0xD800 ) * 0x400 + ( nCode2 - 0xDC00 ), .F. )
+               n := nNext2
+               LOOP
+            ENDIF
+         ENDIF
+         cOut += SubStr( cStr, n, nNext - n )
+         n := nNext
+      ENDDO
+   RETURN cOut
+
+   /* the code of the UTF-8 character at byte n (surrogates accepted) -> the byte after it */
+   STATIC FUNCTION _HMG_U8Next( cStr, n, nCode )
+      LOCAL b := Asc( SubStr( cStr, n, 1 ) ), nLen, i, c
+      DO CASE
+      CASE b >= 0xF0 ; nLen := 4 ; nCode := b % 0x08
+      CASE b >= 0xE0 ; nLen := 3 ; nCode := b % 0x10
+      CASE b >= 0xC0 ; nLen := 2 ; nCode := b % 0x20
+      OTHERWISE      ; nCode := b ; RETURN n + 1
+      ENDCASE
+      FOR i := 1 TO nLen - 1
+         c := Asc( SubStr( cStr, n + i, 1 ) )
+         IF n + i > Len( cStr ) .OR. c < 0x80 .OR. c >= 0xC0
+            nCode := b                          // a broken sequence: the byte itself
+            RETURN n + 1
+         ENDIF
+         nCode := nCode * 0x40 + ( c % 0x40 )
+      NEXT
+   RETURN n + nLen
+
 #else
 
    FUNCTION HMG_LEN(x); RETURN LEN (x)
@@ -143,6 +228,10 @@ HB_UTF8STUFF()          <=>   STUFF()
    FUNCTION HMG_ISLOWER(c); RETURN ISLOWER(c)
    FUNCTION HMG_ISUPPER(c); RETURN ISUPPER(c)
    FUNCTION HMG_ISALPHANUMERIC(c); RETURN (ISALPHA(c) .OR. ISDIGIT(c))
+   FUNCTION HMG_CHR(n); RETURN CHR(n)
+   FUNCTION HMG_ASC(c); RETURN ASC(c)
+   FUNCTION HMG_CESU8(c); RETURN c
+   FUNCTION HMG_UNCESU8(c); RETURN c
 
 #endif
 

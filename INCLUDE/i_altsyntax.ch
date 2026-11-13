@@ -930,6 +930,13 @@ Month Calendar
 #xcommand DEFINE MONTHCALENDAR <name> ;
 	=>;
 	_HMG_SYSDATA \[ 416 \]		:= <"name">	;;
+	_HMG_SYSDATA \[ 522 \]		:= { => }	;;
+	_HMG_SYSDATA \[ 420 \]		:= NIL		;;
+	_HMG_SYSDATA \[ 421 \]		:= NIL		;;
+	_HMG_SYSDATA \[ 457 \]		:= NIL		;;
+	_HMG_SYSDATA \[ 458 \]		:= NIL		;;
+	_HMG_SYSDATA \[ 465 \]		:= NIL		;;
+	_HMG_SYSDATA \[ 466 \]		:= NIL		;;
 	_HMG_SYSDATA \[ 417 \]		:= NIL		;;
 	_HMG_SYSDATA \[ 432 \]		:= NIL		;;
 	_HMG_SYSDATA \[ 431 \]		:= NIL		;;
@@ -957,8 +964,8 @@ Month Calendar
 		_HMG_SYSDATA \[ 417 \],;
 		_HMG_SYSDATA \[ 432 \],;
 		_HMG_SYSDATA \[ 431 \],;
-		0,;
-		0,;
+		_HMG_SYSDATA \[ 420 \],;
+		_HMG_SYSDATA \[ 421 \],;
 		_HMG_SYSDATA \[ 434 \],;
 		_HMG_SYSDATA \[ 422 \],;
 		_HMG_SYSDATA \[ 423 \],;
@@ -969,7 +976,26 @@ Month Calendar
 		_HMG_SYSDATA \[ 435 \],;
 		_HMG_SYSDATA \[ 429 \],;
 		_HMG_SYSDATA \[ 430 \],;
-		_HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 412 \] , _HMG_SYSDATA \[ 413 \] , _HMG_SYSDATA \[ 415 \] , _HMG_SYSDATA \[ 414 \] )
+		_HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 412 \] , _HMG_SYSDATA \[ 413 \] , _HMG_SYSDATA \[ 415 \] , _HMG_SYSDATA \[ 414 \] ,;
+		_HMG_SYSDATA \[ 458 \],;
+		hb_HGetDef( _HMG_SYSDATA \[ 522 \], "OUTERFONTCOLOR", NIL ),;
+		_HMG_SYSDATA \[ 457 \],;
+		hb_HGetDef( _HMG_SYSDATA \[ 522 \], "BORDERCOLOR", NIL ),;
+		hb_HGetDef( _HMG_SYSDATA \[ 522 \], "TITLEFONTCOLOR", NIL ),;
+		hb_HGetDef( _HMG_SYSDATA \[ 522 \], "TITLEBACKCOLOR", NIL ),;
+		_HMG_SYSDATA \[ 465 \],;
+		_HMG_SYSDATA \[ 466 \],;
+		NIL,;
+		hb_HGetDef( _HMG_SYSDATA \[ 522 \], "GETBOLDDAYS", NIL ) ) ;;
+	_HMG_SYSDATA \[ 522 \] := { => }
+
+// HMG5 (from HMG 3.5): DEFINE MONTHCALENDAR clauses without a slot of their own (_HMG_SYSDATA[522])
+#xcommand OUTERFONTCOLOR      <color>              => _HMG_SYSDATA \[ 522 \] \[ "OUTERFONTCOLOR" \] := <color>
+#xcommand BORDERCOLOR         <color>              => _HMG_SYSDATA \[ 522 \] \[ "BORDERCOLOR" \]    := <color>
+#xcommand TITLEFONTCOLOR      <color>              => _HMG_SYSDATA \[ 522 \] \[ "TITLEFONTCOLOR" \] := <color>
+#xcommand TITLEBACKCOLOR      <color>              => _HMG_SYSDATA \[ 522 \] \[ "TITLEBACKCOLOR" \] := <color>
+#xcommand ONGETBOLDDAYS       <bold>               => _HMG_SYSDATA \[ 522 \] \[ "GETBOLDDAYS" \]    := <{bold}>
+#xcommand ON GETBOLDDAYS      <bold>               => _HMG_SYSDATA \[ 522 \] \[ "GETBOLDDAYS" \]    := <{bold}>
 
 /*----------------------------------------------------------------------------
 Button

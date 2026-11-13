@@ -79,6 +79,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
+#include "hbdate.h"   // HMG5: hb_dateEncode / hb_dateDecode
 #include "winreg.h"
 #include "tchar.h"
 
@@ -128,6 +129,11 @@ HB_FUNC ( INITMONTHCAL )
 	if ( !hb_parl(13) )
 	{
 		Style = Style | WS_TABSTOP ;
+	}
+
+	if ( hb_parl(18) )   // HMG5 (from HMG 3.5): ON GETBOLDDAYS
+	{
+		Style = Style | MCS_DAYSTATE ;
 	}
 
 	hmonthcal = CreateWindowEx( 0L , MONTHCAL_CLASS /*_TEXT("SysMonthCal32")*/,
@@ -274,3 +280,73 @@ HB_FUNC ( DATETIME_SETMONTHCALFONT )
    DateTime_SetMonthCalFont (hWnd, hFont, lRedraw);
 }
 
+
+/* ---- HMG5: ported from HMG 3.5 (RANGEMIN/RANGEMAX, VISIBLEMIN/VISIBLEMAX, ON GETBOLDDAYS) ---- */
+
+static void hmg_mc_date( SYSTEMTIME * st, long lJulian )
+{
+   int y, m, d;
+   hb_dateDecode( lJulian, &y, &m, &d );
+   memset( st, 0, sizeof( SYSTEMTIME ) );
+   st->wYear  = ( WORD ) y;
+   st->wMonth = ( WORD ) m;
+   st->wDay   = ( WORD ) d;
+}
+
+/* SETMONTHCALRANGE( hWnd, dMin, dMax ): an empty date (or NIL) is no limit on that side */
+HB_FUNC ( SETMONTHCALRANGE )
+{
+   HWND hWnd = (HWND) HMG_parnl (1);
+   SYSTEMTIME st[ 2 ];
+   DWORD dwFlags = 0;
+   long lMin = HB_ISDATE( 2 ) ? hb_pardl( 2 ) : 0;
+   long lMax = HB_ISDATE( 3 ) ? hb_pardl( 3 ) : 0;
+   memset( st, 0, sizeof( st ) );
+   if( lMin )
+   {
+      hmg_mc_date( &st[ 0 ], lMin );
+      dwFlags |= GDTR_MIN;
+   }
+   if( lMax )
+   {
+      hmg_mc_date( &st[ 1 ], lMax );
+      dwFlags |= GDTR_MAX;
+   }
+   hb_retl( MonthCal_SetRange( hWnd, dwFlags, st ) != 0 );
+}
+
+/* GETMONTHCALVISIBLE( hWnd, @dStart, @dEnd ): the first and last day shown, partly shown months included */
+HB_FUNC ( GETMONTHCALVISIBLE )
+{
+   HWND hWnd = (HWND) HMG_parnl (1);
+   SYSTEMTIME st[ 2 ];
+   memset( st, 0, sizeof( st ) );
+   SendMessage( hWnd, MCM_GETMONTHRANGE, GMR_DAYSTATE, (LPARAM) st );
+   hb_stordl( hb_dateEncode( st[ 0 ].wYear, st[ 0 ].wMonth, st[ 0 ].wDay ), 2 );
+   hb_stordl( hb_dateEncode( st[ 1 ].wYear, st[ 1 ].wMonth, st[ 1 ].wDay ), 3 );
+}
+
+/* INITBOLDDAYS( lParam, @dStart, @nMonths ): MCN_GETDAYSTATE asks for nMonths months from dStart */
+HB_FUNC ( INITBOLDDAYS )
+{
+   NMDAYSTATE * pDayState = (NMDAYSTATE *) HMG_parnl (1);
+   hb_stordl( hb_dateEncode( pDayState->stStart.wYear, pDayState->stStart.wMonth, pDayState->stStart.wDay ), 2 );
+   hb_storni( pDayState->cDayState, 3 );
+}
+
+/* SETBOLDDAYS( lParam, anMonths ): one bit a day (bit 0 = day 1) for each month asked for.
+   The buffer must outlive the notification (the control reads it after the handler returns):
+   static, not on the stack as in HMG 3.5. */
+HB_FUNC ( SETBOLDDAYS )
+{
+   static MONTHDAYSTATE s_aState[ 14 ];
+   NMDAYSTATE * pDayState = (NMDAYSTATE *) HMG_parnl (1);
+   PHB_ITEM pMonths = hb_param( 2, HB_IT_ARRAY );
+   int i, n = pDayState->cDayState;
+   if( n > 14 )
+      n = 14;
+   memset( s_aState, 0, sizeof( s_aState ) );
+   for( i = 0; i < n; i++ )
+      s_aState[ i ] = pMonths ? (MONTHDAYSTATE) hb_arrayGetNL( pMonths, i + 1 ) : 0;
+   pDayState->prgDayState = s_aState;
+}

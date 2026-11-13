@@ -1,4 +1,18 @@
 -HMG 5.0 2026/11/13
+   - All the samples of HMG 3.5 are back in SAMPLES (Advanced, Applications, BosTaurus, Controls, Events,
+     Functions, HFCL, HPDF, Miscellaneous, MultiThread, PrintSystem, UNICODE and the rest of Basics; HMG 3.6
+     shipped only Basics); their build.bat call build64.bat. Not included: HFCL\QHTM (qhtm.dll, removed)
+   - From HMG 3.5, for those samples: MONTHCALENDAR WIDTH, HEIGHT, FONTCOLOR, OUTERFONTCOLOR, BACKCOLOR,
+     BORDERCOLOR, TITLEFONTCOLOR, TITLEBACKCOLOR, RANGEMIN, RANGEMAX, VIEW and ON GETBOLDDAYS (properties
+     OuterFontColor, BorderColor, TitleFontColor, TitleBackColor, View, VisibleMin, VisibleMax); Grid
+     RowsPerPage; HPDF: HPDFPRINT ... WRAP, FONTSIZEFIT, HEIGHTFIT, GETBOTTOM, BOLD/ITALIC/... IF <lCond>,
+     HPDFPRINT SKEW, SCALE, RENDER and CIRCLED TEXT, SET HPDFDOC FONT NAME/SIZE; HMG_CHR(), HMG_ASC(),
+     HMG_CESU8(), HMG_UNCESU8() (characters above U+FFFF). The 3.5 bold-days code handed the control a
+     buffer on the stack; HMG5 keeps it alive. tests\unit\port35 checks them
+   - HMG_UNICODE.h includes hbapi.h: C code that includes only HMG_UNICODE.h (HMG 3.x samples and user
+     code) builds with GCC 14+, where an undeclared function is an error
+   - SAMPLES\HFCL\SQL: the MySQL and PostgreSQL samples need client libraries HMG5 does not bundle
+     (see README-HMG5.txt there)
    - New sample SAMPLES\Controls\ChartGallery: every Apache ECharts chart type, one tab each (line, bar, pie,
      scatter, radar, candlestick, boxplot, heatmap and calendar, tree, treemap, sunburst, graph, sankey,
      chord, funnel, gauge, pictorialBar, themeRiver, parallel, map with lines, custom series)
@@ -24,12 +38,15 @@
    - From HMG 3.7, all opt-in: ROUNDED <n> (TextBox/EditBox/RichEditBox/Frame), SET MSGBOXMODERN, SET TOOLTIPROUND/MARGIN/FONT/BORDERCOLOR/GRADIENT/THEME, SET MENUHOVER, TabSetModern()
    - QHTM removed from HFCL (closed-source third-party qhtm.dll); may return later as an optional add-on
    - New WEBVIEW control (Microsoft Edge WebView2): HTML/JavaScript screens, JS->Harbour calls limited to bound codeblocks, PRIVATE (nothing stored on disk); plain C, no extra DLL
+     (samples: SAMPLES\Controls\WebView, SAMPLES\Controls\WebBrowser and a WebView page in SAMPLES\Basics\MAIN_DEMO)
    - SET DPIAWARE PERMONITOR (opt-in): sharp, correctly sized forms on every monitor; sizes stay in 96-DPI units, controls and fonts rescale when a form moves to a monitor with another DPI
    - SET DARKMODE ON | AUTO (opt-in): dark title bars, forms and controls; explicit BACKCOLOR/FONTCOLOR kept; message boxes and the menu bar stay light
    - SET FILEDIALOG MODERN (opt-in): GetFile, PutFile and GetFolder use the Windows Vista+ file dialogs (IFileDialog): same arguments and results, no fixed path buffers, Explorer-style folder picker
    - SET PDFENGINE WINDOWS (opt-in): SELECT PRINTER PDF and the preview's Save as PDF go through the Windows PDF printer - the PDF matches the printout (all fonts, Unicode, rotated text, images), text selectable, no page bitmaps; libHaru stays the default and covers custom paper sizes
    - New CHART control: @ r,c CHART ... TYPE COLUMN|BAR|LINE|AREA|POINTS|PIE|DOUGHNUT|FUNNEL, CATEGORIES, SERIES, STACKED, LABELS, THEME, COLORS, ON CLICK, OPTION (any Apache ECharts option); interactive, sharp at any DPI, SaveImage to PNG; Apache ECharts 6.1.0 built in (works offline, linked only into programs that use a chart)
+     (samples: SAMPLES\Controls\Chart, SAMPLES\Controls\ChartGallery and a Chart page in SAMPLES\Basics\MAIN_DEMO)
    - GraphPlus class (S. Rathinagiri) on Apache ECharts: same interface and GT_ constants, all 15 chart types; :Draw()/:Bitmap()/:Save() as before (anti-aliased), new :Show( cForm, cChart ) for an interactive chart and :Option() for the ECharts JSON
+     (sample: SAMPLES\Controls\GraphPlus)
    - IDE: built from source (hmgbuild ide), 64-bit only; snap to grid fixed (nearest line; was always the next), grid drawn behind the controls, grid size 5-20 px and show/hide in the Edit menu, arrow keys move the selected control (Ctrl: to the next grid line), IDE.exe /form <file.fmg>; form round-trip test (tests\ide)
    - Notepad++ syntax file for HMG5 (tools\editor)
    - IDE: View > Forms and Controls (F6) / IDE.exe /index <project.hbp>: every form and control of a project defined in code or .fmg, where defined and used, misspelt control names reported; same as tools\hmgindex (console)

@@ -56,12 +56,23 @@
 #xcommand @ <row>,<col> MONTHCALENDAR <name> ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		[ VALUE <v> ] ;
+		[ RANGEMIN <rangemin> ] ;
+		[ RANGEMAX <rangemax> ] ;
+		[ WIDTH <width> ] ;
+		[ HEIGHT <height> ] ;
 		[ FONT <fontname> ] ;
 		[ SIZE <fontsize> ] ;
 		[ <bold : BOLD> ] ;
 		[ <italic : ITALIC> ] ;
 		[ <underline : UNDERLINE> ] ;
 		[ <strikeout : STRIKEOUT> ] ;
+		[ FONTCOLOR <fontcolor> ] ;
+		[ OUTERFONTCOLOR <outerfontcolor> ] ;
+		[ BACKCOLOR <backcolor> ] ;
+		[ BORDERCOLOR <bordercolor> ] ;
+		[ TITLEFONTCOLOR <titlefontcolor> ] ;
+		[ TITLEBACKCOLOR <titlebackcolor> ] ;
+		[ VIEW <view> ] ;
 		[ TOOLTIP <tooltip> ] ;
 		[ < notoday: NOTODAY > ] ;
 		[ < notodaycircle: NOTODAYCIRCLE > ] ;
@@ -69,14 +80,15 @@
 		[ < invisible: INVISIBLE > ] ;
 		[ < notabstop: NOTABSTOP > ] ;
 		[ ON CHANGE <change> ] ;
+		[ ON GETBOLDDAYS <getbolddays> ] ;
 		[ HELPID <helpid> ] 		;
 	=>;
 	_DefineMonthCal ( <"name"> , ;
                      <"parent"> , ;
                      <col> , ;
                      <row> , ;
-                     0 , ;
-                     0 , ;
+                     <width> , ;
+                     <height> , ;
                      <v> , ;
                      <fontname> , ;
                      <fontsize> , ;
@@ -84,7 +96,15 @@
                      <.notoday.> , ;
                      <.notodaycircle.> , ;
                      <.weeknumbers.> , ;
-                     <{change}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> )
+                     <{change}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
+                     <fontcolor>, <outerfontcolor>, <backcolor>, <bordercolor>, <titlefontcolor>, <titlebackcolor>, ;
+                     <rangemin>, <rangemax>, <view>, <{getbolddays}> )
+
+// VIEW (HMG5, from HMG 3.5)
+#define MCMV_MONTH         0
+#define MCMV_YEAR          1
+#define MCMV_DECADE        2
+#define MCMV_CENTURY       3
 
 
 // by Dr. Claudio Soto (April 2013)

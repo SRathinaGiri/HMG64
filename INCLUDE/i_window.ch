@@ -139,7 +139,9 @@
 #xtranslate <w>. \<c\> . \<p:ChangeFontSize\> := \<arg\> =>  SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
 ;;
 ;;   // Grid
-#xtranslate <w>. \<c\> . \<p:ColumnCOUNT, CellRowFocused, CellColFocused, CellNavigation, CellRowClicked, CellColClicked, EditOption, ImageList\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+#xtranslate <w>. \<c\> . \<p:ColumnCOUNT, CellRowFocused, CellColFocused, CellNavigation, CellRowClicked, CellColClicked, EditOption, ImageList, RowsPerPage\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w>. \<c\> . \<p:OuterFontColor, BorderColor, TitleFontColor, TitleBackColor, View, VisibleMin, VisibleMax\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w>. \<c\> . \<p:OuterFontColor, BorderColor, TitleFontColor, TitleBackColor, View\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
 #xtranslate <w>. \<c\> . \<p:ColumnHEADER, ColumnWIDTH, ColumnJUSTIFY, ColumnCONTROL, ColumnDYNAMICBACKCOLOR, ColumnDYNAMICFORECOLOR,;
                              ColumnVALID, ColumnWHEN, ColumnONHEADCLICK, ColumnDISPLAYPOSITION, ColumnDYNAMICFONT, HeaderDYNAMICFONT, HeaderDYNAMICBACKCOLOR, HeaderDYNAMICFORECOLOR, HeaderImageIndex,;
                              CheckBoxItem\> (\<n\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> );;
