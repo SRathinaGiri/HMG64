@@ -327,7 +327,7 @@ DECLARE WINDOW ReportFormatOptions
 DECLARE WINDOW fieldselector
 
 
-#define IDE_NUMBER_VERSION "ver 1.3b" // 'Version: 2011.06.24'
+#define IDE_NUMBER_VERSION "5.0"      // HMG5 (was "ver 1.3b", 2011.06.24)
 
 
 *-------------------------------------------------------------------------------------------*
@@ -339,7 +339,7 @@ LOCAL Image_Width, Image_Height, Image_BackColor
       MsgHMGError ("File Opening Error. Program Terminated" )
    ENDIF
 
-   #define IMAGEZOOM 1.5
+   #define IMAGEZOOM 1     // HMG5: the splash bitmap is made at its size (logo\make_images.py)
 
    DEFINE WINDOW FormSplash;
          AT 0,0;  
@@ -443,7 +443,7 @@ PUBLIC cFileLanguage
    SET AUTOSCROLL OFF
 
 
-   PUBLIC _EAT   := "HMG-IDE  "+ IDE_VERSION + "  "
+   PUBLIC _EAT   := "HMG5 IDE  "+ IDE_VERSION + "  "
    PUBLIC Author := '(c) Roberto Lopez - FREEWARE -'
    PUBLIC _HLK   := 'http://sites.google.com/site/hmgweb'
 

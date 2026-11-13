@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo/hmg5-logo-dark.svg">
+    <img src="logo/hmg5-logo.svg" alt="HMG5" width="560">
+  </picture>
+</p>
+
 # HMG64
 
 A revamp of **HMG 3.6 (64-bit)**, the xBase GUI library for Windows built on Harbour and MinGW-w64. Upstream development stopped after the 3.6 release (10-05-2023).
@@ -45,10 +52,10 @@ iscc dist\HMG5.iss                                                          & re
 | 0 | Baseline in git, single build entry point, smoke + regression tests | done |
 | 1 | Fix leaks, buffer overflows, NULL crashes, DLL hijacking, temp-file race; deprecate XOR "crypt" | done (see AUDIT.md §6) |
 | 2a | Toolchain refresh: GCC 16.2 / UCRT, Harbour 3.2.1 from source, current bundled libs; reproducible setup script; ANSI + UNICODE build matrix | done |
-| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Test" | done (Setup.exe tested: silent install, build, uninstall) |
+| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.0 Stable"; logos in `logo\` | done (Setup.exe tested: silent install, build, uninstall) |
 | 2b | Windows 10+ target (`_WIN32_WINNT`), long-path manifest, libHaru 2.3 headers (PerMonitorV2 moved to Phase 4; UTF-8 code page dropped: it breaks ANSI mode) | done |
 | 3 | Name, index and wrap `_HMG_SYSDATA` (layout frozen), object API, event dispatch - see PHASE3-DESIGN.md | done (S1-S5) |
-| 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | in progress (branch `phase4`): WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF engine and CHART control (ECharts) done; IDE revamp in progress (built-in code editor done) |
+| 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | done for 5.0: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF engine, CHART control (ECharts), GraphPlus; IDE revamp (code editor with completion, project builder, Forms and Controls) |
 
 ## License
 

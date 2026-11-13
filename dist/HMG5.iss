@@ -12,7 +12,7 @@
 #ifndef Src
   #define Src "..\..\HMG5"
 #endif
-#define AppVer "5.0-test"
+#define AppVer "5.0"
 
 [Setup]
 AppId={{DBC9F845-3CE9-4FD9-BFCA-CE3CBE31DE41}
@@ -42,6 +42,7 @@ SolidCompression=yes
 ; compressor process gets its own address space.
 LZMAUseSeparateProcess=yes
 WizardStyle=modern
+SetupIconFile={#Src}\logo\hmg5.ico
 UninstallDisplayName=HMG {#AppVer} (64-bit)
 UninstallDisplayIcon={app}\IDE\IDE.exe
 

@@ -1,4 +1,5 @@
--HMG 5.0 (test) 2026/11/06
+-HMG 5.0 2026/11/13
+   - HMG5 logos (logo\: HMG5 and HMG5 IDE, SVG/PNG/ICO); new IDE icon and splash; Setup icon
    - New name for the revamped HMG 3 line (HMG4/Qt is not continued)
    - One-folder setup: trimmed MinGW-w64 GCC 16.2.0 (UCRT) + Harbour 3.2.1dev (r2610242111) bundled
    - Fixed string-conversion memory leak, buffer overflows, NULL crashes, DLL search-path hijacking, temp-file race
