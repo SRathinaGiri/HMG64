@@ -59,6 +59,7 @@ STATIC s_lCase   := .F.
 STATIC s_lWord   := .F.
 STATIC s_lBusy   := .F.    // a question is open: no disk check
 STATIC s_aPending := NIL
+STATIC s_aFontTest := {}   // self-test: the font window's results
 STATIC s_cTrace  := ""     // self-test step log   // { cFile, nLine } to open once the build-error window is gone
 
 /* where the IDE opens a source file */
@@ -644,7 +645,14 @@ STATIC PROCEDURE IDE_EdFontDialog()
 RETURN
 
 STATIC PROCEDURE IDE_EdFontPreview()
-   LOCAL n := IDE_EdFontWin.Cmb_Font.Value
+   LOCAL n
+   // ON CHANGE also fires while the window is being defined (a spinner's starting value):
+   // the preview label may not exist yet
+   IF ! IsControlDefined( Lbl_Prev, IDE_EdFontWin ) .OR. ! IsControlDefined( Spn_Size, IDE_EdFontWin ) .OR. ;
+      ! IsControlDefined( Cmb_Font, IDE_EdFontWin )
+      RETURN
+   ENDIF
+   n := IDE_EdFontWin.Cmb_Font.Value
    IF n > 0
       IDE_EdFontWin.Lbl_Prev.FontName := IDE_EdFontWin.Cmb_Font.Item( n )
    ENDIF
@@ -819,6 +827,16 @@ PROCEDURE IDE_EdSelfTest( cOut )
       T( aRes, "indent setting", IDEED_GETTEXT( hView ) == "ab c    d", IDEED_GETTEXT( hView ) )
       IDEED_SETFONT( s_hHost, "Consolas", 10, 3 )
 
+      // 4b2. the Font and Indent window opens (its spinner's ON CHANGE runs while it is being
+      //      defined), the size updates the preview, and Cancel leaves the settings alone
+      s_aFontTest := {}
+      DEFINE TIMER Tmr_FontTest OF IDE_Ed INTERVAL 250 ACTION IDE_EdFontTestTick()
+      a := IDE_EdFontSettings()
+      IDE_EdFontDialog()                       // modal: IDE_EdFontTestTick closes it
+      IDE_Ed.Tmr_FontTest.Release
+      T( aRes, "font window", Len( s_aFontTest ) == 1 .AND. s_aFontTest[ 1 ], hb_ValToExp( s_aFontTest ) )
+      T( aRes, "font cancel keeps settings", hb_ValToExp( IDE_EdFontSettings() ) == hb_ValToExp( a ), hb_ValToExp( IDE_EdFontSettings() ) )
+
       // 4c. completion: the file's words and the keywords after 3 letters, Form. and Form.Control.
       hView := TestDoc( cDir + "complete.prg", "LOCAL nCounter := 1" + CRLF )
       IDEED_SETSEL( hView, 21, 21 )
@@ -942,6 +960,25 @@ STATIC FUNCTION EdStack()
       n++
    ENDDO
 RETURN c
+
+/* the font window test's timer: acts only from the window's own message loop (not from the
+   DO EVENTS of its activation), changes the size, checks the preview and closes with Cancel */
+STATIC PROCEDURE IDE_EdFontTestTick()
+   LOCAL n := 1
+   IF ! IsWindowDefined( IDE_EdFontWin ) .OR. ! _IsWindowActive( "IDE_EdFontWin" ) .OR. ! Empty( s_aFontTest )
+      RETURN
+   ENDIF
+   DO WHILE ! Empty( ProcName( n ) )
+      IF ProcName( n ) == "DOEVENTS"
+         RETURN
+      ENDIF
+      n++
+   ENDDO
+   IDE_EdFontWin.Spn_Size.Value := 14
+   IDE_EdFontPreview()
+   AAdd( s_aFontTest, IDE_EdFontWin.Lbl_Prev.FontSize == 14 )
+   IDE_EdFontWin.Release
+RETURN
 
 STATIC FUNCTION TestDoc( cFile, cText )
    hb_MemoWrit( cFile, cText )
