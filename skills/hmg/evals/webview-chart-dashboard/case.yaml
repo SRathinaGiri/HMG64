@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: webview-chart-dashboard
+expected_outcome: |
+  dashboard.prg builds and runs; the WEBVIEW page calls a bound Harbour block (Bind + hmg.call), the CHART (TYPE PIE) is updated through its Categories/Series properties, and a button saves it with SaveImage / HMG_ChartSaveImage.

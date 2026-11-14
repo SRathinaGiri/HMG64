@@ -34,3 +34,6 @@ _hmg_resconfig.h
 /tools/hmgindex/hmgindex.exe
 /IDE/ide.ini
 /IDE/recent.ini
+
+# Skill test runs (outputs, benchmark, review page)
+/skills/hmg-workspace/

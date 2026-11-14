@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: preferences-dialog-module
+expected_outcome: |
+  main.prg, prefs.prg and an .hbp build together; opening the dialog does not crash (the spinner's ON CHANGE during definition is handled), the preview follows the choices, OK applies the font to the main window's label from the other module, Cancel leaves it unchanged.
