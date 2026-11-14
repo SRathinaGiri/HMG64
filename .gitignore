@@ -10,6 +10,7 @@
 *.o
 *.exe
 !/IDE/IDE.exe
+!/IDE/HMGEdit.exe
 build.log
 error.log
 hbmk.log

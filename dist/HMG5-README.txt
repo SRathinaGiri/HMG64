@@ -7,6 +7,7 @@ unchanged: same commands, same build64.bat, same IDE. HMG4 (Qt) is not continued
 Everything you need is in this one folder. Nothing else to install:
 
    IDE\IDE.exe      the HMG IDE (forms designer + project manager)
+   IDE\HMGEdit.exe  the IDE's code editor on its own: HMGEdit myprog.prg, F5 builds and runs
    build64.bat      build a program:   build64 myprog.prg   or   build64 myprog.hbp
    mingw64\         C compiler (MinGW-w64 GCC 16.2.0, UCRT) - used by build64, you never call it
    harbour64\       Harbour 3.2.1dev (r2610242111)

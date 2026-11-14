@@ -252,6 +252,10 @@ FUNCTION IDE_EdViewFile( hView )
    LOCAL n := IDE_EdDocIndex( hView )
 RETURN iif( n > 0, s_aDocs[ n ][ D_FILE ], "" )
 
+/* the file of the current tab ("" if none): HMGEdit's Build and Run */
+FUNCTION IDE_EdCurrentFile()
+RETURN IDE_EdViewFile( IDE_EdCurView() )
+
 STATIC FUNCTION IDE_EdCurView()
 RETURN iif( Empty( s_hHost ), 0, IDEED_CURRENT( s_hHost ) )
 

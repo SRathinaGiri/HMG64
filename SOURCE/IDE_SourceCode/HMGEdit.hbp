@@ -1,0 +1,6 @@
+# HMG Code Editor (HMGEdit.exe) - the IDE's code editor on its own; built by "hmgbuild ide"
+Source/hmgedit.prg
+Source/ide_editor.prg
+Source/ide_complete.prg
+Source/prjindex.prg
+Source/ide_editw.c

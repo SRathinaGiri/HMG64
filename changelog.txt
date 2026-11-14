@@ -1,4 +1,9 @@
 -HMG 5.0 2026/11/14
+   - IDE\HMGEdit.exe: the IDE's code editor as a program of its own (Start menu "HMG Code Editor"),
+     for those who want only the editor: HMGEdit [/L<line>] file ...; tabs, colouring, completion
+     (with the project's forms and controls when an .hbp in the file's folder lists it), find/replace;
+     Build > Save All, Build and Run (F5) builds that .hbp or the .prg with build64 /n and opens the
+     first error at its line; settings in IDE\hmgedit.ini. Built by hmgbuild ide; tests\ide checks it
    - IDE: CHART controls are in the project index, so View > Forms and Controls and the code
      editor's completion list them (Form. -> Ch_Sales, Form.Ch_Sales. -> ChartType, Series, SaveImage...);
      tools\hmgindex too
