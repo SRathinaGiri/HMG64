@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: expense-tracker-dbf
+expected_outcome: |
+  expenses.prg builds with HMG5's build64.bat and runs; it creates the DBF if missing, saves entries, lists the current month in a GRID, deletes the selected entry and shows the month total in the status bar.
