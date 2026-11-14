@@ -52,6 +52,7 @@ Source: "{#Src}\*"; DestDir: "{app}"; Excludes: "\IDE\hmg.ini,\tests\out"; Flags
 
 [Icons]
 Name: "{group}\HMG IDE";               Filename: "{app}\IDE\IDE.exe"; WorkingDir: "{app}\IDE"
+Name: "{group}\HMG Code Editor";       Filename: "{app}\IDE\HMGEdit.exe"; WorkingDir: "{%USERPROFILE}"
 Name: "{group}\HMG Samples";           Filename: "{app}\SAMPLES"
 Name: "{group}\HMG Documentation";     Filename: "{app}\doc"
 Name: "{group}\HMG Command Prompt";    Filename: "{cmd}"; Parameters: "/k ""set PATH={app};%PATH%"" && cd /d ""%USERPROFILE%"""; WorkingDir: "{%USERPROFILE}"

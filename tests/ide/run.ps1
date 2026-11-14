@@ -74,6 +74,39 @@ else {
 }
 if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL edtest: $err" } else { $pass++ }
 
+# the code editor on its own (HMGEdit.exe): the same self-test, then F5's build on a file with
+# an error (must report it at its line) and on a good one (must produce the exe)
+$he = Join-Path (Split-Path $Ide) 'HMGEdit.exe'
+if (Test-Path $he) {
+   $oe = Join-Path $out 'hmgedit-edtest.txt'
+   if (Test-Path $oe) { Remove-Item $oe }
+   $p = Start-Process $he -ArgumentList "/edtest `"$oe`"" -WorkingDirectory (Split-Path $he) -PassThru
+   $err = $null
+   if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open)" }
+   elseif (-not (Test-Path $oe)) { $err = "no output" }
+   else {
+      $lines = Get-Content $oe
+      $bad = @($lines | Where-Object { $_ -like 'FAIL*' })
+      if ($bad.Count -gt 0 -or -not ($lines | Where-Object { $_ -like 'edtest: PASS=*' })) { $err = ($bad -join '; ') }
+   }
+   if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL hmgedit edtest: $err" } else { $pass++ }
+
+   $bd = Join-Path $out 'hmgedit-build'
+   if (Test-Path $bd) { Remove-Item -Recurse -Force $bd }
+   New-Item -ItemType Directory $bd | Out-Null
+   [IO.File]::WriteAllText("$bd\good.prg", "#include `"hmg.ch`"`r`nFUNCTION Main()`r`n   ? 1`r`nRETURN NIL`r`n")
+   [IO.File]::WriteAllText("$bd\bad.prg", "#include `"hmg.ch`"`r`nFUNCTION Main()`r`n   x := ( 1 +`r`nRETURN NIL`r`n")
+   foreach ($c in @(@('good', '^buildtest: OK .*good\.exe'), @('bad', '^buildtest: ERRORS .*bad\.prg", 3\}\}'))) {
+      $ob = Join-Path $bd "$($c[0]).txt"
+      $p = Start-Process $he -ArgumentList "/buildtest `"$bd\$($c[0]).prg`" `"$ob`"" -WorkingDirectory $bd -PassThru
+      $err = $null
+      if (-not $p.WaitForExit(180000)) { $p.Kill(); $err = "TIMEOUT" }
+      elseif (-not (Test-Path $ob)) { $err = "no output" }
+      elseif ((Get-Content $ob -Raw) -notmatch $c[1]) { $err = (Get-Content $ob -Raw).Trim() }
+      if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL hmgedit build $($c[0]): $err" } else { $pass++ }
+   }
+}
+
 # design-form grid after closing and reopening a form: IDE.exe /gridtest <in.fmg> <out.txt>
 $og = Join-Path $out 'gridtest.txt'
 if (Test-Path $og) { Remove-Item $og }

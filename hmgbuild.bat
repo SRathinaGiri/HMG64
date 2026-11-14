@@ -9,7 +9,8 @@ rem    hmgbuild app <prg|hbp>    build an application (no run), via build64.bat
 rem    hmgbuild test             run the smoke + regression tests in tests\
 rem    hmgbuild all              check + lib + test (UNICODE)
 rem    hmgbuild matrix           lib ansi + test, then lib unicode + test; ends UNICODE
-rem    hmgbuild ide              build the IDE (SOURCE\IDE_SourceCode) into IDE\IDE.exe, in the
+rem    hmgbuild ide              build the IDE (SOURCE\IDE_SourceCode) into IDE\IDE.exe (and the
+rem                              code editor on its own into IDE\HMGEdit.exe), in the
 rem                              library mode LIB-64 was built in (hmglib64.txt)
 rem    hmgbuild idetest          ide + form round-trip test (tests\ide, PHASE4-DESIGN.md 6)
 rem
@@ -121,9 +122,15 @@ call "%HMGPATH%\build64.bat" /n IDE.hbp
 set "RC=0"
 if exist error.log ( type error.log & set "RC=1" )
 if not exist IDE.exe set "RC=1"
+rem the code editor on its own (HMGEdit.exe): the same editor sources as the IDE
+if exist HMGEdit.exe del HMGEdit.exe
+if "%RC%"=="0" call "%HMGPATH%\build64.bat" /n HMGEdit.hbp
+if "%RC%"=="0" if exist error.log ( type error.log & set "RC=1" )
+if "%RC%"=="0" if not exist HMGEdit.exe set "RC=1"
 if "%IDECOPY%"=="0" ( popd & if "%RC%"=="0" ( echo OK: IDE builds ^(%IDEMODE%^) ) else ( echo FAILED: IDE ^(%IDEMODE%^) ) )
 if "%IDECOPY%"=="0" exit /b %RC%
 if "%RC%"=="0" copy /y IDE.exe "%HMGPATH%\IDE\IDE.exe" >nul || ( echo ERROR: cannot write IDE\IDE.exe - is the IDE running? & set "RC=1" )
+if "%RC%"=="0" copy /y HMGEdit.exe "%HMGPATH%\IDE\HMGEdit.exe" >nul || ( echo ERROR: cannot write IDE\HMGEdit.exe - is it running? & set "RC=1" )
 if "%RC%"=="0" if "%IDEMODE%"=="ANSI" copy /y Lang\*.ANS "%HMGPATH%\IDE\" >nul
 if "%RC%"=="0" if "%IDEMODE%"=="UNICODE" copy /y Lang\*.UNI "%HMGPATH%\IDE\" >nul
 popd

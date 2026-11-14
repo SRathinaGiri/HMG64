@@ -65,7 +65,9 @@ are used from another with `DECLARE WINDOW Win_X` (for dot syntax) or `GetProper
 
 `C:\HMG5\IDE\IDE.exe` - project manager, forms designer, built-in code editor (colouring, completion
 of keywords, `Form.` and `Form.Control.`), View > Forms and Controls (every form and control of the
-project, and misspelt names), Build/Run.
+project, and misspelt names), Build/Run. `C:\HMG5\IDE\HMGEdit.exe [/L<line>] file ...` is the same
+code editor without the IDE; its F5 builds the `.hbp` in the file's folder that lists the file (or the
+`.prg` alone) and opens the first error at its line.
 
 - A `.fmg` is a form saved by the designer, in the alternate `DEFINE WINDOW TEMPLATE ... DEFINE BUTTON
   ... END BUTTON ... END WINDOW` syntax. Load it from code with `LOAD WINDOW Main` (reads `Main.fmg`)
