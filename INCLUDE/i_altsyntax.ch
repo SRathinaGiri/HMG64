@@ -551,7 +551,8 @@ List Box
 	_HMG_SYSDATA \[ 413 \]	:= .F.		;;
 	_HMG_SYSDATA \[ 414 \]	:= .F.		;;
 	_HMG_SYSDATA \[ 352 \]	:= .F.		;;
-	_HMG_SYSDATA \[ 415 \]	:= .F.		
+	_HMG_SYSDATA \[ 415 \]	:= .F.		;;
+	_HMG_SYSDATA \[ 522 \]	:= { => }
 
 
 #xcommand END LISTBOX;
@@ -585,7 +586,9 @@ List Box
 		_HMG_SYSDATA \[ 457 \],;
 		_HMG_SYSDATA \[ 458 \],;
 		_HMG_SYSDATA \[ 455 \],; 
-      _HMG_SYSDATA \[ 352 \] )
+      _HMG_SYSDATA \[ 352 \],;
+      _HMG_DragClauses() ) ;;
+	_HMG_SYSDATA \[ 522 \] := { => }
 
 ///////////////////////////////////////////////////////////////////////////////
 // ANIMATEBOX COMMANDS
@@ -996,6 +999,13 @@ Month Calendar
 #xcommand TITLEBACKCOLOR      <color>              => _HMG_SYSDATA \[ 522 \] \[ "TITLEBACKCOLOR" \] := <color>
 #xcommand ONGETBOLDDAYS       <bold>               => _HMG_SYSDATA \[ 522 \] \[ "GETBOLDDAYS" \]    := <{bold}>
 #xcommand ON GETBOLDDAYS      <bold>               => _HMG_SYSDATA \[ 522 \] \[ "GETBOLDDAYS" \]    := <{bold}>
+
+// HMG5 5.1: DEFINE LISTBOX / DEFINE GRID drag and drop (h_dragdrop.prg), also in _HMG_SYSDATA[522]
+#xcommand DRAGSOURCE          <l>                  => _HMG_SYSDATA \[ 522 \] \[ "DRAGSOURCE" \]     := <l>
+#xcommand DROPTARGET          <l>                  => _HMG_SYSDATA \[ 522 \] \[ "DROPTARGET" \]     := <l>
+#xcommand DRAGREMOVE          <l>                  => _HMG_SYSDATA \[ 522 \] \[ "DRAGREMOVE" \]     := <l>
+#xcommand ON DROP             <ondrop>             => _HMG_SYSDATA \[ 522 \] \[ "ONDROP" \]         := <{ondrop}>
+#xcommand ONDROP              <ondrop>             => _HMG_SYSDATA \[ 522 \] \[ "ONDROP" \]         := <{ondrop}>
 
 /*----------------------------------------------------------------------------
 Button
@@ -1821,7 +1831,8 @@ Grid
    _HMG_SYSDATA \[ 453 \]  := NIL   ;; // DynamicFont
    _HMG_SYSDATA \[ 454 \]  := NIL   ;; // ON CHECKBOXCLICKED
    _HMG_SYSDATA \[ 452 \]  := .T.   ;; // TransparentHeader
-   _HMG_SYSDATA \[ 352 \]  := NIL      // ON INPLACEEDITEVENT
+   _HMG_SYSDATA \[ 352 \]  := NIL   ;; // ON INPLACEEDITEVENT
+   _HMG_SYSDATA \[ 522 \]  := { => }    // DRAGSOURCE, DROPTARGET, DRAGREMOVE, ON DROP
 
 #xcommand END GRID ;
 	=>;
@@ -1881,7 +1892,9 @@ _DefineGrid ( _HMG_SYSDATA \[ 416 \] ,			;
       _HMG_SYSDATA \[ 277 \] , ;
       _HMG_SYSDATA \[ 281 \] , ;
       _HMG_SYSDATA \[ 419 \] , _HMG_SYSDATA \[ 247 \] , _HMG_SYSDATA \[ 248 \] , ;
-      .not. _HMG_SYSDATA \[ 463 \] , .not. _HMG_SYSDATA \[ 452 \], _HMG_SYSDATA \[ 453 \], _HMG_SYSDATA \[ 454 \], _HMG_SYSDATA \[ 352 \] ) 
+      .not. _HMG_SYSDATA \[ 463 \] , .not. _HMG_SYSDATA \[ 452 \], _HMG_SYSDATA \[ 453 \], _HMG_SYSDATA \[ 454 \], _HMG_SYSDATA \[ 352 \], ;
+      _HMG_DragClauses() ) ;;
+	_HMG_SYSDATA \[ 522 \] := { => }
 
 /*----------------------------------------------------------------------------
 BROWSE 

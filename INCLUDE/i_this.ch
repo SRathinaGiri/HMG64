@@ -158,6 +158,14 @@
    #xtranslate This.CellValue   := <arg> => _HMG_SetGridCellEditValue ( <arg> ) 
 
    #xtranslate This.EditBuffer         => _HMG_SYSDATA \[ 278 \] 
+// HMG5 5.1: inside ON DROP (h_dragdrop.prg)
+   #xtranslate This.DragForm           => HMG_DragInfo( "DRAGFORM" )
+   #xtranslate This.DragControl        => HMG_DragInfo( "DRAGCONTROL" )
+   #xtranslate This.DragItems          => HMG_DragInfo( "DRAGITEMS" )
+   #xtranslate This.DragData           => HMG_DragInfo( "DRAGDATA" )
+   #xtranslate This.DropRow            => HMG_DragInfo( "DROPROW" )
+   #xtranslate This.DropCopy           => HMG_DragInfo( "DROPCOPY" )
+   #xtranslate This.DropOutside        => HMG_DragInfo( "DROPOUTSIDE" )
    #xtranslate This.MarkBuffer         => _HMG_SYSDATA \[ 279 \]
    #xtranslate This.AppendBuffer       => _HMG_SYSDATA \[ 280 \] 
 
