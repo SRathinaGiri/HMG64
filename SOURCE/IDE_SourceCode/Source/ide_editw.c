@@ -187,16 +187,68 @@ static BOOL lx_idstart( WCHAR c ) { return ( c >= 'A' && c <= 'Z' ) || ( c >= 'a
 static BOOL lx_idchar( WCHAR c )  { return lx_idstart( c ) || ( c >= '0' && c <= '9' ); }
 static BOOL lx_eol( WCHAR c )     { return c == '\r' || c == '\n'; }
 
-/* Lexes t[0..n) from the start (block comments need it) and emits the tokens that
-   touch [from, to) with a style other than ST_DEF. bC: a C file; C rules are also used
-   between #pragma BEGINDUMP and #pragma ENDDUMP (no && or * comments, backslash escapes). */
-static void lex( const WCHAR * t, LONG n, LONG from, LONG to, LEXEMIT emit, void * ctx, BOOL bC )
+/* Where the lexer can start again without lexing from the top: line starts (outside
+   any token: a block comment is read in one piece) every LEX_CKSTEP characters, with the
+   only state that crosses lines, "inside #pragma BEGINDUMP". Valid for one text version. */
+#define LEX_CKSTEP   8192
+typedef struct
+{
+   LONG * pos;
+   BYTE * inC;
+   int    n, cap;
+} LEXCK;
+
+static void lexck_reset( LEXCK * ck ) { if( ck ) ck->n = 0; }
+static void lexck_free( LEXCK * ck )
+{
+   if( ck )
+   {
+      if( ck->pos ) hb_xfree( ck->pos );
+      if( ck->inC ) hb_xfree( ck->inC );
+      ck->pos = NULL;
+      ck->inC = NULL;
+      ck->n = ck->cap = 0;
+   }
+}
+static void lexck_add( LEXCK * ck, LONG pos, BOOL inC )
+{
+   if( ck->n == ck->cap )
+   {
+      ck->cap = ck->cap ? ck->cap * 2 : 64;
+      ck->pos = ( LONG * ) ( ck->pos ? hb_xrealloc( ck->pos, sizeof( LONG ) * ck->cap ) : hb_xgrab( sizeof( LONG ) * ck->cap ) );
+      ck->inC = ( BYTE * ) ( ck->inC ? hb_xrealloc( ck->inC, ck->cap ) : hb_xgrab( ck->cap ) );
+   }
+   ck->pos[ ck->n ] = pos;
+   ck->inC[ ck->n ] = ( BYTE ) inC;
+   ck->n++;
+}
+
+/* Lexes t[0..n) and emits the tokens that touch [from, to) with a style other than
+   ST_DEF. It starts at the last checkpoint before from (the top of the text without
+   one: block comments need it) and adds checkpoints as it goes. bC: a C file; C rules
+   are also used between #pragma BEGINDUMP and #pragma ENDDUMP (no && or * comments,
+   backslash escapes). */
+static void lex( const WCHAR * t, LONG n, LONG from, LONG to, LEXEMIT emit, void * ctx, BOOL bC, LEXCK * ck )
 {
    LONG pos = 0;
    BOOL atLineStart = TRUE, inC = bC;
 
    if( to > n )
       to = n;
+   if( ck && ck->n > 0 && ck->pos[ 0 ] <= from )
+   {
+      int lo = 0, hi = ck->n - 1;
+      while( lo < hi )   /* the last checkpoint <= from */
+      {
+         int mid = ( lo + hi + 1 ) / 2;
+         if( ck->pos[ mid ] <= from )
+            lo = mid;
+         else
+            hi = mid - 1;
+      }
+      pos = ck->pos[ lo ];
+      inC = ck->inC[ lo ];
+   }
    while( pos < to )
    {
       WCHAR c = t[ pos ], d = pos + 1 < n ? t[ pos + 1 ] : 0;
@@ -206,6 +258,8 @@ static void lex( const WCHAR * t, LONG n, LONG from, LONG to, LEXEMIT emit, void
       {
          pos++;
          atLineStart = TRUE;
+         if( ck && pos >= ( ck->n ? ck->pos[ ck->n - 1 ] : 0 ) + LEX_CKSTEP )
+            lexck_add( ck, pos, inC );
          continue;
       }
       if( c == ' ' || c == '\t' )
@@ -369,6 +423,8 @@ typedef struct _EDDOC
    WCHAR *          text;
    LONG             len, textVer, ver;
    LONG             hlFrom, hlTo, hlVer;
+   LEXCK            ck;                 /* lexer checkpoints for text version ckVer */
+   LONG             ckVer;
    int              firstLine, lineCount, caretLine, gutterW;
    BOOL             bModified, inHL, bC, bStatusDue;
 } EDDOC;
@@ -546,7 +602,66 @@ static void ed_setsel( EDDOC * d, LONG s, LONG e )
 
 /* ------------------------------------------------------------------ colouring */
 
-typedef struct { EDDOC * d; const COLORREF * pal; } HLCTX;
+/* colouring: one range moved over the text and a font per style that sets only the
+   colour, bold and italic (2 calls a token instead of creating a range and a font) */
+static void ed_style( ITextDocument * pDoc, LONG s, LONG e, int st, const COLORREF * pal );
+typedef struct { EDDOC * d; const COLORREF * pal; ITextRange * r; ITextFont * f[ ST_COUNT ]; } HLCTX;
+
+static void hl_end( HLCTX * c )
+{
+   int i;
+   for( i = 0; i < ST_COUNT; i++ )
+      if( c->f[ i ] )
+      {
+         ITextFont_Release( c->f[ i ] );
+         c->f[ i ] = NULL;
+      }
+   if( c->r )
+   {
+      ITextRange_Release( c->r );
+      c->r = NULL;
+   }
+}
+
+static void hl_begin( HLCTX * c, EDDOC * d )
+{
+   ITextFont * f0 = NULL;
+   int i;
+   memset( c, 0, sizeof( HLCTX ) );
+   c->d = d;
+   c->pal = ed_pal( d->host );
+   if( ITextDocument_Range( d->pDoc, 0, 0, &c->r ) != S_OK || ! c->r )
+   {
+      c->r = NULL;
+      return;
+   }
+   if( ITextRange_GetFont( c->r, &f0 ) != S_OK || ! f0 )
+      return;
+   for( i = 0; i < ST_COUNT; i++ )
+   {
+      if( ITextFont_GetDuplicate( f0, &c->f[ i ] ) == S_OK && c->f[ i ] )
+      {
+         ITextFont_Reset( c->f[ i ], tomUndefined );   /* only what is set below changes */
+         ITextFont_SetForeColor( c->f[ i ], ( long ) c->pal[ i ] );
+         ITextFont_SetBold( c->f[ i ], s_bold[ i ] ? tomTrue : tomFalse );
+         ITextFont_SetItalic( c->f[ i ], s_italic[ i ] ? tomTrue : tomFalse );
+      }
+      else
+         c->f[ i ] = NULL;
+   }
+   ITextFont_Release( f0 );
+}
+
+static void hl_set( HLCTX * c, LONG s, LONG e, int st )
+{
+   if( c->r && c->f[ st ] )
+   {
+      ITextRange_SetRange( c->r, s, e );
+      ITextRange_SetFont( c->r, c->f[ st ] );
+   }
+   else
+      ed_style( c->d->pDoc, s, e, st, c->pal );
+}
 
 static void ed_style( ITextDocument * pDoc, LONG s, LONG e, int st, const COLORREF * pal )
 {
@@ -567,56 +682,49 @@ static void ed_style( ITextDocument * pDoc, LONG s, LONG e, int st, const COLORR
 
 static void hl_emit( void * ctx, LONG s, LONG e, int st )
 {
-   HLCTX * c = ( HLCTX * ) ctx;
-   ed_style( c->d->pDoc, s, e, st, c->pal );
+   hl_set( ( HLCTX * ) ctx, s, e, st );
 }
 
-/* colours the visible lines (and one screen above and below); bForce: even if done */
-static DWORD s_hlMs = 0, s_hlRuns = 0;   /* tests (IDEED_KEYS): time spent colouring, and how often */
-static void ed_highlight_( EDDOC * d, BOOL bForce );
-static void ed_highlight( EDDOC * d, BOOL bForce )
+/* lexer checkpoints of the current text (ed_fetch first) */
+static LEXCK * ed_ck( EDDOC * d )
 {
-   DWORD t = GetTickCount();
-   ed_highlight_( d, bForce );
-   s_hlMs += GetTickCount() - t;
+   if( d->ckVer != d->textVer )
+   {
+      lexck_reset( &d->ck );
+      d->ckVer = d->textVer;
+   }
+   return &d->ck;
 }
-static void ed_highlight_( EDDOC * d, BOOL bForce )
+
+static double s_hlMs = 0, s_hlMax = 0;   /* tests (IDEED_KEYS): colouring time and longest run, ms */
+static DWORD  s_hlRuns = 0;
+static int    s_hlPath = 0;                     /* tests: which path coloured (0 full, 1 down, 2 up, 3 jump, 4 margins) */
+static double s_pathMs[ 5 ], s_pathMax[ 5 ];
+static int    s_pathRuns[ 5 ];
+static double ed_ms( void )
 {
-   RECT rc;
-   POINTL pt;
-   LONG first, last, cnt, a, b, cpA, cpB, cpBottom, margin, mask, cnt0 = 0;
+   static LARGE_INTEGER f;
+   LARGE_INTEGER c;
+   if( f.QuadPart == 0 )
+      QueryPerformanceFrequency( &f );
+   QueryPerformanceCounter( &c );
+   return ( double ) c.QuadPart * 1000.0 / ( double ) f.QuadPart;
+}
+
+/* colours [cpA, cpB) (line starts) and adds it to the coloured range */
+static void ed_colour( EDDOC * d, LONG cpA, LONG cpB )
+{
+   LONG mask, cnt0 = 0;
    BOOL bMod;
    HLCTX ctx;
+   double t0 = ed_ms(), t;
 
-   if( ! d || d->inHL || ! d->pDoc )
-      return;
-   first = ( LONG ) SendMessageW( d->hRich, EM_GETFIRSTVISIBLELINE, 0, 0 );
-   GetClientRect( d->hRich, &rc );
-   pt.x = 0;
-   pt.y = rc.bottom > 0 ? rc.bottom - 1 : 0;
-   cpBottom = ( LONG ) SendMessageW( d->hRich, EM_CHARFROMPOS, 0, ( LPARAM ) &pt );
-   last = ed_linefromchar( d, cpBottom );
-   cnt = ed_linecount( d );
-   margin = last - first + 1;
-   a = first - margin < 0 ? 0 : first - margin;
-   b = last + margin >= cnt ? cnt - 1 : last + margin;
-   ed_fetch( d );
-   /* nothing to do while the visible lines are coloured: scrolling one line must not
-      colour three screens again (a held arrow key did that on every line) */
-   if( ! bForce && d->hlVer == d->ver )
-   {
-      LONG cpVisA = ed_lineindex( d, first );
-      LONG cpVisB = last + 1 < cnt ? ed_lineindex( d, last + 1 ) : d->len;
-      if( cpVisB > d->len )
-         cpVisB = d->len;
-      if( cpVisA >= d->hlFrom && cpVisB <= d->hlTo )
-         return;
-   }
-   cpA = ed_lineindex( d, a );
-   cpB = b + 1 < cnt ? ed_lineindex( d, b + 1 ) : d->len;
    if( cpB > d->len )
       cpB = d->len;
-
+   if( cpA < 0 )
+      cpA = 0;
+   if( cpB <= cpA )
+      return;
    s_hlRuns++;
    d->inHL = TRUE;
    mask = ( LONG ) SendMessageW( d->hRich, EM_GETEVENTMASK, 0, 0 );
@@ -625,13 +733,10 @@ static void ed_highlight_( EDDOC * d, BOOL bForce )
    ITextDocument_Freeze( d->pDoc, &cnt0 );
    ITextDocument_Undo( d->pDoc, tomSuspend, NULL );
 
-   ctx.d = d;
-   ctx.pal = ed_pal( d->host );
-   if( cpB > cpA )
-   {
-      ed_style( d->pDoc, cpA, cpB, ST_DEF, ctx.pal );
-      lex( d->text, d->len, cpA, cpB, hl_emit, &ctx, d->bC );
-   }
+   hl_begin( &ctx, d );
+   hl_set( &ctx, cpA, cpB, ST_DEF );
+   lex( d->text, d->len, cpA, cpB, hl_emit, &ctx, d->bC, ed_ck( d ) );
+   hl_end( &ctx );
 
    ITextDocument_Undo( d->pDoc, tomResume, NULL );
    ITextDocument_Unfreeze( d->pDoc, &cnt0 );
@@ -650,6 +755,116 @@ static void ed_highlight_( EDDOC * d, BOOL bForce )
       d->hlTo = cpB;
       d->hlVer = d->ver;
    }
+   t = ed_ms() - t0;
+   s_pathMs[ s_hlPath ] += t;
+   s_pathRuns[ s_hlPath ]++;
+   if( t > s_pathMax[ s_hlPath ] )
+      s_pathMax[ s_hlPath ] = t;
+   s_hlMs += t;
+   if( t > s_hlMax )
+      s_hlMax = t;
+}
+
+static LONG ed_linestart( EDDOC * d, LONG line, LONG cnt )
+{
+   LONG cp;
+   if( line < 0 )
+      return 0;
+   if( line >= cnt )
+      return d->len;
+   cp = ed_lineindex( d, line );
+   return cp < 0 || cp > d->len ? d->len : cp;
+}
+
+#define HL_AHEAD    2     /* lines coloured past the visible ones while scrolling */
+#define MG_TIMER    3     /* colours a screen above and below once scrolling pauses ... */
+#define MG_CHUNK    3     /* ... a few lines a tick, so that never stops the typing either */
+
+/* Colours what is visible. bForce: all of it again, and a screen above and below.
+   Otherwise (scrolling) only the visible lines not coloured yet, a few lines ahead,
+   so a held arrow key does the same small work on every line; the screens above and
+   below follow when scrolling pauses (MG_TIMER, ed_margins). */
+static void ed_highlight( EDDOC * d, BOOL bForce )
+{
+   RECT rc;
+   POINTL pt;
+   LONG first, last, cnt, cpVisA, cpVisB, margin;
+
+   if( ! d || d->inHL || ! d->pDoc )
+      return;
+   first = ( LONG ) SendMessageW( d->hRich, EM_GETFIRSTVISIBLELINE, 0, 0 );
+   GetClientRect( d->hRich, &rc );
+   pt.x = 0;
+   pt.y = rc.bottom > 0 ? rc.bottom - 1 : 0;
+   last = ed_linefromchar( d, ( LONG ) SendMessageW( d->hRich, EM_CHARFROMPOS, 0, ( LPARAM ) &pt ) );
+   cnt = ed_linecount( d );
+   ed_fetch( d );
+   cpVisA = ed_linestart( d, first, cnt );
+   cpVisB = ed_linestart( d, last + 1, cnt );
+
+   if( bForce || d->hlVer != d->ver )
+   {
+      margin = last - first + 1;
+      s_hlPath = 0;
+      ed_colour( d, ed_linestart( d, first - margin, cnt ), ed_linestart( d, last + 1 + margin, cnt ) );
+      return;
+   }
+   SetTimer( d->hView, MG_TIMER, 150, NULL );   /* margins: after scrolling pauses */
+   if( cpVisA >= d->hlFrom && cpVisB <= d->hlTo )
+      return;   /* all visible lines are coloured */
+
+   s_hlPath = 1;
+   if( cpVisA >= d->hlFrom && cpVisA <= d->hlTo )        /* scrolled down into new lines */
+      ed_colour( d, d->hlTo, ed_linestart( d, last + 1 + HL_AHEAD, cnt ) );
+   else if( cpVisB <= d->hlTo && cpVisB >= d->hlFrom && ( s_hlPath = 2 ) != 0 )   /* scrolled up */
+      ed_colour( d, ed_linestart( d, first - HL_AHEAD, cnt ), d->hlFrom );
+   else                                                  /* jumped */
+   {
+      d->hlVer = -1;   /* a new coloured range */
+      s_hlPath = 3;
+      ed_colour( d, ed_linestart( d, first - HL_AHEAD, cnt ), ed_linestart( d, last + 1 + HL_AHEAD, cnt ) );
+   }
+}
+
+/* a screen above and below the visible lines, once scrolling pauses: MG_CHUNK lines a
+   tick (below first), the timer again until done. TRUE: more to do */
+static BOOL ed_margins( EDDOC * d )
+{
+   RECT rc;
+   POINTL pt;
+   LONG first, last, cnt, margin, cpA, cpB, lnTo, lnFrom;
+
+   if( ! d || d->inHL || ! d->pDoc )
+      return FALSE;
+   first = ( LONG ) SendMessageW( d->hRich, EM_GETFIRSTVISIBLELINE, 0, 0 );
+   GetClientRect( d->hRich, &rc );
+   pt.x = 0;
+   pt.y = rc.bottom > 0 ? rc.bottom - 1 : 0;
+   last = ed_linefromchar( d, ( LONG ) SendMessageW( d->hRich, EM_CHARFROMPOS, 0, ( LPARAM ) &pt ) );
+   cnt = ed_linecount( d );
+   ed_fetch( d );
+   if( d->hlVer != d->ver )
+   {
+      ed_highlight( d, FALSE );
+      return FALSE;
+   }
+   margin = last - first + 1;
+   cpA = ed_linestart( d, first - margin, cnt );
+   cpB = ed_linestart( d, last + 1 + margin, cnt );
+   s_hlPath = 4;
+   if( cpB > d->hlTo && d->hlTo >= cpA )
+   {
+      lnTo = ed_linefromchar( d, d->hlTo );
+      ed_colour( d, d->hlTo, ed_linestart( d, lnTo + MG_CHUNK, cnt ) );
+      return TRUE;
+   }
+   if( cpA < d->hlFrom && d->hlFrom <= cpB )
+   {
+      lnFrom = ed_linefromchar( d, d->hlFrom );
+      ed_colour( d, ed_linestart( d, lnFrom - MG_CHUNK, cnt ), d->hlFrom );
+      return TRUE;
+   }
+   return FALSE;
 }
 
 /* ------------------------------------------------------------------ view */
@@ -1521,7 +1736,7 @@ static BOOL ac_open( EDDOC * d, BOOL bForced )
    {
       cs.pos = start - 1;
       cs.st = ST_DEF;
-      lex( d->text, d->len, start - 1, start, ac_styleemit, &cs, d->bC );
+      lex( d->text, d->len, start - 1, start, ac_styleemit, &cs, d->bC, ed_ck( d ) );
       if( cs.st == ST_STR || cs.st == ST_COMMENT )
          return FALSE;
    }
@@ -1575,11 +1790,35 @@ static int s_fakeMods = -1;
 static BOOL s_acEat = FALSE;   /* the WM_CHAR of a key the completion list used */
 static int ed_curmods( void ) { return s_fakeMods >= 0 ? s_fakeMods : ed_mods(); }
 
+/* IDEED_HOLDKEY (tests): when each posted key was handled, and when the text was painted */
+static BOOL     s_holdRec = FALSE;
+static double * s_holdDone = NULL;
+static int      s_holdK = 0, s_holdN = 0;
+static double   s_holdLastPaint = 0, s_holdMaxGap = 0;
+static int      s_holdPaints = 0, s_holdGapAt = 0, s_holdLagAt = 0;
+
 static LRESULT CALLBACK ed_richproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR uId, DWORD_PTR ref )
 {
    EDDOC * d = ( EDDOC * ) ref;
    LRESULT r;
    ( void ) uId;
+
+   if( s_holdRec )
+   {
+      if( msg == WM_KEYDOWN && s_holdK < s_holdN )
+         s_holdDone[ s_holdK++ ] = ed_ms();
+      else if( msg == WM_PAINT )
+      {
+         double t = ed_ms();
+         if( s_holdPaints > 0 && t - s_holdLastPaint > s_holdMaxGap )
+         {
+            s_holdMaxGap = t - s_holdLastPaint;
+            s_holdGapAt = s_holdK;
+         }
+         s_holdLastPaint = t;
+         s_holdPaints++;
+      }
+   }
 
    switch( msg )
    {
@@ -1833,6 +2072,13 @@ static LRESULT CALLBACK ed_viewproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             ed_highlight( d, FALSE );
             return 0;
          }
+         if( wParam == MG_TIMER && d )
+         {
+            KillTimer( hWnd, MG_TIMER );
+            if( ed_margins( d ) )
+               SetTimer( hWnd, MG_TIMER, 20, NULL );
+            return 0;
+         }
          if( wParam == ST_TIMER && d )
          {
             KillTimer( hWnd, ST_TIMER );
@@ -1851,6 +2097,8 @@ static LRESULT CALLBACK ed_viewproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
                ITextDocument_Release( d->pDoc );
             if( d->text )
                hb_xfree( d->text );
+            lexck_free( &d->ck );
+            KillTimer( hWnd, MG_TIMER );
             hb_xfree( d );
             SetWindowLongPtrW( hWnd, GWLP_USERDATA, 0 );
          }
@@ -2785,7 +3033,7 @@ HB_FUNC( IDEED_TYPE )
    hb_xfree( w );
 }
 
-/* IDEED_KEYS( hView, nVK, nTimes [, @nKeyMs, @nTextPaintMs, @nOtherPaintMs, @nColourMs, @nColourRuns] )
+/* IDEED_KEYS( hView, nVK, nTimes [, @nKeyMs, @nTextPaintMs, @nOtherPaintMs, @nColourMs, @nColourRuns, @nLongestColourMs, @nSlowestKeyMs] )
    -> nMilliseconds: a held key (tests): nTimes key-downs with the repeat bit, each painted
    as the screen would be, then the key-up */
 HB_FUNC( IDEED_KEYS )
@@ -2793,42 +3041,155 @@ HB_FUNC( IDEED_KEYS )
    EDDOC * d = ed_doc( PARHWND( 1 ) );
    int i, n = hb_parni( 3 );
    WPARAM vk = ( WPARAM ) hb_parni( 2 );
-   DWORD t0 = GetTickCount();
+   double t0 = ed_ms(), t1, tStart, tKey = 0, tRich = 0, tRest = 0, tWorst = 0;
    if( ! d )
    {
       hb_retni( -1 );
       return;
    }
-   DWORD tKey = 0, tRich = 0, tRest = 0, t1;
    s_hlMs = 0;
    s_hlRuns = 0;
+   s_hlMax = 0;
    s_fakeMods = 0;
    for( i = 0; i < n; i++ )
    {
-      t1 = GetTickCount();
+      t1 = tStart = ed_ms();
       SendMessageW( d->hRich, WM_KEYDOWN, vk, i ? 0x40000001 : 1 );
-      tKey += GetTickCount() - t1; t1 = GetTickCount();
+      tKey += ed_ms() - t1; t1 = ed_ms();
       UpdateWindow( d->hRich );
-      tRich += GetTickCount() - t1; t1 = GetTickCount();
+      tRich += ed_ms() - t1; t1 = ed_ms();
       UpdateWindow( d->hView );
       if( d->host && d->host->hHost )
          UpdateWindow( GetAncestor( d->host->hHost, GA_ROOT ) );
-      tRest += GetTickCount() - t1;
+      tRest += ed_ms() - t1;
+      if( ed_ms() - tStart > tWorst )
+         tWorst = ed_ms() - tStart;
    }
    SendMessageW( d->hRich, WM_KEYUP, vk, 0xC0000001 );
    s_fakeMods = -1;
-   if( hb_pcount() >= 7 )
-   {
-      hb_storni( ( int ) s_hlMs, 7 );
-      hb_storni( ( int ) s_hlRuns, 8 );
-   }
    if( hb_pcount() >= 4 )
    {
       hb_storni( ( int ) tKey, 4 );
       hb_storni( ( int ) tRich, 5 );
       hb_storni( ( int ) tRest, 6 );
    }
-   hb_retni( ( int ) ( GetTickCount() - t0 ) );
+   if( hb_pcount() >= 7 )
+   {
+      hb_storni( ( int ) s_hlMs, 7 );
+      hb_storni( ( int ) s_hlRuns, 8 );
+      hb_storni( ( int ) s_hlMax, 9 );
+   }
+   if( hb_pcount() >= 10 )
+      hb_storni( ( int ) tWorst, 10 );
+   hb_retni( ( int ) ( ed_ms() - t0 ) );
+}
+
+/* IDEED_HOLDKEY( hView, nVK, nTimes, nEveryMs, @nMaxLagMs, @nDrainMs, @nMaxPaintGapMs, @nPaints )
+   (tests) a key held as the keyboard does it: a key-down posted every nEveryMs while the
+   messages are pumped as in the program's own loop. nMaxLagMs: the latest a key was handled
+   after it was posted; nDrainMs: how long the keys went on after the last one (the "still
+   scrolling after release"); nMaxPaintGapMs: the longest time the text was not repainted */
+HB_FUNC( IDEED_HOLDKEY )
+{
+   EDDOC * d = ed_doc( PARHWND( 1 ) );
+   int i = 0, n = hb_parni( 3 ), every = hb_parni( 4 );
+   WPARAM vk = ( WPARAM ) hb_parni( 2 );
+   double * posted, next, now, maxLag = 0, tEnd;
+   MSG m;
+   if( ! d || n <= 0 )
+      return;
+   posted = ( double * ) hb_xgrab( sizeof( double ) * n );
+   s_holdDone = ( double * ) hb_xgrab( sizeof( double ) * n );
+   s_holdK = 0;
+   s_holdN = n;
+   s_holdMaxGap = 0;
+   s_holdPaints = 0;
+   s_hlMs = 0;
+   s_hlMax = 0;
+   s_holdGapAt = 0;
+   s_holdLagAt = 0;
+   s_holdRec = TRUE;
+   s_fakeMods = 0;
+   SetFocus( d->hRich );
+   next = ed_ms();
+   while( i < n )
+   {
+      now = ed_ms();
+      if( now >= next )
+      {
+         PostMessageW( d->hRich, WM_KEYDOWN, vk, i ? 0x40000001 : 1 );
+         posted[ i++ ] = now;
+         next += every;
+         continue;
+      }
+      if( PeekMessageW( &m, NULL, 0, 0, PM_REMOVE ) )
+      {
+         TranslateMessage( &m );
+         DispatchMessageW( &m );
+      }
+      else
+         MsgWaitForMultipleObjects( 0, NULL, FALSE, ( DWORD ) ( next - now ) + 1, QS_ALLINPUT );
+   }
+   tEnd = ed_ms() + 15000;
+   while( s_holdK < n && ed_ms() < tEnd )   /* the keys still queued */
+   {
+      if( PeekMessageW( &m, NULL, 0, 0, PM_REMOVE ) )
+      {
+         TranslateMessage( &m );
+         DispatchMessageW( &m );
+      }
+      else
+         MsgWaitForMultipleObjects( 0, NULL, FALSE, 10, QS_ALLINPUT );
+   }
+   tEnd = ed_ms() + 300;
+   while( ed_ms() < tEnd )   /* the last paints */
+   {
+      if( PeekMessageW( &m, NULL, 0, 0, PM_REMOVE ) )
+      {
+         TranslateMessage( &m );
+         DispatchMessageW( &m );
+      }
+      else
+         MsgWaitForMultipleObjects( 0, NULL, FALSE, 10, QS_ALLINPUT );
+   }
+   s_holdRec = FALSE;
+   s_fakeMods = -1;
+   PostMessageW( d->hRich, WM_KEYUP, vk, 0xC0000001 );
+   for( i = 0; i < s_holdK; i++ )
+      if( s_holdDone[ i ] - posted[ i ] > maxLag )
+      {
+         maxLag = s_holdDone[ i ] - posted[ i ];
+         s_holdLagAt = i + 1;
+      }
+   hb_storni( ( int ) maxLag, 5 );
+   hb_storni( s_holdK > 0 ? ( int ) ( s_holdDone[ s_holdK - 1 ] - posted[ n - 1 ] ) : -1, 6 );
+   hb_storni( ( int ) s_holdMaxGap, 7 );
+   hb_storni( s_holdPaints, 8 );
+   hb_storni( s_holdGapAt, 9 );    /* keys handled when the longest gap ended */
+   hb_storni( s_holdLagAt, 10 );   /* the key handled the latest */
+   hb_storni( ( int ) s_hlMs, 11 );  /* colouring, ms */
+   hb_storni( ( int ) s_hlMax, 12 ); /* the longest colouring, ms */
+   hb_xfree( posted );
+   hb_xfree( s_holdDone );
+   s_holdDone = NULL;
+}
+
+/* IDEED_HLSTATS( [lReset] ) -> cText (tests): colouring per path */
+HB_FUNC( IDEED_HLSTATS )
+{
+   static const char * names[ 5 ] = { "full", "down", "up", "jump", "margins" };
+   char buf[ 400 ];
+   int i, k = 0;
+   buf[ 0 ] = 0;
+   for( i = 0; i < 5; i++ )
+      k += snprintf( buf + k, sizeof( buf ) - k, "%s %d runs %d ms (max %d); ", names[ i ], s_pathRuns[ i ], ( int ) s_pathMs[ i ], ( int ) s_pathMax[ i ] );
+   hb_retc( buf );
+   if( hb_parl( 1 ) )
+   {
+      memset( s_pathMs, 0, sizeof( s_pathMs ) );
+      memset( s_pathMax, 0, sizeof( s_pathMax ) );
+      memset( s_pathRuns, 0, sizeof( s_pathRuns ) );
+   }
 }
 
 /* IDEED_SETSEL( hView, nStart, nEnd ) : 0-based (tests) */
