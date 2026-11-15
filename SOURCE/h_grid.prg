@@ -144,7 +144,7 @@ Function _DefineGrid (	ControlName	, ;
 			lockcolumns,;
 			OnClick, OnKey, InplaceEditOption,; 
          Notrans, NotransHeader,;
-         aDynamicFont, OnCheckBoxClicked, OnInplaceEditEvent )
+         aDynamicFont, OnCheckBoxClicked, OnInplaceEditEvent, aDragDrop )
 *-----------------------------------------------------------------------------*
 Local i , cParentForm , mVar, wBitmap , k
 Local ControlHandle
@@ -568,6 +568,7 @@ ENDIF
 		_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := nHeaderImageListHandle
 	EndIf
 
+	_HMG_DragSetup( k, aDragDrop )   // HMG5 5.1: drag and drop
 
 Return Nil
 

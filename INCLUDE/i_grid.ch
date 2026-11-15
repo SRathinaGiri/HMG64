@@ -201,6 +201,10 @@
       [ DYNAMICFONT <aDynamicFont> ] ;
       [ ON CHECKBOXCLICKED <OnCheckBoxClicked> ] ;
       [ ON INPLACEEDITEVENT <OnInplaceEditEvent> ];
+		[ <dragsource : DRAGSOURCE> ] ;
+		[ <droptarget : DROPTARGET> ] ;
+		[ <dragremove : DRAGREMOVE> ] ;
+		[ ON DROP <ondrop> ] ;
 	=>;
 _DefineGrid ( <"name"> , 		;
 		<"parent"> , 		;
@@ -259,7 +263,8 @@ _DefineGrid ( <"name"> , 		;
       <{onclick}> ,;
       <{onkey}> ,;
       <EditOption>, ;
-      <.notrans.> , <.notransheader.> , <aDynamicFont> , <{OnCheckBoxClicked}> , <{OnInplaceEditEvent}> ) 
+      <.notrans.> , <.notransheader.> , <aDynamicFont> , <{OnCheckBoxClicked}> , <{OnInplaceEditEvent}> , ;
+      { <.dragsource.>, <.droptarget.>, <.dragremove.>, <{ondrop}> } ) 
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -321,6 +326,10 @@ _DefineGrid ( <"name"> , 		;
       [ DYNAMICFONT <aDynamicFont> ] ;
       [ ON CHECKBOXCLICKED <OnCheckBoxClicked> ] ;
       [ ON INPLACEEDITEVENT <OnInplaceEditEvent> ];
+		[ <dragsource : DRAGSOURCE> ] ;
+		[ <droptarget : DROPTARGET> ] ;
+		[ <dragremove : DRAGREMOVE> ] ;
+		[ ON DROP <ondrop> ] ;
 	=>;
 _DefineGrid ( <"name"> , 	;
 		<"parent"> , 	;
@@ -379,7 +388,8 @@ _DefineGrid ( <"name"> , 	;
       <{onclick}> ,;
       <{onkey}> ,;
       <EditOption> ,;
-      <.notrans.> , <.notransheader.> , <aDynamicFont> , <{OnCheckBoxClicked}> , <{OnInplaceEditEvent}> ) 
+      <.notrans.> , <.notransheader.> , <aDynamicFont> , <{OnCheckBoxClicked}> , <{OnInplaceEditEvent}> , ;
+      { <.dragsource.>, <.droptarget.>, <.dragremove.>, <{ondrop}> } ) 
 
 
 

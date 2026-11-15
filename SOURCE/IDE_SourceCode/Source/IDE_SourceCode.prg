@@ -3080,6 +3080,7 @@ Private macrovar
 		__MVPUT( ControlName + 'MultiSelect' , '.F.' )
 		__MVPUBLIC ( ControlName + 'DragItems' ) 
 		__MVPUT( ControlName + 'DragItems' , '.F.' )
+		IDE_DragDefaults ( ControlName )   // HMG5 5.1: DragSource, DropTarget, DragRemove, OnDrop
 
 	///////////////////////////////////////////////////////////////////////
 	Case CurrentControl == 5
@@ -3334,6 +3335,7 @@ Private macrovar
 
 		__MVPUBLIC ( ControlName + 'LockColumns' ) 
 		__MVPUT( ControlName + 'LockColumns' , 'Nil' )
+		IDE_DragDefaults ( ControlName )   // HMG5 5.1: DragSource, DropTarget, DragRemove, OnDrop
 
 
 	///////////////////////////////////////////////////////////////////////
@@ -7005,6 +7007,12 @@ Local f
 		.Or. ;
 		PropertyName == 'DRAGITEMS' ;
 		.Or. ;
+		PropertyName == 'DRAGSOURCE' ;
+		.Or. ;
+		PropertyName == 'DROPTARGET' ;
+		.Or. ;
+		PropertyName == 'DRAGREMOVE' ;
+		.Or. ;
 		PropertyName == 'VIRTUAL SIZED' ;
 		.Or. ;
 		PropertyName == 'ITEMIDS' ;
@@ -7765,6 +7773,7 @@ Local f
 						__MVPUBLIC ( Result + 'DragItems' ) 
 						__MVPUT( Result + 'DragItems' ,  __MVGET ( PreviousValue + 'DragItems' ) )
 						__MVXRELEASE( PreviousValue + 'DragItems' )
+						IDE_DragRename ( PreviousValue , Result )   // HMG5 5.1
 
 						__MVPUBLIC ( Result + 'Items' ) 
 						__MVPUT( Result + 'Items' ,  __MVGET ( PreviousValue + 'Items' ) )
@@ -7967,6 +7976,10 @@ Local f
 
 				ElseIf PropertyName == 'MULTISELECT'
 					__MVPUT( SelectedControlName + 'MultiSelect' , Result )
+					SelectControl (SelectedControlName)
+
+				ElseIf PropertyName == 'DRAGSOURCE' .Or. PropertyName == 'DROPTARGET' .Or. PropertyName == 'DRAGREMOVE'   // HMG5 5.1
+					__MVPUT( SelectedControlName + PropertyName , Result )
 					SelectControl (SelectedControlName)
 
 				ElseIf PropertyName == 'DRAGITEMS'
@@ -8630,6 +8643,7 @@ Local f
 						__MVPUBLIC ( Result + 'LockColumns' ) 
 						__MVPUT( Result + 'LockColumns' ,  __MVGET ( PreviousValue + 'LockColumns' ) )
 						__MVXRELEASE( PreviousValue + 'LockColumns' )
+						IDE_DragRename ( PreviousValue , Result )   // HMG5 5.1
 
 						*
 
@@ -8884,6 +8898,10 @@ Local f
 
 				*
 
+
+				ElseIf PropertyName == 'DRAGSOURCE' .Or. PropertyName == 'DROPTARGET' .Or. PropertyName == 'DRAGREMOVE'   // HMG5 5.1
+					__MVPUT( SelectedControlName + PropertyName , Result )
+					SelectControl (SelectedControlName)
 
 				ElseIf PropertyName == 'LOCKCOLUMNS'
 					__MVPUT( SelectedControlName + 'LOCKCOLUMNS' , Result )
@@ -15876,6 +15894,7 @@ _hmgide_CurrentSplitBox := ''
 			__MVPUT( Name + 'Break' , '.F.' )
 			__MVPUBLIC ( Name + 'DragItems' ) 
 			__MVPUT( Name + 'DragItems' , '.F.' )
+			IDE_DragDefaults ( Name )
 
 		ElseIf	HMG_UPPER (Line) = 'DEFINE COMBOBOX'
 			ControlType := 'COMBOBOX'
@@ -16117,6 +16136,7 @@ _hmgide_CurrentSplitBox := ''
 
 			__MVPUBLIC ( Name + 'LockColumns' ) 
 			__MVPUT( Name + 'LockColumns' , 'Nil' )
+			IDE_DragDefaults ( Name )
 
 
 
@@ -19335,6 +19355,18 @@ _hmgide_CurrentSplitBox := ''
 
 			EndIf
 
+
+		///////////////////////////////////////////////////////////////
+		// HMG5 5.1: DRAGSOURCE, DROPTARGET, DRAGREMOVE, ONDROP (LISTBOX, GRID)
+		///////////////////////////////////////////////////////////////
+
+		ElseIf	( ControlType == 'LISTBOX' .Or. ControlType == 'GRID' ) .And. IDE_DragIsLine ( Line )
+
+			IDE_DragParse ( Name , Line )
+
+			if _hmgide_SplitBoxProcessing == .T.
+				_hmgide_CurrentSplitBox := _hmgide_CurrentSplitBox + Space(12) + ALLTRIM ( Line ) + CRLF
+			endif
 
 		///////////////////////////////////////////////////////////////
 		// DRAGITEMS PROPERTY
@@ -27540,6 +27572,7 @@ Local x
 		Code := Code + filler + '        MULTISELECT ' + __MVGET ( _HMG_SYSDATA [   2 ] [ i ] + 'MultiSelect' ) + CRLF
 
 		Code := Code + filler + '        DRAGITEMS ' + __MVGET ( _HMG_SYSDATA [   2 ] [ i ] + 'DragItems' ) + CRLF
+		Code := Code + IDE_DragCode ( _HMG_SYSDATA [   2 ] [ i ] , filler )   // HMG5 5.1
 
 	//.....................................................................
 	ElseIf ControlType = 'COMBOBOX'
@@ -27714,6 +27747,7 @@ Local x
 		Code := Code + filler + '        DYNAMICDISPLAY ' + __MVGET ( _HMG_SYSDATA [   2 ] [ i ] + 'DynamicDisplay' ) + CRLF
 		Code := Code + filler + '        ONSAVE ' + __MVGET ( _HMG_SYSDATA [   2 ] [ i ] + 'OnSave' ) + CRLF
 		Code := Code + filler + '        LOCKCOLUMNS ' + __MVGET ( _HMG_SYSDATA [   2 ] [ i ] + 'LockColumns' ) + CRLF
+		Code := Code + IDE_DragCode ( _HMG_SYSDATA [   2 ] [ i ] , filler )   // HMG5 5.1
 
 	//.....................................................................
 	ElseIf ControlType = 'SLIDER'
@@ -29203,6 +29237,9 @@ Local x
 		Properties.Grid_1.AddItem ( {'BackColor', __MVGET ( Name + 'BackColor' ) } )
 		Properties.Grid_1.AddItem ( {'Col',ALLTRIM(STR(Col))} )
 		Properties.Grid_1.AddItem ( {'DragItems', __MVGET ( Name + 'DragItems' ) } )
+		Properties.Grid_1.AddItem ( {'DragRemove', __MVGET ( Name + 'DragRemove' ) } )
+		Properties.Grid_1.AddItem ( {'DragSource', __MVGET ( Name + 'DragSource' ) } )
+		Properties.Grid_1.AddItem ( {'DropTarget', __MVGET ( Name + 'DropTarget' ) } )
 		Properties.Grid_1.AddItem ( {'FontBold', __MVGET ( Name + 'FontBold' ) } )
 		Properties.Grid_1.AddItem ( {'FontColor', __MVGET ( Name + 'FontColor' ) } )
 		Properties.Grid_1.AddItem ( {'FontItalic', __MVGET ( Name + 'FontItalic' ) } )
@@ -29226,6 +29263,7 @@ Local x
 		Properties.Grid_2.DeleteAllItems
 		Properties.Grid_2.AddItem ( {'OnChange', __MVGET ( Name + 'OnChange' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnDblClick', __MVGET ( Name + 'OnDblClick' )  , '+' , '-' , '...'} )
+		Properties.Grid_2.AddItem ( {'OnDrop', __MVGET ( Name + 'OnDrop' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnGotFocus', __MVGET ( Name + 'OnGotFocus' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnLostFocus', __MVGET ( Name + 'OnLostFocus'  ) , '+' , '-' , '...'} )
 
@@ -29323,6 +29361,9 @@ Local x
 		Properties.Grid_1.AddItem ( {'FontSize', __MVGET ( Name + 'FontSize' ) } )
 		Properties.Grid_1.AddItem ( {'FontStrikeOut', __MVGET ( Name + 'FontStrikeOut' ) } )
 		Properties.Grid_1.AddItem ( {'Headers',  __MVGET ( Name + 'Headers' ) } )
+		Properties.Grid_1.AddItem ( {'DragRemove', __MVGET ( Name + 'DragRemove' ) } )
+		Properties.Grid_1.AddItem ( {'DragSource', __MVGET ( Name + 'DragSource' ) } )
+		Properties.Grid_1.AddItem ( {'DropTarget', __MVGET ( Name + 'DropTarget' ) } )
 		Properties.Grid_1.AddItem ( {'HeaderImages',  __MVGET ( Name + 'HeaderImages' ) } )
 		Properties.Grid_1.AddItem ( {'Height',ALLTRIM(STR(Height))} )
 		Properties.Grid_1.AddItem ( {'HelpId',  __MVGET ( Name + 'HelpId' ) } )
@@ -29346,6 +29387,7 @@ Local x
 		Properties.Grid_2.DeleteAllItems
 		Properties.Grid_2.AddItem ( {'OnChange', __MVGET ( Name + 'OnChange' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnDblClick', __MVGET ( Name + 'OnDblClick' )  , '+' , '-' , '...'} )
+		Properties.Grid_2.AddItem ( {'OnDrop', __MVGET ( Name + 'OnDrop' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnGotFocus', __MVGET ( Name + 'OnGotFocus' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnHeadClick', __MVGET ( Name + 'OnHeadClick' )  , '+' , '-' , '...'} )
 		Properties.Grid_2.AddItem ( {'OnLostFocus', __MVGET ( Name + 'OnLostFocus' )  , '+' , '-' , '...'} )
@@ -45728,3 +45770,65 @@ Local d
 RETURN d
 
 
+
+
+//--------------------------------------------------------------------------
+// HMG5 5.1: drag and drop properties of LISTBOX and GRID: DragSource, DropTarget,
+// DragRemove and the event OnDrop. They are written to the .fmg only when set, so a
+// form that does not use them still opens in HMG 5.0.
+//--------------------------------------------------------------------------
+PROCEDURE IDE_DragDefaults ( cName )
+   LOCAL c
+   FOR EACH c IN { 'DragSource' , 'DropTarget' , 'DragRemove' }
+      __MVPUBLIC ( cName + c )
+      __MVPUT ( cName + c , '.F.' )
+   NEXT
+   __MVPUBLIC ( cName + 'OnDrop' )
+   __MVPUT ( cName + 'OnDrop' , 'Nil' )
+RETURN
+
+PROCEDURE IDE_DragRename ( cOld , cNew )
+   LOCAL c
+   FOR EACH c IN { 'DragSource' , 'DropTarget' , 'DragRemove' , 'OnDrop' }
+      __MVPUBLIC ( cNew + c )
+      __MVPUT ( cNew + c , __MVGET ( cOld + c ) )
+      __MVXRELEASE ( cOld + c )
+   NEXT
+RETURN
+
+/* the .fmg lines (alternate syntax) */
+FUNCTION IDE_DragCode ( cName , filler )
+   LOCAL Code := '' , c , cEvent
+   FOR EACH c IN { 'DragSource' , 'DropTarget' , 'DragRemove' }
+      IF ALLTRIM ( HMG_UPPER ( __MVGET ( cName + c ) ) ) == '.T.'
+         Code += filler + '        ' + HMG_UPPER ( c ) + ' .T.' + CRLF
+      ENDIF
+   NEXT
+   cEvent := ALLTRIM ( __MVGET ( cName + 'OnDrop' ) )
+   IF ! Empty ( cEvent ) .And. ! ( HMG_UPPER ( cEvent ) == 'NIL' )
+      Code += filler + '        ONDROP ' + cEvent + CRLF
+   ENDIF
+RETURN Code
+
+FUNCTION IDE_DragIsLine ( cLine )
+   LOCAL cU := HMG_UPPER ( ALLTRIM ( cLine ) ) + ' '
+RETURN HB_ULEFT ( cU , 11 ) == 'DRAGSOURCE ' .Or. HB_ULEFT ( cU , 11 ) == 'DROPTARGET ' .Or. ;
+       HB_ULEFT ( cU , 11 ) == 'DRAGREMOVE ' .Or. HB_ULEFT ( cU , 7 ) == 'ONDROP ' .Or. ;
+       HB_ULEFT ( cU , 8 ) == 'ON DROP '
+
+PROCEDURE IDE_DragParse ( cName , cLine )
+   LOCAL cL := ALLTRIM ( cLine ) , cU , cVal , c
+   cU := HMG_UPPER ( cL )
+   IF HB_ULEFT ( cU , 8 ) == 'ON DROP '
+      __MVPUT ( cName + 'OnDrop' , ALLTRIM ( HB_USUBSTR ( cL , 9 ) ) )
+   ELSEIF HB_ULEFT ( cU , 7 ) == 'ONDROP '
+      __MVPUT ( cName + 'OnDrop' , ALLTRIM ( HB_USUBSTR ( cL , 8 ) ) )
+   ELSE
+      FOR EACH c IN { 'DragSource' , 'DropTarget' , 'DragRemove' }
+         IF HB_ULEFT ( cU , 11 ) == HMG_UPPER ( c ) + ' '
+            cVal := HMG_UPPER ( ALLTRIM ( HB_USUBSTR ( cL , 12 ) ) )
+            __MVPUT ( cName + c , iif ( cVal == '.T.' , '.T.' , '.F.' ) )
+         ENDIF
+      NEXT
+   ENDIF
+RETURN
