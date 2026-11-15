@@ -5,6 +5,11 @@
      small steps once scrolling pauses; colouring a word takes 2 calls instead of about 7; the lexer
      starts from checkpoints, not from the top of the file. tests\ide holds Down at 30 keys a second
      on dense code in a full window (IDEED_HOLDKEY) and checks how late any key is handled
+   - HMGEdit.exe: closing the Find window (Esc, Close or its X) closed the whole program. The editor
+     window and the Find window are shown without a message loop of their own, but closing them
+     posted the quit message that ends one, so HMGEdit's main loop ended. They are now activated
+     with lNotExitAppAtCloseForm. The self-test waits with IDEED_PUMP, which reports quit messages
+     (DO EVENTS drops them), and checks Esc as a hotkey, Esc as a key and the Close button
 
 -HMG 5.0.2 2026/11/15
    - Code editor (IDE and HMGEdit.exe): holding an arrow key scrolled slowly and went on after the

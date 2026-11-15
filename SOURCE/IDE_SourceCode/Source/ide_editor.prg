@@ -175,7 +175,9 @@ PROCEDURE IDE_EdShow()
    s_hHost := IDEED_CREATE( GetFormHandle( "IDE_Ed" ), 0, 0, 800, 600, HMG_IsDarkMode(), aFont[ 1 ], aFont[ 2 ], aFont[ 3 ], 4, HMG_SupportUnicode() )
    IDE_EdPlace()
    IDEED_FIT( s_hHost )
-   _ActivateWindow( { "IDE_Ed" }, .F. )
+   /* no message loop of its own (the IDE's or HMGEdit's runs it): .T., so closing it posts
+      no quit message, which would end that loop and with it the program */
+   _ActivateWindow( { "IDE_Ed" }, .F., .T. )
    IDE_EdPlace()          // again, now that the window has a visible frame (exact borders)
    IDEED_FIT( s_hHost )   // the status bar's height is known once the window is shown
 RETURN
@@ -616,7 +618,7 @@ STATIC PROCEDURE IDE_EdFindWindow( lReplace )
       @ 98, 365 BUTTON Btn_All CAPTION "Replace All" WIDTH 115 HEIGHT 26 ACTION IDE_EdReplaceAll()
       @ 128, 365 BUTTON Btn_Close CAPTION "Close" WIDTH 115 HEIGHT 26 ACTION IDE_EdFind.Release
    END WINDOW
-   _ActivateWindow( { "IDE_EdFind" }, .F. )
+   _ActivateWindow( { "IDE_EdFind" }, .F., .T. )   /* closing it must not post a quit message: see IDE_EdShow */
    IDE_EdFind.Txt_What.SetFocus
 RETURN
 
@@ -736,7 +738,7 @@ RETURN
 /* IDE.exe /edtest <out.txt> (tests/ide/run.ps1): the editor's file round trips, colours,
    undo, indent and search, written as "PASS name" / "FAIL name: why" lines */
 PROCEDURE IDE_EdSelfTest( cOut )
-   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText, nKey := 0, nRich := 0, nRest := 0, nHl := 0, nHlRuns := 0, nHlMax := 0, nWorst := 0
+   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText, nKey := 0, nRich := 0, nRest := 0, nHl := 0, nHlRuns := 0, nHlMax := 0, nWorst := 0, lQuit := .F.
    LOCAL aFiles := { ;
       { "utf8.prg",   "x := " + Chr( 34 ) + Chr( 195 ) + Chr( 169 ) + Chr( 34 ) + Chr( 13 ) + Chr( 10 ) + "y" + Chr( 13 ) + Chr( 10 ), ENC_UTF8, .F., .T. }, ;
       { "utf8bom.prg", Chr( 239 ) + Chr( 187 ) + Chr( 191 ) + "a" + Chr( 10 ) + "b", ENC_UTF8, .T., .F. }, ;
@@ -1000,6 +1002,39 @@ PROCEDURE IDE_EdSelfTest( cOut )
       T( aRes, "find window opens", IsWindowDefined( IDE_EdFind ), "no Find window" )
       IDE_EdFindWindow( .T. )                 // Ctrl+H while it is open
       T( aRes, "replace window", IsWindowDefined( IDE_EdFind ) .AND. GetProperty( "IDE_EdFind", "Title" ) == "Replace", "no Replace window" )
+      // Esc in the Find window closes that window only (HMGEdit 5.0.3 closed the editor):
+      // its ON KEY ESCAPE hotkey, as Windows delivers it, with the Find window active
+      IF IsWindowDefined( IDE_EdFind )
+         IDE_EdFind.SetFocus
+         n := EdHotKeyId( GetFormHandle( "IDE_EdFind" ), 27 )
+         TL( "esc hotkey id " + hb_ntos( n ) + ", active " + hb_ntos( GetActiveWindow() ) + " find " + hb_ntos( GetFormHandle( "IDE_EdFind" ) ) )
+         IDEED_POSTHOTKEY( GetFormHandle( "IDE_EdFind" ), n, 27 )
+         lQuit := IDEED_PUMP( 500 )   // DO EVENTS would drop a quit message: HMGEdit 5.0.3 ended on it
+      ENDIF
+      T( aRes, "esc closes the find window only", ! IsWindowDefined( IDE_EdFind ) .AND. IsWindowDefined( IDE_Ed ) .AND. ! lQuit, ;
+         "find " + hb_ValToStr( IsWindowDefined( IDE_EdFind ) ) + " editor " + hb_ValToStr( IsWindowDefined( IDE_Ed ) ) + " quit message " + hb_ValToStr( lQuit ) )
+      // the same when another program holds the Escape hotkey: Esc reaches the text box as a key
+      IDE_EdFindWindow( .F. )
+      IF IsWindowDefined( IDE_EdFind )
+         IDE_EdFind.SetFocus
+         IDE_EdFind.Txt_What.SetFocus
+         IDEED_UNREGHOTKEY( GetFormHandle( "IDE_EdFind" ), EdHotKeyId( GetFormHandle( "IDE_EdFind" ), 27 ) )
+         IDEED_POSTKEY( GetControlHandle( "Txt_What", "IDE_EdFind" ), 27 )
+         lQuit := IDEED_PUMP( 500 )
+      ENDIF
+      T( aRes, "esc as a key in the find window keeps the editor", IsWindowDefined( IDE_Ed ) .AND. ! lQuit, ;
+         "find " + hb_ValToStr( IsWindowDefined( IDE_EdFind ) ) + " editor " + hb_ValToStr( IsWindowDefined( IDE_Ed ) ) + " quit message " + hb_ValToStr( lQuit ) )
+      // and its Close button
+      IDE_EdFindWindow( .F. )
+      IF IsWindowDefined( IDE_EdFind )
+         IDEED_CLICK( GetControlHandle( "Btn_Close", "IDE_EdFind" ) )
+         lQuit := IDEED_PUMP( 300 )
+         T( aRes, "the find window's close button keeps the editor", ! IsWindowDefined( IDE_EdFind ) .AND. IsWindowDefined( IDE_Ed ) .AND. ! lQuit, ;
+            "find " + hb_ValToStr( IsWindowDefined( IDE_EdFind ) ) + " quit message " + hb_ValToStr( lQuit ) )
+      ENDIF
+      IF ! IsWindowDefined( IDE_Ed )
+         IDE_EdShow()
+      ENDIF
       IF IsWindowDefined( IDE_EdFind )
          IDE_EdFind.Release
       ENDIF
@@ -1064,6 +1099,18 @@ STATIC PROCEDURE T( aRes, cName, lOk, cWhy )
 RETURN
 
 /* the colour (and bold, italic) of the first character of cWhat */
+/* the id of a form's ON KEY hotkey for nVK without modifiers (tests) */
+STATIC FUNCTION EdHotKeyId( hForm, nVK )
+   LOCAL k
+   MEMVAR _HMG_SYSDATA
+   FOR k := 1 TO Len( _HMG_SYSDATA[ HMG_CTL_TYPE ] )
+      IF _HMG_SYSDATA[ HMG_CTL_TYPE ][ k ] == "HOTKEY" .AND. _HMG_SYSDATA[ HMG_CTL_PARENTHANDLE ][ k ] == hForm .AND. ;
+         ! _HMG_SYSDATA[ HMG_CTL_DELETED ][ k ] .AND. _HMG_SYSDATA[ HMG_CTL_VALUE ][ k ] == nVK
+         RETURN _HMG_SYSDATA[ HMG_CTL_ID ][ k ]
+      ENDIF
+   NEXT
+RETURN 0
+
 STATIC PROCEDURE TC( aRes, hView, cR, cWhat, nFrom, nStyle, lBold, lItalic )
    LOCAL nCp := hb_At( cWhat, cR, nFrom + 1 ) - 1, a
    a := IDEED_COLORAT( hView, nCp )

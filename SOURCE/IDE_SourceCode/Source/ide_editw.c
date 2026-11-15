@@ -3192,6 +3192,56 @@ HB_FUNC( IDEED_HLSTATS )
    }
 }
 
+/* IDEED_POSTHOTKEY( hWnd, nId, nVK ) (tests): a hotkey as Windows posts it */
+HB_FUNC( IDEED_POSTHOTKEY )
+{
+   PostMessageW( PARHWND( 1 ), WM_HOTKEY, ( WPARAM ) hb_parni( 2 ), MAKELPARAM( 0, hb_parni( 3 ) ) );
+}
+
+/* IDEED_UNREGHOTKEY( hWnd, nId ) (tests): as if another program held the hotkey */
+HB_FUNC( IDEED_UNREGHOTKEY )
+{
+   hb_retl( UnregisterHotKey( PARHWND( 1 ), hb_parni( 2 ) ) );
+}
+
+/* IDEED_POSTKEY( hWnd, nVK ) (tests): a key press and release posted to a window */
+HB_FUNC( IDEED_POSTKEY )
+{
+   PostMessageW( PARHWND( 1 ), WM_KEYDOWN, ( WPARAM ) hb_parni( 2 ), 1 );
+   PostMessageW( PARHWND( 1 ), WM_KEYUP, ( WPARAM ) hb_parni( 2 ), 0xC0000001 );
+}
+
+/* IDEED_CLICK( hButton ) (tests): a click on a button, posted */
+HB_FUNC( IDEED_CLICK )
+{
+   PostMessageW( PARHWND( 1 ), BM_CLICK, 0, 0 );
+}
+
+/* IDEED_PUMP( nMs ) -> lQuitSeen (tests): runs the messages for nMs as a message loop
+   would, and tells whether a quit message came (it is not passed on) */
+HB_FUNC( IDEED_PUMP )
+{
+   DWORD t0 = GetTickCount(), n = ( DWORD ) hb_parni( 1 );
+   BOOL  bQuit = FALSE;
+   MSG   m;
+   while( GetTickCount() - t0 < n )
+   {
+      if( PeekMessageW( &m, NULL, 0, 0, PM_REMOVE ) )
+      {
+         if( m.message == WM_QUIT )
+            bQuit = TRUE;
+         else
+         {
+            TranslateMessage( &m );
+            DispatchMessageW( &m );
+         }
+      }
+      else
+         MsgWaitForMultipleObjects( 0, NULL, FALSE, 10, QS_ALLINPUT );
+   }
+   hb_retl( bQuit );
+}
+
 /* IDEED_SETSEL( hView, nStart, nEnd ) : 0-based (tests) */
 HB_FUNC( IDEED_SETSEL )
 {
