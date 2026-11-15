@@ -1,3 +1,9 @@
+-HMG 5.0.1 2026/11/15
+   - Code editor (IDE and HMGEdit.exe): Find and Replace (Ctrl+F, Ctrl+H, Edit menu) stopped the program
+     with "Control: Col + IDE_Ed Of IDE_Ed Not defined". Inside DEFINE WINDOW ... AT the word Col is a
+     clause keyword, so IDE_Ed.Col was split; the position is now computed before the window. The
+     editor self-test (tests\ide) now opens the Find and Replace windows too
+
 -HMG 5.0 2026/11/14
    - IDE\HMGEdit.exe: the IDE's code editor as a program of its own (Start menu "HMG Code Editor"),
      for those who want only the editor: HMGEdit [/L<line>] file ...; tabs, colouring, completion
