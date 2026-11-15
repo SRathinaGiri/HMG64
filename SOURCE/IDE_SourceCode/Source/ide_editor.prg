@@ -736,7 +736,7 @@ RETURN
 /* IDE.exe /edtest <out.txt> (tests/ide/run.ps1): the editor's file round trips, colours,
    undo, indent and search, written as "PASS name" / "FAIL name: why" lines */
 PROCEDURE IDE_EdSelfTest( cOut )
-   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText
+   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText, nKey := 0, nRich := 0, nRest := 0, nHl := 0, nHlRuns := 0
    LOCAL aFiles := { ;
       { "utf8.prg",   "x := " + Chr( 34 ) + Chr( 195 ) + Chr( 169 ) + Chr( 34 ) + Chr( 13 ) + Chr( 10 ) + "y" + Chr( 13 ) + Chr( 10 ), ENC_UTF8, .F., .T. }, ;
       { "utf8bom.prg", Chr( 239 ) + Chr( 187 ) + Chr( 191 ) + "a" + Chr( 10 ) + "b", ENC_UTF8, .T., .F. }, ;
@@ -945,6 +945,18 @@ PROCEDURE IDE_EdSelfTest( cOut )
       IDEED_GOTO( hView, 250, 3 )
       a := IDEED_CARET( hView )
       T( aRes, "go to line", a[ 1 ] == 250 .AND. a[ 2 ] == 3 .AND. a[ 3 ] >= 300, hb_ValToExp( a ) )
+      // a held Down key must keep up with the keyboard's repeat (about 30 a second): the
+      // colouring runs once a screen of scrolling, not on every line (5.0.1 did, 27 ms a line)
+      c := ""
+      FOR n := 1 TO 3000
+         c += "   IF x" + hb_ntos( n ) + " > 0 .AND. " + Chr( 34 ) + "text" + Chr( 34 ) + " $ cVar  // line " + hb_ntos( n ) + CRLF
+      NEXT
+      hView := TestDoc( cDir + "scroll.prg", c )
+      IDEED_SETSEL( hView, 0, 0 )
+      n := IDEED_KEYS( hView, VK_DOWN, 300, @nKey, @nRich, @nRest, @nHl, @nHlRuns )
+      a := IDEED_CARET( hView )
+      T( aRes, "held Down key: " + hb_ntos( n ) + " ms for 300 lines (key " + hb_ntos( nKey ) + ", text " + hb_ntos( nRich ) + ", rest " + hb_ntos( nRest ) + ", colouring " + hb_ntos( nHl ) + " in " + hb_ntos( nHlRuns ) + ")", ;
+         a[ 1 ] == 301 .AND. nHlRuns <= 20 .AND. n < 300 * 25, hb_ValToExp( a ) + " " + hb_ntos( n ) + " ms" )
       IDE_EdFindWindow( .F. )                 // Ctrl+F: the window itself, not only the search
       T( aRes, "find window opens", IsWindowDefined( IDE_EdFind ), "no Find window" )
       IDE_EdFindWindow( .T. )                 // Ctrl+H while it is open
