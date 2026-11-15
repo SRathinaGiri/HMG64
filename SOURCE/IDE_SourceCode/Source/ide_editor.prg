@@ -736,7 +736,7 @@ RETURN
 /* IDE.exe /edtest <out.txt> (tests/ide/run.ps1): the editor's file round trips, colours,
    undo, indent and search, written as "PASS name" / "FAIL name: why" lines */
 PROCEDURE IDE_EdSelfTest( cOut )
-   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText, nKey := 0, nRich := 0, nRest := 0, nHl := 0, nHlRuns := 0
+   LOCAL aRes := {}, cDir, hView, c, cR, a, n, oErr, cText, nKey := 0, nRich := 0, nRest := 0, nHl := 0, nHlRuns := 0, nHlMax := 0, nWorst := 0
    LOCAL aFiles := { ;
       { "utf8.prg",   "x := " + Chr( 34 ) + Chr( 195 ) + Chr( 169 ) + Chr( 34 ) + Chr( 13 ) + Chr( 10 ) + "y" + Chr( 13 ) + Chr( 10 ), ENC_UTF8, .F., .T. }, ;
       { "utf8bom.prg", Chr( 239 ) + Chr( 187 ) + Chr( 191 ) + "a" + Chr( 10 ) + "b", ENC_UTF8, .T., .F. }, ;
@@ -945,18 +945,57 @@ PROCEDURE IDE_EdSelfTest( cOut )
       IDEED_GOTO( hView, 250, 3 )
       a := IDEED_CARET( hView )
       T( aRes, "go to line", a[ 1 ] == 250 .AND. a[ 2 ] == 3 .AND. a[ 3 ] >= 300, hb_ValToExp( a ) )
-      // a held Down key must keep up with the keyboard's repeat (about 30 a second): the
-      // colouring runs once a screen of scrolling, not on every line (5.0.1 did, 27 ms a line)
+      // a held Down key must keep up with the keyboard's repeat (about 30 a second), also far
+      // down a big file: while scrolling only the lines coming into view are coloured, from a
+      // lexer checkpoint, never a block of screens (5.0.1: 27 ms a line; 5.0.2: a pause a page)
       c := ""
-      FOR n := 1 TO 3000
+      FOR n := 1 TO 20000
          c += "   IF x" + hb_ntos( n ) + " > 0 .AND. " + Chr( 34 ) + "text" + Chr( 34 ) + " $ cVar  // line " + hb_ntos( n ) + CRLF
       NEXT
       hView := TestDoc( cDir + "scroll.prg", c )
-      IDEED_SETSEL( hView, 0, 0 )
-      n := IDEED_KEYS( hView, VK_DOWN, 300, @nKey, @nRich, @nRest, @nHl, @nHlRuns )
+      IDEED_GOTO( hView, 19000, 1 )
+      IDEED_KEYS( hView, VK_DOWN, 1 )
+      n := IDEED_KEYS( hView, VK_DOWN, 300, @nKey, @nRich, @nRest, @nHl, @nHlRuns, @nHlMax )
       a := IDEED_CARET( hView )
-      T( aRes, "held Down key: " + hb_ntos( n ) + " ms for 300 lines (key " + hb_ntos( nKey ) + ", text " + hb_ntos( nRich ) + ", rest " + hb_ntos( nRest ) + ", colouring " + hb_ntos( nHl ) + " in " + hb_ntos( nHlRuns ) + ")", ;
-         a[ 1 ] == 301 .AND. nHlRuns <= 20 .AND. n < 300 * 25, hb_ValToExp( a ) + " " + hb_ntos( n ) + " ms" )
+      T( aRes, "held Down key: " + hb_ntos( n ) + " ms for 300 lines (key " + hb_ntos( nKey ) + ", text " + hb_ntos( nRich ) + ;
+         ", rest " + hb_ntos( nRest ) + ", colouring " + hb_ntos( nHl ) + " in " + hb_ntos( nHlRuns ) + ", longest " + hb_ntos( nHlMax ) + ")", ;
+         a[ 1 ] == 19301 .AND. nHlMax <= 40 .AND. n < 300 * 25, hb_ValToExp( a ) + " " + hb_ntos( n ) + " ms" )
+      // the lines that came into view are coloured
+      TC( aRes, hView, StrTran( IDEED_GETTEXT( hView ), CRLF, Chr( 13 ) ), Chr( 34 ) + "text" + Chr( 34 ) + " $ cVar  // line 19290", 0, 8, .F., .F. )
+      // the same held at the keyboard's pace (a key every 33 ms, the messages pumped as in the
+      // program), on dense code in a full window: no key handled late, no long colouring step
+      c := ""
+      FOR n := 1 TO 1500
+         c += "      oGrid:SetValue( " + Chr( 34 ) + "Col" + hb_ntos( n ) + Chr( 34 ) + ", AllTrim( Str( nTotal * 1.18 ) ) + " + Chr( 34 ) + ;
+              " INR" + Chr( 34 ) + ", .T. ) ; IF x > 10 .AND. ! lDone ; MsgInfo( hb_ntos( n ) ) ; ENDIF  // update " + hb_ntos( n ) + CRLF
+      NEXT
+      IDE_Ed.Maximize
+      hView := TestDoc( cDir + "dense.prg", c )
+      IDEED_SETSEL( hView, 0, 0 )
+      IDEED_HLSTATS( .T. )
+      IDEED_HOLDKEY( hView, VK_DOWN, 300, 33, @nKey, @nRich, @nRest, @nHl, @nHlRuns, @nHlMax, @n, @nWorst )
+      IDE_Ed.Restore
+      T( aRes, "held Down key at 30 a second: latest key " + hb_ntos( nKey ) + " ms, longest colouring " + hb_ntos( nWorst ) + ;
+         " ms, went on " + hb_ntos( nRich ) + " ms", nKey < 250 .AND. nWorst < 120 .AND. nRich < 250, IDEED_HLSTATS() )
+      // HMGED_PERFFILE=<file>: the same from the top of a real program (a copy), all of it (in the .log)
+      IF ! Empty( c := GetEnv( "HMGED_PERFFILE" ) ) .AND. hb_FileExists( c )
+         IDE_Ed.Maximize                 // a full editing window, as people use it
+         hView := TestDoc( cDir + "perf.prg", hb_MemoRead( c ) )
+         IDEED_SETSEL( hView, 0, 0 )
+         n := IDEED_KEYS( hView, VK_DOWN, 500, @nKey, @nRich, @nRest, @nHl, @nHlRuns, @nHlMax, @nWorst )
+         TL( "perf " + hb_ntos( n ) + " ms for 500 lines, slowest key " + hb_ntos( nWorst ) + " ms (key " + hb_ntos( nKey ) + ", text " + hb_ntos( nRich ) + ;
+             ", rest " + hb_ntos( nRest ) + ", colouring " + hb_ntos( nHl ) + " in " + hb_ntos( nHlRuns ) + ", longest " + hb_ntos( nHlMax ) + ")" )
+         hView := TestDoc( cDir + "perf2.prg", hb_MemoRead( c ) )   // coloured afresh
+         TL( "after open: " + IDEED_HLSTATS( .T. ) )
+         IDEED_SETSEL( hView, 0, 0 )
+         IDEED_HOLDKEY( hView, VK_DOWN, 500, 33, @nKey, @nRich, @nRest, @nHl, @nHlRuns, @nHlMax, @n, @nWorst )
+         TL( "hold 500 keys every 33 ms: latest key " + hb_ntos( nKey ) + " ms, went on " + hb_ntos( nRich ) + ;
+             " ms after release, longest without a repaint " + hb_ntos( nRest ) + " ms (ended at key " + hb_ntos( nHlRuns ) + ;
+             "), latest key was #" + hb_ntos( nHlMax ) + ", " + hb_ntos( nHl ) + " repaints, colouring " + hb_ntos( n ) + ;
+             " ms, longest " + hb_ntos( nWorst ) + " ms" )
+         TL( "while held: " + IDEED_HLSTATS( .T. ) )
+         IDE_Ed.Restore
+      ENDIF
       IDE_EdFindWindow( .F. )                 // Ctrl+F: the window itself, not only the search
       T( aRes, "find window opens", IsWindowDefined( IDE_EdFind ), "no Find window" )
       IDE_EdFindWindow( .T. )                 // Ctrl+H while it is open
