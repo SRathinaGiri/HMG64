@@ -1,3 +1,10 @@
+-HMG 5.0.2 2026/11/15
+   - Code editor (IDE and HMGEdit.exe): holding an arrow key scrolled slowly and went on after the
+     key was released. Each one-line scroll coloured three screens of code again (27 ms
+     a line, near the keyboard repeat of 33 ms); now the colouring runs only when visible lines are
+     not coloured yet, once a screen of scrolling (about 9 ms a line). The status bar (Ln, Col)
+     updates at most 10 times a second. The editor self-test holds Down for 300 lines and checks it
+
 -HMG 5.0.1 2026/11/15
    - Code editor (IDE and HMGEdit.exe): Find and Replace (Ctrl+F, Ctrl+H, Edit menu) stopped the program
      with "Control: Col + IDE_Ed Of IDE_Ed Not defined". Inside DEFINE WINDOW ... AT the word Col is a

@@ -370,12 +370,13 @@ typedef struct _EDDOC
    LONG             len, textVer, ver;
    LONG             hlFrom, hlTo, hlVer;
    int              firstLine, lineCount, caretLine, gutterW;
-   BOOL             bModified, inHL, bC;
+   BOOL             bModified, inHL, bC, bStatusDue;
 } EDDOC;
 
 static UINT s_cp = CP_UTF8;   /* code page of Harbour strings: UTF-8 (UNICODE mode) or ANSI */
 
 #define HL_TIMER   1
+#define ST_TIMER   2   /* status bar after the caret moved */
 
 static BOOL ed_event( HWND hHost, int ev, HWND hView, HB_MAXINT arg )
 {
@@ -571,7 +572,15 @@ static void hl_emit( void * ctx, LONG s, LONG e, int st )
 }
 
 /* colours the visible lines (and one screen above and below); bForce: even if done */
+static DWORD s_hlMs = 0, s_hlRuns = 0;   /* tests (IDEED_KEYS): time spent colouring, and how often */
+static void ed_highlight_( EDDOC * d, BOOL bForce );
 static void ed_highlight( EDDOC * d, BOOL bForce )
+{
+   DWORD t = GetTickCount();
+   ed_highlight_( d, bForce );
+   s_hlMs += GetTickCount() - t;
+}
+static void ed_highlight_( EDDOC * d, BOOL bForce )
 {
    RECT rc;
    POINTL pt;
@@ -591,14 +600,24 @@ static void ed_highlight( EDDOC * d, BOOL bForce )
    margin = last - first + 1;
    a = first - margin < 0 ? 0 : first - margin;
    b = last + margin >= cnt ? cnt - 1 : last + margin;
-   cpA = ed_lineindex( d, a );
    ed_fetch( d );
+   /* nothing to do while the visible lines are coloured: scrolling one line must not
+      colour three screens again (a held arrow key did that on every line) */
+   if( ! bForce && d->hlVer == d->ver )
+   {
+      LONG cpVisA = ed_lineindex( d, first );
+      LONG cpVisB = last + 1 < cnt ? ed_lineindex( d, last + 1 ) : d->len;
+      if( cpVisB > d->len )
+         cpVisB = d->len;
+      if( cpVisA >= d->hlFrom && cpVisB <= d->hlTo )
+         return;
+   }
+   cpA = ed_lineindex( d, a );
    cpB = b + 1 < cnt ? ed_lineindex( d, b + 1 ) : d->len;
    if( cpB > d->len )
       cpB = d->len;
-   if( ! bForce && d->hlVer == d->ver && cpA >= d->hlFrom && cpB <= d->hlTo )
-      return;
 
+   s_hlRuns++;
    d->inHL = TRUE;
    mask = ( LONG ) SendMessageW( d->hRich, EM_GETEVENTMASK, 0, 0 );
    SendMessageW( d->hRich, EM_SETEVENTMASK, 0, 0 );
@@ -1796,7 +1815,13 @@ static LRESULT CALLBACK ed_viewproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
          if( d && ( ( NMHDR * ) lParam )->hwndFrom == d->hRich && ( ( NMHDR * ) lParam )->code == EN_SELCHANGE )
          {
             ed_checkview( d );
-            ed_event( d->hHost, 3, d->hView, 0 );
+            /* the status bar (Harbour) at most every 100 ms: a held arrow key moves the
+               caret 30 times a second, and doing it each time made the keys pile up */
+            if( ! d->bStatusDue )
+            {
+               d->bStatusDue = TRUE;
+               SetTimer( hWnd, ST_TIMER, 100, NULL );
+            }
             return 0;
          }
          break;
@@ -1806,6 +1831,13 @@ static LRESULT CALLBACK ed_viewproc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
          {
             KillTimer( hWnd, HL_TIMER );
             ed_highlight( d, FALSE );
+            return 0;
+         }
+         if( wParam == ST_TIMER && d )
+         {
+            KillTimer( hWnd, ST_TIMER );
+            d->bStatusDue = FALSE;
+            ed_event( d->hHost, 3, d->hView, 0 );
             return 0;
          }
          break;
@@ -2751,6 +2783,52 @@ HB_FUNC( IDEED_TYPE )
    }
    s_fakeMods = -1;
    hb_xfree( w );
+}
+
+/* IDEED_KEYS( hView, nVK, nTimes [, @nKeyMs, @nTextPaintMs, @nOtherPaintMs, @nColourMs, @nColourRuns] )
+   -> nMilliseconds: a held key (tests): nTimes key-downs with the repeat bit, each painted
+   as the screen would be, then the key-up */
+HB_FUNC( IDEED_KEYS )
+{
+   EDDOC * d = ed_doc( PARHWND( 1 ) );
+   int i, n = hb_parni( 3 );
+   WPARAM vk = ( WPARAM ) hb_parni( 2 );
+   DWORD t0 = GetTickCount();
+   if( ! d )
+   {
+      hb_retni( -1 );
+      return;
+   }
+   DWORD tKey = 0, tRich = 0, tRest = 0, t1;
+   s_hlMs = 0;
+   s_hlRuns = 0;
+   s_fakeMods = 0;
+   for( i = 0; i < n; i++ )
+   {
+      t1 = GetTickCount();
+      SendMessageW( d->hRich, WM_KEYDOWN, vk, i ? 0x40000001 : 1 );
+      tKey += GetTickCount() - t1; t1 = GetTickCount();
+      UpdateWindow( d->hRich );
+      tRich += GetTickCount() - t1; t1 = GetTickCount();
+      UpdateWindow( d->hView );
+      if( d->host && d->host->hHost )
+         UpdateWindow( GetAncestor( d->host->hHost, GA_ROOT ) );
+      tRest += GetTickCount() - t1;
+   }
+   SendMessageW( d->hRich, WM_KEYUP, vk, 0xC0000001 );
+   s_fakeMods = -1;
+   if( hb_pcount() >= 7 )
+   {
+      hb_storni( ( int ) s_hlMs, 7 );
+      hb_storni( ( int ) s_hlRuns, 8 );
+   }
+   if( hb_pcount() >= 4 )
+   {
+      hb_storni( ( int ) tKey, 4 );
+      hb_storni( ( int ) tRich, 5 );
+      hb_storni( ( int ) tRest, 6 );
+   }
+   hb_retni( ( int ) ( GetTickCount() - t0 ) );
 }
 
 /* IDEED_SETSEL( hView, nStart, nEnd ) : 0-based (tests) */
