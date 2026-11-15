@@ -78,13 +78,18 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ <sort : SORT> ] ;
 		[ <dragitems : DRAGITEMS> ] ;
+		[ <dragsource : DRAGSOURCE> ] ;
+		[ <droptarget : DROPTARGET> ] ;
+		[ <dragremove : DRAGREMOVE> ] ;
+		[ ON DROP <ondrop> ] ;
 	=>;
 	_DefineListBox ( <"name">, <"parent">, <col>, <row>, <w>, <h>, <aRows>, ;
                          <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
                          <{dblclick}>, <{gotfocus}>, <{lostfocus}>, .f., ;
                          <helpid>, <.invisible.>, <.notabstop.>, <.sort.> , ;
 			<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ,;
-			 <backcolor> , <fontcolor> , <.multiselect.> , <.dragitems.> )
+			 <backcolor> , <fontcolor> , <.multiselect.> , <.dragitems.> , ;
+		 { <.dragsource.>, <.droptarget.>, <.dragremove.>, <{ondrop}> } )
 
 // SPLITBOX VERSION
 
@@ -114,13 +119,18 @@
 		[ <notabstop : NOTABSTOP> ] ;
 		[ <sort : SORT> ] ;
 		[ <dragitems : DRAGITEMS> ] ;
+		[ <dragsource : DRAGSOURCE> ] ;
+		[ <droptarget : DROPTARGET> ] ;
+		[ <dragremove : DRAGREMOVE> ] ;
+		[ ON DROP <ondrop> ] ;
 	=>;
 	_DefineListBox ( <"name">, <"parent">, , , <w>, <h>, <aRows>, <value>, ;
 		<fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
 		<{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;
 		<.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , <backcolor> , ;
-		<fontcolor> , <.multiselect.> , <.dragitems.> )
+		<fontcolor> , <.multiselect.> , <.dragitems.> , ;
+		 { <.dragsource.>, <.droptarget.>, <.dragremove.>, <{ondrop}> } )
 
 
 

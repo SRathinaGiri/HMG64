@@ -834,6 +834,10 @@ DEFINE WINDOW TEMPLATE
     [ NOTABSTOP ]
     [ SORT ]
     [ DRAGITEMS ]
+    [ DRAGSOURCE ]
+    [ DROPTARGET ]
+    [ DRAGREMOVE ]
+    [ ON DROP <ondrop> ]
 ```
 
 ## GRID
@@ -895,6 +899,10 @@ DEFINE WINDOW TEMPLATE
     [ DYNAMICFONT <aDynamicFont> ]
     [ ON CHECKBOXCLICKED <OnCheckBoxClicked> ]
     [ ON INPLACEEDITEVENT <OnInplaceEditEvent> ]
+    [ DRAGSOURCE ]
+    [ DROPTARGET ]
+    [ DRAGREMOVE ]
+    [ ON DROP <ondrop> ]
 ```
 
 ## BROWSE

@@ -1,6 +1,6 @@
 # HMG5 additions (not in HMG 3.x)
 
-Check the target first: these need HMG5 (`HMGVersion()` returns "HMG 5.0 ..."). Everything else in
+Check the target first: these need HMG5 (`HMGVersion()` returns "HMG 5.0 ..." or "HMG 5.1 ..."; drag and drop needs 5.1). Everything else in
 this skill works on HMG 3.x too.
 
 ## WEBVIEW - Microsoft Edge (WebView2) inside a window
@@ -59,6 +59,34 @@ this skill works on HMG 3.x too.
 - Offline: ECharts is inside the library. `SAMPLES\Controls\ChartGallery` shows every chart type.
 - **GraphPlus** (`#include "GraphPlus.ch"`) - the older graph class, drawn by ECharts in HMG5:
   `:Draw()`, `:Bitmap()`, `:Save()`, and `:Show( cForm, cChart )` for an interactive chart.
+
+## Drag and drop - LISTBOX and GRID (HMG5 5.1)
+
+```
+@ <row>, <col> LISTBOX | GRID <name> ...
+      [ DRAGSOURCE ]      items can be dragged out of the control
+      [ DROPTARGET ]      items can be dropped on it
+      [ DRAGREMOVE ]      dropped away from every drop target, they are removed (implies DRAGSOURCE)
+      [ ON DROP <action> ]  runs instead of the default move / copy / remove
+```
+
+- DEFINE syntax: `DRAGSOURCE .T.`, `DROPTARGET .T.`, `DRAGREMOVE .T.`, `ON DROP <action>` (or
+  `ONDROP`). The IDE Form Designer has them as properties DragSource, DropTarget, DragRemove and
+  the event OnDrop.
+- Without ON DROP the selected items **move** (all of a MULTISELECT selection); **Ctrl** at the
+  drop copies; **Esc** or the right button cancels. A line shows where they land; dropping inside
+  the same control reorders it. A SORT list box sorts what it receives. List box text <-> grid
+  row: the text goes to (comes from) the first column; rows are padded/cut to the target's columns.
+- **Inside ON DROP** (the target's; for a DRAGREMOVE drop away, the source's): `This.DragForm`,
+  `This.DragControl` (where the items came from), `This.DragItems` (their rows, ascending),
+  `This.DragData` (list box texts or grid row arrays), `This.DropRow` (row of the first dropped
+  item; 0 for a SORT list box), `This.DropCopy`, `This.DropOutside`. Call `HMG_DragDefault()` to
+  do the default afterwards (e.g. after asking the user); not calling it leaves both controls as
+  they were.
+- A VIRTUAL grid (rows are the program's) is a drop target only with ON DROP; as a source its
+  items are copied, never deleted, and `This.DragData` holds NIL for each row - use `This.DragItems`.
+- Works between controls of different windows of the same program; not with other programs or
+  Explorer files. TREE is not supported. `SAMPLES\Controls\DragDrop` shows it all.
 
 ## Opt-in settings (off unless the program asks)
 

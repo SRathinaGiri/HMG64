@@ -61,7 +61,7 @@ Function _DefineListbox ( ControlName, ParentForm, x, y, w, h, rows, value, ;
 			dblclick, gotfocus, lostfocus, break, HelpId, ;
 			invisible, notabstop, sort , bold, italic, ;
 			underline, strikeout , backcolor , fontcolor , ;
-			multiselect , dragitems )
+			multiselect , dragitems , aDragDrop )
 *-----------------------------------------------------------------------------*
 Local i , cParentForm , mVar , ControlHandle
 Local FontHandle , k
@@ -78,6 +78,10 @@ Local FontHandle , k
    DEFAULT invisible       TO FALSE
    DEFAULT notabstop       TO FALSE
    DEFAULT sort            TO FALSE
+
+   IF _HMG_DragWanted( aDragDrop )   // HMG5 5.1: DRAGSOURCE/DROPTARGET replace the old DRAGITEMS
+      dragitems := .F.
+   ENDIF
 
 
 	if _HMG_SYSDATA [ 264 ] = TRUE
@@ -222,6 +226,8 @@ Local FontHandle , k
 			ListboxSetCurSel (ControlHandle,Value)
 		endif
 	endif
+
+	_HMG_DragSetup( k, aDragDrop )   // HMG5 5.1: drag and drop
 
 Return Nil
 

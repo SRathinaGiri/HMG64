@@ -1,3 +1,14 @@
+-HMG 5.1 2026/11/15
+   - Drag and drop between LISTBOX and GRID controls: clauses DRAGSOURCE, DROPTARGET, DRAGREMOVE and
+     ON DROP <action> (@ syntax and DEFINE LISTBOX / DEFINE GRID). Without ON DROP the selected items
+     move (Ctrl copies, Esc cancels), a line shows where they land, inside one control they reorder;
+     a DRAGREMOVE source loses the items dropped away from every target. Inside ON DROP: This.DragForm,
+     This.DragControl, This.DragItems, This.DragData, This.DropRow, This.DropCopy, This.DropOutside and
+     HMG_DragDefault(). VIRTUAL grids take drops only through ON DROP. SOURCE\c_dragdrop.c,
+     h_dragdrop.prg; tests\unit\dragdrop (38 checks, no real mouse); SAMPLES\Controls\DragDrop
+   - IDE Form Designer: LISTBOX and GRID properties DragSource, DropTarget, DragRemove and the event
+     OnDrop (written to the .fmg only when set, so other forms stay readable by HMG 5.0)
+
 -HMG 5.0.3 2026/11/15
    - Code editor (IDE and HMGEdit.exe): a held arrow key still stopped at every page in real programs
      (5.0.2 coloured three screens at once; on dense code the keys piled up for many seconds). While
