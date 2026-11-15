@@ -575,7 +575,7 @@ STATIC PROCEDURE IDE_EdGoto()
 RETURN
 
 STATIC PROCEDURE IDE_EdFindWindow( lReplace )
-   LOCAL hView := IDE_EdCurView(), cSel
+   LOCAL hView := IDE_EdCurView(), cSel, nRow, nCol
    IF Empty( hView )
       RETURN
    ENDIF
@@ -591,7 +591,11 @@ STATIC PROCEDURE IDE_EdFindWindow( lReplace )
       RETURN
    ENDIF
 
-   DEFINE WINDOW IDE_EdFind AT IDE_Ed.Row + 90, IDE_Ed.Col + IDE_Ed.Width - 520 WIDTH 500 HEIGHT 205 ;
+   /* computed first: inside DEFINE WINDOW the word Col is a clause keyword */
+   nRow := GetProperty( "IDE_Ed", "Row" ) + 90
+   nCol := GetProperty( "IDE_Ed", "Col" ) + GetProperty( "IDE_Ed", "Width" ) - 520
+
+   DEFINE WINDOW IDE_EdFind AT nRow, nCol WIDTH 500 HEIGHT 205 ;
       TITLE iif( lReplace, "Replace", "Find" ) NOMINIMIZE NOMAXIMIZE NOSIZE ;
       ON RELEASE IDE_EdFindSave()
 
@@ -941,6 +945,13 @@ PROCEDURE IDE_EdSelfTest( cOut )
       IDEED_GOTO( hView, 250, 3 )
       a := IDEED_CARET( hView )
       T( aRes, "go to line", a[ 1 ] == 250 .AND. a[ 2 ] == 3 .AND. a[ 3 ] >= 300, hb_ValToExp( a ) )
+      IDE_EdFindWindow( .F. )                 // Ctrl+F: the window itself, not only the search
+      T( aRes, "find window opens", IsWindowDefined( IDE_EdFind ), "no Find window" )
+      IDE_EdFindWindow( .T. )                 // Ctrl+H while it is open
+      T( aRes, "replace window", IsWindowDefined( IDE_EdFind ) .AND. GetProperty( "IDE_EdFind", "Title" ) == "Replace", "no Replace window" )
+      IF IsWindowDefined( IDE_EdFind )
+         IDE_EdFind.Release
+      ENDIF
 
       // 7. external choice still works through IDE_EditFile (not run: it starts a program)
       T( aRes, "setting", HB_ISLOGICAL( IDE_UseBuiltinEditor() ), "no setting" )

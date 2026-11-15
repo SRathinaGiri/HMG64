@@ -12,7 +12,7 @@
 #ifndef Src
   #define Src "..\..\HMG5"
 #endif
-#define AppVer "5.0"
+#define AppVer "5.0.1"
 
 [Setup]
 AppId={{DBC9F845-3CE9-4FD9-BFCA-CE3CBE31DE41}

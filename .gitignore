@@ -38,3 +38,4 @@ _hmg_resconfig.h
 
 # Skill test runs (outputs, benchmark, review page)
 /skills/hmg-workspace/
+/IDE/hmgedit.ini
