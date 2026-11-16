@@ -88,6 +88,30 @@ this skill works on HMG 3.x too.
 - Works between controls of different windows of the same program; not with other programs or
   Explorer files. TREE is not supported. `SAMPLES\Controls\DragDrop` shows it all.
 
+## Fast VIRTUAL grid from an array - ROWSOURCE (HMG5 5.2)
+
+```harbour
+@ 10, 10 GRID Grid_1 OF Win_1 WIDTH 600 HEIGHT 300 ;
+   HEADERS { "Name", "Qty", "Date" } WIDTHS { 250, 100, 120 } ;
+   ROWSOURCE aRows                     // aRows := { { "Apple", 10, Date() }, ... }
+
+AAdd( aRows, { "Pear", 3, Date() } )
+Win_1.Grid_1.Refresh                   // the grid shows the array's rows and values again
+Win_1.Grid_1.RowSource := aOtherRows   // another array; NIL unbinds
+```
+
+- The grid is VIRTUAL and keeps a reference to the array (no copy): cells are read in C,
+  no Harbour code per cell, so large arrays (100,000 rows) scroll as fast as Windows draws.
+- Values are shown as with ON QUERYDATA: character RTrim, number Str(), date DToC(),
+  logical .T./.F., others empty; a short row shows empty cells; a row that is not an array
+  is column 1; with IMAGE, column 1 is the image index.
+- Assigning a new array to the program's variable does not rebind the grid: use RowSource.
+- With EDIT / ALLOWEDIT and COLUMNCONTROLS the grid is editable with no code: the editor gets
+  the typed value from the array and the edit is written back into `aRows[ row, col ]`
+  (a short row grows). COLUMNWHEN / COLUMNVALID see the same values. (A VIRTUAL grid with
+  ON QUERYDATA still keeps no edit by itself.)
+- `ROWSOURCE "alias"` (a table) is unchanged. Use ON QUERYDATA when cells are computed.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

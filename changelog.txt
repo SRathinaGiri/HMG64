@@ -1,3 +1,15 @@
+-HMG 5.2 (in development, HMG52-PLAN.md)
+   - GRID ... ROWSOURCE <aRows>: with an array (not a table alias) the grid is VIRTUAL and its cells
+     are read from aRows[ row, col ] in C (c_grid.c), with no ON QUERYDATA and no Harbour code per
+     cell; formatted as ON QUERYDATA values are (RTrim, Str(), DToC(), .T./.F.). The grid keeps a
+     reference to the array: Refresh shows changes and added or removed rows; property RowSource
+     (get, and := another array or NIL), also in DEFINE GRID. tests\unit\rowsource (25 checks,
+     against ON QUERYDATA; a cell costs about 45 us less)
+   - GRID ... ROWSOURCE <aRows> with EDIT / ALLOWEDIT: the in-place editor gets the typed value from
+     the array, the edit is written back into aRows[ row, col ] (a short row grows) and the row
+     repaints; COLUMNWHEN reads the array too. Without this, editing called the missing ON QUERYDATA.
+     tests\unit\rowsource: 8 more checks (text, number, date, logical, short row)
+
 -HMG 5.1 2026/11/15
    - Drag and drop between LISTBOX and GRID controls: clauses DRAGSOURCE, DROPTARGET, DRAGREMOVE and
      ON DROP <action> (@ syntax and DEFINE LISTBOX / DEFINE GRID). Without ON DROP the selected items

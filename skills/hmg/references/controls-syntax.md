@@ -883,7 +883,7 @@ DEFINE WINDOW TEMPLATE
     [ BREAK ]
     [ HEADERIMAGES <headerimages> ]
     [ CELLNAVIGATION ]
-    [ ROWSOURCE <recordsource> ]
+    [ ROWSOURCE <recordsource> ]          // "alias" (a table) or, HMG5 5.2, an array of rows
     [ COLUMNFIELDS <columnfields> ]
     [ ALLOWAPPEND ]
     [ BUFFERED ]
@@ -904,6 +904,11 @@ DEFINE WINDOW TEMPLATE
     [ DRAGREMOVE ]
     [ ON DROP <ondrop> ]
 ```
+
+HMG5 5.2: `ROWSOURCE aRows` (an array) makes a VIRTUAL grid whose cells are read from
+`aRows[ row, col ]` in C - no ON QUERYDATA needed, ITEMCOUNT is `Len( aRows )`. After changing
+the array call `Form.Grid.Refresh`; `Form.Grid.RowSource := aOther` binds another array.
+With EDIT and COLUMNCONTROLS, in-place edits are written back into the array.
 
 ## BROWSE
 

@@ -4532,10 +4532,13 @@ ELseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'GRID'
 
     IF VALTYPE ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 10 ] ) == 'C'   // Grid with cRecordSource ( DataBase )
         DataGridRefresh( i, .T. )   // ADD .T. parameter (May 2016)
+    ELSE
+        HMG_GRIDROWSOURCESYNC ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )   // HMG5 5.2: rows added to / removed from a ROWSOURCE array
     ENDIF
 
 ELseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MULTIGRID'
     // _HMG_DOGRIDREFRESH(I)
+    HMG_GRIDROWSOURCESYNC ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )   // HMG5 5.2
 
 EndIf
    
@@ -8201,6 +8204,10 @@ ElseIf Pcount() == 4 // CONTROL
 
         ListView_SetItemCount ( GetControlHandle ( Arg2 , Arg1 ) , Arg4 ) 
 
+    ElseIf Arg3 == 'ROWSOURCE'   // HMG5 5.2: a VIRTUAL grid fed from an array (NIL: none)
+
+        _HMG_SetGridRowSource ( Arg2 , Arg1 , Arg4 )
+
     EndIf
 
 ElseIf Pcount() == 5    // CONTROL WITH ARGUMENT, TOOLBAR BUTTON OR
@@ -8712,6 +8719,10 @@ ElseIf Pcount() == 3 // CONTROL
     ElseIf Arg3 == 'ITEMCOUNT'
 
         RetVal := _GetItemCount ( Arg2 , Arg1 )
+
+    ElseIf Arg3 == 'ROWSOURCE'   // HMG5 5.2: the array of a ROWSOURCE grid (NIL: none)
+
+        RetVal := HMG_GRIDGETROWSOURCE ( GetControlHandle ( Arg2 , Arg1 ) )
 
     ElseIf Arg3 == 'RANGEMIN'
 

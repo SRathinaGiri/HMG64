@@ -75,6 +75,9 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbset.h"
+#include "hbdate.h"
 #include "hmg_dpi.h"
 //#include "hbvm.h"
 //#include "hbstack.h"
@@ -94,6 +97,196 @@ extern HB_CRITICAL_T _HMG_Mutex;   // global Mutex variable defined into c_Threa
 HIMAGELIST HMG_ImageListLoadFirst (TCHAR *FileName, int cGrow, int Transparent, int *nWidth, int *nHeight);
 void HMG_ImageListAdd (HIMAGELIST hImageList, TCHAR *FileName, int Transparent);
 
+
+/* ------------------------------------------------------------------------ */
+/* HMG5 5.2: ROWSOURCE <aRows> - a VIRTUAL grid fed from an array            */
+/* ------------------------------------------------------------------------ */
+/* A VIRTUAL grid asks its parent for each cell it shows (LVN_GETDISPINFO). With ON
+   QUERYDATA every cell goes through HMG's Harbour event dispatcher and the program's
+   code. With ROWSOURCE <aRows> the grid keeps a reference to the array (no copy) and
+   the cells are read here, in C, before HMG's own handler: aRows[ row ][ column ],
+   formatted as HMG formats ON QUERYDATA values (character RTrim, number Str(), date
+   DToC(), logical .T./.F., anything else empty; with IMAGE column 1 is the image
+   index). A row that is not an array is column 1; a short row gives empty cells. */
+
+#define HMG_RS_PROP   _TEXT("HMG5_ROWSOURCE")       /* PHB_ITEM: the array */
+#define HMG_RS_IMG    _TEXT("HMG5_ROWSOURCE_IMAGE") /* column 1 is the image index */
+#define HMG_RS_ID     0x484D5253u
+#define HMG_RS_PID    0x484D5254u
+
+static void HMG_RowSourceCell ( HWND hGrid, NMHDR * pHdr )
+{
+   NMLVDISPINFOW * pW   = ( NMLVDISPINFOW * ) pHdr;   /* A and W: the same layout but pszText */
+   BOOL            bW   = ( pHdr->code == LVN_GETDISPINFOW );
+   PHB_ITEM        pSrc = ( PHB_ITEM ) GetProp( hGrid, HMG_RS_PROP );
+   PHB_ITEM        pRow, pCell = NULL;
+   int             nRow = pW->item.iItem, nCol = pW->item.iSubItem + 1;
+   char            szBuf[ 64 ];
+   const char *    szText = "";
+   HB_SIZE         nLen = 0;
+   char *          pAlloc = NULL;
+
+   if( pSrc && HB_IS_ARRAY( pSrc ) && nRow >= 0 && ( HB_SIZE ) nRow < hb_arrayLen( pSrc ) )
+   {
+      pRow = hb_arrayGetItemPtr( pSrc, ( HB_SIZE ) nRow + 1 );
+      if( pRow && HB_IS_ARRAY( pRow ) )
+      {
+         if( ( HB_SIZE ) nCol <= hb_arrayLen( pRow ) )
+            pCell = hb_arrayGetItemPtr( pRow, ( HB_SIZE ) nCol );
+      }
+      else if( nCol == 1 )
+         pCell = pRow;
+   }
+
+   if( nCol == 1 && GetProp( hGrid, HMG_RS_IMG ) != NULL )
+   {
+      if( pW->item.mask & LVIF_IMAGE )
+         pW->item.iImage = ( pCell && HB_IS_NUMERIC( pCell ) ) ? hb_itemGetNI( pCell ) : 0;
+      pCell = NULL;   /* no text in the image column, as with ON QUERYDATA */
+   }
+
+   if( pCell )
+   {
+      if( HB_IS_STRING( pCell ) )
+      {
+         szText = hb_itemGetCPtr( pCell );
+         nLen   = hb_itemGetCLen( pCell );
+         while( nLen > 0 && szText[ nLen - 1 ] == ' ' )
+            nLen--;
+      }
+      else if( HB_IS_NUMERIC( pCell ) )
+      {
+         pAlloc = hb_itemStr( pCell, NULL, NULL );
+         if( pAlloc )
+         {
+            szText = pAlloc;
+            nLen   = strlen( pAlloc );
+         }
+      }
+      else if( HB_IS_DATE( pCell ) )
+      {
+         char szDate[ 9 ];
+         hb_dateFormat( hb_itemGetDS( pCell, szDate ), szBuf, hb_setGetDateFormat() );
+         szText = szBuf;
+         nLen   = strlen( szBuf );
+      }
+      else if( HB_IS_LOGICAL( pCell ) )
+      {
+         szText = hb_itemGetL( pCell ) ? ".T." : ".F.";
+         nLen   = 3;
+      }
+   }
+
+   if( ( pW->item.mask & LVIF_TEXT ) && pW->item.pszText && pW->item.cchTextMax > 0 )
+   {
+      if( bW )
+      {
+         char *     pTmp = hb_strndup( szText, nLen );
+         HB_WCHAR * pWide = hb_osStrU16Encode( pTmp );
+         lstrcpynW( pW->item.pszText, pWide ? ( LPCWSTR ) pWide : L"", pW->item.cchTextMax );
+         if( pWide )
+            hb_xfree( pWide );
+         hb_xfree( pTmp );
+      }
+      else
+      {
+         NMLVDISPINFOA * pA = ( NMLVDISPINFOA * ) pHdr;
+         HB_SIZE n = nLen < ( HB_SIZE ) pA->item.cchTextMax - 1 ? nLen : ( HB_SIZE ) pA->item.cchTextMax - 1;
+         memcpy( pA->item.pszText, szText, n );
+         pA->item.pszText[ n ] = 0;
+      }
+   }
+   if( pAlloc )
+      hb_xfree( pAlloc );
+}
+
+static void HMG_RowSourceFree ( HWND hGrid )
+{
+   PHB_ITEM pSrc = ( PHB_ITEM ) GetProp( hGrid, HMG_RS_PROP );
+   if( pSrc )
+      hb_itemRelease( pSrc );
+   RemoveProp( hGrid, HMG_RS_PROP );
+   RemoveProp( hGrid, HMG_RS_IMG );
+}
+
+/* the grid: lets go of the array when it is destroyed */
+static LRESULT CALLBACK HMG_RowSourceGridProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uId, DWORD_PTR dwRef )
+{
+   ( void ) dwRef;
+   if( uMsg == WM_NCDESTROY )
+   {
+      HMG_RowSourceFree( hWnd );
+      RemoveWindowSubclass( hWnd, HMG_RowSourceGridProc, uId );
+   }
+   return DefSubclassProc( hWnd, uMsg, wParam, lParam );
+}
+
+/* the grid's parent: answers the cells of grids with a ROWSOURCE array, before HMG */
+static LRESULT CALLBACK HMG_RowSourceParentProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uId, DWORD_PTR dwRef )
+{
+   ( void ) dwRef;
+   if( uMsg == WM_NOTIFY && lParam )
+   {
+      NMHDR * pHdr = ( NMHDR * ) lParam;
+      if( ( pHdr->code == LVN_GETDISPINFOW || pHdr->code == LVN_GETDISPINFOA ) &&
+          GetProp( pHdr->hwndFrom, HMG_RS_PROP ) != NULL )
+      {
+         HMG_RowSourceCell( pHdr->hwndFrom, pHdr );
+         return 0;
+      }
+   }
+   else if( uMsg == WM_NCDESTROY )
+      RemoveWindowSubclass( hWnd, HMG_RowSourceParentProc, uId );
+   return DefSubclassProc( hWnd, uMsg, wParam, lParam );
+}
+
+/* HMG_GRIDSETROWSOURCE( hGrid, aRows | NIL [, lImageColumn] ): binds the array (or
+   unbinds with NIL); the item count follows Len( aRows ) and the grid repaints */
+HB_FUNC ( HMG_GRIDSETROWSOURCE )
+{
+   HWND     hGrid = ( HWND ) HMG_parnl( 1 );
+   PHB_ITEM pArr  = hb_param( 2, HB_IT_ARRAY );
+   HB_SIZE  nRows = 0;
+
+   if( ! IsWindow( hGrid ) )
+      return;
+   HMG_RowSourceFree( hGrid );
+   if( pArr )
+   {
+      SetProp( hGrid, HMG_RS_PROP, ( HANDLE ) hb_itemNew( pArr ) );
+      if( hb_parl( 3 ) )
+         SetProp( hGrid, HMG_RS_IMG, ( HANDLE ) 1 );
+      SetWindowSubclass( hGrid, HMG_RowSourceGridProc, HMG_RS_ID, 0 );
+      SetWindowSubclass( GetParent( hGrid ), HMG_RowSourceParentProc, HMG_RS_PID, 0 );
+      nRows = hb_arrayLen( pArr );
+   }
+   ListView_SetItemCountEx( hGrid, ( int ) nRows, LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL );
+   InvalidateRect( hGrid, NULL, FALSE );
+}
+
+/* HMG_GRIDGETROWSOURCE( hGrid ) -> aRows | NIL */
+HB_FUNC ( HMG_GRIDGETROWSOURCE )
+{
+   PHB_ITEM pSrc = ( PHB_ITEM ) GetProp( ( HWND ) HMG_parnl( 1 ), HMG_RS_PROP );
+   if( pSrc )
+      hb_itemReturn( pSrc );
+}
+
+/* HMG_GRIDROWSOURCESYNC( hGrid ) -> lBound: the bound array changed (rows added or
+   removed): the item count follows it and the grid repaints */
+HB_FUNC ( HMG_GRIDROWSOURCESYNC )
+{
+   HWND     hGrid = ( HWND ) HMG_parnl( 1 );
+   PHB_ITEM pSrc  = ( PHB_ITEM ) GetProp( hGrid, HMG_RS_PROP );
+   if( pSrc && HB_IS_ARRAY( pSrc ) )
+   {
+      ListView_SetItemCountEx( hGrid, ( int ) hb_arrayLen( pSrc ), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL );
+      InvalidateRect( hGrid, NULL, FALSE );
+      hb_retl( HB_TRUE );
+   }
+   else
+      hb_retl( HB_FALSE );
+}
 
 HB_FUNC (INITLISTVIEW)
 {
