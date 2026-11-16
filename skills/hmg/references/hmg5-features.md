@@ -136,6 +136,31 @@ ENDIF
   window, show the user that work is going on.
 - Replaces `CreateObject( "Msxml2.XMLHTTP.6.0" )` / ServerXMLHTTP calls one for one.
 
+## Long jobs without freezing - HMG_Busy (HMG5 5.2)
+
+```harbour
+aRows := HMG_Busy( "Loading", {| oBusy | LoadAll( oBusy ) } )   // returns what the job returns
+
+FUNCTION LoadAll( oBusy )
+   LOCAL n, aRows := {}
+   FOR n := 1 TO 12
+      IF ! oBusy:Step( n - 1, 12, "Month " + hb_ntos( n ) )   // .F. after Cancel / Esc / X
+         RETURN NIL
+      ENDIF
+      ... one month of work ...
+   NEXT
+RETURN aRows
+```
+
+- A small modal window (text, progress bar, Cancel) runs the job in the program's own thread;
+  the other windows are disabled meanwhile. `oBusy:Step( nDone, nTotal [, cText] )`,
+  `oBusy:Text( cText )` repaint and handle messages at most every 50 ms, so Windows never shows
+  "Not Responding" and tight loops stay fast. No nTotal: a moving (marquee) bar.
+- `oBusy:Cancelled` is .T. after Cancel, Esc or the window's X; the job decides when to stop.
+  `HMG_Busy( cTitle, bJob, .F. )` shows no Cancel button.
+- WAIT WINDOW ... NOWAIT only shows a message: it neither handles messages nor offers Cancel,
+  so a long job behind it still freezes the window. Use HMG_Busy for anything over a second.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

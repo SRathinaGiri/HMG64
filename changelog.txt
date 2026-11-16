@@ -1,4 +1,10 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - HMG_Busy( cTitle, bJob [, lCancelButton] ): a long job in a small modal window with a progress
+     bar and Cancel, in the program's own thread. oBusy:Step( nDone, nTotal [, cText] ) and
+     oBusy:Text() repaint and handle messages at most every 50 ms (no "Not Responding", tight loops
+     stay fast) and return .F. after Cancel, Esc or the window's X (oBusy:Cancelled); no nTotal: a
+     marquee bar. Returns the job's value. SOURCE\h_busy.prg; tests\unit\busy (13 checks, a probe
+     thread checks the window keeps answering Windows during a tight loop)
    - HMG_HttpGet( cUrl [, aHeaders] [, nTimeoutMs] ), HMG_HttpPost( cUrl, cBody [, cContentType]
      [, aHeaders] [, nTimeoutMs] ), HMG_HttpRequest( cMethod, cUrl, ... ) -> { nStatus, cBody, cError,
      cHeaders }: HTTP and HTTPS on Windows' WinHTTP (TLS, proxy, redirects, gzip), no OpenSSL.

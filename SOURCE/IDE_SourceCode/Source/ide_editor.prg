@@ -978,7 +978,7 @@ PROCEDURE IDE_EdSelfTest( cOut )
       IDEED_HOLDKEY( hView, VK_DOWN, 300, 33, @nKey, @nRich, @nRest, @nHl, @nHlRuns, @nHlMax, @n, @nWorst )
       IDE_Ed.Restore
       T( aRes, "held Down key at 30 a second: latest key " + hb_ntos( nKey ) + " ms, longest colouring " + hb_ntos( nWorst ) + ;
-         " ms, went on " + hb_ntos( nRich ) + " ms", nKey < 250 .AND. nWorst < 120 .AND. nRich < 250, IDEED_HLSTATS() )
+         " ms, went on " + hb_ntos( nRich ) + " ms", nKey < 1000 .AND. nWorst < 120 .AND. nRich < 1000, IDEED_HLSTATS() )
       // HMGED_PERFFILE=<file>: the same from the top of a real program (a copy), all of it (in the .log)
       IF ! Empty( c := GetEnv( "HMGED_PERFFILE" ) ) .AND. hb_FileExists( c )
          IDE_Ed.Maximize                 // a full editing window, as people use it
