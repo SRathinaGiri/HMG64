@@ -57,6 +57,7 @@ source/h_ipaddress.prg
 source/h_label.prg
 source/h_listbox.prg
 source/h_dragdrop.prg
+source/h_http.prg
 source/h_media.prg
 source/h_menu.prg
 source/h_monthcal.prg
@@ -115,6 +116,7 @@ source/c_ipaddress.c
 source/c_label.c
 source/c_listbox.c
 source/c_dragdrop.c
+source/c_http.c
 source/c_media.c
 source/c_menu.c
 source/c_monthcal.c

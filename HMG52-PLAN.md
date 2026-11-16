@@ -13,8 +13,8 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | # | Item | Kind | Status |
 |---|------|------|--------|
 | 1 | VIRTUAL grid fed from an array: `ROWSOURCE` (and in-place editing) | speed | done |
-| 2 | HTTPS without OpenSSL: `HMG_HttpGet()`, `HMG_HttpPost()` | feature | in progress |
-| 3 | Long jobs without freezing: a busy window with progress and Cancel | feature | |
+| 2 | HTTPS without OpenSSL: `HMG_HttpGet()`, `HMG_HttpPost()` | feature | done |
+| 3 | Long jobs without freezing: a busy window with progress and Cancel | feature | in progress |
 | 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | |
 | 5 | Files dropped from Explorer: `ON DROPFILES` | feature | |
 | 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | |

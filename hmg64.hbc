@@ -50,6 +50,7 @@ libs=xhb
 libs=png
 libs=libhpdf
 libs=hbzebra
+libs=winhttp
 
 # link compiled resources
 

@@ -1,4 +1,9 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - HMG_HttpGet( cUrl [, aHeaders] [, nTimeoutMs] ), HMG_HttpPost( cUrl, cBody [, cContentType]
+     [, aHeaders] [, nTimeoutMs] ), HMG_HttpRequest( cMethod, cUrl, ... ) -> { nStatus, cBody, cError,
+     cHeaders }: HTTP and HTTPS on Windows' WinHTTP (TLS, proxy, redirects, gzip), no OpenSSL.
+     SOURCE\c_http.c, h_http.prg; hmg64.hbc links winhttp. tests\unit\http (24 checks against
+     its own local server; HMG_TEST_INTERNET=1 adds https://example.com)
    - GRID ... ROWSOURCE <aRows>: with an array (not a table alias) the grid is VIRTUAL and its cells
      are read from aRows[ row, col ] in C (c_grid.c), with no ON QUERYDATA and no Harbour code per
      cell; formatted as ON QUERYDATA values are (RTrim, Str(), DToC(), .T./.F.). The grid keeps a

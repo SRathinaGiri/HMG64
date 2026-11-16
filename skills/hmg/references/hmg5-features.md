@@ -112,6 +112,30 @@ Win_1.Grid_1.RowSource := aOtherRows   // another array; NIL unbinds
   ON QUERYDATA still keeps no edit by itself.)
 - `ROWSOURCE "alias"` (a table) is unchanged. Use ON QUERYDATA when cells are computed.
 
+## HTTP and HTTPS - HMG_HttpGet / HMG_HttpPost (HMG5 5.2)
+
+```harbour
+a := HMG_HttpGet( "https://api.example.com/rates?x=1" [, aHeaders] [, nTimeoutMs] )
+a := HMG_HttpPost( cUrl, hb_jsonEncode( hData ) [, cContentType] [, aHeaders] [, nTimeoutMs] )
+a := HMG_HttpRequest( "PUT", cUrl [, cBody] [, aHeaders] [, nTimeoutMs] [, cContentType] )
+IF a[ 1 ] == 200            // a[1] status, 0 = no answer; a[2] body; a[3] error text; a[4] headers
+   hb_jsonDecode( a[ 2 ], @hResult )
+ELSE
+   MsgStop( iif( a[ 1 ] == 0, a[ 3 ], "HTTP " + hb_ntos( a[ 1 ] ) + ": " + a[ 2 ] ) )
+ENDIF
+```
+
+- Windows' WinHTTP: TLS with the system's certificates, the user's proxy, redirects, gzip. No
+  OpenSSL, no hbssl/hbtip SSL, no DLLs; nothing to link (hmg64.hbc adds winhttp).
+- aHeaders: `"Name: value"` strings or `{ "Name", "value" }` pairs. HMG_HttpPost guesses the
+  Content-Type from the body: `{`/`[` JSON, `<` XML, otherwise a form; pass cContentType to choose.
+- Bodies are bytes: UTF-8 stays UTF-8; a UTF-16 answer (BOM or charset=utf-16) is converted.
+- An HTTP error (404, 500) is a status with its body, not an error; a[3] is set only when no
+  answer came (no network, refused, TLS, timeout), never a runtime error.
+- The call waits (default 30 s; WinHTTP retries a timed-out request once). For long calls in a
+  window, show the user that work is going on.
+- Replaces `CreateObject( "Msxml2.XMLHTTP.6.0" )` / ServerXMLHTTP calls one for one.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour
