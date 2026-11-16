@@ -1014,3 +1014,7 @@ AnimateWindow (GetFormHandle(<"FormName">), 200, <nFlags>)
 
 
 #xtranslate HMG_IsWin64() => IF( EMPTY( GetEnv( "ProgramW6432" ) ), .F., .T. )
+
+// HMG5 5.2: files dropped from Explorer (h_dropfiles.prg). Inside DEFINE WINDOW, OF may be left out.
+#xcommand ON DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] ACTION <action> => HMG_DropFiles( <"parent">, <"ctl">, <{action}> )
+#xcommand RELEASE DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] => HMG_DropFiles( <"parent">, <"ctl">, NIL )

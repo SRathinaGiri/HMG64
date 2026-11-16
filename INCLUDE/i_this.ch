@@ -144,6 +144,7 @@
 
 // EVENT PROCEDURES
 
+   #xtranslate This.DroppedFiles       => _HMG_DroppedFiles()   // HMG5 5.2: ON DROPFILES
    #xtranslate This.QueryRowIndex      => _HMG_SYSDATA \[ 201 \]
    #xtranslate This.QueryColIndex      => _HMG_SYSDATA \[ 202 \]
    #xtranslate This.QueryData          => _HMG_SYSDATA \[ 230 \]

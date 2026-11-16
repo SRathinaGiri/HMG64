@@ -1,4 +1,8 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - ON DROPFILES [ OF <form> ] [ CONTROL <control> ] ACTION <action>, RELEASE DROPFILES, and
+     HMG_DropFiles(): files dropped from Explorer on a window or any control; This.DroppedFiles holds
+     the paths. WM_DROPFILES with no OLE; drops are let through to an elevated program.
+     SOURCE\c_dropfiles.c, h_dropfiles.prg; tests\unit\dropfiles (13 checks with real drop packages)
    - GRID export: Form.Grid.ExportCSV( cFile [, lHeaders] [, cSep] ), Form.Grid.ExportXLSX( cFile
      [, cSheet] [, lHeaders] ), HMG_GridExportCSV / HMG_GridExportXLSX( cForm, cGrid, cFile, ... ) -> lOk,
      for every kind of grid (items, VIRTUAL with ON QUERYDATA or a ROWSOURCE array, a table). CSV:

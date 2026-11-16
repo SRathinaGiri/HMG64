@@ -178,6 +178,23 @@ lOk := HMG_GridExportXLSX( "Win_1", "Grid_1", cFile [, cSheet] [, lHeaders] )
   real dates (shown in the user's date format), header row bold and frozen, grid column widths.
 - The methods return nothing; use the functions to know whether the file was written.
 
+## Files dropped from Explorer - ON DROPFILES (HMG5 5.2)
+
+```harbour
+DEFINE WINDOW Win_1 ...
+   ON DROPFILES ACTION OpenFiles( This.DroppedFiles )        // the window (OF left out inside DEFINE WINDOW)
+   @ 10, 10 TEXTBOX Txt_File WIDTH 300
+   ON DROPFILES CONTROL Txt_File ACTION Win_1.Txt_File.Value := This.DroppedFiles[ 1 ]
+END WINDOW
+ON DROPFILES OF Win_2 CONTROL Grid_1 ACTION ImportFiles( This.DroppedFiles )   // any time after
+RELEASE DROPFILES OF Win_1 [ CONTROL Txt_File ]
+HMG_DropFiles( cForm, cControl | NIL, bAction | NIL )   // the same as a function
+```
+
+- `This.DroppedFiles`: the full paths, an array. Any window or control; a drop on a control
+  without its own ON DROPFILES goes to its window's. Works when the program runs elevated too.
+- Not the same as drag and drop between LISTBOX/GRID controls (DRAGSOURCE / DROPTARGET).
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

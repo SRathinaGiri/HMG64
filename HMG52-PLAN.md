@@ -16,8 +16,8 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 2 | HTTPS without OpenSSL: `HMG_HttpGet()`, `HMG_HttpPost()` | feature | done |
 | 3 | Long jobs without freezing: `HMG_Busy()` with progress and Cancel | feature | done |
 | 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | done |
-| 5 | Files dropped from Explorer: `ON DROPFILES` | feature | in progress |
-| 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | |
+| 5 | Files dropped from Explorer: `ON DROPFILES` | feature | done |
+| 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | in progress |
 | 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | |
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | |
 | 9 | `TOGGLE` control: an on/off switch | control | |
@@ -71,8 +71,8 @@ VIRTUAL (ON QUERYDATA or ROWSOURCE) and database grids.
 
 ## 5. Files dropped from Explorer
 
-`ON DROPFILES <action>` on a window and on TEXTBOX, EDITBOX, LISTBOX, GRID and IMAGE;
-`This.DroppedFiles` is the array of full paths. WM_DROPFILES (DragAcceptFiles), no OLE.
+`ON DROPFILES [ OF <form> ] [ CONTROL <control> ] ACTION <action>` (a statement, as ON KEY) on a
+window or any control; `This.DroppedFiles` is the array of full paths. WM_DROPFILES, no OLE.
 
 ## 6. `PLACEHOLDER`
 
