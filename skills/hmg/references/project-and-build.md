@@ -87,3 +87,21 @@ holds: a program built after `hmgbuild lib ansi` is ANSI.
 Copy the `.exe` and the files it opens at run time (DBFs, images not compiled into the `.rc`, `.ini`).
 No HMG runtime is needed. Programs using WEBVIEW or CHART need the Microsoft Edge WebView2 Runtime,
 which Windows 10/11 already has; check with `HMG_WebViewVersion()` (empty = missing).
+
+## Faster Harbour code: -gc3 (measured in HMG5 5.2)
+
+By default Harbour turns each function into pcode for its virtual machine. With `-gc3` each
+function becomes C that GCC compiles:
+
+```
+build64.bat myprog.hbp -gc3        (or a line "-gc3" in the .hbp when building with build64)
+```
+
+- Measured: about 10 % faster for typical code, up to about 18 % for tight numeric loops and
+  about 13 % for many small function calls; string, array, hash and database work hardly
+  changes (it runs in Harbour's C functions already). The .exe is a few KB bigger.
+- All HMG5 unit tests pass built with -gc3; it is safe for HMG programs.
+- The HMG library itself is NOT built with -gc3: it measured no faster (its time goes into
+  Windows messages and C) and 2.3 times bigger.
+- The IDE rewrites the .hbp with only its .prg lines before a build, so a "-gc3" line there is
+  lost when building from the IDE; build with build64.bat to use it.

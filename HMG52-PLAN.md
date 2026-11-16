@@ -18,7 +18,7 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | done |
 | 5 | Files dropped from Explorer: `ON DROPFILES` | feature | done |
 | 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | done |
-| 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | in progress |
+| 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | done (programs: yes; library: no) |
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | |
 | 9 | `TOGGLE` control: an on/off switch | control | |
 | 10 | Toast notifications: `HMG_Toast()` | feature | |
@@ -103,6 +103,9 @@ the bottom right of the work area and fades out, without taking the focus; sever
 stack. Not the Windows notification centre (that needs an app identity and shortcut).
 
 ## 11. IDE: linker errors in the Error List
+
+Also (from item 7): when the IDE rewrites the .hbp before a build it keeps only the .prg lines, so
+option lines such as `-gc3` are lost; keep them.
 
 When a build fails at the link step, the Error List shows the linker's lines (missing
 libraries, undefined references) with the library or function named, not "empty".
