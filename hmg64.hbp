@@ -59,6 +59,7 @@ source/h_listbox.prg
 source/h_dragdrop.prg
 source/h_http.prg
 source/h_busy.prg
+source/h_gridexport.prg
 source/h_media.prg
 source/h_menu.prg
 source/h_monthcal.prg

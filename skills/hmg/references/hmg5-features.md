@@ -161,6 +161,23 @@ RETURN aRows
 - WAIT WINDOW ... NOWAIT only shows a message: it neither handles messages nor offers Cancel,
   so a long job behind it still freezes the window. Use HMG_Busy for anything over a second.
 
+## Grid export to CSV and Excel (HMG5 5.2)
+
+```harbour
+Win_1.Grid_1.ExportCSV( "C:\out\sales.csv" [, lHeaders] [, cSeparator] )
+Win_1.Grid_1.ExportXLSX( "C:\out\sales.xlsx" [, cSheet] [, lHeaders] )
+lOk := HMG_GridExportCSV( "Win_1", "Grid_1", cFile [, lHeaders] [, cSeparator] )   // .T./.F.
+lOk := HMG_GridExportXLSX( "Win_1", "Grid_1", cFile [, cSheet] [, lHeaders] )
+```
+
+- Any GRID: items, VIRTUAL with ON QUERYDATA or ROWSOURCE array, or a table. The grid's own
+  (typed) values are exported, text without trailing spaces as the grid shows it.
+- CSV: UTF-8 with BOM (Excel reads every language), quoted as Excel expects, numbers with a
+  point, dates YYYY-MM-DD, logicals TRUE/FALSE.
+- XLSX is written by HMG itself (no Excel, no extra library): numbers stay numbers, dates are
+  real dates (shown in the user's date format), header row bold and frozen, grid column widths.
+- The methods return nothing; use the functions to know whether the file was written.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

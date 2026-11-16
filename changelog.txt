@@ -1,4 +1,11 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - GRID export: Form.Grid.ExportCSV( cFile [, lHeaders] [, cSep] ), Form.Grid.ExportXLSX( cFile
+     [, cSheet] [, lHeaders] ), HMG_GridExportCSV / HMG_GridExportXLSX( cForm, cGrid, cFile, ... ) -> lOk,
+     for every kind of grid (items, VIRTUAL with ON QUERYDATA or a ROWSOURCE array, a table). CSV:
+     UTF-8 with BOM, Excel quoting, YYYY-MM-DD dates. XLSX written by HMG (zipped with hbmzip, no
+     Excel): typed numbers, dates and logicals, bold frozen header, grid column widths.
+     SOURCE\h_gridexport.prg; tests\unit\gridexport (23 checks: the four kinds give the same
+     CSV; the .xlsx unzipped and checked; also read back with openpyxl when it was written)
    - HMG_Busy( cTitle, bJob [, lCancelButton] ): a long job in a small modal window with a progress
      bar and Cancel, in the program's own thread. oBusy:Step( nDone, nTotal [, cText] ) and
      oBusy:Text() repaint and handle messages at most every 50 ms (no "Not Responding", tight loops

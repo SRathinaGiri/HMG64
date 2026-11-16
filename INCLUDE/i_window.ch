@@ -80,9 +80,9 @@
    #xtranslate <w> . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Redraw,Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick,Append,Delete,Recall,ClearBuffer,DisableUpdate,EnableUpdate> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:Refresh,AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,Expand,Collapse> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Refresh,AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek,ExportCSV,ExportXLSX> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,Expand,Collapse,ExportCSV,ExportXLSX> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,ExportCSV,ExportXLSX> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> ) ;;
    #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Name,Length,Volume\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom,Seek\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;

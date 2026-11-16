@@ -10052,6 +10052,14 @@ HB_SYMBOL_UNUSED ( Arg9 )
 Arg3 := HMG_UPPER (ALLTRIM (Arg3))
 
 DO CASE
+   CASE Arg3 == 'EXPORTCSV'     // HMG5 5.2: h_gridexport.prg
+        HMG_GridExportCSV ( Arg1 , Arg2 , Arg4 , Arg5 , Arg6 )
+        RetVal := .T.
+
+   CASE Arg3 == 'EXPORTXLSX'    // HMG5 5.2: h_gridexport.prg
+        HMG_GridExportXLSX ( Arg1 , Arg2 , Arg4 , Arg5 , Arg6 )
+        RetVal := .T.
+
    CASE Arg3 == 'ADDCOLUMNEX'
         _AddGridColumn ( Arg2 , Arg1 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
         RetVal := .T.

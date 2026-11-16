@@ -15,8 +15,8 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 1 | VIRTUAL grid fed from an array: `ROWSOURCE` (and in-place editing) | speed | done |
 | 2 | HTTPS without OpenSSL: `HMG_HttpGet()`, `HMG_HttpPost()` | feature | done |
 | 3 | Long jobs without freezing: `HMG_Busy()` with progress and Cancel | feature | done |
-| 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | in progress |
-| 5 | Files dropped from Explorer: `ON DROPFILES` | feature | |
+| 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | done |
+| 5 | Files dropped from Explorer: `ON DROPFILES` | feature | in progress |
 | 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | |
 | 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | |
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | |
