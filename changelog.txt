@@ -1,4 +1,8 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - PLACEHOLDER <cText> on TEXTBOX (plain and NUMERIC) and COMBOBOX, @ and DEFINE forms, and the
+     property Placeholder: Windows' grey hint text in an empty box (EM_SETCUEBANNER / CB_SETCUEBANNER).
+     SOURCE\c_placeholder.c, h_placeholder.prg; tests\unit\placeholder (13 checks; a capture shows Windows
+     draws it)
    - ON DROPFILES [ OF <form> ] [ CONTROL <control> ] ACTION <action>, RELEASE DROPFILES, and
      HMG_DropFiles(): files dropped from Explorer on a window or any control; This.DroppedFiles holds
      the paths. WM_DROPFILES with no OLE; drops are let through to an elevated program.

@@ -8208,6 +8208,10 @@ ElseIf Pcount() == 4 // CONTROL
 
         _HMG_SetGridRowSource ( Arg2 , Arg1 , Arg4 )
 
+    ElseIf Arg3 == 'PLACEHOLDER'   // HMG5 5.2: hint text of an empty TEXTBOX / COMBOBOX
+
+        _HMG_PlaceholderSet ( Arg2 , Arg1 , Arg4 )
+
     EndIf
 
 ElseIf Pcount() == 5    // CONTROL WITH ARGUMENT, TOOLBAR BUTTON OR
@@ -8723,6 +8727,10 @@ ElseIf Pcount() == 3 // CONTROL
     ElseIf Arg3 == 'ROWSOURCE'   // HMG5 5.2: the array of a ROWSOURCE grid (NIL: none)
 
         RetVal := HMG_GRIDGETROWSOURCE ( GetControlHandle ( Arg2 , Arg1 ) )
+
+    ElseIf Arg3 == 'PLACEHOLDER'   // HMG5 5.2
+
+        RetVal := _HMG_PlaceholderGet ( Arg2 , Arg1 )
 
     ElseIf Arg3 == 'RANGEMIN'
 

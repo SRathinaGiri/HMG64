@@ -830,6 +830,7 @@ Text Box
 #xcommand DEFINE TEXTBOX <name>;
 	=>;
 	_HMG_SYSDATA \[ 416 \]	:= <"name">	;;
+	_HMG_SYSDATA \[ 522 \]	:= { => }	;;
 	_HMG_SYSDATA \[ 417 \]	:= NIL		;;
 	_HMG_SYSDATA \[ 432 \]	:= NIL		;;
 	_HMG_SYSDATA \[ 298 \]		:= NIL		;;
@@ -924,7 +925,9 @@ Text Box
                         _HMG_SYSDATA \[ 415 \] , ;
                         _HMG_SYSDATA \[ 414 \],;
                         _HMG_SYSDATA \[ 385 \],_HMG_SYSDATA \[ 457 \],_HMG_SYSDATA \[ 458 \],_HMG_SYSDATA \[ 441 \],_HMG_SYSDATA \[ 430 \],_HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] ) , _DefineCharMaskTextBox ( _HMG_SYSDATA \[ 416 \] , _HMG_SYSDATA \[ 417 \], _HMG_SYSDATA \[ 432 \], _HMG_SYSDATA \[ 431 \], _HMG_SYSDATA \[ 479 \] , _HMG_SYSDATA \[ 420 \] , _HMG_SYSDATA \[ 434 \] , _HMG_SYSDATA \[ 422 \] , _HMG_SYSDATA \[ 423 \] , _HMG_SYSDATA \[ 424 \] , _HMG_SYSDATA \[ 427 \] , _HMG_SYSDATA \[ 426 \] , _HMG_SYSDATA \[ 435 \] , _HMG_SYSDATA \[ 421 \] , _HMG_SYSDATA \[ 437 \] , _HMG_SYSDATA \[ 440 \] , _HMG_SYSDATA \[ 429 \] , _HMG_SYSDATA \[ 412 \] , _HMG_SYSDATA \[ 413 \] , _HMG_SYSDATA \[ 415 \] , _HMG_SYSDATA \[ 414 \] , _HMG_SYSDATA \[ 385 \] , _HMG_SYSDATA \[ 457 \] , _HMG_SYSDATA \[ 458 \] , _HMG_SYSDATA \[ 400 \] , _HMG_SYSDATA \[ 441 \] , _HMG_SYSDATA \[ 430 \] , _HMG_SYSDATA \[ 428 \] , _HMG_SYSDATA \[ 298 \] , _HMG_SYSDATA \[ 299 \] ) ) ;
-	)
+	) ;;
+	_HMG_SetPlaceholder( _HMG_SYSDATA \[ 416 \], _HMG_SYSDATA \[ 417 \], hb_HGetDef( _HMG_SYSDATA \[ 522 \], "PLACEHOLDER", NIL ) ) ;;
+	_HMG_SYSDATA \[ 522 \] := { => }
 
 /*----------------------------------------------------------------------------
 Month Calendar
@@ -1005,6 +1008,9 @@ Month Calendar
 #xcommand DROPTARGET          <l>                  => _HMG_SYSDATA \[ 522 \] \[ "DROPTARGET" \]     := <l>
 #xcommand DRAGREMOVE          <l>                  => _HMG_SYSDATA \[ 522 \] \[ "DRAGREMOVE" \]     := <l>
 #xcommand ON DROP             <ondrop>             => _HMG_SYSDATA \[ 522 \] \[ "ONDROP" \]         := <{ondrop}>
+
+// HMG5 5.2: DEFINE TEXTBOX / DEFINE COMBOBOX ... PLACEHOLDER <cText> (h_placeholder.prg)
+#xcommand PLACEHOLDER         <text>               => _HMG_SYSDATA \[ 522 \] \[ "PLACEHOLDER" \]    := <text>
 #xcommand ONDROP              <ondrop>             => _HMG_SYSDATA \[ 522 \] \[ "ONDROP" \]         := <{ondrop}>
 
 /*----------------------------------------------------------------------------
@@ -1293,6 +1299,7 @@ Combo Box
 #xcommand DEFINE COMBOBOX <name>;
 	=>;
 	_HMG_SYSDATA \[ 383 \]		:= .T.		;;
+	_HMG_SYSDATA \[ 522 \]		:= { => }	;;
 	_HMG_SYSDATA \[ 416 \] 		:= <"name">	;;
 	_HMG_SYSDATA \[ 417 \]		:= NIL		;;
 	_HMG_SYSDATA \[ 432 \]		:= NIL		;;
@@ -1367,7 +1374,9 @@ Combo Box
 		_HMG_SYSDATA \[ 248 \] , ;
 		_HMG_SYSDATA \[ 247 \] , ;
       _HMG_SYSDATA \[ 299 \] , ;
-      .not. _HMG_SYSDATA \[ 463 \] )
+      .not. _HMG_SYSDATA \[ 463 \] ) ;;
+	_HMG_SetPlaceholder( _HMG_SYSDATA \[ 416 \], _HMG_SYSDATA \[ 417 \], hb_HGetDef( _HMG_SYSDATA \[ 522 \], "PLACEHOLDER", NIL ) ) ;;
+	_HMG_SYSDATA \[ 522 \] := { => }
 		
 /*----------------------------------------------------------------------------
 Datepicker

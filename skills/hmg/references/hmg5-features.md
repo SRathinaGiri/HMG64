@@ -195,6 +195,18 @@ HMG_DropFiles( cForm, cControl | NIL, bAction | NIL )   // the same as a functio
   without its own ON DROPFILES goes to its window's. Works when the program runs elevated too.
 - Not the same as drag and drop between LISTBOX/GRID controls (DRAGSOURCE / DROPTARGET).
 
+## Hint text in empty boxes - PLACEHOLDER (HMG5 5.2)
+
+```harbour
+@ 10, 10 TEXTBOX Txt_Search WIDTH 250 PLACEHOLDER "Search customers..."
+@ 40, 10 COMBOBOX Cmb_City WIDTH 250 ITEMS aCities PLACEHOLDER "Choose a city"
+Win_1.Txt_Search.Placeholder := "Search by GSTIN"      // or read it
+```
+
+- Windows' own grey hint: a plain TEXTBOX (also NUMERIC) shows it until something is typed,
+  even with the focus; a COMBOBOX while nothing is chosen. Also in DEFINE TEXTBOX /
+  DEFINE COMBOBOX (`PLACEHOLDER "..."`). Masked and date TEXTBOXes are never empty: no hint.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

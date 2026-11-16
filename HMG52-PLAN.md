@@ -17,8 +17,8 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 3 | Long jobs without freezing: `HMG_Busy()` with progress and Cancel | feature | done |
 | 4 | Grid export: `ExportCSV`, `ExportXLSX` | feature | done |
 | 5 | Files dropped from Explorer: `ON DROPFILES` | feature | done |
-| 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | in progress |
-| 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | |
+| 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | done |
+| 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | in progress |
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | |
 | 9 | `TOGGLE` control: an on/off switch | control | |
 | 10 | Toast notifications: `HMG_Toast()` | feature | |
