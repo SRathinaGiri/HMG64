@@ -1,4 +1,10 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - HMG_Toast( cText [, cTitle] [, nSeconds] [, nIcon] ): a small window that slides in at the bottom
+     right of the work area and fades out after nSeconds (default 4; 0: until clicked), without taking
+     the focus. Several stack (the newest at the bottom, at most 16); a click closes one, the mouse on
+     it keeps it. nIcon 1 information, 2 warning, 3 error. HMG_ToastCloseAll( [lNow] ), HMG_ToastCount().
+     Dark mode and the monitor's DPI. Not the Windows notification centre.
+     SOURCE\c_toast.c; tests\unit\toast (19 checks); SAMPLES\Functions\Toast
    - @ <row>, <col> TOGGLE <name> [ CAPTION <c> ] [ VALUE <l> ] ... and DEFINE TOGGLE ... END TOGGLE
      (the clauses of CHECKBOX): an on/off switch drawn by HMG (smooth edges, DPI, dark mode, grey when
      disabled). A click or Space flips it and runs ON CHANGE; Value := does not. Value is logical;

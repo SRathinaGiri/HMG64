@@ -245,6 +245,22 @@ lOn := Win_1.Tgl_Wifi.Value        // logical; Win_1.Tgl_Wifi.Value := .F. (no O
   TOOLTIP, BACKCOLOR (default: the form's), FONTCOLOR, ON GOTFOCUS, ON LOSTFOCUS, HELPID,
   INVISIBLE, NOTABSTOP. No FIELD. Works on TAB pages.
 
+## Toast notifications - HMG_Toast (HMG5 5.2)
+
+```harbour
+HMG_Toast( "12 invoices were exported.", "Export done" )           // 4 seconds, no icon
+HMG_Toast( "The file is open in another program.", "Could not save", 0, 3 )   // stays, error icon
+HMG_ToastCloseAll()                                                // fade them all out ( .T.: at once )
+```
+
+- HMG_Toast( cText [, cTitle] [, nSeconds] [, nIcon] ) -> hWnd. Slides in at the bottom right of
+  the work area (the monitor of the active window), fades out after nSeconds (default 4; 0 = until
+  clicked). Never takes the focus or activates: safe while the user types.
+- Several stack, the newest at the bottom (at most 16; the oldest goes). A click closes one; while
+  the mouse is on it, it stays. nIcon: 0 none, 1 information, 2 warning, 3 error.
+- Needs the message loop (it animates with timers): inside a long loop use HMG_Busy or DO EVENTS.
+- Not the Windows notification centre (that needs an app identity); nothing to ship or register.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour
