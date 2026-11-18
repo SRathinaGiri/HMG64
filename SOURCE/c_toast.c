@@ -41,7 +41,6 @@ typedef struct
    int    x, y, tx, ty;      /* where it is, where it goes */
    int    nAlpha;            /* 0..255 */
    BOOL   bClosing;
-   BOOL   bHover;
    int    w, h;
    HFONT  hFont, hBold;
    int    nDpi;
@@ -314,7 +313,14 @@ static LRESULT CALLBACK tst_proc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
             break;
          if( wParam == TST_LIFE )
          {
-            if( ! t->bHover )
+            /* time is up; while the mouse pointer is on it, it stays (asked where the pointer
+               is, not told by mouse messages: a toast that moves away from a pointer resting
+               in the corner gets no WM_MOUSELEAVE until the mouse moves) */
+            POINT pt;
+            RECT  rc;
+            if( GetCursorPos( &pt ) && GetWindowRect( hWnd, &rc ) && PtInRect( &rc, pt ) )
+               SetTimer( hWnd, TST_LIFE, 500, NULL );
+            else
                tst_close( t );
          }
          else if( wParam == TST_ANIM )
@@ -325,28 +331,6 @@ static LRESULT CALLBACK tst_proc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
                if( t->bClosing )
                   DestroyWindow( hWnd );
             }
-         }
-         return 0;
-
-      case WM_MOUSEMOVE:
-         if( t && ! t->bHover )
-         {
-            TRACKMOUSEEVENT tme;
-            t->bHover = TRUE;
-            tme.cbSize = sizeof( tme );
-            tme.dwFlags = TME_LEAVE;
-            tme.hwndTrack = hWnd;
-            tme.dwHoverTime = 0;
-            TrackMouseEvent( &tme );
-         }
-         return 0;
-
-      case WM_MOUSELEAVE:
-         if( t )
-         {
-            t->bHover = FALSE;
-            if( t->nSeconds > 0 && ! t->bClosing )
-               SetTimer( hWnd, TST_LIFE, 1500, NULL );   /* a moment after the mouse leaves */
          }
          return 0;
 

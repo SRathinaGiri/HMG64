@@ -29,7 +29,7 @@ STATIC PROCEDURE Pump( nMs )
 RETURN
 
 STATIC PROCEDURE RunChecks()
-   LOCAL h1, h2, h3, a1, a2, aW, nGap, hFocus, hActive, nPlain, nTall, nLong, i
+   LOCAL h1, h2, h3, a1, a2, aW, nGap, hFocus, hActive, nPlain, nTall, nLong, i, lHover
 
    Win_1.Txt_1.SetFocus
    hFocus := GETFOCUS()
@@ -48,7 +48,8 @@ STATIC PROCEDURE RunChecks()
           Abs( a1[ 3 ] - ( aW[ 3 ] - nGap ) ) <= 1 .AND. Abs( a1[ 4 ] - ( aW[ 4 ] - nGap ) ) <= 1 )
    Check( "fully shown", LAYEREDALPHA( h1 ) == 255 )
    Check( "it draws its text", INKPIXELS( h1 ) > 50 )
-   Check( "still the focus after the animation", GETFOCUS() == hFocus )
+   // not "the same focus": another program may be activated meanwhile; a toast never gets it
+   Check( "no focus or activation for the toast after its animation", NoToastFocus( h1 ) )
 
    // a second one: at the bottom; the first moves up
    h2 := HMG_Toast( "Second" )
@@ -70,8 +71,10 @@ STATIC PROCEDURE RunChecks()
    h1 := HMG_Toast( "One second", , 1 )
    h2 := HMG_Toast( "Stays", , 0 )
    Pump( 2200 )
-   Check( "nSeconds 1: gone by itself", ! ISWINDOW( h1 ) )
-   Check( "nSeconds 0: still there", ISWINDOW( h2 ) .AND. HMG_ToastCount() == 1 )
+   // a toast stays while the mouse is on it: the real mouse may rest where the toasts are
+   lHover := CURSORIN( h1 )
+   Check( "nSeconds 1: gone by itself" + iif( lHover, " (the mouse is on it: it stays)", "" ), iif( lHover, ISWINDOW( h1 ), ! ISWINDOW( h1 ) ) )
+   Check( "nSeconds 0: still there", ISWINDOW( h2 ) .AND. HMG_ToastCount() == iif( lHover, 2, 1 ) )
    HMG_ToastCloseAll( .T. )
    Check( "CloseAll( .T. )", ! ISWINDOW( h2 ) .AND. HMG_ToastCount() == 0 )
 
@@ -97,11 +100,14 @@ STATIC PROCEDURE RunChecks()
    NEXT
    Check( "at most 16 (" + hb_ntos( HMG_ToastCount() ) + ")", HMG_ToastCount() == 16 )
    HMG_ToastCloseAll( .T. )
-   Check( "the focus never moved", GETFOCUS() == hFocus )
+   Check( "never the focus or the foreground for a toast", NoToastFocus( h1 ) .AND. NoToastFocus( h2 ) .AND. NoToastFocus( h3 ) )
 
    OutStd( "toast: PASS=" + hb_ntos( s_nPass ) + " FAIL=" + hb_ntos( s_nFail ) + hb_eol() )
    ExitProcess( iif( s_nFail == 0, 0, 1 ) )
 RETURN
+
+STATIC FUNCTION NoToastFocus( h )
+RETURN GETFOCUS() != h .AND. GETACTIVEWINDOW() != h .AND. GETFOREGROUNDWINDOW() != h .AND. ! ISACTIVATED( h )
 
 STATIC PROCEDURE Check( cName, lOk )
    IF HB_ISLOGICAL( lOk ) .AND. lOk
@@ -123,6 +129,20 @@ HB_FUNC( SENDMSG )
    SendMessageW( HW( 1 ), ( UINT ) hb_parni( 2 ), ( WPARAM ) hb_parnll( 3 ), ( LPARAM ) hb_parnll( 4 ) );
 }
 HB_FUNC( ISWINDOW )        { hb_retl( IsWindow( HW( 1 ) ) ); }
+/* CURSORIN( hWnd ): the mouse pointer is on the window */
+HB_FUNC( CURSORIN )
+{
+   POINT pt;
+   RECT  r;
+   hb_retl( IsWindow( HW( 1 ) ) && GetCursorPos( &pt ) && GetWindowRect( HW( 1 ), &r ) && PtInRect( &r, pt ) );
+}
+/* ISACTIVATED( hWnd ): Windows shows it as the active window */
+HB_FUNC( ISACTIVATED )
+{
+   WINDOWINFO wi;
+   wi.cbSize = sizeof( wi );
+   hb_retl( IsWindow( HW( 1 ) ) && GetWindowInfo( HW( 1 ), &wi ) && wi.dwWindowStatus == WS_ACTIVECAPTION );
+}
 HB_FUNC( EXSTYLEHAS )      { hb_retl( ( GetWindowLongPtr( HW( 1 ), GWL_EXSTYLE ) & hb_parnl( 2 ) ) != 0 ); }
 
 static void ret_rect( RECT * r )
