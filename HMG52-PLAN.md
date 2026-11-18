@@ -1,5 +1,7 @@
 # HMG 5.2 plan
 
+Released as HMG 5.2 on 2026/11/18: all twelve items done.
+
 Twelve items, done one at a time on `phase4`. Each item ends with its own tests passing,
 the whole suite passing (`hmgbuild all`, `hmgbuild idetest`), a changelog line and, where
 it is a new clause or function, the skill references (`skills\hmg\references`). The user
