@@ -147,6 +147,30 @@ foreach ($kind in 'code', 'form') {
    if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL newproject $kind`: $err" } else { $pass++ }
 }
 
+# the project's option lines survive Open + Save and reach the build (5.2):
+#   IDE.exe /hbptest <dir\opts.hbp> <out.txt>
+$dh = Join-Path $out 'hbptest'
+if (Test-Path $dh) { Remove-Item $dh -Recurse -Force }
+New-Item -ItemType Directory $dh | Out-Null
+[IO.File]::WriteAllText("$dh\main.prg", "FUNCTION Main()`r`nRETURN NIL`r`n")
+[IO.File]::WriteAllText("$dh\util.prg", "FUNCTION Util()`r`nRETURN NIL`r`n")
+[IO.File]::WriteAllText("$dh\opts.hbp", "main.prg`r`n-gc3`r`n# keep me`r`nutil.prg`r`n-lmylib`r`n")
+$oh = Join-Path $dh 'build.txt'
+$p = Start-Process $Ide -ArgumentList "/hbptest `"$dh\opts.hbp`" `"$oh`"" -WorkingDirectory (Split-Path $Ide) -PassThru
+$err = $null
+if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open)" }
+elseif (-not (Test-Path $oh)) { $err = "no output" }
+else {
+   $saved = @(Get-Content "$dh\opts.hbp")
+   $build = @(Get-Content $oh)
+   foreach ($want in 'main.prg', 'util.prg', '-gc3', '# keep me', '-lmylib') {
+      if ($saved -notcontains $want) { $err += "saved .hbp lost '$want'; " }
+      if ($build -notcontains $want) { $err += "build lost '$want'; " }
+   }
+   if ($saved[0] -ne 'main.prg') { $err += "main module not first ($($saved -join ' | '))" }
+}
+if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL hbptest: $err" } else { $pass++ }
+
 $secs = [int]((Get-Date) - $t0).TotalSeconds
 Write-Output ("ide-roundtrip: PASS={0} FAIL={1} ({2} s){3}" -f $pass, $fail, $secs, $(if ($Update) { ' - references updated' } else { '' }))
 exit $(if ($fail -eq 0) { 0 } else { 1 })

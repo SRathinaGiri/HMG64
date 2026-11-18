@@ -1,4 +1,11 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - IDE: the project's option lines (-gc3, -l<lib>, -i<path>, comments, other files) are kept when
+     the IDE saves the .hbp and when it builds; until now only the .prg lines survived. A failed link
+     shows in the Error List in words, with the module: a function called but not defined, defined
+     twice (and where else), a C function or a library not found, the .exe still running; C compiler
+     errors too; never an empty list (a missing library showed nothing). HMGEdit's build errors the same.
+     IDE\Source\ide_buildlog.prg; tests\unit\buildlog (17 checks, real link failures),
+     tests\ide hbptest (IDE.exe /hbptest); IDE.exe /showlog <error.log> shows a log in the Error List
    - HMG_Toast( cText [, cTitle] [, nSeconds] [, nIcon] ): a small window that slides in at the bottom
      right of the work area and fades out after nSeconds (default 4; 0: until clicked), without taking
      the focus. Several stack (the newest at the bottom, at most 16); a click closes one, the mouse on

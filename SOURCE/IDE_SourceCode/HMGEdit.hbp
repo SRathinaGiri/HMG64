@@ -3,4 +3,5 @@ Source/hmgedit.prg
 Source/ide_editor.prg
 Source/ide_complete.prg
 Source/prjindex.prg
+Source/ide_buildlog.prg
 Source/ide_editw.c

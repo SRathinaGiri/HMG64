@@ -22,7 +22,7 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | done |
 | 9 | `TOGGLE` control: an on/off switch | control | done |
 | 10 | Toast notifications: `HMG_Toast()` | feature | done |
-| 11 | IDE: linker errors in the Error List | IDE | |
+| 11 | IDE: linker errors in the Error List | IDE | done |
 | 12 | IDE: projects and forms with LF-only line endings | IDE | |
 
 ## 1. VIRTUAL grid fed from an array (`ROWSOURCE`)
