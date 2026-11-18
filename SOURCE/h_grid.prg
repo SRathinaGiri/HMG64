@@ -156,6 +156,7 @@ Local aColumnClassMap := {}
 Local aFieldNames := {}
 Local j
 LOCAL lArrayRows := .T.   // ADD3
+LOCAL aRowSource := NIL   // HMG5 5.2: ROWSOURCE <aRows>
 
 Available0 := Nil
 Available1 := Nil
@@ -171,6 +172,23 @@ Available3 := Nil
 
    if ValType ( lockcolumns ) == 'U'
       lockcolumns := 0
+   endif
+
+   // HMG5 5.2: ROWSOURCE <aRows> - a VIRTUAL grid whose cells C reads from the array
+   // (c_grid.c, HMG_GRIDSETROWSOURCE): no ON QUERYDATA, no Harbour code per cell.
+   // ROWSOURCE "alias" (a database grid) is unchanged.
+   if ValType ( cRecordSource ) == 'A'
+      aRowSource    := cRecordSource
+      cRecordSource := NIL
+      ownerdata     := .T.
+      itemcount     := HMG_LEN ( aRowSource )
+      lArrayRows    := .F.
+      IF ValType( aHeaders ) == "U" .AND. ValType( aWidths ) == "U" .AND. HMG_LEN( aRowSource ) > 0 .AND. ValType( aRowSource[ 1 ] ) == "A"
+         aHeaders := ARRAY( HMG_LEN( aRowSource[ 1 ] ) )
+         aWidths  := ARRAY( HMG_LEN( aRowSource[ 1 ] ) )
+         AEVAL( aHeaders, { |x, n| x := NIL, aHeaders[ n ] := "Column " + hb_NtoS( n ) } )
+         AFILL( aWidths, 150 )
+      ENDIF
    endif
 
    if ValType ( cRecordSource ) == 'C'
@@ -568,6 +586,10 @@ ENDIF
 		_HMG_SYSDATA [ HMG_CTL_CONTAINERHANDLE ] [k] := nHeaderImageListHandle
 	EndIf
 
+	IF ValType( aRowSource ) == 'A'   // HMG5 5.2: ROWSOURCE <aRows>
+		HMG_GRIDSETROWSOURCE( ControlHandle, aRowSource, HMG_LEN( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [k] ) > 0 )
+	ENDIF
+
 	_HMG_DragSetup( k, aDragDrop )   // HMG5 5.1: drag and drop
 
 Return Nil
@@ -904,6 +926,8 @@ _HMG_GridInplaceEdit_GridIndex := IDX  // ADD
       IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
          GetDataGridCellData ( idx , .t. )
+
+      ELSEIF _HMG_GridRowSourceGet ( idx , ri , ci )   // HMG5 5.2: ROWSOURCE array, typed value in QueryData
 
       ELSE
 
@@ -1548,6 +1572,8 @@ CFORMAT    := NIL   // ADD
 
 				GetDataGridCellData ( idx , .t. )
 
+			ELSEIF _HMG_GridRowSourceGet ( idx , ri , z )   // HMG5 5.2: ROWSOURCE array
+
 			ELSE
 
 				Eval( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [ idx ]  )
@@ -1606,6 +1632,10 @@ CFORMAT    := NIL   // ADD
        Endif
        
    ENDIF
+
+	IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 9 ] == .T.
+		_HMG_GridRowSourcePut ( idx , ri , ci , aTemp [ci] )   // HMG5 5.2: the ROWSOURCE array keeps the edit
+	ENDIF
 
 	IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ idx ] [ 10 ] ) == 'C'
 
@@ -1988,6 +2018,7 @@ ENDIF
                            _HMG_SYSDATA [ 320 ] := .T.
                            IF ValType ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 10 ] ) == 'C'
                               GetDataGridCellData ( i , .t. )
+                           ELSEIF _HMG_GridRowSourceGet ( i , nWhenRow , j )   // HMG5 5.2: ROWSOURCE array
                            ELSE
                               Eval( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [ i ]  )      
                            ENDIF
@@ -2937,4 +2968,69 @@ Local nOldWorkArea
 RETURN nPhysicalRecord
 
 
+*-----------------------------------------------------------------------------*
+FUNCTION _HMG_SetGridRowSource ( ControlName, ParentForm, aRows )
+*-----------------------------------------------------------------------------*
+// HMG5 5.2: Form.Grid.RowSource := aRows (NIL unbinds) - see HMG_GRIDSETROWSOURCE (c_grid.c)
+LOCAL i := GetControlIndex ( ControlName, ParentForm )
+   IF i == 0 .OR. .NOT. ( _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "GRID" .OR. _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "MULTIGRID" )
+      MsgHMGError ("RowSource: " + ControlName + " Of " + ParentForm + " is not a GRID. Program Terminated")
+   ENDIF
+   IF _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 9 ] == .F. .OR. ValType( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 10 ] ) == 'C'
+      MsgHMGError ("RowSource: an array needs a VIRTUAL grid that is not bound to a table (" + ControlName + " Of " + ParentForm + "). Program Terminated")
+   ENDIF
+   IF ValType( aRows ) != 'A' .AND. ValType( aRows ) != 'U'
+      MsgHMGError ("RowSource: an array or NIL is expected (" + ControlName + " Of " + ParentForm + "). Program Terminated")
+   ENDIF
+   HMG_GRIDSETROWSOURCE ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], aRows, HMG_LEN( _HMG_SYSDATA [ HMG_CTL_BKCOLOR ] [i] ) > 0 )
+RETURN NIL
+
+
+*-----------------------------------------------------------------------------*
+FUNCTION _HMG_GridRowSourceGet ( idx, nRow, nCol )
+*-----------------------------------------------------------------------------*
+// HMG5 5.2: for a grid with a ROWSOURCE array, puts aRows[ nRow, nCol ] (the typed value,
+// "" if there is none) in QueryData, as ON QUERYDATA would, and returns .T.; .F. otherwise
+LOCAL aRows := HMG_GRIDGETROWSOURCE ( _HMG_SYSDATA [HMG_CTL_HANDLE] [idx] ), aRow, xValue := NIL
+   IF ValType( aRows ) != 'A'
+      RETURN .F.
+   ENDIF
+   IF nRow >= 1 .AND. nRow <= HMG_LEN( aRows )
+      aRow := aRows [ nRow ]
+      IF ValType( aRow ) == 'A'
+         IF nCol >= 1 .AND. nCol <= HMG_LEN( aRow )
+            xValue := aRow [ nCol ]
+         ENDIF
+      ELSEIF nCol == 1
+         xValue := aRow
+      ENDIF
+   ENDIF
+   _HMG_SYSDATA [ 230 ] := iif( xValue == NIL, "", xValue )   // QueryData
+RETURN .T.
+
+
+*-----------------------------------------------------------------------------*
+FUNCTION _HMG_GridRowSourcePut ( idx, nRow, nCol, xValue )
+*-----------------------------------------------------------------------------*
+// HMG5 5.2: an in-place edit of a grid with a ROWSOURCE array: aRows[ nRow, nCol ] := xValue
+// (a short row grows; a row that is not an array becomes one), then the grid repaints
+LOCAL hGrid := _HMG_SYSDATA [HMG_CTL_HANDLE] [idx]
+LOCAL aRows := HMG_GRIDGETROWSOURCE ( hGrid )
+   IF ValType( aRows ) != 'A' .OR. nRow < 1 .OR. nRow > HMG_LEN( aRows ) .OR. nCol < 1
+      RETURN .F.
+   ENDIF
+   IF ValType( aRows [ nRow ] ) != 'A'
+      IF nCol == 1
+         aRows [ nRow ] := xValue
+         HMG_GRIDROWSOURCESYNC ( hGrid )
+         RETURN .T.
+      ENDIF
+      aRows [ nRow ] := { aRows [ nRow ] }
+   ENDIF
+   IF HMG_LEN( aRows [ nRow ] ) < nCol
+      ASize( aRows [ nRow ], nCol )
+   ENDIF
+   aRows [ nRow ] [ nCol ] := xValue
+   HMG_GRIDROWSOURCESYNC ( hGrid )
+RETURN .T.
 

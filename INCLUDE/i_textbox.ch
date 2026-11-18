@@ -87,12 +87,14 @@
 			[ <notabstop: NOTABSTOP> ]	;
                         [ HELPID <helpid> ] 		;
 			[ ROUNDED <nrounded> ]		;
+			[ PLACEHOLDER <placeholder> ]	;
          =>;
          _DefineTextBox( <"name">, <"parent">, <col>, <row>, <width>, <height>, <value>, ;
 				<fontname>, <fontsize>, <tooltip>, <maxlength>, ;
                         <.upper.>, <.lower.>, <.numeric.>, <.password.>, ;
 				<{lostfocus}>, <{gotfocus}>, <{change}>, <{enter}>, ;
-				<.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.>  , <disabledbackcolor> , <disabledfontcolor> , <nrounded> )
+				<.RightAlign.>, <helpid>, <.readonly.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.invisible.> , <.notabstop.>  , <disabledbackcolor> , <disabledfontcolor> , <nrounded> ) ;;
+         _HMG_SetPlaceholder( <"name">, <"parent">, <placeholder> )   // HMG5 5.2
 
 
 // TEXTBOX ( NUMERIC INPUTMASK )

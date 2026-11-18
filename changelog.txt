@@ -1,3 +1,72 @@
+-HMG 5.2 2026/11/18 (HMG52-PLAN.md)
+   - IDE: projects, forms, reports, the .rc and .hbc and the modules shown in the Error List are read
+     with any line ending (CR LF, LF or CR) and written back with CR LF; until now an LF-only .hbp was
+     refused ("no main module") and an LF-only .fmg opened empty (MlCount/MemoLine split only at CR LF).
+     IDE_MemoReadCRLF() in ide_buildlog.prg; tests\ide: LF-only and CR-only forms give the CR LF
+     reference bytes, an LF-only .hbp opens and is saved with CR LF; tests\unit\buildlog (20 checks)
+   - IDE: the project's option lines (-gc3, -l<lib>, -i<path>, comments, other files) are kept when
+     the IDE saves the .hbp and when it builds; until now only the .prg lines survived. A failed link
+     shows in the Error List in words, with the module: a function called but not defined, defined
+     twice (and where else), a C function or a library not found, the .exe still running; C compiler
+     errors too; never an empty list (a missing library showed nothing). HMGEdit's build errors the same.
+     IDE\Source\ide_buildlog.prg; tests\unit\buildlog (17 checks, real link failures),
+     tests\ide hbptest (IDE.exe /hbptest); IDE.exe /showlog <error.log> shows a log in the Error List
+   - HMG_Toast( cText [, cTitle] [, nSeconds] [, nIcon] ): a small window that slides in at the bottom
+     right of the work area and fades out after nSeconds (default 4; 0: until clicked), without taking
+     the focus. Several stack (the newest at the bottom, at most 16); a click closes one, the mouse on
+     it keeps it. nIcon 1 information, 2 warning, 3 error. HMG_ToastCloseAll( [lNow] ), HMG_ToastCount().
+     Dark mode and the monitor's DPI. Not the Windows notification centre.
+     SOURCE\c_toast.c; tests\unit\toast (19 checks); SAMPLES\Functions\Toast
+   - @ <row>, <col> TOGGLE <name> [ CAPTION <c> ] [ VALUE <l> ] ... and DEFINE TOGGLE ... END TOGGLE
+     (the clauses of CHECKBOX): an on/off switch drawn by HMG (smooth edges, DPI, dark mode, grey when
+     disabled). A click or Space flips it and runs ON CHANGE; Value := does not. Value is logical;
+     Caption, Enabled, Visible, fonts, BackColor, FontColor, ON GOTFOCUS / ON LOSTFOCUS, TAB pages.
+     SOURCE\c_toggle.c, h_toggle.prg; tests\unit\toggle (22 checks); SAMPLES\Controls\Toggle
+   - @ <row>, <col> SPLITTER <name> [ VERTICAL | HORIZONTAL ] BETWEEN <aBefore> AND <aAfter>
+     [ MINSIZE <n> ] [ ON CHANGE <action> ] [ INVISIBLE ]: a thin bar the mouse drags; the controls
+     before it end at the bar, the ones after start after it and keep their far edge. Esc while
+     dragging puts everything back; property Position (read and set, kept within MINSIZE).
+     SOURCE\c_splitter.c, h_splitter.prg; tests\unit\splitter (15 checks); SAMPLES\Controls\Splitter
+   - -gc3 (Harbour functions compiled to C) measured: programs about 10 % faster (tight numeric loops
+     about 18 %), all unit tests pass with it; documented (build64 ... -gc3). The library stays pcode:
+     built with -gc3 it was no faster and 2.3 times bigger
+   - PLACEHOLDER <cText> on TEXTBOX (plain and NUMERIC) and COMBOBOX, @ and DEFINE forms, and the
+     property Placeholder: Windows' grey hint text in an empty box (EM_SETCUEBANNER / CB_SETCUEBANNER).
+     SOURCE\c_placeholder.c, h_placeholder.prg; tests\unit\placeholder (13 checks; a capture shows Windows
+     draws it)
+   - ON DROPFILES [ OF <form> ] [ CONTROL <control> ] ACTION <action>, RELEASE DROPFILES, and
+     HMG_DropFiles(): files dropped from Explorer on a window or any control; This.DroppedFiles holds
+     the paths. WM_DROPFILES with no OLE; drops are let through to an elevated program.
+     SOURCE\c_dropfiles.c, h_dropfiles.prg; tests\unit\dropfiles (13 checks with real drop packages)
+   - GRID export: Form.Grid.ExportCSV( cFile [, lHeaders] [, cSep] ), Form.Grid.ExportXLSX( cFile
+     [, cSheet] [, lHeaders] ), HMG_GridExportCSV / HMG_GridExportXLSX( cForm, cGrid, cFile, ... ) -> lOk,
+     for every kind of grid (items, VIRTUAL with ON QUERYDATA or a ROWSOURCE array, a table). CSV:
+     UTF-8 with BOM, Excel quoting, YYYY-MM-DD dates. XLSX written by HMG (zipped with hbmzip, no
+     Excel): typed numbers, dates and logicals, bold frozen header, grid column widths.
+     SOURCE\h_gridexport.prg; tests\unit\gridexport (23 checks: the four kinds give the same
+     CSV; the .xlsx unzipped and checked; also read back with openpyxl when it was written)
+   - HMG_Busy( cTitle, bJob [, lCancelButton] ): a long job in a small modal window with a progress
+     bar and Cancel, in the program's own thread. oBusy:Step( nDone, nTotal [, cText] ) and
+     oBusy:Text() repaint and handle messages at most every 50 ms (no "Not Responding", tight loops
+     stay fast) and return .F. after Cancel, Esc or the window's X (oBusy:Cancelled); no nTotal: a
+     marquee bar. Returns the job's value. SOURCE\h_busy.prg; tests\unit\busy (13 checks, a probe
+     thread checks the window keeps answering Windows during a tight loop)
+   - HMG_HttpGet( cUrl [, aHeaders] [, nTimeoutMs] ), HMG_HttpPost( cUrl, cBody [, cContentType]
+     [, aHeaders] [, nTimeoutMs] ), HMG_HttpRequest( cMethod, cUrl, ... ) -> { nStatus, cBody, cError,
+     cHeaders }: HTTP and HTTPS on Windows' WinHTTP (TLS, proxy, redirects, gzip), no OpenSSL.
+     SOURCE\c_http.c, h_http.prg; hmg64.hbc links winhttp. tests\unit\http (24 checks against
+     its own local server; HMG_TEST_INTERNET=1 adds https://example.com)
+   - GRID ... ROWSOURCE <aRows>: with an array (not a table alias) the grid is VIRTUAL and its cells
+     are read from aRows[ row, col ] in C (c_grid.c), with no ON QUERYDATA and no Harbour code per
+     cell; formatted as ON QUERYDATA values are (RTrim, Str(), DToC(), .T./.F.). The grid keeps a
+     reference to the array: Refresh shows changes and added or removed rows; property RowSource
+     (get, and := another array or NIL), also in DEFINE GRID. tests\unit\rowsource (25 checks,
+     against ON QUERYDATA; a cell costs about 45 us less)
+   - GRID ... ROWSOURCE <aRows> with EDIT / ALLOWEDIT: the in-place editor gets the typed value from
+     the array, the edit is written back into aRows[ row, col ] (a short row grows) and the row
+     repaints; COLUMNWHEN reads the array too. Without this, editing called the missing ON QUERYDATA.
+     tests\unit\rowsource: 8 more checks (text, number, date, logical, short row)
+
 -HMG 5.1 2026/11/15
    - Drag and drop between LISTBOX and GRID controls: clauses DRAGSOURCE, DROPTARGET, DRAGREMOVE and
      ON DROP <action> (@ syntax and DEFINE LISTBOX / DEFINE GRID). Without ON DROP the selected items

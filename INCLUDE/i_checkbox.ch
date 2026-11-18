@@ -80,6 +80,31 @@
 	=>;
 	_DefineCheckBox ( <"name">, <"parent">, <col>, <row>, <caption>, <value> ,<f> ,<n> , <tooltip>  , <{change}>  , [<w>] , [<h>] , <{lostfocus}>, <{gotfocus}>  , <helpid>, <.invisible.>, <.notabstop.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> , <"field"> , <backcolor> , <fontcolor> , <.transparent.>, <{OnEnter}> )
 
+/* TOGGLE: an on/off switch (HMG5 5.2) */
+#xcommand @ <row>,<col> TOGGLE <name> ;
+		[ <dummy1: OF, PARENT> <parent> ] ;
+		[ CAPTION <caption> ] ;
+		[ WIDTH <w> ] ;
+		[ HEIGHT <h> ] ;
+		[ VALUE <value> ] ;
+		[ FONT <f> ] ;
+		[ SIZE <n> ] ;
+		[ <bold : BOLD> ] ;
+		[ <italic : ITALIC> ] ;
+		[ <underline : UNDERLINE> ] ;
+		[ <strikeout : STRIKEOUT> ] ;
+		[ TOOLTIP <tooltip> ] ;
+		[ BACKCOLOR <backcolor> ] ;
+		[ FONTCOLOR <fontcolor> ] ;
+		[ ON GOTFOCUS <gotfocus> ] ;
+		[ ON CHANGE <change> ] ;
+		[ ON LOSTFOCUS <lostfocus> ] ;
+		[ HELPID <helpid> ] ;
+		[ <invisible: INVISIBLE> ] ;
+		[ <notabstop: NOTABSTOP> ] ;
+	=>;
+	_DefineToggle ( <"name">, <"parent">, <col>, <row>, <caption>, <value>, <f>, <n>, <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, NIL, <backcolor>, <fontcolor>, .F., NIL )
+
 #xcommand @ <row>,<col> CHECKBUTTON <name> ;
 		[ <dummy1: OF, PARENT> <parent> ] ;
 		CAPTION <caption>  ;

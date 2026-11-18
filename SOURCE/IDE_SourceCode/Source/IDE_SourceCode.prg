@@ -1494,6 +1494,16 @@ PROCEDURE AutoBuild()
       ShowGrid  := .T.
       nGridSize := 10
       DEFINE TIMER Tmr_GridTest OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_GridTest.Enabled := .F., IDE_GridTest( hb_argv( 2 ), hb_argv( 3 ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/SHOWLOG" .AND. ! Empty( hb_argv( 2 ) )
+      // HMG5 5.2: IDE.exe /showlog <error.log> shows that build log in the Error List
+      DEFINE TIMER Tmr_ShowLog OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_ShowLog.Enabled := .F., ;
+         hb_cwd( hb_FNameDir( hb_argv( 2 ) ) ), showlog( ALLTRIM( HB_MEMOREAD( hb_argv( 2 ) ) ) ) )
+   ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/HBPTEST" .AND. ! Empty( hb_argv( 3 ) )
+      // HMG5 5.2 test mode (tests/ide): IDE.exe /hbptest <project.hbp> <out.txt> opens the project, saves
+      // it as the IDE does before a build, writes what the build gets to <out.txt>, then ends
+      DEFINE TIMER Tmr_HbpTest OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_HbpTest.Enabled := .F., ;
+         nParameterCount := 1, cParameters := { hb_argv( 2 ) }, OpenProject(), SaveProject(), ;
+         HB_MEMOWRIT( hb_argv( 3 ), IDE_HbpBuildText( HB_MEMOREAD( hb_argv( 2 ) ) ) ), ExitProcess( 0 ) )
    ElseIf HMG_UPPER( hb_argv( 1 ) ) == "/FORM" .AND. ! Empty( hb_argv( 2 ) )
       // HMG5: IDE.exe /form <file.fmg> opens one form in the designer, without a project
       DEFINE TIMER Tmr_OpenForm OF Form_Main INTERVAL 300 ACTION ( Form_Main.Tmr_OpenForm.Enabled := .F., _Open( hb_argv( 2 ) ) )
@@ -1666,7 +1676,7 @@ Local cComponentLine
 		__MVPUBLIC ( aComponentNames [ i ] + 'Count' )
 		__MVPUT ( aComponentNames [ i ] + 'Count' , 0 )
 
-		cComponentInfo := HB_MEMOREAD ( aComponentFileNames [i] )
+		cComponentInfo := IDE_MemoReadCRLF ( aComponentFileNames [i] )
 
 		For j := 1 To mlCount (cComponentInfo)
 
@@ -15277,7 +15287,7 @@ _hmgide_CurrentSplitBox := ''
 		RETURN
 	Endif
 
-	Code := HB_MEMOREAD ( FileName )
+	Code := IDE_MemoReadCRLF ( FileName )
 
 	LineCount := MlCount (Code)
 
@@ -30373,7 +30383,8 @@ Local nTables := 0
 	ProjectName := FileName
 	IDE_AddRecent( FileName )   // HMG5
 
-	Project := HB_MEMOREAD ( FileName )
+	Project := IDE_MemoReadCRLF ( FileName )
+	IDE_HbpKeepSet( IDE_HbpOtherLines( Project ) )   // HMG5 5.2: option lines, comments, other files
 
 	LineCount := MlCount (Project)
 
@@ -30456,6 +30467,7 @@ Local Item
 
 	Next i
 
+	AEval( IDE_HbpKeepGet(), {| c | Project += c + CRLF } )   // HMG5 5.2
 
 	SaveString ( ProjectName , Project )
 
@@ -30535,6 +30547,7 @@ Local xName, cMain, cOldProject := ProjectName
 		DoMethod ( DesignForm , 'Release' )
 	EndIf
 
+	IDE_HbpKeepSet( {} )   // HMG5 5.2
 	Project.List_1.DeleteAllItems
 	Project.List_2.DeleteAllItems
 	Project.List_3.DeleteAllItems
@@ -30672,6 +30685,7 @@ PROCEDURE CloseProject
 
 	ProjectName := ''
 	OpenFormName := ''
+	IDE_HbpKeepSet( {} )   // HMG5 5.2
 	Project.List_1.DeleteAllItems
 	Project.List_2.DeleteAllItems
 	Project.List_3.DeleteAllItems
@@ -31271,7 +31285,7 @@ Local nStart
 	EditReport.Text21a.Value	:= ''
 	EditReport.Text21b.Value	:= ''
 	
-	cReport := HB_MEMOREAD ( cFileName )
+	cReport := IDE_MemoReadCRLF ( cFileName )
 
 	For i := 1 To HMG_LEN ( cReport )
 
@@ -32089,7 +32103,7 @@ local i, cData
 
 	if .not. empty(xName)
 		if file (xName)
-			Project.Edit_1.Value := HB_MEMOREAD ( xName )
+			Project.Edit_1.Value := IDE_MemoReadCRLF ( xName )
 		else
 			Project.Edit_1.Value := ''
 		endif
@@ -32105,7 +32119,7 @@ local i, cData
 
 	if .not. empty(xName)
 		if file (xName)
-			cData := HB_MEMOREAD ( xName )
+			cData := IDE_MemoReadCRLF ( xName )
 			project.config.value := cData
 		endif
 	endif
@@ -37439,7 +37453,7 @@ Local appname
 
 	Next i
 
-   FormBuildLog.EditBox1.VALUE := HB_MEMOREAD (PROJECTFOLDER+"\build.log")
+   FormBuildLog.EditBox1.VALUE := IDE_MemoReadCRLF (PROJECTFOLDER+"\build.log")
    FormBuildLog.EditBox1.VALUE := HB_UTF8STRTRAN (FormBuildLog.EditBox1.VALUE, CHR(10) , CRLF )   // ADD
 
 RETURN
@@ -39802,7 +39816,7 @@ RETURN
 
 // FUNCTION hmgmake (cParam1,cParam2,cParam3,cParam4,cParam5,cParam6,cParam7,cParam8)
 PROCEDURE hmgmake (cParam1,cParam2,cParam3,cParam4,cParam5,cParam6,cParam7,cParam8)
-Local i , o , c , l , cParams
+Local i , o , c , cParams
 Local aFiles			:= {}
 Local cProjectFileFullContent	:= ''
 Local nLimes			:= 0
@@ -39928,21 +39942,9 @@ PUBLIC cInclude			:= ''
 
 	* Create Programs List ************************************************
 
+	// HMG5 5.2: the modules and the option lines (-gc3, -l..., comments); until 5.2 only the .prg lines
 	c := HB_MEMOREAD ( cProjectFile )
-
-	o := ''
-
-	For i := 1 To MlCount (c)
-
-		l := ALLTRIM( MemoLine( c , , i ) )
-
-//		l := HMG_LOWER ( l )
-
-		if HMG_LOWER( HB_URIGHT( l, 4 ) ) == '.prg'
-			o := o + l + CRLF
-		EndIf
-
-	Next i
+	o := IDE_HbpBuildText( c )
 
 	SaveString ( cProjectBaseName + '.hbp' , o )
 
@@ -40247,7 +40249,7 @@ Local cBaseWindowName
 			RETURN .f.
 		endif
 
-		cModuleContent := HB_MEMOREAD ( cModule )
+		cModuleContent := IDE_MemoReadCRLF ( cModule )
 
 		nLimes := MlCount ( cModuleContent )
 
@@ -42308,7 +42310,7 @@ Local i , tmp
 
 	cCurrentReportFileName := FileName
 
-	tmp := HB_MEMOREAD ( cCurrentReportFileName )
+	tmp := IDE_MemoReadCRLF ( cCurrentReportFileName )
 
 	rep_build_step_1.tables.deleteallitems
 	rep_build_step_1.availablefields.deleteallitems
@@ -43499,8 +43501,7 @@ local i
 RETURN
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 PROCEDURE showlog (clog)
-LOCAL nLeftPar, nRightPar, cLine, cLine1, cLine2, cLineOriginal, cLineFixed, cPrgName, nLineNo
-local i
+LOCAL cLine
 
 	cLog := HB_UTF8STRTRAN ( cLog , chr(13) + chr(13) , CRLF )
 
@@ -43588,98 +43589,13 @@ local i
 
 	showlog.grid_0.deleteallitems
 
-	for i := 1 to mlcount (	cLog )
-
-		cLine := ALLTRIM ( memoline (clog , 1024, i ) )
-
-		cLine := HB_ULEFT ( cLine , HMG_LEN(cLine) - 1 )
-
-		if  "Can't delete previous"  $ cLine
-
-			showlog.grid_0.additem( { 'HMG-IDE Builder: ' +  cLine } )
-			showlog.debug.enabled := .f.
+	// HMG5 5.2: ide_buildlog.prg reads the log (linker errors in words; never an empty list)
+	for each cLine in IDE_BuildLogItems( cLog )
+		showlog.grid_0.additem( { cLine } )
+		if HB_ULEFT ( cLine , 16 ) == 'HMG-IDE Builder:'
 			showlog.rebuild.enabled := .f.
-
 		endif
-
-		if  '.prg(' $ HMG_LOWER(cLine)
-
-			showlog.grid_0.additem( { 'Harbour: ' +  cLine } )
-
-		endif
-
-		if  '.fmg(' $ HMG_LOWER(cLine)
-
-			showlog.grid_0.additem( { 'Harbour: ' +  cLine } )
-
-		endif
-
-		if  '.ch(' $ HMG_LOWER(cLine)
-
-			showlog.grid_0.additem( { 'Harbour: ' +  cLine } )
-
-		endif
-
-		if	'reference' $ HMG_LOWER(cLine)		; 
-			.or.					;
-			'multiple definition' $ HMG_LOWER(cLine)	;
-			.or.					;
-			'first defined here' $ HMG_LOWER(cLine)
-
-
-			cLine := HB_UTF8STRTRAN ( cLine , 'HB_FUN_' , '' )
-
-			nLeftPar := HB_UAT ( '(' , cLine )
-			nRightPar := HB_UAT ( ')' , cLine )
-
-			cLine1 := HB_USUBSTR ( cLine , 1 , nLeftPar - 1 )
-			cLine2 := HB_USUBSTR ( cLine , nRightPar + 1 , 255 )
-
-			cLine := cLine1 + cLine2
-
-			cLineOriginal := cLine
-
-			nRightPar := HB_UTF8RAT ( ':' , cLine )
-
-			cLine1 := HB_USUBSTR ( cLine , 1 , nRightPar - 3 ) + 'prg:'
-			cLine2 := HB_USUBSTR ( cLine , nRightPar + 1 , 255 )
-
-			cLine := cLine1 + cLine2
-
-			cLineFixed := cLine
-
-			* get prg name
-
-			nLeftPar := HB_UAT ( ':' , cLine )
-			nRightPar := HB_UTF8RAT ( ':' , cLine )
-
-			cPrgName := HB_USUBSTR ( cLine , nLeftPar + 1 , nRightPar - nLeftPar - 1 )
-
-			if !file(cPrgName)
-				cLine := cLineOriginal
-			endif
-
-			showlog.grid_0.additem( { 'Linker ' + cLine } )
-
-		endif
-
-		if  'windres' $ HMG_LOWER(cLine)
-			cLine := HB_UTF8STRTRAN ( cLine , 'windres:' , '' )
-			cLine := HB_UTF8STRTRAN ( cLine , '_temp.rc:' , 'line:' )
-
-
-			nLeftPar := HB_UAT ( ':' , cLine )
-			nRightPar := HB_UTF8RAT ( ':' , cLine )
-
-			nLineNo := VAL ( HB_USUBSTR( cLine , nLeftPar + 1 , nRightPar - nLeftPar - 1 ) ) - 42
-
-			cLine := ALLTRIM ( HB_USUBSTR ( cLine , 1 , nLeftPar ) + ALLTRIM(STR(nLineNo)) + HB_USUBSTR ( cLine , nRightPar , 1024 ) )
-
-			showlog.grid_0.additem( { 'Resource compiler ' + cLine } )
-
-		endif
-
-	next i
+	next
 
 
 	showlog.grid_0.value := 1
@@ -43732,7 +43648,7 @@ local mlc
 
 	cNewLine := HB_UTF8STRTRAN( cNewLine , Space ( 4 ) , chr(9) )
 
-	c := HB_MEMOREAD ( cCurrentFixedFile )
+	c := IDE_MemoReadCRLF ( cCurrentFixedFile )
 
 	mlc := mlcount (c)
 
@@ -43804,9 +43720,9 @@ PUBLIC cCurrentFixedFile
 		nLeftPar := HB_UAT ( ':' , cLine )
 		nRightPar := HB_UTF8RAT ( ':' , cLine )
 
-		cFileName := HB_USUBSTR ( cLine , nLeftPar + 1 , nRightPar - nLeftPar - 1 )
+		cFileName := ALLTRIM ( HB_USUBSTR ( cLine , nLeftPar + 1 , nRightPar - nLeftPar - 1 ) )   // HMG5 5.2: "Linker: a.prg: ..."
 
-		if !file(cFileName)
+		if empty(cFileName) .or. !file(cFileName)
 
 			showlog.grid_1.itemcount	:= 0
 			showlog.grid_1.caption(1)	:= ''
@@ -43820,7 +43736,7 @@ PUBLIC cCurrentFixedFile
 
 			cCurrentFixedFile := cFileName
 
-			cPrgFile := HB_MEMOREAD ( cFileName )
+			cPrgFile := IDE_MemoReadCRLF ( cFileName )
 
 			cSourceBuffer := cPrgFile
 
@@ -43904,7 +43820,7 @@ PUBLIC cCurrentFixedFile
 	showlog.grid_1.caption(1) := '#'
 	showlog.grid_1.caption(2) := cFileName
 
-	cPrgFile := HB_MEMOREAD ( cFileName )
+	cPrgFile := IDE_MemoReadCRLF ( cFileName )
 	cSourceBuffer := cPrgFile
        	mlc := mlcount ( cPrgFile )
 
@@ -44753,7 +44669,7 @@ local x
 
 
 
-	cReport := HB_MEMOREAD ( cFileName )
+	cReport := IDE_MemoReadCRLF ( cFileName )
 
 
 	For i := 1 to mlcount ( cReport )

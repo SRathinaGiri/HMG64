@@ -147,10 +147,10 @@ Each of these has cost real debugging time; `references/pitfalls.md` has the det
    read it only when nothing else exists, never assign to it.
 9. **64-bit.** HMG5 is 64-bit only: handles are 64-bit integers; old 32-bit `.lib`/`.a` files and
    32-bit DLLs (old MySQL clients, ActiveX controls) cannot be linked or loaded.
-10. **Write every file with Windows line endings (CR+LF).** The compiler accepts LF-only files, but
-   the HMG IDE reads `.hbp`, `.fmg` and report files line by line with `MemoLine()`, which only
-   breaks at CR+LF: an LF-only `.hbp` reads as one line and the IDE says "Project File is empty,
-   invalid or no main module specified"; LF-only forms and reports load wrong. This applies to
+10. **Write every file with Windows line endings (CR+LF).** The compiler accepts LF-only files, and
+   the HMG5 5.2 IDE reads any line ending, but IDEs before 5.2 read `.hbp`, `.fmg` and report files
+   with `MemoLine()`, which only breaks at CR+LF: an LF-only `.hbp` reads as one line and they say
+   "Project File is empty, invalid or no main module specified"; `.bat` files need CR+LF. This applies to
    `.prg`, `.hbp`, `.hbc`, `.fmg`, `.rc`, `.ch` and `.bat`. If your file-writing tool produces LF,
    convert afterwards, for example in PowerShell from the project folder:
    ```powershell

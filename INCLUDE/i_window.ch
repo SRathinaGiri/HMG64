@@ -71,8 +71,8 @@
    #xtranslate <w> . \<p:Activate,Center,Redraw, CenterDesktop,Release,Maximize,Minimize,Restore,Show,Hide,SetFocus,Print,Capture> \[()\] => DoMethod ( <"w">, \<"p"\> ) ;;
    #xtranslate <w> . \<p:CenterIn> (\<arg\>) => DoMethod ( <"w">, \<"p"\>, \<"arg"\> ) ;;
    #xtranslate <w> . \<p:Capture> ( \<f\> , \<r\> , \<k\> , \<a\> , \<h\> ) => DoMethod ( <"w">, \<"p"\> , \<f\>  , \<r\> , \<k\> , \<a\> , \<h\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,Object,InputItems,DisplayItems,RecNo,GetTextLength\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,InputItems,DisplayItems,RecNo\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,Object,InputItems,DisplayItems,RecNo,GetTextLength\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,hBitmap,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,InputItems,DisplayItems,RecNo\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly,Rounded> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly,Rounded> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Caption,Header,Item,Icon,HeaderImages> (\<arg\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg\> ) ;;
@@ -80,9 +80,9 @@
    #xtranslate <w> . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) => GetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Redraw,Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick,Append,Delete,Recall,ClearBuffer,DisableUpdate,EnableUpdate> \[()\] => Domethod ( <"w">, \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:Refresh,AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,Expand,Collapse> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
-   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:Refresh,AddItem,DeleteItem,Open,DeletePage,DeleteColumn,Expand,Collapse,Seek,ExportCSV,ExportXLSX> (\<a\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,Expand,Collapse,ExportCSV,ExportXLSX> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
+   #xtranslate <w> . \<c\> . \<p:AddItem,AddPage,ExportCSV,ExportXLSX> (\<a1\> , \<a2\> , \<a3\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> ) ;;
    #xtranslate <w> . \<c\> . \<p:AddItem,AddColumn,AddControl\> (\<a1\> , \<a2\> , \<a3\> , \<a4\> ) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> , \<a3\> , \<a4\> ) ;;
    #xtranslate <w> . \<c\> . \<p:Name,Length,Volume\> => GetProperty ( <"w">, \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom,Seek\> := \<n\> => SetProperty ( <"w">, \<"c"\> , \<"p"\> , \<n\> ) ;;
@@ -97,8 +97,8 @@
    #xtranslate <w> . \<c\> . \<p:SaveImage\> (\<a1\> , \<a2\>) => Domethod ( <"w">, \<"c"\> , \<"p"\> , \<a1\> , \<a2\> ) ;;
    #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled,Value> => GetProperty ( <"w"> , \<"x"\> , \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . \<x\> . \<c\> . \<p:Caption,Enabled,Value> := \<n\> => SetProperty ( <"w"> , \<"x"\> , \<"c"\> , \<"p"\> , \<n\> ) ;;
-   #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => GetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor\> := \<n\> => SetProperty ( <"w"> , \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor\> => GetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor\> := \<n\> => SetProperty ( <"w"> , \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Caption,Header,Item,Icon> (\<arg\>) => GetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<arg\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Caption,Header,Item,Icon> (\<arg\>) := \<n\> => SetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<arg\> , \<n\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Refresh,SetFocus,DeleteAllItems,Release,Show,Save,Hide,Play,Stop,Close,Pause,Eject,OpenDialog,Resume,Action,OnClick\> \[()\] => Domethod ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> ) ;;
@@ -110,8 +110,8 @@
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:ReadOnly,Speed,Volume,Zoom> := \<n\> => SetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) =>          GetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> ) ;;
    #xtranslate <w> . \<x\> (\<k\>) . \<c\> . \<p:Cell> (\<arg1\>,\<arg2\>) := \<n\> => SetProperty ( <"w">, \<"x"\> , \<k\> , \<"c"\> , \<"p"\> , \<arg1\> , \<arg2\> , \<n\> ) ;;
-   #xtranslate <w> . SplitBox . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,Object,InputItems,DisplayItems\> => GetProperty ( <"w">, "SplitBox" , \<"c"\> , \<"p"\> ) ;;
-   #xtranslate <w> . SplitBox . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,InputItems,DisplayItems\> := \<n\> => SetProperty ( <"w">, "SplitBox" , \<"c"\> , \<"p"\> , \<n\> ) ;;
+   #xtranslate <w> . SplitBox . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,Object,InputItems,DisplayItems\> => GetProperty ( <"w">, "SplitBox" , \<"c"\> , \<"p"\> ) ;;
+   #xtranslate <w> . SplitBox . \<c\> . \<p:Value,Name,Value,Address,BackColor,FontColor,Picture,ToolTip,FontName,FontSize,FontBold,FontItalic,FontUnderline,FontStrikeOut,Caption,Row,DisplayValue,Col,Width,Height,Visible,Enabled,Checked,ItemCount,RowSource,Placeholder,RangeMin,RangeMax,Position,CaretPos,ForeColor,AllowEdit,InputItems,DisplayItems\> := \<n\> => SetProperty ( <"w">, "SplitBox" , \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . SplitBox . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly> => GetProperty ( <"w">, "SplitBox", \<"c"\> , \<"p"\> ) ;;
    #xtranslate <w> . SplitBox . \<c\> . \<p:AllowAppend,AllowDelete,ReadOnly> := \<n\> => SetProperty ( <"w">, "SplitBox", \<"c"\> , \<"p"\> , \<n\> ) ;;
    #xtranslate <w> . SplitBox . \<c\> . \<p:Caption,Header,Item,Icon,HeaderImages> (\<arg\>) => GetProperty ( <"w">, "SplitBox", \<"c"\> , \<"p"\> , \<arg\> ) ;;
@@ -1014,3 +1014,13 @@ AnimateWindow (GetFormHandle(<"FormName">), 200, <nFlags>)
 
 
 #xtranslate HMG_IsWin64() => IF( EMPTY( GetEnv( "ProgramW6432" ) ), .F., .T. )
+
+// HMG5 5.2: files dropped from Explorer (h_dropfiles.prg). Inside DEFINE WINDOW, OF may be left out.
+#xcommand ON DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] ACTION <action> => HMG_DropFiles( <"parent">, <"ctl">, <{action}> )
+#xcommand RELEASE DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] => HMG_DropFiles( <"parent">, <"ctl">, NIL )
+
+// HMG5 5.2: SPLITTER, a bar the mouse drags to share space between controls (h_splitter.prg)
+#xcommand @ <row>, <col> SPLITTER <name> [ <dummy1: OF, PARENT> <parent> ] [ WIDTH <w> ] [ HEIGHT <h> ] ;
+      [ <vertical: VERTICAL> ] [ <horizontal: HORIZONTAL> ] [ BETWEEN <aBefore> AND <aAfter> ] ;
+      [ MINSIZE <nMin> ] [ ON CHANGE <change> ] [ <invisible: INVISIBLE> ] ;
+   => _DefineSplitter( <"name">, <"parent">, <col>, <row>, <w>, <h>, ! <.horizontal.>, <aBefore>, <aAfter>, <nMin>, <{change}>, <.invisible.> )

@@ -295,9 +295,19 @@ STATIC FUNCTION HMGEdit_FirstError( cLog, cDir )
    NEXT
 RETURN NIL
 
-/* the log's error lines (at most 15), or its start */
+/* the log's errors as the IDE's Error List words them (ide_buildlog.prg, at most 15),
+   else its error lines, or its start */
 STATIC FUNCTION HMGEdit_ErrorText( cLog )
    LOCAL cText := "", nCount := 0, cLine
+   FOR EACH cLine IN IDE_BuildLogItems( cLog )
+      IF nCount < 15
+         cText += iif( nCount == 0, "", hb_eol() ) + cLine
+         nCount++
+      ENDIF
+   NEXT
+   IF nCount > 0
+      RETURN cText
+   ENDIF
    FOR EACH cLine IN hb_ATokens( StrTran( cLog, Chr( 13 ) ), Chr( 10 ) )
       IF "ERROR" $ Upper( cLine ) .AND. nCount < 15
          cText += iif( nCount == 0, "", hb_eol() ) + AllTrim( cLine )

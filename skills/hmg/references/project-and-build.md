@@ -25,9 +25,9 @@ C:\HMG5\build64 /n myprog.hbp myprog.hbc   :: also apply an .hbc
 ## .hbp (project) and .hbc (options)
 
 `.hbp` - one item per line, read by hbmk2 and by the IDE. **The first `.prg` line is the main
-module** (the one with `Main()`); the IDE marks it "(Main)". Save it with CR+LF line endings: the
-IDE splits the file with `MemoLine()`, which ignores bare LF, so an LF-only `.hbp` builds fine with
-`build64` but the IDE refuses it ("Project File is empty, invalid or no main module specified").
+module** (the one with `Main()`); the IDE marks it "(Main)". Any line ending works: since 5.2 the
+IDE reads `.hbp`, `.fmg` and report files with CR+LF, LF or CR and writes them back with CR+LF
+(before 5.2 an LF-only `.hbp` built with `build64` but the IDE refused it).
 
 ```
 # my project
@@ -87,3 +87,21 @@ holds: a program built after `hmgbuild lib ansi` is ANSI.
 Copy the `.exe` and the files it opens at run time (DBFs, images not compiled into the `.rc`, `.ini`).
 No HMG runtime is needed. Programs using WEBVIEW or CHART need the Microsoft Edge WebView2 Runtime,
 which Windows 10/11 already has; check with `HMG_WebViewVersion()` (empty = missing).
+
+## Faster Harbour code: -gc3 (measured in HMG5 5.2)
+
+By default Harbour turns each function into pcode for its virtual machine. With `-gc3` each
+function becomes C that GCC compiles:
+
+```
+build64.bat myprog.hbp -gc3        (or a line "-gc3" in the .hbp)
+```
+
+- Measured: about 10 % faster for typical code, up to about 18 % for tight numeric loops and
+  about 13 % for many small function calls; string, array, hash and database work hardly
+  changes (it runs in Harbour's C functions already). The .exe is a few KB bigger.
+- All HMG5 unit tests pass built with -gc3; it is safe for HMG programs.
+- The HMG library itself is NOT built with -gc3: it measured no faster (its time goes into
+  Windows messages and C) and 2.3 times bigger.
+- Since 5.2 the IDE keeps option lines in the .hbp (-gc3, -l<lib>, comments) when it saves the
+  project and builds with them; before 5.2 it kept only the .prg lines.

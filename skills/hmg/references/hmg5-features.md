@@ -88,6 +88,179 @@ this skill works on HMG 3.x too.
 - Works between controls of different windows of the same program; not with other programs or
   Explorer files. TREE is not supported. `SAMPLES\Controls\DragDrop` shows it all.
 
+## Fast VIRTUAL grid from an array - ROWSOURCE (HMG5 5.2)
+
+```harbour
+@ 10, 10 GRID Grid_1 OF Win_1 WIDTH 600 HEIGHT 300 ;
+   HEADERS { "Name", "Qty", "Date" } WIDTHS { 250, 100, 120 } ;
+   ROWSOURCE aRows                     // aRows := { { "Apple", 10, Date() }, ... }
+
+AAdd( aRows, { "Pear", 3, Date() } )
+Win_1.Grid_1.Refresh                   // the grid shows the array's rows and values again
+Win_1.Grid_1.RowSource := aOtherRows   // another array; NIL unbinds
+```
+
+- The grid is VIRTUAL and keeps a reference to the array (no copy): cells are read in C,
+  no Harbour code per cell, so large arrays (100,000 rows) scroll as fast as Windows draws.
+- Values are shown as with ON QUERYDATA: character RTrim, number Str(), date DToC(),
+  logical .T./.F., others empty; a short row shows empty cells; a row that is not an array
+  is column 1; with IMAGE, column 1 is the image index.
+- Assigning a new array to the program's variable does not rebind the grid: use RowSource.
+- With EDIT / ALLOWEDIT and COLUMNCONTROLS the grid is editable with no code: the editor gets
+  the typed value from the array and the edit is written back into `aRows[ row, col ]`
+  (a short row grows). COLUMNWHEN / COLUMNVALID see the same values. (A VIRTUAL grid with
+  ON QUERYDATA still keeps no edit by itself.)
+- `ROWSOURCE "alias"` (a table) is unchanged. Use ON QUERYDATA when cells are computed.
+
+## HTTP and HTTPS - HMG_HttpGet / HMG_HttpPost (HMG5 5.2)
+
+```harbour
+a := HMG_HttpGet( "https://api.example.com/rates?x=1" [, aHeaders] [, nTimeoutMs] )
+a := HMG_HttpPost( cUrl, hb_jsonEncode( hData ) [, cContentType] [, aHeaders] [, nTimeoutMs] )
+a := HMG_HttpRequest( "PUT", cUrl [, cBody] [, aHeaders] [, nTimeoutMs] [, cContentType] )
+IF a[ 1 ] == 200            // a[1] status, 0 = no answer; a[2] body; a[3] error text; a[4] headers
+   hb_jsonDecode( a[ 2 ], @hResult )
+ELSE
+   MsgStop( iif( a[ 1 ] == 0, a[ 3 ], "HTTP " + hb_ntos( a[ 1 ] ) + ": " + a[ 2 ] ) )
+ENDIF
+```
+
+- Windows' WinHTTP: TLS with the system's certificates, the user's proxy, redirects, gzip. No
+  OpenSSL, no hbssl/hbtip SSL, no DLLs; nothing to link (hmg64.hbc adds winhttp).
+- aHeaders: `"Name: value"` strings or `{ "Name", "value" }` pairs. HMG_HttpPost guesses the
+  Content-Type from the body: `{`/`[` JSON, `<` XML, otherwise a form; pass cContentType to choose.
+- Bodies are bytes: UTF-8 stays UTF-8; a UTF-16 answer (BOM or charset=utf-16) is converted.
+- An HTTP error (404, 500) is a status with its body, not an error; a[3] is set only when no
+  answer came (no network, refused, TLS, timeout), never a runtime error.
+- The call waits (default 30 s; WinHTTP retries a timed-out request once). For long calls in a
+  window, show the user that work is going on.
+- Replaces `CreateObject( "Msxml2.XMLHTTP.6.0" )` / ServerXMLHTTP calls one for one.
+
+## Long jobs without freezing - HMG_Busy (HMG5 5.2)
+
+```harbour
+aRows := HMG_Busy( "Loading", {| oBusy | LoadAll( oBusy ) } )   // returns what the job returns
+
+FUNCTION LoadAll( oBusy )
+   LOCAL n, aRows := {}
+   FOR n := 1 TO 12
+      IF ! oBusy:Step( n - 1, 12, "Month " + hb_ntos( n ) )   // .F. after Cancel / Esc / X
+         RETURN NIL
+      ENDIF
+      ... one month of work ...
+   NEXT
+RETURN aRows
+```
+
+- A small modal window (text, progress bar, Cancel) runs the job in the program's own thread;
+  the other windows are disabled meanwhile. `oBusy:Step( nDone, nTotal [, cText] )`,
+  `oBusy:Text( cText )` repaint and handle messages at most every 50 ms, so Windows never shows
+  "Not Responding" and tight loops stay fast. No nTotal: a moving (marquee) bar.
+- `oBusy:Cancelled` is .T. after Cancel, Esc or the window's X; the job decides when to stop.
+  `HMG_Busy( cTitle, bJob, .F. )` shows no Cancel button.
+- WAIT WINDOW ... NOWAIT only shows a message: it neither handles messages nor offers Cancel,
+  so a long job behind it still freezes the window. Use HMG_Busy for anything over a second.
+
+## Grid export to CSV and Excel (HMG5 5.2)
+
+```harbour
+Win_1.Grid_1.ExportCSV( "C:\out\sales.csv" [, lHeaders] [, cSeparator] )
+Win_1.Grid_1.ExportXLSX( "C:\out\sales.xlsx" [, cSheet] [, lHeaders] )
+lOk := HMG_GridExportCSV( "Win_1", "Grid_1", cFile [, lHeaders] [, cSeparator] )   // .T./.F.
+lOk := HMG_GridExportXLSX( "Win_1", "Grid_1", cFile [, cSheet] [, lHeaders] )
+```
+
+- Any GRID: items, VIRTUAL with ON QUERYDATA or ROWSOURCE array, or a table. The grid's own
+  (typed) values are exported, text without trailing spaces as the grid shows it.
+- CSV: UTF-8 with BOM (Excel reads every language), quoted as Excel expects, numbers with a
+  point, dates YYYY-MM-DD, logicals TRUE/FALSE.
+- XLSX is written by HMG itself (no Excel, no extra library): numbers stay numbers, dates are
+  real dates (shown in the user's date format), header row bold and frozen, grid column widths.
+- The methods return nothing; use the functions to know whether the file was written.
+
+## Files dropped from Explorer - ON DROPFILES (HMG5 5.2)
+
+```harbour
+DEFINE WINDOW Win_1 ...
+   ON DROPFILES ACTION OpenFiles( This.DroppedFiles )        // the window (OF left out inside DEFINE WINDOW)
+   @ 10, 10 TEXTBOX Txt_File WIDTH 300
+   ON DROPFILES CONTROL Txt_File ACTION Win_1.Txt_File.Value := This.DroppedFiles[ 1 ]
+END WINDOW
+ON DROPFILES OF Win_2 CONTROL Grid_1 ACTION ImportFiles( This.DroppedFiles )   // any time after
+RELEASE DROPFILES OF Win_1 [ CONTROL Txt_File ]
+HMG_DropFiles( cForm, cControl | NIL, bAction | NIL )   // the same as a function
+```
+
+- `This.DroppedFiles`: the full paths, an array. Any window or control; a drop on a control
+  without its own ON DROPFILES goes to its window's. Works when the program runs elevated too.
+- Not the same as drag and drop between LISTBOX/GRID controls (DRAGSOURCE / DROPTARGET).
+
+## Hint text in empty boxes - PLACEHOLDER (HMG5 5.2)
+
+```harbour
+@ 10, 10 TEXTBOX Txt_Search WIDTH 250 PLACEHOLDER "Search customers..."
+@ 40, 10 COMBOBOX Cmb_City WIDTH 250 ITEMS aCities PLACEHOLDER "Choose a city"
+Win_1.Txt_Search.Placeholder := "Search by GSTIN"      // or read it
+```
+
+- Windows' own grey hint: a plain TEXTBOX (also NUMERIC) shows it until something is typed,
+  even with the focus; a COMBOBOX while nothing is chosen. Also in DEFINE TEXTBOX /
+  DEFINE COMBOBOX (`PLACEHOLDER "..."`). Masked and date TEXTBOXes are never empty: no hint.
+
+## Two panes resized with the mouse - SPLITTER (HMG5 5.2)
+
+```harbour
+@ 10, 10 GRID Grid_Files WIDTH 290 HEIGHT 440 ...
+@ 10, 300 SPLITTER Spl_Side HEIGHT 440 ;                    // VERTICAL is the default
+   BETWEEN { "Grid_Files" } AND { "Edt_Notes", "Edt_Log" } MINSIZE 120 ;
+   ON CHANGE ShowPlaces()
+@ 10, 306 EDITBOX Edt_Notes WIDTH 504 HEIGHT 214
+@ 224, 306 SPLITTER Spl_Notes WIDTH 504 HORIZONTAL BETWEEN { "Edt_Notes" } AND { "Edt_Log" }
+@ 230, 306 EDITBOX Edt_Log WIDTH 504 HEIGHT 220
+Win_1.Spl_Side.Position := 300                              // or read it (column; row if HORIZONTAL)
+```
+
+- The bar is 6 thick by default (WIDTH for VERTICAL, HEIGHT for HORIZONTAL). Dragging it: the
+  controls in BETWEEN's first array end at the bar, those in the second start right after it
+  and keep their right (bottom) edge. Define them touching the bar.
+- MINSIZE (default 20): the smallest width (height) left on either side; Position := is kept
+  within it too. ON CHANGE runs once when a drag ends (not after Esc, not for Position :=).
+- Esc while dragging puts everything back. Not inside a TAB page (an error says so).
+
+## On/off switch - TOGGLE (HMG5 5.2)
+
+```harbour
+@ 20, 20 TOGGLE Tgl_Wifi CAPTION "Wi-Fi" VALUE .T. WIDTH 200 ON CHANGE ShowState()
+DEFINE TOGGLE Tgl_Fixed            // DEFINE form: the same clauses as DEFINE CHECKBOX
+   ROW 60
+   COL 20
+   CAPTION "Location"
+END TOGGLE
+lOn := Win_1.Tgl_Wifi.Value        // logical; Win_1.Tgl_Wifi.Value := .F. (no ON CHANGE)
+```
+
+- A switch drawn by HMG: accent colour when on, an outline when off, grey when disabled; follows
+  SET DARKMODE and DPI. A click or Space flips it and runs ON CHANGE (This.Value is the new value).
+- Clauses as CHECKBOX: CAPTION (optional), WIDTH (default 120), HEIGHT (28), FONT, SIZE, BOLD...,
+  TOOLTIP, BACKCOLOR (default: the form's), FONTCOLOR, ON GOTFOCUS, ON LOSTFOCUS, HELPID,
+  INVISIBLE, NOTABSTOP. No FIELD. Works on TAB pages.
+
+## Toast notifications - HMG_Toast (HMG5 5.2)
+
+```harbour
+HMG_Toast( "12 invoices were exported.", "Export done" )           // 4 seconds, no icon
+HMG_Toast( "The file is open in another program.", "Could not save", 0, 3 )   // stays, error icon
+HMG_ToastCloseAll()                                                // fade them all out ( .T.: at once )
+```
+
+- HMG_Toast( cText [, cTitle] [, nSeconds] [, nIcon] ) -> hWnd. Slides in at the bottom right of
+  the work area (the monitor of the active window), fades out after nSeconds (default 4; 0 = until
+  clicked). Never takes the focus or activates: safe while the user types.
+- Several stack, the newest at the bottom (at most 16; the oldest goes). A click closes one; while
+  the mouse is on it, it stays. nIcon: 0 none, 1 information, 2 warning, 3 error.
+- Needs the message loop (it animates with timers): inside a long loop use HMG_Busy or DO EVENTS.
+- Not the Windows notification centre (that needs an app identity); nothing to ship or register.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

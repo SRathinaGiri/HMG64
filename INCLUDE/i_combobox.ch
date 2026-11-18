@@ -83,6 +83,7 @@
 		[ ON CLOSEUP <closeup> ] ;
       [ ON CANCEL <OnCancel> ];
       [ <NoTrans : NOTRANSPARENT> ] ;
+		[ PLACEHOLDER <placeholder> ] ;
 	=>;
 	_DefineCombo ( <"name">, <"parent">, <col>, <row>, <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
@@ -90,7 +91,8 @@
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, ;
 		<.italic.>, <.underline.>, <.strikeout.> , \{<"itemsource">\} , ;
 		<"valuesource"> , <.displayedit.> , ;
-		<{ondisplaychangeprocedure}> ,  .f. , "" , <aImage> , <droppedwidth> , <{dropdown}> , <{closeup}> , <{OnCancel}>, <.NoTrans.> )
+		<{ondisplaychangeprocedure}> ,  .f. , "" , <aImage> , <droppedwidth> , <{dropdown}> , <{closeup}> , <{OnCancel}>, <.NoTrans.> ) ;;
+	_HMG_SetPlaceholder( <"name">, <"parent">, <placeholder> )   // HMG5 5.2
 
 // SPLITBOX VERSION
 
@@ -127,12 +129,14 @@
 		[ ON CLOSEUP <closeup> ] ;
       [ ON CANCEL <OnCancel> ];
       [ <NoTrans : NOTRANSPARENT> ] ;
+		[ PLACEHOLDER <placeholder> ] ;
 	=>;
 	_DefineCombo ( <"name">, <"parent">, , , <w>, <aRows> , <value>, ;
                   <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, ;
                   <{gotfocus}>, <{lostfocus}>, <{enter}>, <helpid>, ;
                   <.invisible.>, <.notabstop.>, <.sort.> ,<.bold.>, <.italic.>, <.underline.>, <.strikeout.> ,; 
                   <"itemsource"> , <"valuesource"> , <.displayedit.> , <{ondisplaychangeprocedure}> ,;
-                  <.break.> , <grippertext> , <aImage> , <droppedwidth> , <{closeup}> , <{OnCancel}> , <.NoTrans.>)
+                  <.break.> , <grippertext> , <aImage> , <droppedwidth> , <{closeup}> , <{OnCancel}> , <.NoTrans.>) ;;
+	_HMG_SetPlaceholder( <"name">, <"parent">, <placeholder> )   // HMG5 5.2
 
 

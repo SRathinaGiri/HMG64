@@ -232,6 +232,10 @@ do case
 
         retval := GetSpinnerValue ( c [2] )
 
+    case T == "TOGGLE"   // HMG5 5.2
+
+        retval := HMG_TOGGLEGET( c )
+
     case T == "CHECKBOX" 
 
         auxval := SendMessage( c , BM_GETCHECK , 0 , 0 )
@@ -545,6 +549,9 @@ do case
 
     case T == "SPINNER" 
         SetSpinnerValue ( c [2] , Value )
+
+    case T == "TOGGLE"   // HMG5 5.2
+        HMG_TOGGLESET( c , value )
 
     case T == "CHECKBOX" 
         if value = .t.
@@ -4532,10 +4539,13 @@ ELseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'GRID'
 
     IF VALTYPE ( _HMG_SYSDATA [ HMG_CTL_MISCDATA2 ] [ i ] [ 10 ] ) == 'C'   // Grid with cRecordSource ( DataBase )
         DataGridRefresh( i, .T. )   // ADD .T. parameter (May 2016)
+    ELSE
+        HMG_GRIDROWSOURCESYNC ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )   // HMG5 5.2: rows added to / removed from a ROWSOURCE array
     ENDIF
 
 ELseIf _HMG_SYSDATA [HMG_CTL_TYPE] [i] == 'MULTIGRID'
     // _HMG_DOGRIDREFRESH(I)
+    HMG_GRIDROWSOURCESYNC ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i] )   // HMG5 5.2
 
 EndIf
    
@@ -8117,6 +8127,10 @@ ElseIf Pcount() == 4 // CONTROL
 
         _SetPlayerSeek ( Arg2 , Arg1 , Arg4 )   // ADD
 
+    ElseIf Arg3 == 'POSITION' .AND. GetControlType ( Arg2 , Arg1 ) == 'SPLITTER'   // HMG5 5.2
+
+        _HMG_SplitterSetPos ( Arg2 , Arg1 , Arg4 )
+
     ElseIf Arg3 == 'POSITION'
 
         If Arg4 == 0
@@ -8200,6 +8214,14 @@ ElseIf Pcount() == 4 // CONTROL
     ElseIf Arg3 == 'ITEMCOUNT'
 
         ListView_SetItemCount ( GetControlHandle ( Arg2 , Arg1 ) , Arg4 ) 
+
+    ElseIf Arg3 == 'ROWSOURCE'   // HMG5 5.2: a VIRTUAL grid fed from an array (NIL: none)
+
+        _HMG_SetGridRowSource ( Arg2 , Arg1 , Arg4 )
+
+    ElseIf Arg3 == 'PLACEHOLDER'   // HMG5 5.2: hint text of an empty TEXTBOX / COMBOBOX
+
+        _HMG_PlaceholderSet ( Arg2 , Arg1 , Arg4 )
 
     EndIf
 
@@ -8713,6 +8735,14 @@ ElseIf Pcount() == 3 // CONTROL
 
         RetVal := _GetItemCount ( Arg2 , Arg1 )
 
+    ElseIf Arg3 == 'ROWSOURCE'   // HMG5 5.2: the array of a ROWSOURCE grid (NIL: none)
+
+        RetVal := HMG_GRIDGETROWSOURCE ( GetControlHandle ( Arg2 , Arg1 ) )
+
+    ElseIf Arg3 == 'PLACEHOLDER'   // HMG5 5.2
+
+        RetVal := _HMG_PlaceholderGet ( Arg2 , Arg1 )
+
     ElseIf Arg3 == 'RANGEMIN'
 
         RetVal := _GetRangeMin ( Arg2 , Arg1 ) 
@@ -8724,6 +8754,10 @@ ElseIf Pcount() == 3 // CONTROL
     ElseIf Arg3 == 'LENGTH'
 
         RetVal := _GetPlayerLength ( Arg2 , Arg1 ) 
+
+    ElseIf Arg3 == 'POSITION' .AND. GetControlType ( Arg2 , Arg1 ) == 'SPLITTER'   // HMG5 5.2
+
+        RetVal := _HMG_SplitterGetPos ( Arg2 , Arg1 )
 
     ElseIf Arg3 == 'POSITION'
 
@@ -10041,6 +10075,14 @@ HB_SYMBOL_UNUSED ( Arg9 )
 Arg3 := HMG_UPPER (ALLTRIM (Arg3))
 
 DO CASE
+   CASE Arg3 == 'EXPORTCSV'     // HMG5 5.2: h_gridexport.prg
+        HMG_GridExportCSV ( Arg1 , Arg2 , Arg4 , Arg5 , Arg6 )
+        RetVal := .T.
+
+   CASE Arg3 == 'EXPORTXLSX'    // HMG5 5.2: h_gridexport.prg
+        HMG_GridExportXLSX ( Arg1 , Arg2 , Arg4 , Arg5 , Arg6 )
+        RetVal := .T.
+
    CASE Arg3 == 'ADDCOLUMNEX'
         _AddGridColumn ( Arg2 , Arg1 , Arg4 , Arg5 , Arg6 , Arg7 , Arg8 )
         RetVal := .T.
