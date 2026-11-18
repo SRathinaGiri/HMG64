@@ -23,7 +23,7 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 9 | `TOGGLE` control: an on/off switch | control | done |
 | 10 | Toast notifications: `HMG_Toast()` | feature | done |
 | 11 | IDE: linker errors in the Error List | IDE | done |
-| 12 | IDE: projects and forms with LF-only line endings | IDE | |
+| 12 | IDE: projects and forms with LF-only line endings | IDE | done |
 
 ## 1. VIRTUAL grid fed from an array (`ROWSOURCE`)
 

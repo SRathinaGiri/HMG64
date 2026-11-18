@@ -36,6 +36,16 @@ RETURN
 FUNCTION IDE_HbpKeepGet()
 RETURN s_aKeep
 
+/* 5.2: a project, form, report or module file with any line ending (CR LF, LF or CR) as CR LF,
+   since the IDE splits files with MlCount() / MemoLine(), which break only at CR LF; what the
+   IDE writes back is CR LF. Until 5.2 an LF-only file lost its lines. */
+FUNCTION IDE_ToCRLF( cText )
+   cText := StrTran( hb_defaultValue( cText, "" ), Chr( 13 ) + Chr( 10 ), Chr( 10 ) )
+RETURN StrTran( StrTran( cText, Chr( 13 ), Chr( 10 ) ), Chr( 10 ), Chr( 13 ) + Chr( 10 ) )
+
+FUNCTION IDE_MemoReadCRLF( cFile )
+RETURN IDE_ToCRLF( hb_MemoRead( cFile ) )
+
 FUNCTION IDE_HbpLines( cText )
    LOCAL aOut := {}, cLine
    cText := StrTran( StrTran( hb_defaultValue( cText, "" ), Chr( 13 ) + Chr( 10 ), Chr( 10 ) ), Chr( 13 ), Chr( 10 ) )

@@ -28,6 +28,14 @@ FUNCTION Main()
    Check( "an old project: only modules", IDE_HbpBuildText( "a.prg" + EOL() + "b.prg" + EOL() ) == "a.prg" + EOL() + "b.prg" + EOL() .AND. ;
           Empty( IDE_HbpOtherLines( "a.prg" + EOL() + "b.prg" + EOL() ) ) )
 
+   // --- any line ending read as CR LF (MlCount / MemoLine split only there) --------------
+   Check( "LF, CR and mixed become CR LF", ;
+          IDE_ToCRLF( "a" + Chr( 10 ) + "b" + Chr( 13 ) + "c" + Chr( 13 ) + Chr( 10 ) + "d" ) == "a" + EOL() + "b" + EOL() + "c" + EOL() + "d" )
+   Check( "CR LF stays as it is", IDE_ToCRLF( "a" + EOL() + EOL() + "b" + EOL() ) == "a" + EOL() + EOL() + "b" + EOL() )
+   Check( "an LF-only report gives its lines to MemoLine", ;
+          MlCount( IDE_ToCRLF( "DEFINE REPORT" + Chr( 10 ) + "BODY" + Chr( 10 ) + "END REPORT" + Chr( 10 ) ) ) == 3 .AND. ;
+          AllTrim( MemoLine( IDE_ToCRLF( "DEFINE REPORT" + Chr( 10 ) + "BODY" + Chr( 10 ) ), 1024, 2 ) ) == "BODY" )
+
    // --- real link failures ---------------------------------------------------------------------
    cDir := hb_DirSepAdd( hb_DirTemp() ) + "hmg5_buildlog_" + hb_ntos( hb_RandomInt( 100000, 999999 ) ) + hb_ps()
    hb_DirBuild( cDir )

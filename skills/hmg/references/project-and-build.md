@@ -25,9 +25,9 @@ C:\HMG5\build64 /n myprog.hbp myprog.hbc   :: also apply an .hbc
 ## .hbp (project) and .hbc (options)
 
 `.hbp` - one item per line, read by hbmk2 and by the IDE. **The first `.prg` line is the main
-module** (the one with `Main()`); the IDE marks it "(Main)". Save it with CR+LF line endings: the
-IDE splits the file with `MemoLine()`, which ignores bare LF, so an LF-only `.hbp` builds fine with
-`build64` but the IDE refuses it ("Project File is empty, invalid or no main module specified").
+module** (the one with `Main()`); the IDE marks it "(Main)". Any line ending works: since 5.2 the
+IDE reads `.hbp`, `.fmg` and report files with CR+LF, LF or CR and writes them back with CR+LF
+(before 5.2 an LF-only `.hbp` built with `build64` but the IDE refused it).
 
 ```
 # my project

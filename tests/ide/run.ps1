@@ -171,6 +171,41 @@ else {
 }
 if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL hbptest: $err" } else { $pass++ }
 
+# forms with LF-only and CR-only line endings open as the CR+LF ones (5.2): the round trip
+# of the first two corpus forms, rewritten with LF and with CR, gives the same reference bytes
+foreach ($f in (Get-ChildItem $corpus -File | Sort-Object Name | Select-Object -First 2)) {
+   foreach ($eol in @(@('lf', "`n"), @('cr', "`r"))) {
+      $src = Join-Path $out ($f.BaseName + '.' + $eol[0] + $f.Extension)
+      $txt = [IO.File]::ReadAllText($f.FullName, [Text.Encoding]::GetEncoding(28591)).Replace("`r`n", "`n").Replace("`n", $eol[1])
+      [IO.File]::WriteAllText($src, $txt, [Text.Encoding]::GetEncoding(28591))
+      $o1 = $src + '.1'
+      $err = Invoke-RoundTrip $src $o1
+      $ref = Join-Path $expected $f.Name
+      if (-not $err -and (Test-Path $ref) -and ([Convert]::ToBase64String([IO.File]::ReadAllBytes($ref)) -ne [Convert]::ToBase64String([IO.File]::ReadAllBytes($o1)))) {
+         $err = "differs from the CR+LF reference: fc `"$ref`" `"$o1`""
+      }
+      if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL $($eol[0])-only $($f.Name): $err" } else { $pass++ }
+   }
+}
+
+# an LF-only project opens with all its lines and is saved with CR+LF (5.2)
+$dl = Join-Path $out 'hbptest_lf'
+if (Test-Path $dl) { Remove-Item $dl -Recurse -Force }
+New-Item -ItemType Directory $dl | Out-Null
+[IO.File]::WriteAllText("$dl\main.prg", "FUNCTION Main()`nRETURN NIL`n")
+[IO.File]::WriteAllText("$dl\util.prg", "FUNCTION Util()`nRETURN NIL`n")
+[IO.File]::WriteAllText("$dl\lf.hbp", "main.prg`nutil.prg`n-gc3`n")
+$ol = Join-Path $dl 'build.txt'
+$p = Start-Process $Ide -ArgumentList "/hbptest `"$dl\lf.hbp`" `"$ol`"" -WorkingDirectory (Split-Path $Ide) -PassThru
+$err = $null
+if (-not $p.WaitForExit($TimeoutSec * 1000)) { $p.Kill(); $err = "TIMEOUT (a dialog may be open: the project was not read)" }
+elseif (-not (Test-Path $ol)) { $err = "no output" }
+else {
+   $raw = [IO.File]::ReadAllText("$dl\lf.hbp")
+   if ($raw -ne "main.prg`r`nutil.prg`r`n-gc3`r`n") { $err = "saved as: " + ($raw -replace "`r", '\r' -replace "`n", '\n') }
+}
+if ($err) { $fail++; Write-Output "ide-roundtrip: FAIL LF-only .hbp: $err" } else { $pass++ }
+
 $secs = [int]((Get-Date) - $t0).TotalSeconds
 Write-Output ("ide-roundtrip: PASS={0} FAIL={1} ({2} s){3}" -f $pass, $fail, $secs, $(if ($Update) { ' - references updated' } else { '' }))
 exit $(if ($fail -eq 0) { 0 } else { 1 })

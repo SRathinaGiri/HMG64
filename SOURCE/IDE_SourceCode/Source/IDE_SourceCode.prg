@@ -1676,7 +1676,7 @@ Local cComponentLine
 		__MVPUBLIC ( aComponentNames [ i ] + 'Count' )
 		__MVPUT ( aComponentNames [ i ] + 'Count' , 0 )
 
-		cComponentInfo := HB_MEMOREAD ( aComponentFileNames [i] )
+		cComponentInfo := IDE_MemoReadCRLF ( aComponentFileNames [i] )
 
 		For j := 1 To mlCount (cComponentInfo)
 
@@ -15287,7 +15287,7 @@ _hmgide_CurrentSplitBox := ''
 		RETURN
 	Endif
 
-	Code := HB_MEMOREAD ( FileName )
+	Code := IDE_MemoReadCRLF ( FileName )
 
 	LineCount := MlCount (Code)
 
@@ -30383,7 +30383,7 @@ Local nTables := 0
 	ProjectName := FileName
 	IDE_AddRecent( FileName )   // HMG5
 
-	Project := HB_MEMOREAD ( FileName )
+	Project := IDE_MemoReadCRLF ( FileName )
 	IDE_HbpKeepSet( IDE_HbpOtherLines( Project ) )   // HMG5 5.2: option lines, comments, other files
 
 	LineCount := MlCount (Project)
@@ -31285,7 +31285,7 @@ Local nStart
 	EditReport.Text21a.Value	:= ''
 	EditReport.Text21b.Value	:= ''
 	
-	cReport := HB_MEMOREAD ( cFileName )
+	cReport := IDE_MemoReadCRLF ( cFileName )
 
 	For i := 1 To HMG_LEN ( cReport )
 
@@ -32103,7 +32103,7 @@ local i, cData
 
 	if .not. empty(xName)
 		if file (xName)
-			Project.Edit_1.Value := HB_MEMOREAD ( xName )
+			Project.Edit_1.Value := IDE_MemoReadCRLF ( xName )
 		else
 			Project.Edit_1.Value := ''
 		endif
@@ -32119,7 +32119,7 @@ local i, cData
 
 	if .not. empty(xName)
 		if file (xName)
-			cData := HB_MEMOREAD ( xName )
+			cData := IDE_MemoReadCRLF ( xName )
 			project.config.value := cData
 		endif
 	endif
@@ -37453,7 +37453,7 @@ Local appname
 
 	Next i
 
-   FormBuildLog.EditBox1.VALUE := HB_MEMOREAD (PROJECTFOLDER+"\build.log")
+   FormBuildLog.EditBox1.VALUE := IDE_MemoReadCRLF (PROJECTFOLDER+"\build.log")
    FormBuildLog.EditBox1.VALUE := HB_UTF8STRTRAN (FormBuildLog.EditBox1.VALUE, CHR(10) , CRLF )   // ADD
 
 RETURN
@@ -40249,7 +40249,7 @@ Local cBaseWindowName
 			RETURN .f.
 		endif
 
-		cModuleContent := HB_MEMOREAD ( cModule )
+		cModuleContent := IDE_MemoReadCRLF ( cModule )
 
 		nLimes := MlCount ( cModuleContent )
 
@@ -42310,7 +42310,7 @@ Local i , tmp
 
 	cCurrentReportFileName := FileName
 
-	tmp := HB_MEMOREAD ( cCurrentReportFileName )
+	tmp := IDE_MemoReadCRLF ( cCurrentReportFileName )
 
 	rep_build_step_1.tables.deleteallitems
 	rep_build_step_1.availablefields.deleteallitems
@@ -43648,7 +43648,7 @@ local mlc
 
 	cNewLine := HB_UTF8STRTRAN( cNewLine , Space ( 4 ) , chr(9) )
 
-	c := HB_MEMOREAD ( cCurrentFixedFile )
+	c := IDE_MemoReadCRLF ( cCurrentFixedFile )
 
 	mlc := mlcount (c)
 
@@ -43736,7 +43736,7 @@ PUBLIC cCurrentFixedFile
 
 			cCurrentFixedFile := cFileName
 
-			cPrgFile := HB_MEMOREAD ( cFileName )
+			cPrgFile := IDE_MemoReadCRLF ( cFileName )
 
 			cSourceBuffer := cPrgFile
 
@@ -43820,7 +43820,7 @@ PUBLIC cCurrentFixedFile
 	showlog.grid_1.caption(1) := '#'
 	showlog.grid_1.caption(2) := cFileName
 
-	cPrgFile := HB_MEMOREAD ( cFileName )
+	cPrgFile := IDE_MemoReadCRLF ( cFileName )
 	cSourceBuffer := cPrgFile
        	mlc := mlcount ( cPrgFile )
 
@@ -44669,7 +44669,7 @@ local x
 
 
 
-	cReport := HB_MEMOREAD ( cFileName )
+	cReport := IDE_MemoReadCRLF ( cFileName )
 
 
 	For i := 1 to mlcount ( cReport )

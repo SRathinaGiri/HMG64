@@ -1,4 +1,9 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - IDE: projects, forms, reports, the .rc and .hbc and the modules shown in the Error List are read
+     with any line ending (CR LF, LF or CR) and written back with CR LF; until now an LF-only .hbp was
+     refused ("no main module") and an LF-only .fmg opened empty (MlCount/MemoLine split only at CR LF).
+     IDE_MemoReadCRLF() in ide_buildlog.prg; tests\ide: LF-only and CR-only forms give the CR LF
+     reference bytes, an LF-only .hbp opens and is saved with CR LF; tests\unit\buildlog (20 checks)
    - IDE: the project's option lines (-gc3, -l<lib>, -i<path>, comments, other files) are kept when
      the IDE saves the .hbp and when it builds; until now only the .prg lines survived. A failed link
      shows in the Error List in words, with the module: a function called but not defined, defined
