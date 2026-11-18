@@ -1018,3 +1018,9 @@ AnimateWindow (GetFormHandle(<"FormName">), 200, <nFlags>)
 // HMG5 5.2: files dropped from Explorer (h_dropfiles.prg). Inside DEFINE WINDOW, OF may be left out.
 #xcommand ON DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] ACTION <action> => HMG_DropFiles( <"parent">, <"ctl">, <{action}> )
 #xcommand RELEASE DROPFILES [ OF <parent> ] [ CONTROL <ctl> ] => HMG_DropFiles( <"parent">, <"ctl">, NIL )
+
+// HMG5 5.2: SPLITTER, a bar the mouse drags to share space between controls (h_splitter.prg)
+#xcommand @ <row>, <col> SPLITTER <name> [ <dummy1: OF, PARENT> <parent> ] [ WIDTH <w> ] [ HEIGHT <h> ] ;
+      [ <vertical: VERTICAL> ] [ <horizontal: HORIZONTAL> ] [ BETWEEN <aBefore> AND <aAfter> ] ;
+      [ MINSIZE <nMin> ] [ ON CHANGE <change> ] [ <invisible: INVISIBLE> ] ;
+   => _DefineSplitter( <"name">, <"parent">, <col>, <row>, <w>, <h>, ! <.horizontal.>, <aBefore>, <aAfter>, <nMin>, <{change}>, <.invisible.> )

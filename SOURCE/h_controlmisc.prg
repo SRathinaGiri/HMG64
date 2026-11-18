@@ -8120,6 +8120,10 @@ ElseIf Pcount() == 4 // CONTROL
 
         _SetPlayerSeek ( Arg2 , Arg1 , Arg4 )   // ADD
 
+    ElseIf Arg3 == 'POSITION' .AND. GetControlType ( Arg2 , Arg1 ) == 'SPLITTER'   // HMG5 5.2
+
+        _HMG_SplitterSetPos ( Arg2 , Arg1 , Arg4 )
+
     ElseIf Arg3 == 'POSITION'
 
         If Arg4 == 0
@@ -8743,6 +8747,10 @@ ElseIf Pcount() == 3 // CONTROL
     ElseIf Arg3 == 'LENGTH'
 
         RetVal := _GetPlayerLength ( Arg2 , Arg1 ) 
+
+    ElseIf Arg3 == 'POSITION' .AND. GetControlType ( Arg2 , Arg1 ) == 'SPLITTER'   // HMG5 5.2
+
+        RetVal := _HMG_SplitterGetPos ( Arg2 , Arg1 )
 
     ElseIf Arg3 == 'POSITION'
 

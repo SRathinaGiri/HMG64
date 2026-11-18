@@ -207,6 +207,26 @@ Win_1.Txt_Search.Placeholder := "Search by GSTIN"      // or read it
   even with the focus; a COMBOBOX while nothing is chosen. Also in DEFINE TEXTBOX /
   DEFINE COMBOBOX (`PLACEHOLDER "..."`). Masked and date TEXTBOXes are never empty: no hint.
 
+## Two panes resized with the mouse - SPLITTER (HMG5 5.2)
+
+```harbour
+@ 10, 10 GRID Grid_Files WIDTH 290 HEIGHT 440 ...
+@ 10, 300 SPLITTER Spl_Side HEIGHT 440 ;                    // VERTICAL is the default
+   BETWEEN { "Grid_Files" } AND { "Edt_Notes", "Edt_Log" } MINSIZE 120 ;
+   ON CHANGE ShowPlaces()
+@ 10, 306 EDITBOX Edt_Notes WIDTH 504 HEIGHT 214
+@ 224, 306 SPLITTER Spl_Notes WIDTH 504 HORIZONTAL BETWEEN { "Edt_Notes" } AND { "Edt_Log" }
+@ 230, 306 EDITBOX Edt_Log WIDTH 504 HEIGHT 220
+Win_1.Spl_Side.Position := 300                              // or read it (column; row if HORIZONTAL)
+```
+
+- The bar is 6 thick by default (WIDTH for VERTICAL, HEIGHT for HORIZONTAL). Dragging it: the
+  controls in BETWEEN's first array end at the bar, those in the second start right after it
+  and keep their right (bottom) edge. Define them touching the bar.
+- MINSIZE (default 20): the smallest width (height) left on either side; Position := is kept
+  within it too. ON CHANGE runs once when a drag ends (not after Esc, not for Position :=).
+- Esc while dragging puts everything back. Not inside a TAB page (an error says so).
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

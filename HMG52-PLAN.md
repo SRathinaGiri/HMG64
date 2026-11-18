@@ -19,7 +19,7 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 5 | Files dropped from Explorer: `ON DROPFILES` | feature | done |
 | 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | done |
 | 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | done (programs: yes; library: no) |
-| 8 | `SPLITTER` control: two panes resized with the mouse | control | |
+| 8 | `SPLITTER` control: two panes resized with the mouse | control | done |
 | 9 | `TOGGLE` control: an on/off switch | control | |
 | 10 | Toast notifications: `HMG_Toast()` | feature | |
 | 11 | IDE: linker errors in the Error List | IDE | |

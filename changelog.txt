@@ -1,4 +1,9 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - @ <row>, <col> SPLITTER <name> [ VERTICAL | HORIZONTAL ] BETWEEN <aBefore> AND <aAfter>
+     [ MINSIZE <n> ] [ ON CHANGE <action> ] [ INVISIBLE ]: a thin bar the mouse drags; the controls
+     before it end at the bar, the ones after start after it and keep their far edge. Esc while
+     dragging puts everything back; property Position (read and set, kept within MINSIZE).
+     SOURCE\c_splitter.c, h_splitter.prg; tests\unit\splitter (15 checks); SAMPLES\Controls\Splitter
    - -gc3 (Harbour functions compiled to C) measured: programs about 10 % faster (tight numeric loops
      about 18 %), all unit tests pass with it; documented (build64 ... -gc3). The library stays pcode:
      built with -gc3 it was no faster and 2.3 times bigger
