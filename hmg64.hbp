@@ -125,6 +125,8 @@ source/c_http.c
 source/c_dropfiles.c
 source/c_placeholder.c
 source/c_splitter.c
+source/h_toggle.prg
+source/c_toggle.c
 source/c_media.c
 source/c_menu.c
 source/c_monthcal.c

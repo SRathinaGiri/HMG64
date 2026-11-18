@@ -20,7 +20,7 @@ behave exactly as before), the HMG way (a clause or a property, not a new framew
 | 6 | Hint text in empty boxes: `PLACEHOLDER` (TEXTBOX, COMBOBOX) | feature | done |
 | 7 | Harbour code compiled to C (`-gc3`): test, measure, document | speed | done (programs: yes; library: no) |
 | 8 | `SPLITTER` control: two panes resized with the mouse | control | done |
-| 9 | `TOGGLE` control: an on/off switch | control | |
+| 9 | `TOGGLE` control: an on/off switch | control | done |
 | 10 | Toast notifications: `HMG_Toast()` | feature | |
 | 11 | IDE: linker errors in the Error List | IDE | |
 | 12 | IDE: projects and forms with LF-only line endings | IDE | |

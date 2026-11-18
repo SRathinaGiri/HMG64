@@ -1,4 +1,9 @@
 -HMG 5.2 (in development, HMG52-PLAN.md)
+   - @ <row>, <col> TOGGLE <name> [ CAPTION <c> ] [ VALUE <l> ] ... and DEFINE TOGGLE ... END TOGGLE
+     (the clauses of CHECKBOX): an on/off switch drawn by HMG (smooth edges, DPI, dark mode, grey when
+     disabled). A click or Space flips it and runs ON CHANGE; Value := does not. Value is logical;
+     Caption, Enabled, Visible, fonts, BackColor, FontColor, ON GOTFOCUS / ON LOSTFOCUS, TAB pages.
+     SOURCE\c_toggle.c, h_toggle.prg; tests\unit\toggle (22 checks); SAMPLES\Controls\Toggle
    - @ <row>, <col> SPLITTER <name> [ VERTICAL | HORIZONTAL ] BETWEEN <aBefore> AND <aAfter>
      [ MINSIZE <n> ] [ ON CHANGE <action> ] [ INVISIBLE ]: a thin bar the mouse drags; the controls
      before it end at the bar, the ones after start after it and keep their far edge. Esc while

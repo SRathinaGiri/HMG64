@@ -227,6 +227,24 @@ Win_1.Spl_Side.Position := 300                              // or read it (colum
   within it too. ON CHANGE runs once when a drag ends (not after Esc, not for Position :=).
 - Esc while dragging puts everything back. Not inside a TAB page (an error says so).
 
+## On/off switch - TOGGLE (HMG5 5.2)
+
+```harbour
+@ 20, 20 TOGGLE Tgl_Wifi CAPTION "Wi-Fi" VALUE .T. WIDTH 200 ON CHANGE ShowState()
+DEFINE TOGGLE Tgl_Fixed            // DEFINE form: the same clauses as DEFINE CHECKBOX
+   ROW 60
+   COL 20
+   CAPTION "Location"
+END TOGGLE
+lOn := Win_1.Tgl_Wifi.Value        // logical; Win_1.Tgl_Wifi.Value := .F. (no ON CHANGE)
+```
+
+- A switch drawn by HMG: accent colour when on, an outline when off, grey when disabled; follows
+  SET DARKMODE and DPI. A click or Space flips it and runs ON CHANGE (This.Value is the new value).
+- Clauses as CHECKBOX: CAPTION (optional), WIDTH (default 120), HEIGHT (28), FONT, SIZE, BOLD...,
+  TOOLTIP, BACKCOLOR (default: the form's), FONTCOLOR, ON GOTFOCUS, ON LOSTFOCUS, HELPID,
+  INVISIBLE, NOTABSTOP. No FIELD. Works on TAB pages.
+
 ## Opt-in settings (off unless the program asks)
 
 ```harbour

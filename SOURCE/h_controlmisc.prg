@@ -232,6 +232,10 @@ do case
 
         retval := GetSpinnerValue ( c [2] )
 
+    case T == "TOGGLE"   // HMG5 5.2
+
+        retval := HMG_TOGGLEGET( c )
+
     case T == "CHECKBOX" 
 
         auxval := SendMessage( c , BM_GETCHECK , 0 , 0 )
@@ -545,6 +549,9 @@ do case
 
     case T == "SPINNER" 
         SetSpinnerValue ( c [2] , Value )
+
+    case T == "TOGGLE"   // HMG5 5.2
+        HMG_TOGGLESET( c , value )
 
     case T == "CHECKBOX" 
         if value = .t.
