@@ -824,7 +824,7 @@ LOCAL hFont
 
 		* Process HotKeys
 
-		i := Ascan ( _HMG_SYSDATA [  HMG_CTL_ID ] , wParam )
+		i := _HMG_ControlById ( wParam , "HOTKEY" , GetActiveWindow() )   // 5.2.1: the first HOTKEY with that id, not the first control
 
 		If i > 0
 
@@ -1643,7 +1643,9 @@ EndIf
 			return 0
 		endif
 
-		i := Ascan ( _HMG_SYSDATA [  HMG_CTL_ID ] , wParam )
+		// 5.2.1: only a TIMER of this window (CTL_ID also holds other numbers: grid headers,
+		// browse scroll bars, menu and toolbar ids)
+		i := _HMG_ControlById ( wParam , "TIMER" , hWnd )
 
 		if i > 0
 			_DoControlEventProcedure ( _HMG_SYSDATA [  HMG_CTL_PROCEDURE ] [i] , i )

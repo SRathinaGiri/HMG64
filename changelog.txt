@@ -1,3 +1,15 @@
+-HMG 5.2.1 (in development; from a static review of 5.2)
+   - A released TIMER (RELEASE CONTROL, or a status bar with CLOCK or KEYBOARD released) kept its
+     Win32 timer: it ticked for the window's life and, once its id was given to a new control,
+     ran that control's action at the timer's interval. _EraseControl now kills it.
+   - WM_TIMER ran the first control whose id field held the number (grids and browses keep window
+     handles there); it now runs only a TIMER of that window. WM_HOTKEY likewise finds the HOTKEY.
+   - Control ids (_GetId: menu items, toolbar buttons, timers, hotkeys) are never 1..99: an item
+     with id 1 ran when Enter was pressed (IDOK) or when a grid started in-place editing.
+   - Grid.AddItem( aItem, nRow ) with nRow 0 or below: the same error as a row past the end.
+   - BROWSE on an empty table: the vertical scroll bar got the range 1..0.
+     tests\unit\ctlids (5 checks; the unfixed 5.2 library fails 4)
+
 -HMG 5.2 2026/11/18 (HMG52-PLAN.md)
    - IDE: projects, forms, reports, the .rc and .hbc and the modules shown in the Error List are read
      with any line ending (CR LF, LF or CR) and written back with CR LF; until now an LF-only .hbp was

@@ -4256,6 +4256,12 @@ Local mVar
 // i = nControlIndex
 // nParentIndex (nFormIndex) 
 
+// 5.2.1: a released TIMER (also a status bar's clock) stopped nowhere; its Win32 timer kept
+// ticking, and fired the control that got its id next
+If _HMG_SYSDATA [HMG_CTL_TYPE] [i] == "TIMER" .And. HB_ISNUMERIC( _HMG_SYSDATA [HMG_CTL_ID] [i] ) .And. _HMG_SYSDATA [HMG_CTL_ID] [i] != 0
+    KillTimer ( _HMG_SYSDATA [HMG_CTL_PARENTHANDLE] [i] , _HMG_SYSDATA [HMG_CTL_ID] [i] )
+EndIf
+
 DeleteObject ( _HMG_SYSDATA [ HMG_CTL_FONTHANDLE ] [i] ) 
 DeleteObject ( _HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [i] )
 
@@ -4412,6 +4418,19 @@ EndIf
 HMG_SendMessage ( _HMG_SYSDATA [HMG_CTL_HANDLE] [i], EM_GETSEL, @nStart, @nEnd )   // This functions supports huge text
 Return nEnd
 
+/* 5.2.1: the control with that numeric id, of that type (and parent window, when given).
+   CTL_ID holds ids of timers, menus, toolbar buttons and hotkeys, but also window handles
+   (grid headers, browse scroll bars), so the first match by number alone may be another control */
+Function _HMG_ControlById ( nId , cType , hParent )
+Local i := 0
+Do While ( i := AScan ( _HMG_SYSDATA [ HMG_CTL_ID ] , nId , i + 1 ) ) > 0
+    If _HMG_SYSDATA [ HMG_CTL_TYPE ] [i] == cType .And. _HMG_SYSDATA [ HMG_CTL_DELETED ] [i] == .F. .And. ;
+       ( hParent == NIL .Or. _HMG_SYSDATA [ HMG_CTL_PARENTHANDLE ] [i] == hParent )
+        Return i
+    EndIf
+EndDo
+Return 0
+
 Function _GetId()
 Local RetVal , i
 
@@ -4421,7 +4440,10 @@ do while .t.
 
     i := ascan ( _HMG_SYSDATA [  HMG_CTL_ID ] , retval )
 
-    if i == 0 .and. retval != 0
+    // 5.2.1: never below 100. WM_COMMAND 1..11 are the dialog commands (IDOK = 1 comes with
+    // Enter, and the grid sends it for in-place editing); a menu item or toolbar button with
+    // such an id ran when Enter was pressed
+    if i == 0 .and. retval >= 100
         exit
     EndIf
 

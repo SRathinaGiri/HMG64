@@ -688,7 +688,7 @@ LOCAL iImage := 0, aTemp
    
    IF ValType (nRowIndex) == "U"
       nRowIndex := ListView_GetItemCount (hWnd) + 1
-   ELSEIF nRowIndex > (ListView_GetItemCount(hWnd) + 1)
+   ELSEIF nRowIndex > (ListView_GetItemCount(hWnd) + 1) .OR. nRowIndex < 1   // 5.2.1: also 0 and below
       MsgHMGError ("Grid.AddItem (nRowIndex = " +ALLTRIM(STR(nRowIndex))+ "): Invalid nRowIndex. Program Terminated")
    ENDIF
   
