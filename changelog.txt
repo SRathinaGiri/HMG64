@@ -1,4 +1,4 @@
--HMG 5.2.1 (in development; from a static review of 5.2)
+-HMG 5.2.1 2026/11/22 (fixes from a static review of 5.2)
    - A released TIMER (RELEASE CONTROL, or a status bar with CLOCK or KEYBOARD released) kept its
      Win32 timer: it ticked for the window's life and, once its id was given to a new control,
      ran that control's action at the timer's interval. _EraseControl now kills it.
