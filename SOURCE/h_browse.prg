@@ -2192,7 +2192,10 @@ Local ActualRecord , RecordCount , KeyCount
 
 		_HMG_SYSDATA [ HMG_CTL_BRUSHHANDLE ] [i] := RecordCount
 
-		If RecordCount < 100
+		If RecordCount == 0   // 5.2.1: an empty table gave the range 1..0 with the thumb at 1
+			SetScrollRange (_HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , 1 , .t. )
+			SetScrollPos ( _HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , .T. )
+		ElseIf RecordCount < 100
 			SetScrollRange (_HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , 1 , RecordCount , .t. )
 			SetScrollPos ( _HMG_SYSDATA [  HMG_CTL_ID ] [i] , 2 , ActualRecord , .T. )
 		Else
