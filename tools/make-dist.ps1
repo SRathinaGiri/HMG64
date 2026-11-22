@@ -118,4 +118,13 @@ if (-not $NoVerify) {
    if ($LASTEXITCODE -ne 0) { Fail 'The new HMG5 folder failed its tests (see above).' }
    Remove-TestOutput $Dest
 }
+
+# ---- 5. Not for users: the test suite and the developers' notes (5.2.1) ------------------
+# They stay in git; the folder needs tests\ only for the check above.
+Step 'Removing the test suite and the developer notes'
+foreach ($p in 'tests', 'README.md', 'ADOPTION.md', 'HMG52-PLAN.md', 'HMGWEB-DESIGN.md',
+               'PHASE3-DESIGN.md', 'PHASE4-DESIGN.md', 'TOOLCHAIN.md') {
+   $x = Join-Path $Dest $p
+   if (Test-Path $x) { Remove-Item -Recurse -Force $x }
+}
 Write-Host "HMG5 ready: $Dest   Next: build Setup.exe with dist\HMG5.iss (Inno Setup 6)" -ForegroundColor Green

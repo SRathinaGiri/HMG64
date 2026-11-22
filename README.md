@@ -35,7 +35,7 @@ powershell -ExecutionPolicy Bypass -File tools\make-dist.ps1 -Dest D:\HMG5   & r
 iscc dist\HMG5.iss                                                          & rem optional: HMG5-Setup.exe (Inno Setup 6)
 ```
 
-`make-dist.ps1` refuses a destination that exists or sits inside the repo, and runs `hmgbuild test` inside the new folder. `dist\HMG5-README.txt` is the user-facing readme.
+`make-dist.ps1` refuses a destination that exists or sits inside the repo, runs `hmgbuild test` inside the new folder, then removes what users do not need: the built test and sample programs, `tests\`, and the developer notes (design documents, `TOOLCHAIN.md`, this README). `dist\HMG5-README.txt` is the user-facing readme.
 
 ## Tests
 
