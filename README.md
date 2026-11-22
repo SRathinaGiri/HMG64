@@ -35,7 +35,7 @@ powershell -ExecutionPolicy Bypass -File tools\make-dist.ps1 -Dest D:\HMG5   & r
 iscc dist\HMG5.iss                                                          & rem optional: HMG5-Setup.exe (Inno Setup 6)
 ```
 
-`make-dist.ps1` refuses a destination that exists or sits inside the repo, and runs `hmgbuild test` inside the new folder. `dist\HMG5-README.txt` is the user-facing readme.
+`make-dist.ps1` refuses a destination that exists or sits inside the repo, runs `hmgbuild test` inside the new folder, then removes what users do not need: the built test and sample programs, `tests\`, and the developer notes (design documents, `TOOLCHAIN.md`, this README). `dist\HMG5-README.txt` is the user-facing readme.
 
 ## Tests
 
@@ -52,7 +52,7 @@ iscc dist\HMG5.iss                                                          & re
 | 0 | Baseline in git, single build entry point, smoke + regression tests | done |
 | 1 | Fix leaks, buffer overflows, NULL crashes, DLL hijacking, temp-file race; deprecate XOR "crypt" | done (see AUDIT.md §6) |
 | 2a | Toolchain refresh: GCC 16.2 / UCRT, Harbour 3.2.1 from source, current bundled libs; reproducible setup script; ANSI + UNICODE build matrix | done |
-| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.2.1 Stable"; logos in `logo\` | done (Setup.exe tested: silent install, build, uninstall) |
+| HMG5 | Out-of-the-box folder (`tools\make-dist.ps1`) and Setup script (`dist\HMG5.iss`); version string "HMG 5.2.2 Stable"; logos in `logo\` | done (Setup.exe tested: silent install, build, uninstall) |
 | 2b | Windows 10+ target (`_WIN32_WINNT`), long-path manifest, libHaru 2.3 headers (PerMonitorV2 moved to Phase 4; UTF-8 code page dropped: it breaks ANSI mode) | done |
 | 3 | Name, index and wrap `_HMG_SYSDATA` (layout frozen), object API, event dispatch - see PHASE3-DESIGN.md | done (S1-S5) |
 | 4 | Modern features: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF/print, IDE - see PHASE4-DESIGN.md | done for 5.0: WebView2 control, per-monitor DPI, dark mode, IFileDialog, PDF engine, CHART control (ECharts), GraphPlus; IDE revamp (code editor with completion, project builder, Forms and Controls) |
