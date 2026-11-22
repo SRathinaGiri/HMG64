@@ -1,3 +1,8 @@
+-HMG 5.2.2 2026/11/22
+   - The installed folder no longer holds the test suite (tests\) or the developers' notes
+     (design documents, plans, TOOLCHAIN.md, the repository README.md); they stay in the source
+     repository. tools\make-dist.ps1 removes them after its tests pass. No library change.
+
 -HMG 5.2.1 2026/11/22 (fixes from a static review of 5.2)
    - A released TIMER (RELEASE CONTROL, or a status bar with CLOCK or KEYBOARD released) kept its
      Win32 timer: it ticked for the window's life and, once its id was given to a new control,
